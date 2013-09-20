@@ -1,7 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿// Name:    Kerbal Engineer Redux
+// Author:  CYBUTEK
+// License: Attribution-NonCommercial-ShareAlike 3.0 Unported
 
 namespace KerbalEngineer.Extensions
 {

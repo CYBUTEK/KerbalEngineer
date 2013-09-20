@@ -12,14 +12,20 @@ namespace KerbalEngineer.Settings
     [Serializable]
     public class SettingsList
     {
-        public List<Setting> Settings = new List<Setting>();
+        #region Fields
+
+        private List<Setting> _settings = new List<Setting>();
+
+        #endregion
+
+        #region Public Methods
 
         /// <summary>
         /// Add a setting into this settings list.
         /// </summary>
         public void AddSetting(string name, object value)
         {
-            foreach (Setting setting in Settings)
+            foreach (Setting setting in _settings)
             {
                 if (setting.Name == name)
                 {
@@ -28,7 +34,7 @@ namespace KerbalEngineer.Settings
                 }
             }
 
-            Settings.Add(new Setting(name, value));
+            _settings.Add(new Setting(name, value));
         }
 
         /// <summary>
@@ -36,7 +42,7 @@ namespace KerbalEngineer.Settings
         /// </summary>
         public object GetSetting(string name, object defaultValue)
         {
-            foreach (Setting setting in Settings)
+            foreach (Setting setting in _settings)
             {
                 if (setting.Name == name)
                     return setting.Value;
@@ -45,6 +51,10 @@ namespace KerbalEngineer.Settings
             AddSetting(name, defaultValue);
             return defaultValue;
         }
+
+        #endregion
+
+        #region Static Methods
 
         /// <summary>
         /// Creates a settings list from an existing file, or returns a blank settings list object.
@@ -77,5 +87,7 @@ namespace KerbalEngineer.Settings
             }
             catch { throw new Exception("Could not save settings to file."); }
         }
+
+        #endregion
     }
 }

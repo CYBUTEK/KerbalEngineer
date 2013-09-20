@@ -1,4 +1,8 @@
-﻿using System;
+﻿// Name:    Kerbal Engineer Redux
+// Author:  CYBUTEK
+// License: Attribution-NonCommercial-ShareAlike 3.0 Unported
+
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading;
@@ -8,6 +12,8 @@ namespace KerbalEngineer.Simulation
 {
     public class SimulationManager
     {
+        #region Instance
+
         private static SimulationManager _instance;
         /// <summary>
         /// Gets the current instance of the simulation manager.
@@ -21,11 +27,19 @@ namespace KerbalEngineer.Simulation
             }
         }
 
+        #endregion
+
+        #region Fields
+
         private bool _simRequested = false;
         private bool _simRunning = false;
         private Stopwatch _timer = new Stopwatch();
         private long _millisecondsBetweenSimulations = 0;
         private int _numberOfStages = 0;
+
+        #endregion
+
+        #region Properties
 
         public Stage[] Stages { get; private set; }
         public Stage LastStage { get; private set; }
@@ -47,6 +61,10 @@ namespace KerbalEngineer.Simulation
             }
         }
 
+        #endregion
+
+        #region Initialisation
+
         public SimulationManager()
         {
             Stages = new Stage[0];
@@ -55,6 +73,10 @@ namespace KerbalEngineer.Simulation
             Gravity = 9.81d;
             Atmosphere = 0d;
         }
+
+        #endregion
+
+        #region Updating
 
         public void RequestSimulation()
         {
@@ -78,6 +100,10 @@ namespace KerbalEngineer.Simulation
                 }
             }
         }
+
+        #endregion
+
+        #region Processing
 
         private void StartSimulation()
         {
@@ -117,5 +143,7 @@ namespace KerbalEngineer.Simulation
 
             _simRunning = false;
         }
+
+        #endregion
     }
 }

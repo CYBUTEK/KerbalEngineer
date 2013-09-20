@@ -11,6 +11,7 @@ namespace KerbalEngineer.BuildEngineer
     public class BuildButton : MonoBehaviour
     {
         #region Fields
+
         private Rect _position = new Rect(265f, 0f, 50f, 45f);
         private GUIStyle _tooltipTitleStyle, _tooltipInfoStyle;
         private Texture2D _normal = new Texture2D(50, 45, TextureFormat.RGBA32, false);

@@ -9,6 +9,8 @@ namespace KerbalEngineer
 {
     public class EngineerGlobals
     {
+        #region Properties
+
         /// <summary>
         /// Current version of the Kerbal Engineer assembly.
         /// </summary>
@@ -59,11 +61,17 @@ namespace KerbalEngineer
             }
         }
 
+        #endregion
+
+        #region Methods
+
         private static int _windowID = int.MaxValue;
         public static int GetNextWindowID()
         {
             _windowID--;
             return _windowID;
         }
+
+        #endregion
     }
 }
