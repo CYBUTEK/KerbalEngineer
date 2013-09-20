@@ -6,6 +6,9 @@ namespace KerbalEngineer.Extensions
 {
     public static class DoubleExtensions
     {
+        /// <summary>
+        /// Convert to a string formatted as a mass.
+        /// </summary>
         public static string ToMass(this double value, bool showNotation = true)
         {
             value *= 1000;
@@ -16,6 +19,9 @@ namespace KerbalEngineer.Extensions
                 return value.ToString("#,0.");
         }
 
+        /// <summary>
+        /// Convert to string formatted as a force.
+        /// </summary>
         public static string ToForce(this double value, bool showNotation = true)
         {
             if (showNotation)
@@ -24,6 +30,9 @@ namespace KerbalEngineer.Extensions
                 return value.ToString("#,0.#");
         }
 
+        /// <summary>
+        /// Convert to string formatted as a speed.
+        /// </summary>
         public static string ToSpeed(this double value, bool showNotation = true)
         {
             if (showNotation)
@@ -32,6 +41,9 @@ namespace KerbalEngineer.Extensions
                 return value.ToString("0");
         }
 
+        /// <summary>
+        /// Convert to string formatted as a time.
+        /// </summary>
         public static string ToTime(this double value)
         {
             double s = value;
