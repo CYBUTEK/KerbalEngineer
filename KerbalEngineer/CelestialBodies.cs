@@ -77,6 +77,8 @@ namespace KerbalEngineer
             AddBody(new BodyInfo("Bop", 0.589d, 0d, "Jool", null));
             AddBody(new BodyInfo("Pol", 0.373d, 0d, "Jool", null));
             AddBody(new BodyInfo("Eeloo", 1.69d, 0d, null, null));
+
+            SelectedBodyName = "Kerbin";
         }
 
         private void AddBody(BodyInfo bodyInfo)
