@@ -10,7 +10,22 @@ namespace KerbalEngineer.Extensions
     public static class RectExtensions
     {
         /// <summary>
-        /// Clamps the rectangle into the screen by the specified margin.
+        /// Clamps the rectangle inside the screen region.
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        public static Rect ClampInsideScreen(this Rect value)
+        {
+            if (value.x < 0f) value.x = 0f;
+            if (value.x + value.width > Screen.width) value.x = Screen.width - value.width;
+            if (value.y < 0f) value.y = 0f;
+            if (value.y + value.height > Screen.height) value.y = Screen.height - value.height;
+
+            return value;
+        }
+
+        /// <summary>
+        /// Clamps the rectangle into the screen region by the specified margin.
         /// </summary>
         public static Rect ClampToScreen(this Rect value, float margin = 25f)
         {

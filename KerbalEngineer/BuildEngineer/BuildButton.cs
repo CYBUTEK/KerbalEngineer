@@ -42,10 +42,11 @@ namespace KerbalEngineer.BuildEngineer
         {
             _tooltipTitleStyle = new GUIStyle(GUI.skin.label);
             _tooltipTitleStyle.fontSize = 13;
-            _tooltipTitleStyle.fontStyle = FontStyle.Bold;
+            _tooltipTitleStyle.fontStyle = FontStyle.Normal;
 
             _tooltipInfoStyle = new GUIStyle(GUI.skin.label);
             _tooltipInfoStyle.fontSize = 11;
+            _tooltipInfoStyle.fontStyle = FontStyle.Normal;
         }
 
         #endregion
@@ -119,9 +120,9 @@ namespace KerbalEngineer.BuildEngineer
         // Draws the tooltip next to the mouse cursor.
         private void DrawToolTip()
         {
-            GUI.Label(new Rect(Event.current.mousePosition.x + 16f, Event.current.mousePosition.y, 256f, 25), "Kerbal Engineer Redux", _tooltipTitleStyle);
-            GUI.Label(new Rect(Event.current.mousePosition.x + 16f, Event.current.mousePosition.y + 16f, 256, 25), "[Left Click] Advanced", _tooltipInfoStyle);
-            GUI.Label(new Rect(Event.current.mousePosition.x + 16f, Event.current.mousePosition.y + 30f, 256, 25), "[Right Click] Simple", _tooltipInfoStyle);
+            GUI.Label(new Rect(Event.current.mousePosition.x + 16f, Event.current.mousePosition.y, 256f, 25f), "Kerbal Engineer Redux", _tooltipTitleStyle);
+            GUI.Label(new Rect(Event.current.mousePosition.x + 16f, Event.current.mousePosition.y + 16f, 256f, 25f), "[Left Click] Advanced - [Right Click] Overlay", _tooltipInfoStyle);
+            //GUI.Label(new Rect(Event.current.mousePosition.x + 16f, Event.current.mousePosition.y + 30f, 256f, 25f), "", _tooltipInfoStyle);
         }
 
         // Runs the stuff to do when the button is clicked with the left mouse button.
@@ -134,7 +135,8 @@ namespace KerbalEngineer.BuildEngineer
         // Runs the stuff to do when the button is clicked with the right mouse button.
         private void ButtonClickedRight()
         {
-
+            if (BuildOverlay.Instance != null)
+                BuildOverlay.Instance.Visible = !BuildOverlay.Instance.Visible;
         }
 
         #endregion

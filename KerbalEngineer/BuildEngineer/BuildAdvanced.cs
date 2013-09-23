@@ -3,7 +3,6 @@
 // License: Attribution-NonCommercial-ShareAlike 3.0 Unported
 
 using System;
-using System.Threading;
 using KerbalEngineer.Extensions;
 using KerbalEngineer.Settings;
 using KerbalEngineer.Simulation;
@@ -16,14 +15,10 @@ namespace KerbalEngineer.BuildEngineer
     {
         #region Instance
 
-        private static BuildAdvanced _instance;
         /// <summary>
         /// Gets the current instance if started or returns null.
         /// </summary>
-        public static BuildAdvanced Instance
-        {
-            get { return _instance; }
-        }
+        public static BuildAdvanced Instance { get; private set; }
 
         #endregion
 
@@ -31,7 +26,7 @@ namespace KerbalEngineer.BuildEngineer
 
         private Rect _position = new Rect(265f, 45f, 0f, 0f);
         private GUIStyle _windowStyle, _areaStyle, _areaBodiesStyle, _buttonStyle, _titleStyle, _infoStyle;
-        private int _windowID = 0;
+        private int _windowID = EngineerGlobals.GetNextWindowID();
         private bool _hasInitStyles = false;
         private bool _hasChanged = false;
         private bool _isEditorLocked = false;
@@ -97,9 +92,8 @@ namespace KerbalEngineer.BuildEngineer
         public void Start()
         {
             // Set the instance to this object.
-            _instance = this;
+            Instance = this;
 
-            //LoadSettings();
             RenderingManager.AddToPostDrawQueue(0, OnDraw);
         }
 
@@ -168,22 +162,6 @@ namespace KerbalEngineer.BuildEngineer
             catch { /* A null reference exception is thrown when checking if EditorLogic.fetch != null??? */ }
         }
 
-        // Checks whether the editor should be looked to stop click-through.
-        private void CheckEditorLock()
-        {
-            if (_position.MouseIsOver() && !EditorLogic.editorLocked)
-            {
-                EditorLogic.fetch.Lock(true, true, true);
-                _isEditorLocked = true;
-            }
-            else if (_isEditorLocked && !_position.MouseIsOver() && EditorLogic.editorLocked)
-            {
-                EditorLogic.fetch.Unlock();
-            }
-
-            if (!EditorLogic.editorLocked) _isEditorLocked = false;
-        }
-
         private void OnDraw()
         {
             try
@@ -202,13 +180,29 @@ namespace KerbalEngineer.BuildEngineer
                     else
                         title = "K.E.R. " + EngineerGlobals.AssemblyVersion;
 
-                    _position = GUILayout.Window(int.MaxValue, _position, OnWindow, title, _windowStyle).ClampToScreen();
+                    _position = GUILayout.Window(_windowID, _position, OnWindow, title, _windowStyle).ClampToScreen();
 
                     // Check editor lock to manage click-through.
                     CheckEditorLock();
                 }
             }
             catch { /* A null reference exception is thrown when checking if EditorLogic.fetch != null??? */ }
+        }
+
+        // Checks whether the editor should be looked to stop click-through.
+        private void CheckEditorLock()
+        {
+            if (_position.MouseIsOver() && !EditorLogic.editorLocked)
+            {
+                EditorLogic.fetch.Lock(true, true, true);
+                _isEditorLocked = true;
+            }
+            else if (_isEditorLocked && !_position.MouseIsOver() && EditorLogic.editorLocked)
+            {
+                EditorLogic.fetch.Unlock();
+            }
+
+            if (!EditorLogic.editorLocked) _isEditorLocked = false;
         }
 
         private void OnWindow(int windowID)
@@ -427,7 +421,7 @@ namespace KerbalEngineer.BuildEngineer
                 list.AddSetting("atmosphere", _useAtmosphericDetails);
                 list.AddSetting("bodies", _showReferenceBodies);
                 list.AddSetting("selected_body", CelestialBodies.Instance.SelectedBodyName);
-                SettingsList.SaveToFile(EngineerGlobals.AssemblyPath + "Settings/BuildDisplay.txt", list);
+                SettingsList.SaveToFile(EngineerGlobals.AssemblyPath + "Settings/BuildAdvanced", list);
 
                 print("[KerbalEngineer/BuildAdvanced]: Successfully saved settings.");
             }
@@ -437,11 +431,9 @@ namespace KerbalEngineer.BuildEngineer
         // Loads the settings when this object is created.
         public void Awake()
         {
-            if (_windowID == 0) _windowID = EngineerGlobals.GetNextWindowID();
-
             try
             {
-                SettingsList list = SettingsList.CreateFromFile(EngineerGlobals.AssemblyPath + "Settings/BuildDisplay.txt");
+                SettingsList list = SettingsList.CreateFromFile(EngineerGlobals.AssemblyPath + "Settings/BuildAdvanced");
                 _visible = (bool)list.GetSetting("visible", _visible);
                 _position.x = (float)list.GetSetting("x", _position.x);
                 _position.y = (float)list.GetSetting("y", _position.y);
@@ -453,7 +445,7 @@ namespace KerbalEngineer.BuildEngineer
 
                 print("[KerbalEngineer/BuildAdvanced]: Successfully loaded settings.");
             }
-            catch { print("KerbalEngineer/BuildAdvanced]: Failed to load settings."); }
+            catch { print("[KerbalEngineer/BuildAdvanced]: Failed to load settings."); }
         }
 
         #endregion
