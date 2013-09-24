@@ -42,11 +42,11 @@ namespace KerbalEngineer.BuildEngineer
         {
             _tooltipTitleStyle = new GUIStyle(GUI.skin.label);
             _tooltipTitleStyle.fontSize = 13;
-            _tooltipTitleStyle.fontStyle = FontStyle.Normal;
+            _tooltipTitleStyle.fontStyle = FontStyle.Bold;
 
             _tooltipInfoStyle = new GUIStyle(GUI.skin.label);
             _tooltipInfoStyle.fontSize = 11;
-            _tooltipInfoStyle.fontStyle = FontStyle.Normal;
+            _tooltipInfoStyle.fontStyle = FontStyle.Bold;
         }
 
         #endregion

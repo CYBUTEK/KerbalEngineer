@@ -42,6 +42,49 @@ namespace KerbalEngineer.Extensions
         }
 
         /// <summary>
+        /// Convert to string formatted as a distance.
+        /// </summary>
+        public static string ToDistance(this double value)
+        {
+            if (value < 1000000d)
+            {
+                if (value < 1d)
+                {
+                    value *= 1000d;
+                    return value.ToString("#,0.") + " mm";
+                }
+                else
+                {
+                    return value.ToString("#,0.") + " m";
+                }
+            }
+            else
+            {
+                value /= 1000d;
+                if (value >= 1000000d)
+                {
+                    value /= 1000d;
+                    return value.ToString("#,0." + " Mm");
+                }
+                else
+                {
+                    return value.ToString("#,0." + " km");
+                }
+            }
+        }
+
+        /// <summary>
+        /// Convert to string formatted as a rate.
+        /// </summary>
+        public static string ToRate(this double value)
+        {
+            if (value > 0)
+                return value.ToString("0.0") + "/sec";
+            else
+                return (60d * value).ToString("0.0") + "/min";
+        }
+
+        /// <summary>
         /// Convert to string formatted as a time.
         /// </summary>
         public static string ToTime(this double value)

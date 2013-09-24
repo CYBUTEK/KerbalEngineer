@@ -40,7 +40,6 @@ namespace KerbalEngineer.Extensions
         /// </summary>
         public static T GetModule<T>(this Part part, string className) where T : PartModule
         {
-
             return (T)Convert.ChangeType(part.Modules[className], typeof(T));
         }
 
@@ -53,11 +52,59 @@ namespace KerbalEngineer.Extensions
         }
 
         /// <summary>
+        /// Gets a ModuleEngines typed PartModule.
+        /// </summary>
+        public static ModuleEngines GetModuleEngines(this Part part)
+        {
+            return part.GetModule<ModuleEngines>("ModuleEngines");
+        }
+
+        /// <summary>
+        /// Gets a ModuleGimbal typed PartModule.
+        /// </summary>
+        public static ModuleGimbal GetModuleGimbal(this Part part)
+        {
+            return part.GetModule<ModuleGimbal>("ModuleGimbal");
+        }
+
+        /// <summary>
+        /// Gets a ModuleDeployableSolarPanel typed PartModule.
+        /// </summary>
+        public static ModuleDeployableSolarPanel GetModuleDeployableSolarPanel(this Part part)
+        {
+            return part.GetModule<ModuleDeployableSolarPanel>("ModuleDeployableSolarPanel");
+        }
+
+        /// <summary>
+        /// Gets a ModuleAlternator typed PartModule.
+        /// </summary>
+        public static ModuleAlternator GetModuleAlternator(this Part part)
+        {
+            return part.GetModule<ModuleAlternator>("ModuleAlternator");
+        }
+
+        /// <summary>
+        /// Gets a ModuleGenerator typed PartModule.
+        /// </summary>
+        public static ModuleGenerator GetModuleGenerator(this Part part)
+        {
+            return part.GetModule<ModuleGenerator>("ModuleGenerator");
+        }
+
+        /// <summary>
+        /// Gets a ModuleParachute typed PartModule.
+        /// </summary>
+        public static ModuleParachute GetModuleParachute(this Part part)
+        {
+            return part.GetModule<ModuleParachute>("ModuleParachute");
+        }
+
+        /// <summary>
         /// Gets the total mass of the part including resources.
         /// </summary>
-        public static double GetTotalMass(this Part part)
+        public static double GetWetMass(this Part part)
         {
-            return (part.physicalSignificance == Part.PhysicalSignificance.FULL) ? part.mass + part.GetResourceMass() : 0d;
+            return (part.physicalSignificance == Part.PhysicalSignificance.FULL) ? part.mass + part.GetResourceMass() : part.GetResourceMass();
         }
 
         /// <summary>
@@ -73,7 +120,12 @@ namespace KerbalEngineer.Extensions
         /// </summary>
         public static double GetMaxThrust(this Part part)
         {
-            return (part.IsEngine()) ? part.GetModule<ModuleEngines>("ModuleEngines").maxThrust : 0d;
+            return (part.IsEngine()) ? part.GetModuleEngines().maxThrust : 0d;
+        }
+
+        public static double GetSpecificImpulse(this Part part, float atmosphere)
+        {
+            return (part.IsEngine()) ? part.GetModuleEngines().atmosphereCurve.Evaluate(atmosphere) : 0d;
         }
 
         /// <summary>
@@ -81,7 +133,20 @@ namespace KerbalEngineer.Extensions
         /// </summary>
         public static bool EngineHasFuel(this Part part)
         {
-            return part.HasModule("ModuleEngines") && !part.GetModule<ModuleEngines>("ModuleEngines").getFlameoutState;
+            return part.IsEngine() && !part.GetModuleEngines().getFlameoutState;
+        }
+
+        /// <summary>
+        /// Gets whether the part contains resources.
+        /// </summary>
+        public static bool ContainsResources(this Part part)
+        {
+            return part.Resources.list.Count(p => p.amount > 0d) > 0;
+        }
+
+        public static bool ContainsResource(this Part part, int resourceID)
+        {
+            return part.Resources.Contains(resourceID);
         }
 
         /// <summary>
@@ -119,11 +184,43 @@ namespace KerbalEngineer.Extensions
         }
 
         /// <summary>
+        /// Gets whether the part is a deployable solar panel.
+        /// </summary>
+        public static bool IsSolarPanel(this Part part)
+        {
+            return part.HasModule("ModuleDeployableSolarPanel");
+        }
+
+        /// <summary>
+        /// Gets whether the part is a generator.
+        /// </summary>
+        public static bool IsGenerator(this Part part)
+        {
+            return part.HasModule("ModuleGenerator");
+        }
+
+        /// <summary>
+        /// Gets whether the part is a command module.
+        /// </summary>
+        public static bool IsCommandModule(this Part part)
+        {
+            return part.HasModule("ModuleCommand");
+        }
+
+        /// <summary>
+        /// Gets whether the part is a parachute.
+        /// </summary>
+        public static bool IsParachute(this Part part)
+        {
+            return part.HasModule("ModuleParachute");
+        }
+
+        /// <summary>
         /// Gets whether the part is a solid rocket motor.
         /// </summary>
         public static bool IsSolidRocket(this Part part)
         {
-            return part.IsEngine() && part.GetModule<ModuleEngines>("ModuleEngines").throttleLocked;
+            return part.IsEngine() && part.GetModuleEngines().throttleLocked;
         }
 
         /// <summary>
@@ -160,6 +257,19 @@ namespace KerbalEngineer.Extensions
                         break;
                     }
                 }
+            }
+
+            return false;
+        }
+
+        /// <summary>
+        /// Gets whether the part has a one shot animation.
+        /// </summary>
+        public static bool HasOneShotAnimation(this Part part)
+        {
+            if (part.HasModule("ModuleAnimateGeneric"))
+            {
+                return part.GetModule<ModuleAnimateGeneric>("ModuleAnimateGeneric").isOneShot;
             }
 
             return false;

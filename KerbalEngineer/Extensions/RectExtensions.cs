@@ -12,8 +12,6 @@ namespace KerbalEngineer.Extensions
         /// <summary>
         /// Clamps the rectangle inside the screen region.
         /// </summary>
-        /// <param name="value"></param>
-        /// <returns></returns>
         public static Rect ClampInsideScreen(this Rect value)
         {
             if (value.x < 0f) value.x = 0f;
