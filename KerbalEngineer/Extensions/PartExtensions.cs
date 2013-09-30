@@ -242,11 +242,11 @@ namespace KerbalEngineer.Extensions
         /// <summary>
         /// Gets whether the part is considered a primary part on the vessel.
         /// </summary>
-        public static bool IsPrimary(this Part part, List<Part> partsList, int moduleID)
+        public static bool IsPrimary(this Part part, List<Part> partsList, PartModule module)
         {
             foreach (Part vesselPart in partsList)
             {
-                if (vesselPart.HasModule(moduleID))
+                if (vesselPart.HasModule(module.ClassID))
                 {
                     if (vesselPart == part)
                     {

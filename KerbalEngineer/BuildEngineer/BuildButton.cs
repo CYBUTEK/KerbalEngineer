@@ -28,7 +28,7 @@ namespace KerbalEngineer.BuildEngineer
 
         public void Start()
         {
-            // Load the button textures directly from the png files. (Would of used GameDatabase but it compresses them so it looks shit!)
+            // Load the button textures directly from the PNG files. (Would of used GameDatabase but it compresses them so it looks shit!)
             _normal.LoadImage(File.ReadAllBytes(EngineerGlobals.AssemblyPath + "GUI/BuildButton/Normal.png"));
             _hover.LoadImage(File.ReadAllBytes(EngineerGlobals.AssemblyPath + "GUI/BuildButton/Hover.png"));
             _down.LoadImage(File.ReadAllBytes(EngineerGlobals.AssemblyPath + "GUI/BuildButton/Down.png"));

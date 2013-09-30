@@ -62,6 +62,8 @@ namespace KerbalEngineer.BuildEngineer
 
         private void InitialiseStyles()
         {
+            _hasInitStyles = true;
+
             _windowStyle = new GUIStyle(GUIStyle.none);
             _windowStyle.margin = new RectOffset();
             _windowStyle.padding = new RectOffset();
