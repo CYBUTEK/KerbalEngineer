@@ -3,6 +3,7 @@
 // License: Attribution-NonCommercial-ShareAlike 3.0 Unported
 
 using System.IO;
+using KerbalEngineer.Settings;
 using UnityEngine;
 
 namespace KerbalEngineer.FlightEngineer
@@ -118,18 +119,16 @@ namespace KerbalEngineer.FlightEngineer
         {
             GUILayout.BeginHorizontal();
 
+            // Draw fixed section display toggles.
             GUILayout.BeginVertical();
-            GUILayout.Toggle(false, "ORBITAL", _buttonStyle);
-            GUILayout.Toggle(false, "SURFACE", _buttonStyle);
-            GUILayout.Toggle(false, "VESSEL", _buttonStyle);
-            GUILayout.Toggle(false, "RENDEZVOUS", _buttonStyle);
+            foreach (Section section in SectionList.Instance.FixedSections)
+                section.Visible = GUILayout.Toggle(section.Visible, section.Title.ToUpper(), _buttonStyle);
             GUILayout.EndVertical();
 
+            // Draw fixed section edit toggles.
             GUILayout.BeginVertical(GUILayout.Width(50f));
-            GUILayout.Toggle(false, "EDIT", _buttonStyle);
-            GUILayout.Toggle(false, "EDIT", _buttonStyle);
-            GUILayout.Toggle(false, "EDIT", _buttonStyle);
-            GUILayout.Toggle(false, "EDIT", _buttonStyle);
+            foreach (Section section in SectionList.Instance.FixedSections)
+                GUILayout.Toggle(false, "EDIT", _buttonStyle);
             GUILayout.EndVertical();
 
             GUILayout.EndHorizontal();
@@ -193,6 +192,37 @@ namespace KerbalEngineer.FlightEngineer
 
             // Check for an unclick event whilst the mouse is not hovering.
             if (_clicked && (Mouse.Left.GetButtonUp())) _clicked = false;
+        }
+
+        #endregion
+
+        #region Save and Load
+
+        // Saves the settings associated with the flight controller.
+        public void Save()
+        {
+            try
+            {
+                SettingList list = new SettingList();
+                list.AddSetting("open", _open);
+                SettingList.SaveToFile(EngineerGlobals.AssemblyPath + "Settings/FlightController", list);
+
+                MonoBehaviour.print("[KerbalEngineer/FlightController]: Successfully saved settings.");
+            }
+            catch { MonoBehaviour.print("[KerbalEngineer/FlightController]: Failed to save settings."); }
+        }
+
+        // Loads the settings associated with the flight controller.
+        public void Load()
+        {
+            try
+            {
+                SettingList list = SettingList.CreateFromFile(EngineerGlobals.AssemblyPath + "Settings/FlightController");
+                _open = (bool)list.GetSetting("open", _open);
+
+                MonoBehaviour.print("[KerbalEngineer/FlightController]: Successfully loaded settings.");
+            }
+            catch { MonoBehaviour.print("[KerbalEngineer/FlightController]: Failed to load settings."); }
         }
 
         #endregion

@@ -10,7 +10,7 @@ using System.Runtime.Serialization.Formatters.Binary;
 namespace KerbalEngineer.Settings
 {
     [Serializable]
-    public class SettingsList
+    public class SettingList
     {
         #region Fields
 
@@ -59,24 +59,24 @@ namespace KerbalEngineer.Settings
         /// <summary>
         /// Creates a settings list from an existing file, or returns a blank settings list object.
         /// </summary>
-        public static SettingsList CreateFromFile(string filename)
+        public static SettingList CreateFromFile(string filename)
         {
             if (File.Exists(filename))
             {
                 try
                 {
-                    return new BinaryFormatter().Deserialize(File.OpenRead(filename)) as SettingsList;
+                    return new BinaryFormatter().Deserialize(File.OpenRead(filename)) as SettingList;
                 }
                 catch { throw new Exception("Could not load settings from file."); }
             }
 
-            return new SettingsList();
+            return new SettingList();
         }
 
         /// <summary>
         /// Saves a settings list to a file.
         /// </summary>
-        public static void SaveToFile(string filename, SettingsList settingList)
+        public static void SaveToFile(string filename, SettingList settingList)
         {
             if (!Directory.Exists(new FileInfo(filename).DirectoryName))
                 Directory.CreateDirectory(new FileInfo(filename).DirectoryName);

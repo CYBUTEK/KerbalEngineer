@@ -3,6 +3,7 @@
 // License: Attribution-NonCommercial-ShareAlike 3.0 Unported
 
 using KerbalEngineer.Extensions;
+using KerbalEngineer.Settings;
 using UnityEngine;
 
 namespace KerbalEngineer.FlightEngineer
@@ -23,7 +24,7 @@ namespace KerbalEngineer.FlightEngineer
 
         public void Update()
         {
-            if (FlightGlobals.ActiveVessel == this.vessel && this.part.IsPrimary(this.vessel.parts, this))
+            if (HighLogic.LoadedSceneIsFlight && FlightGlobals.ActiveVessel == this.vessel && this.part.IsPrimary(this.vessel.parts, this))
             {
                 FlightController.Instance.Update();
                 FlightDisplay.Instance.Update();
@@ -32,10 +33,34 @@ namespace KerbalEngineer.FlightEngineer
 
         public void OnDraw()
         {
-            if (FlightGlobals.ActiveVessel == this.vessel && this.part.IsPrimary(this.vessel.parts, this))
+            if (HighLogic.LoadedSceneIsFlight && FlightGlobals.ActiveVessel == this.vessel && this.part.IsPrimary(this.vessel.parts, this))
             {
                 FlightController.Instance.Draw();
                 FlightDisplay.Instance.Draw();
+            }
+        }
+
+        #endregion
+
+        #region Save and Load
+
+        // Runs when the part module is asked to save.
+        public override void OnSave(ConfigNode node)
+        {
+            if (HighLogic.LoadedSceneIsFlight && FlightGlobals.ActiveVessel == this.vessel && this.part.IsPrimary(this.vessel.parts, this))
+            {
+                FlightController.Instance.Save();
+                FlightDisplay.Instance.Save();
+            }
+        }
+
+        // Runs when the part module is asked to load.
+        public override void OnLoad(ConfigNode node)
+        {
+            if (HighLogic.LoadedSceneIsFlight && FlightGlobals.ActiveVessel == this.vessel && this.part.IsPrimary(this.vessel.parts, this))
+            {
+                FlightController.Instance.Load();
+                FlightDisplay.Instance.Load();
             }
         }
 

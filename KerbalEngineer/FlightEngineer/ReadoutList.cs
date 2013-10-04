@@ -46,7 +46,9 @@ namespace KerbalEngineer.FlightEngineer
         private ReadoutList()
         {
             _readouts.Add(new Orbital.ApoapsisHeight());
+            _readouts.Add(new Orbital.PeriapsisHeight());
             _readouts.Add(new Orbital.TimeToApoapsis());
+            _readouts.Add(new Orbital.TimeToPeriapsis());
         }
 
         #endregion

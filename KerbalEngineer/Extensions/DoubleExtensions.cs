@@ -14,7 +14,7 @@ namespace KerbalEngineer.Extensions
             value *= 1000;
 
             if (showNotation)
-                return value.ToString("#,0.") + " kg";
+                return value.ToString("#,0.") + "kg";
             else
                 return value.ToString("#,0.");
         }
@@ -25,7 +25,7 @@ namespace KerbalEngineer.Extensions
         public static string ToForce(this double value, bool showNotation = true)
         {
             if (showNotation)
-                return value.ToString("#,0.#") + " kN";
+                return value.ToString("#,0.#") + "kN";
             else
                 return value.ToString("#,0.#");
         }
@@ -36,7 +36,7 @@ namespace KerbalEngineer.Extensions
         public static string ToSpeed(this double value, bool showNotation = true)
         {
             if (showNotation)
-                return value.ToString("0") + " m/s";
+                return value.ToString("0") + "m/s";
             else
                 return value.ToString("0");
         }
@@ -46,16 +46,23 @@ namespace KerbalEngineer.Extensions
         /// </summary>
         public static string ToDistance(this double value)
         {
+            bool negative = value < 0d;
+
+            if (negative) value = -value;
+
             if (value < 1000000d)
             {
                 if (value < 1d)
                 {
                     value *= 1000d;
-                    return value.ToString("#,0.") + " mm";
+
+                    if (negative) value = -value;
+                    return value.ToString("#,0.") + "mm";
                 }
                 else
                 {
-                    return value.ToString("#,0.") + " m";
+                    if (negative) value = -value;
+                    return value.ToString("#,0.") + "m";
                 }
             }
             else
@@ -64,11 +71,13 @@ namespace KerbalEngineer.Extensions
                 if (value >= 1000000d)
                 {
                     value /= 1000d;
-                    return value.ToString("#,0." + " Mm");
+                    if (negative) value = -value;
+                    return value.ToString("#,0." + "Mm");
                 }
                 else
                 {
-                    return value.ToString("#,0." + " km");
+                    if (negative) value = -value;
+                    return value.ToString("#,0." + "km");
                 }
             }
         }

@@ -24,6 +24,22 @@ namespace KerbalEngineer.FlightEngineer
             set { _readouts = value; }
         }
 
+        private bool _visible = false;
+        /// <summary>
+        /// Gets and sets whether the section is visible.
+        /// </summary>
+        public bool Visible
+        {
+            get { return _visible; }
+            set
+            {
+                if (_visible != value)
+                    FlightDisplay.Instance.RequireResize = true;
+
+                _visible = value;
+            }
+        }
+
         private string _title = string.Empty;
         /// <summary>
         /// Gets and sets the section title.
@@ -47,7 +63,7 @@ namespace KerbalEngineer.FlightEngineer
         {
             TitleStyle = new GUIStyle(HighLogic.Skin.label);
             TitleStyle.margin = new RectOffset();
-            TitleStyle.padding = new RectOffset();
+            TitleStyle.padding = new RectOffset(3, 3, 3, 3);
             TitleStyle.normal.textColor = Color.white;
             TitleStyle.fontSize = 13;
             TitleStyle.fontStyle = FontStyle.Bold;
@@ -70,7 +86,7 @@ namespace KerbalEngineer.FlightEngineer
 
         public void Draw()
         {
-            GUILayout.Label(_title, TitleStyle);
+            GUILayout.Label(_title.ToUpper(), TitleStyle);
             GUILayout.BeginVertical(AreaStyle);
             foreach (Readout readout in _readouts)
                 readout.Draw();

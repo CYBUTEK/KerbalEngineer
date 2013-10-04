@@ -318,9 +318,9 @@ namespace KerbalEngineer.BuildEngineer
         {
             try
             {
-                SettingsList list = new SettingsList();
+                SettingList list = new SettingList();
                 list.AddSetting("visible", _visible);
-                SettingsList.SaveToFile(EngineerGlobals.AssemblyPath + "Settings/BuildOverlay", list);
+                SettingList.SaveToFile(EngineerGlobals.AssemblyPath + "Settings/BuildOverlay", list);
 
                 print("[KerbalEngineer/BuildOverlay]: Successfully saved settings.");
             }
@@ -332,7 +332,7 @@ namespace KerbalEngineer.BuildEngineer
         {
             try
             {
-                SettingsList list = SettingsList.CreateFromFile(EngineerGlobals.AssemblyPath + "Settings/BuildOverlay");
+                SettingList list = SettingList.CreateFromFile(EngineerGlobals.AssemblyPath + "Settings/BuildOverlay");
                 _visible = (bool)list.GetSetting("visible", _visible);
 
                 print("[KerbalEngineer/BuildOverlay]: Successfully loaded settings.");

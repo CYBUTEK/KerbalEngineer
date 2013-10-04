@@ -412,7 +412,7 @@ namespace KerbalEngineer.BuildEngineer
         {
             try
             {
-                SettingsList list = new SettingsList();
+                SettingList list = new SettingList();
                 list.AddSetting("visible", _visible);
                 list.AddSetting("x", _windowPosition.x);
                 list.AddSetting("y", _windowPosition.y);
@@ -421,7 +421,7 @@ namespace KerbalEngineer.BuildEngineer
                 list.AddSetting("atmosphere", _useAtmosphericDetails);
                 list.AddSetting("bodies", _showReferenceBodies);
                 list.AddSetting("selected_body", CelestialBodies.Instance.SelectedBodyName);
-                SettingsList.SaveToFile(EngineerGlobals.AssemblyPath + "Settings/BuildAdvanced", list);
+                SettingList.SaveToFile(EngineerGlobals.AssemblyPath + "Settings/BuildAdvanced", list);
 
                 print("[KerbalEngineer/BuildAdvanced]: Successfully saved settings.");
             }
@@ -433,7 +433,7 @@ namespace KerbalEngineer.BuildEngineer
         {
             try
             {
-                SettingsList list = SettingsList.CreateFromFile(EngineerGlobals.AssemblyPath + "Settings/BuildAdvanced");
+                SettingList list = SettingList.CreateFromFile(EngineerGlobals.AssemblyPath + "Settings/BuildAdvanced");
                 _visible = (bool)list.GetSetting("visible", _visible);
                 _windowPosition.x = (float)list.GetSetting("x", _windowPosition.x);
                 _windowPosition.y = (float)list.GetSetting("y", _windowPosition.y);
