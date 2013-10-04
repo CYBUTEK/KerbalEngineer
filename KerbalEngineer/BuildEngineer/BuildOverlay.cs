@@ -25,7 +25,7 @@ namespace KerbalEngineer.BuildEngineer
 
         #region Fields
 
-        private Rect _position = new Rect(265f, 0f, 0f, 0f);
+        private Rect _windowPosition = new Rect(265f, 0f, 0f, 0f);
         private GUIStyle _windowStyle, _titleStyle, _infoStyle, _tooltipTitleStyle, _tooltipInfoStyle;
         private int _windowID = EngineerGlobals.GetNextWindowID();
         private bool _hasInitStyles = false;
@@ -129,11 +129,11 @@ namespace KerbalEngineer.BuildEngineer
                     // Initialise the GUI styles, but only once as needed.
                     if (!_hasInitStyles) InitialiseStyles();
 
-                    _position = GUILayout.Window(_windowID, _position, OnWindow, string.Empty, _windowStyle);
+                    _windowPosition = GUILayout.Window(_windowID, _windowPosition, Window, string.Empty, _windowStyle);
 
                     // Check and set that the window is at the bottom of the screen.
-                    if (_position.y + _position.height != Screen.height - 5f)
-                        _position.y = Screen.height - _position.height - 5f;
+                    if (_windowPosition.y + _windowPosition.height != Screen.height - 5f)
+                        _windowPosition.y = Screen.height - _windowPosition.height - 5f;
 
                     // Find if a part is selected or being hovered over.
                     if (EditorLogic.SelectedPart != null)
@@ -183,7 +183,7 @@ namespace KerbalEngineer.BuildEngineer
             catch { /* A null reference exception is thrown when checking if EditorLogic.fetch != null??? */ }
         }
 
-        private void OnWindow(int windowID)
+        private void Window(int windowID)
         {
             GUILayout.BeginHorizontal();
 

@@ -11,6 +11,9 @@ namespace KerbalEngineer.FlightEngineer
         #region Instance
 
         private static FlightDisplay _instance;
+        /// <summary>
+        /// Gets the current instance of the flight display.
+        /// </summary>
         public static FlightDisplay Instance
         {
             get
@@ -26,6 +29,10 @@ namespace KerbalEngineer.FlightEngineer
 
         #region Fields
 
+        private Rect _windowPosition = new Rect(Screen.width / 2f - 125f, 100f, 250f, 0f);
+        private GUIStyle _windowStyle;
+        private int _windowID = EngineerGlobals.GetNextWindowID();
+
         private bool _hasInitStyles = false;
 
         #endregion
@@ -40,6 +47,10 @@ namespace KerbalEngineer.FlightEngineer
         private void InitialiseStyles()
         {
             _hasInitStyles = true;
+
+            _windowStyle = new GUIStyle(HighLogic.Skin.window);
+            _windowStyle.margin = new RectOffset();
+            _windowStyle.padding = new RectOffset(3, 3, 3, 3);
         }
 
         #endregion
@@ -54,7 +65,14 @@ namespace KerbalEngineer.FlightEngineer
         {
             if (!_hasInitStyles) InitialiseStyles();
 
+            _windowPosition = GUILayout.Window(_windowID, _windowPosition, Window, string.Empty, _windowStyle);
+        }
 
+        private void Window(int windowID)
+        {
+            Orbital.Apoapsis.Instance.Draw();
+
+            GUI.DragWindow();
         }
 
         #endregion

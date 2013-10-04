@@ -13,7 +13,7 @@ namespace KerbalEngineer.FlightEngineer
 
         private static FlightController _instance;
         /// <summary>
-        /// Gets the current instance of the FlightButton object.
+        /// Gets the current instance of the flight controller.
         /// </summary>
         public static FlightController Instance
         {
@@ -30,7 +30,7 @@ namespace KerbalEngineer.FlightEngineer
 
         #region Fields
 
-        private Rect _windowPosition = new Rect(Screen.width / 2 + 150f, 0f, 200f, 0f);
+        private Rect _windowPosition = new Rect(Screen.width / 2f + 150f, 0f, 200f, 0f);
         private Rect _handlePosition = new Rect(Screen.width / 2f + 200f, 0f, 100f, 17f);
         private GUIStyle _windowStyle, _buttonStyle;
         private Texture2D _closedNormal = new Texture2D(100, 17, TextureFormat.RGBA32, false);
@@ -111,10 +111,10 @@ namespace KerbalEngineer.FlightEngineer
             DrawButton();
 
             if (_windowPosition.y + _windowPosition.height > 0f || _windowPosition.height == 0f)
-                _windowPosition = GUILayout.Window(_windowID, _windowPosition, DrawWindow, string.Empty, _windowStyle);
+                _windowPosition = GUILayout.Window(_windowID, _windowPosition, Window, string.Empty, _windowStyle);
         }
 
-        private void DrawWindow(int windowID)
+        private void Window(int windowID)
         {
             GUILayout.BeginHorizontal();
 

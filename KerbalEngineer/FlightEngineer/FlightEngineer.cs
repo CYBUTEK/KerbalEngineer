@@ -26,6 +26,7 @@ namespace KerbalEngineer.FlightEngineer
             if (FlightGlobals.ActiveVessel == this.vessel && this.part.IsPrimary(this.vessel.parts, this))
             {
                 FlightController.Instance.Update();
+                FlightDisplay.Instance.Update();
             }
         }
 
@@ -34,6 +35,7 @@ namespace KerbalEngineer.FlightEngineer
             if (FlightGlobals.ActiveVessel == this.vessel && this.part.IsPrimary(this.vessel.parts, this))
             {
                 FlightController.Instance.Draw();
+                FlightDisplay.Instance.Draw();
             }
         }
 
