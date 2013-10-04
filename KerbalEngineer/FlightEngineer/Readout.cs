@@ -82,7 +82,7 @@ namespace KerbalEngineer.FlightEngineer
             NameStyle.normal.textColor = Color.white;
             NameStyle.margin = new RectOffset();
             NameStyle.padding = new RectOffset(3, 3, 3, 3);
-            NameStyle.fontSize = 11;
+            NameStyle.fontSize = 12;
             NameStyle.fontStyle = FontStyle.Bold;
             NameStyle.alignment = TextAnchor.MiddleLeft;
             NameStyle.stretchWidth = true;
@@ -90,7 +90,7 @@ namespace KerbalEngineer.FlightEngineer
             DataStyle = new GUIStyle(HighLogic.Skin.label);
             DataStyle.margin = new RectOffset();
             DataStyle.padding = new RectOffset(3, 3, 3, 3);
-            DataStyle.fontSize = 11;
+            DataStyle.fontSize = 12;
             DataStyle.fontStyle = FontStyle.Normal;
             DataStyle.alignment = TextAnchor.MiddleRight;
             DataStyle.stretchWidth = true;

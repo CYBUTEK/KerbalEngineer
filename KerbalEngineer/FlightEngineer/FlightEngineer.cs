@@ -15,7 +15,10 @@ namespace KerbalEngineer.FlightEngineer
         public void Start()
         {
             if (HighLogic.LoadedSceneIsFlight)
+            {
+                Load();
                 RenderingManager.AddToPostDrawQueue(0, OnDraw);
+            }
         }
 
         #endregion
@@ -49,16 +52,18 @@ namespace KerbalEngineer.FlightEngineer
         {
             if (HighLogic.LoadedSceneIsFlight && FlightGlobals.ActiveVessel == this.vessel && this.part.IsPrimary(this.vessel.parts, this))
             {
+                SectionList.Instance.Save();
                 FlightController.Instance.Save();
                 FlightDisplay.Instance.Save();
             }
         }
 
         // Runs when the part module is asked to load.
-        public override void OnLoad(ConfigNode node)
+        public void Load()
         {
             if (HighLogic.LoadedSceneIsFlight && FlightGlobals.ActiveVessel == this.vessel && this.part.IsPrimary(this.vessel.parts, this))
             {
+                SectionList.Instance.Load();
                 FlightController.Instance.Load();
                 FlightDisplay.Instance.Load();
             }

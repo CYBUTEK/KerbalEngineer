@@ -3,6 +3,7 @@
 // License: Attribution-NonCommercial-ShareAlike 3.0 Unported
 
 using System.Collections.Generic;
+using KerbalEngineer.Settings;
 using UnityEngine;
 
 namespace KerbalEngineer.FlightEngineer
@@ -91,6 +92,48 @@ namespace KerbalEngineer.FlightEngineer
             foreach (Readout readout in _readouts)
                 readout.Draw();
             GUILayout.EndVertical();
+        }
+
+        #endregion
+
+        #region Save and Load
+
+        // Saves the settings associated with this section.
+        public void Save()
+        {
+            List<string> readoutNames = new List<string>();
+
+            foreach (Readout readout in _readouts)
+                readoutNames.Add(readout.Name);
+
+            try
+            {
+                SettingList list = new SettingList();
+                list.AddSetting("visible", _visible);
+                list.AddSetting("readouts", readoutNames);
+                SettingList.SaveToFile(EngineerGlobals.AssemblyPath + "Settings/Sections/" + _title, list);
+
+                MonoBehaviour.print("[KerbalEngineer/FlightSection/" + _title + "]: Successfully saved settings.");
+            }
+            catch { MonoBehaviour.print("[KerbalEngineer/FlightSection/" + _title + "]: Failed to save settings."); }
+        }
+
+        // Loads the settings associated with this section.
+        public void Load()
+        {
+            try
+            {
+                SettingList list = SettingList.CreateFromFile(EngineerGlobals.AssemblyPath + "Settings/Sections/" + _title);
+                _visible = (bool)list.GetSetting("visible", _visible);
+
+                _readouts.Clear();
+                List<string> readoutNames = list.GetSetting("readouts", new List<string>()) as List<string>;
+                foreach (string name in readoutNames)
+                    Readouts.Add(ReadoutList.Instance.GetReadout(name));
+
+                MonoBehaviour.print("[KerbalEngineer/FlightSection/" + _title + "]: Successfully loaded settings.");
+            }
+            catch { MonoBehaviour.print("[KerbalEngineer/FlightSection/" + _title + "]: Failed to load settings."); }
         }
 
         #endregion

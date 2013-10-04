@@ -3,6 +3,8 @@
 // License: Attribution-NonCommercial-ShareAlike 3.0 Unported
 
 using System.Collections.Generic;
+using KerbalEngineer.Settings;
+using UnityEngine;
 
 namespace KerbalEngineer.FlightEngineer
 {
@@ -56,7 +58,6 @@ namespace KerbalEngineer.FlightEngineer
         private SectionList()
         {
             _fixedSections.Add(new SectionOrbital());
-            _fixedSections.Add(new SectionOrbital());
         }
 
         #endregion
@@ -77,6 +78,67 @@ namespace KerbalEngineer.FlightEngineer
                     return true;
 
             return false;
+        }
+
+        public Section GetFixedSection(string name)
+        {
+            foreach (Section section in _fixedSections)
+                if (section.Title == name)
+                    return section;
+
+            return null;
+        }
+
+        #endregion
+
+        #region Save and Load
+
+        // Saves the settings associated with the section list.
+        public void Save()
+        {
+            List<string> fixedSectionNames = new List<string>();
+            List<string> userSectionNames = new List<string>();
+
+            foreach (Section section in _fixedSections)
+            {
+                fixedSectionNames.Add(section.Title);
+                section.Save();
+            }
+
+            foreach (Section section in _userSections)
+            {
+                userSectionNames.Add(section.Title);
+                section.Save();
+            }
+
+            try
+            {
+                SettingList list = new SettingList();
+                list.AddSetting("fixed_sections", fixedSectionNames);
+                list.AddSetting("user_sections", userSectionNames);
+                SettingList.SaveToFile(EngineerGlobals.AssemblyPath + "Settings/FlightSections", list);
+
+                MonoBehaviour.print("[KerbalEngineer/FlightSections]: Successfully saved settings.");
+            }
+            catch { MonoBehaviour.print("[KerbalEngineer/FlightSections]: Failed to save settings."); }
+        }
+
+        // Loads the settings associated with the section list.
+        public void Load()
+        {
+            try
+            {
+                SettingList list = SettingList.CreateFromFile(EngineerGlobals.AssemblyPath + "Settings/FlightSections");
+
+                List<string> fixedSectionNames = list.GetSetting("fixed_sections", new List<string>()) as List<string>;
+                List<string> userSectionNames = list.GetSetting("user_sections", new List<string>()) as List<string>;
+
+                foreach (string name in fixedSectionNames)
+                    GetFixedSection(name).Load();
+
+                MonoBehaviour.print("[KerbalEngineer/FlightSections]: Successfully loaded settings.");
+            }
+            catch { MonoBehaviour.print("[KerbalEngineer/FlightSections]: Failed to load settings."); }
         }
 
         #endregion

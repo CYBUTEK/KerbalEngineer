@@ -148,12 +148,12 @@ namespace KerbalEngineer.Extensions
 
             if (h > 0)
             {
-                return h + ":" + m.ToString("00") + ":" + s.ToString("00.0") + "s";
+                return h + "h " + m.ToString("00") + "m " + s.ToString("00.0") + "s";
             }
 
             if (m > 0)
             {
-                return m + ":" + s.ToString("00.0") + "s";
+                return m + "m " + s.ToString("00.0") + "s";
             }
 
             return s.ToString("0.0") + "s";
