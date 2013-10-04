@@ -50,7 +50,7 @@ namespace KerbalEngineer.FlightEngineer
 
             _windowStyle = new GUIStyle(HighLogic.Skin.window);
             _windowStyle.margin = new RectOffset();
-            _windowStyle.padding = new RectOffset(3, 3, 3, 3);
+            _windowStyle.padding = new RectOffset(5, 5, 5, 5);
         }
 
         #endregion
@@ -70,7 +70,7 @@ namespace KerbalEngineer.FlightEngineer
 
         private void Window(int windowID)
         {
-            Orbital.Apoapsis.Instance.Draw();
+            SectionOrbital.Instance.Draw();
 
             GUI.DragWindow();
         }

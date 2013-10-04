@@ -7,27 +7,8 @@ using UnityEngine;
 
 namespace KerbalEngineer.FlightEngineer.Orbital
 {
-    public class Apoapsis : Readout
+    public class ApoapsisHeight : Readout
     {
-        #region Instance
-
-        private static Readout _instance;
-        /// <summary>
-        /// Gets the current instance of this readout.
-        /// </summary>
-        public static Readout Instance
-        {
-            get
-            {
-                if (_instance == null)
-                    _instance = new Apoapsis();
-
-                return _instance;
-            }
-        }
-
-        #endregion
-
         protected override void Initialise()
         {
             Name = "Apoapsis Height";

@@ -15,39 +15,63 @@ namespace KerbalEngineer.FlightEngineer
         Misc
     }
 
-    public class Readout
+    public abstract class Readout
     {
         #region Properties
 
         protected GUIStyle NameStyle { get; private set; }
         protected GUIStyle DataStyle { get; private set; }
-        protected int NameWidth { get; private set; }
-        protected int DataWidth { get; private set; }
 
+        // Width of the name column.
+        private float _nameWidth = 150f;
+        protected float NameWidth
+        {
+            get { return _nameWidth; }
+        }
+
+        // Width of the data column.
+        private float _dataWidth = 100f;
+        protected float DataWidth
+        {
+            get { return _dataWidth; }
+        }
+
+        private string _name = string.Empty;
         /// <summary>
         /// Gets the readout name.
         /// </summary>
-        public string Name { get; protected set; }
+        public string Name
+        {
+            get { return _name; }
+            protected set { _name = value; }
+        }
 
+        private string _description = string.Empty;
         /// <summary>
         /// Gets the readout description.
         /// </summary>
-        public string Description { get; protected set; }
+        public string Description
+        {
+            get { return _description; }
+            protected set { _description = value; }
+        }
 
+        private ReadoutCategory _category = ReadoutCategory.Misc;
         /// <summary>
         /// Gets the category in which the readout is contained.
         /// </summary>
-        public ReadoutCategory Category { get; protected set; }
+        public ReadoutCategory Category
+        {
+            get { return _category; }
+            protected set { _category = value; }
+        }
 
         #endregion
 
         #region Initialisation
 
-        protected Readout()
+        public Readout()
         {   
-            NameWidth = 100;
-            DataWidth = 150;
-
             InitialiseStyles();
             Initialise();
         }
@@ -56,12 +80,16 @@ namespace KerbalEngineer.FlightEngineer
         {
             NameStyle = new GUIStyle(HighLogic.Skin.label);
             NameStyle.normal.textColor = Color.white;
+            NameStyle.margin = new RectOffset();
+            NameStyle.padding = new RectOffset();
             NameStyle.fontSize = 11;
             NameStyle.fontStyle = FontStyle.Bold;
             NameStyle.alignment = TextAnchor.MiddleLeft;
             NameStyle.stretchWidth = true;
 
             DataStyle = new GUIStyle(HighLogic.Skin.label);
+            DataStyle.margin = new RectOffset();
+            DataStyle.padding = new RectOffset();
             DataStyle.fontSize = 11;
             DataStyle.fontStyle = FontStyle.Normal;
             DataStyle.alignment = TextAnchor.MiddleRight;
