@@ -31,9 +31,8 @@ namespace KerbalEngineer.FlightEngineer
         #region Fields
 
         private Rect _windowPosition = new Rect(Screen.width / 2 + 150f, 0f, 200f, 0f);
-        private Rect _buttonPosition = new Rect(Screen.width / 2f + 200f, 0f, 100f, 17f);
+        private Rect _handlePosition = new Rect(Screen.width / 2f + 200f, 0f, 100f, 17f);
         private GUIStyle _windowStyle, _buttonStyle;
-        private Texture2D _windowTexture = new Texture2D(40, 40, TextureFormat.RGBA32, false);
         private Texture2D _closedNormal = new Texture2D(100, 17, TextureFormat.RGBA32, false);
         private Texture2D _closedHover = new Texture2D(100, 17, TextureFormat.RGBA32, false);
         private Texture2D _closedDown = new Texture2D(100, 17, TextureFormat.RGBA32, false);
@@ -54,7 +53,6 @@ namespace KerbalEngineer.FlightEngineer
         private FlightController()
         {
             // Load textures directly from the PNG files. (Would of used GameDatabase but it compresses them so it looks shit!)
-            _windowTexture.LoadImage(File.ReadAllBytes(EngineerGlobals.AssemblyPath + "GUI/FlightButton/Window.png"));
             _closedNormal.LoadImage(File.ReadAllBytes(EngineerGlobals.AssemblyPath + "GUI/FlightButton/ClosedNormal.png"));
             _closedHover.LoadImage(File.ReadAllBytes(EngineerGlobals.AssemblyPath + "GUI/FlightButton/ClosedHover.png"));
             _closedDown.LoadImage(File.ReadAllBytes(EngineerGlobals.AssemblyPath + "GUI/FlightButton/ClosedDown.png"));
@@ -68,12 +66,15 @@ namespace KerbalEngineer.FlightEngineer
             _hasInitStyles = true;
 
             _windowStyle = new GUIStyle(HighLogic.Skin.window);
-            _windowStyle.focused.background = _windowStyle.normal.background = _windowTexture;
             _windowStyle.margin = new RectOffset();
-            _windowStyle.padding = new RectOffset();
+            _windowStyle.padding = new RectOffset(3, 3, 3, 3);
 
             _buttonStyle = new GUIStyle(HighLogic.Skin.button);
             _buttonStyle.normal.textColor = Color.white;
+            _buttonStyle.margin = new RectOffset();
+            _buttonStyle.fixedHeight = 20f;
+            _buttonStyle.fontSize = 11;
+            _buttonStyle.fontStyle = FontStyle.Bold;
         }
 
         #endregion
@@ -85,14 +86,14 @@ namespace KerbalEngineer.FlightEngineer
             // Controls the sliding animation.
             if (_open && _openAmount < 1f) // Opening
             {
-                _openAmount += (10f * _openAmount + 0.5f) * Time.deltaTime;
+                _openAmount += ((10f * (1f - _openAmount)) + 0.5f) * Time.deltaTime;
 
                 if (_openAmount > 1f)
                     _openAmount = 1f;
             }
             else if (!_open && _openAmount > 0f) // Closing
             {
-                _openAmount -= (10f * _openAmount + 0.5f) * Time.deltaTime;
+                _openAmount -= ((10f * _openAmount) + 0.5f) * Time.deltaTime;
 
                 if (_openAmount < 0f)
                     _openAmount = 0f;
@@ -100,7 +101,7 @@ namespace KerbalEngineer.FlightEngineer
 
             // Set the sliding positions.
             _windowPosition.y = -_windowPosition.height * (1f - _openAmount);
-            _buttonPosition.y = _windowPosition.y + _windowPosition.height;
+            _handlePosition.y = _windowPosition.y + _windowPosition.height;
         }
 
         public void Draw()
@@ -115,7 +116,23 @@ namespace KerbalEngineer.FlightEngineer
 
         private void DrawWindow(int windowID)
         {
-            GUILayout.Toggle(false, "Test", _buttonStyle);
+            GUILayout.BeginHorizontal();
+
+            GUILayout.BeginVertical();
+            GUILayout.Toggle(false, "ORBITAL", _buttonStyle);
+            GUILayout.Toggle(false, "SURFACE", _buttonStyle);
+            GUILayout.Toggle(false, "VESSEL", _buttonStyle);
+            GUILayout.Toggle(false, "RENDEZVOUS", _buttonStyle);
+            GUILayout.EndVertical();
+
+            GUILayout.BeginVertical(GUILayout.Width(50f));
+            GUILayout.Toggle(false, "EDIT", _buttonStyle);
+            GUILayout.Toggle(false, "EDIT", _buttonStyle);
+            GUILayout.Toggle(false, "EDIT", _buttonStyle);
+            GUILayout.Toggle(false, "EDIT", _buttonStyle);
+            GUILayout.EndVertical();
+
+            GUILayout.EndHorizontal();
         }
 
         private void DrawButton()
@@ -123,11 +140,11 @@ namespace KerbalEngineer.FlightEngineer
             if (_clicked) // Button has been clicked whilst being hovered.
             {
                 if (_open)
-                    GUI.DrawTexture(_buttonPosition, _openDown);
+                    GUI.DrawTexture(_handlePosition, _openDown);
                 else
-                    GUI.DrawTexture(_buttonPosition, _closedDown);
+                    GUI.DrawTexture(_handlePosition, _closedDown);
 
-                if (_buttonPosition.Contains(Event.current.mousePosition)) // Mouse is hovering over the button.
+                if (_handlePosition.Contains(Event.current.mousePosition)) // Mouse is hovering over the button.
                 {
                     if (Mouse.Left.GetButtonUp()) // The mouse up event has been triggered whilst over the button.
                     {
@@ -138,7 +155,7 @@ namespace KerbalEngineer.FlightEngineer
             }
             else // The button is not registering as being clicked.
             {
-                if (_buttonPosition.Contains(Event.current.mousePosition)) // Mouse is hovering over the button.
+                if (_handlePosition.Contains(Event.current.mousePosition)) // Mouse is hovering over the button.
                 {
                     // If the left mouse button has just been pressed, see the button as being clicked.
                     if (!_clicked && (Mouse.Left.GetButtonDown())) _clicked = true;
@@ -146,31 +163,31 @@ namespace KerbalEngineer.FlightEngineer
                     if (_clicked) // The button has just been clicked.
                     {
                         if (_open)
-                            GUI.DrawTexture(_buttonPosition, _openDown);
+                            GUI.DrawTexture(_handlePosition, _openDown);
                         else
-                            GUI.DrawTexture(_buttonPosition, _closedDown);
+                            GUI.DrawTexture(_handlePosition, _closedDown);
                     }
                     else if (!Mouse.Left.GetButton()) // Mouse button is not down and is just hovering.
                     {
                         if (_open)
-                            GUI.DrawTexture(_buttonPosition, _openHover);
+                            GUI.DrawTexture(_handlePosition, _openHover);
                         else
-                            GUI.DrawTexture(_buttonPosition, _closedHover);
+                            GUI.DrawTexture(_handlePosition, _closedHover);
                     }
                     else // Mouse button is down but no click was registered over the button.
                     {
                         if (_open)
-                            GUI.DrawTexture(_buttonPosition, _openNormal);
+                            GUI.DrawTexture(_handlePosition, _openNormal);
                         else
-                            GUI.DrawTexture(_buttonPosition, _closedNormal);
+                            GUI.DrawTexture(_handlePosition, _closedNormal);
                     }
                 }
                 else // The mouse is not being hovered.
                 {
                     if (_open)
-                        GUI.DrawTexture(_buttonPosition, _openNormal);
+                        GUI.DrawTexture(_handlePosition, _openNormal);
                     else
-                        GUI.DrawTexture(_buttonPosition, _closedNormal);
+                        GUI.DrawTexture(_handlePosition, _closedNormal);
                 }
             }
 
