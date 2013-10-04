@@ -94,6 +94,14 @@ namespace KerbalEngineer.Extensions
         }
 
         /// <summary>
+        /// Convert to string formatted as an angle.
+        /// </summary>
+        public static string ToAngle(this double value)
+        {
+            return value.ToString("0.000") + "°";
+        }
+
+        /// <summary>
         /// Convert to string formatted as a time.
         /// </summary>
         public static string ToTime(this double value)

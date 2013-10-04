@@ -60,6 +60,13 @@
     <Compile Include="FlightEngineer\FlightController.cs" />
     <Compile Include="FlightEngineer\FlightDisplay.cs" />
     <Compile Include="FlightEngineer\FlightEngineer.cs" />
+    <Compile Include="FlightEngineer\Orbital\SemiMinorAxis.cs" />
+    <Compile Include="FlightEngineer\Orbital\SemiMajorAxis.cs" />
+    <Compile Include="FlightEngineer\Orbital\LongitudeOfPe.cs" />
+    <Compile Include="FlightEngineer\Orbital\LongitudeOfAN.cs" />
+    <Compile Include="FlightEngineer\Orbital\OrbitalPeriod.cs" />
+    <Compile Include="FlightEngineer\Orbital\Eccentricity.cs" />
+    <Compile Include="FlightEngineer\Orbital\Inclination.cs" />
     <Compile Include="FlightEngineer\Orbital\TimeToPeriapsis.cs" />
     <Compile Include="FlightEngineer\Orbital\PeriapsisHeight.cs" />
     <Compile Include="FlightEngineer\Orbital\TimeToApoapsis.cs" />

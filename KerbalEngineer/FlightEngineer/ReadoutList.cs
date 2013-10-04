@@ -49,6 +49,13 @@ namespace KerbalEngineer.FlightEngineer
             _readouts.Add(new Orbital.PeriapsisHeight());
             _readouts.Add(new Orbital.TimeToApoapsis());
             _readouts.Add(new Orbital.TimeToPeriapsis());
+            _readouts.Add(new Orbital.Inclination());
+            _readouts.Add(new Orbital.Eccentricity());
+            _readouts.Add(new Orbital.OrbitalPeriod());
+            _readouts.Add(new Orbital.LongitudeOfAN());
+            _readouts.Add(new Orbital.LongitudeOfPe());
+            _readouts.Add(new Orbital.SemiMajorAxis());
+            _readouts.Add(new Orbital.SemiMinorAxis());
         }
 
         #endregion
