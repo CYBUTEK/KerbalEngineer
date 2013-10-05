@@ -59,7 +59,7 @@ namespace KerbalEngineer.FlightEngineer
             catch { }
         }
 
-        // Loads the settings when this object is created.
+        // Loads the settings when the module is set to load.
         public override void OnLoad(ConfigNode node)
         {
             try
