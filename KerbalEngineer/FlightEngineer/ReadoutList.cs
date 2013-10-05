@@ -56,6 +56,15 @@ namespace KerbalEngineer.FlightEngineer
             _readouts.Add(new Orbital.LongitudeOfPe());
             _readouts.Add(new Orbital.SemiMajorAxis());
             _readouts.Add(new Orbital.SemiMinorAxis());
+
+            _readouts.Add(new Surface.AltitudeSeaLevel());
+            _readouts.Add(new Surface.AltitudeTerrain());
+            _readouts.Add(new Surface.VerticalSpeed());
+            _readouts.Add(new Surface.HorizontalSpeed());
+            _readouts.Add(new Surface.Longitude());
+            _readouts.Add(new Surface.Latitude());
+            _readouts.Add(new Surface.TerminalVelocity());
+            _readouts.Add(new Surface.AtmosEfficiency());
         }
 
         #endregion

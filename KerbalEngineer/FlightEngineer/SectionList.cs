@@ -57,7 +57,8 @@ namespace KerbalEngineer.FlightEngineer
 
         private SectionList()
         {
-            _fixedSections.Add(new SectionOrbital());
+            _fixedSections.Add(new Section() { Title = "Orbital", Readouts = ReadoutList.Instance.GetCategory(ReadoutCategory.Orbital) });
+            _fixedSections.Add(new Section() { Title = "Surface", Readouts = ReadoutList.Instance.GetCategory(ReadoutCategory.Surface) });
         }
 
         #endregion

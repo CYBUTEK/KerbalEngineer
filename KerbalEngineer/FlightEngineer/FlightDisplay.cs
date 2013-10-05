@@ -70,7 +70,7 @@ namespace KerbalEngineer.FlightEngineer
 
             _windowStyle = new GUIStyle(HighLogic.Skin.window);
             _windowStyle.margin = new RectOffset();
-            _windowStyle.padding = new RectOffset(5, 5, 5, 5);
+            _windowStyle.padding = new RectOffset(5, 5, 3, 5);
         }
 
         #endregion
@@ -88,6 +88,8 @@ namespace KerbalEngineer.FlightEngineer
             foreach (Section section in SectionList.Instance.UserSections)
                 if (section.Visible)
                     section.Update();
+
+            Surface.AtmosphericDetails.Instance.Update();
         }
 
         public void Draw()

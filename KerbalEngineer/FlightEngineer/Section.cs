@@ -55,7 +55,7 @@ namespace KerbalEngineer.FlightEngineer
 
         #region Initialisation
 
-        protected Section()
+        public Section()
         {
             InitialiseStyles();
         }
