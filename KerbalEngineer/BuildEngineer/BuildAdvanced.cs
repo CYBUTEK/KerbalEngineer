@@ -354,7 +354,7 @@ namespace KerbalEngineer.BuildEngineer
         // Draws the thrust column.
         private void DrawThrust()
         {
-            GUILayout.BeginVertical(GUILayout.Width(50f));
+            GUILayout.BeginVertical(GUILayout.Width(75f));
             GUILayout.Label("THRUST", _titleStyle);
             foreach (Stage stage in SimulationManager.Instance.Stages)
             {
