@@ -48,12 +48,18 @@ namespace KerbalEngineer.Simulation
 
         public string Mass
         {
-            get { return mass.ToMass(false) + " / " + totalMass.ToMass(); }
+            get
+            {
+                if (HighLogic.LoadedSceneIsFlight)
+                    return totalMass.ToMass();
+                else
+                    return mass.ToMass(false) + " / " + totalMass.ToMass();
+            }
         }
 
         public string Isp
         {
-            get { return isp + "s"; }
+            get { return isp.ToString("#,0.00") + "s"; }
         }
 
         public string Thrust
@@ -61,12 +67,17 @@ namespace KerbalEngineer.Simulation
             get { return thrust.ToForce(); }
         }
 
+        public string ActualThrust
+        {
+            get { return actualThrust.ToForce(); }
+        }
+
         public string TWR
         {
             get
             {
                 if (HighLogic.LoadedSceneIsFlight)
-                    return actualThrustToWeight.ToString("0.00");
+                    return actualThrustToWeight.ToString("0.00") + " / " + thrustToWeight.ToString("0.00");
                 else
                     return thrustToWeight.ToString("0.00");
             }
@@ -77,9 +88,20 @@ namespace KerbalEngineer.Simulation
             get
             {
                 if (HighLogic.LoadedSceneIsFlight)
-                    return deltaV.ToString("#,0.") + " m/s";
+                    return deltaV.ToSpeed();
                 else
-                    return deltaV.ToString("#,0.") + " / " + inverseTotalDeltaV.ToString("#,0.") + " m/s";
+                    return deltaV.ToString("#,0.") + " / " + inverseTotalDeltaV.ToString("#,0.") + "m/s";
+            }
+        }
+
+        public string TotalDeltaV
+        {
+            get
+            {
+                if (HighLogic.LoadedSceneIsFlight)
+                    return totalDeltaV.ToSpeed();
+                else
+                    return inverseTotalDeltaV.ToString("#,0.") + "m/s";
             }
         }
 

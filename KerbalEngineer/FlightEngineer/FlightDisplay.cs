@@ -4,6 +4,7 @@
 
 using KerbalEngineer.Extensions;
 using KerbalEngineer.Settings;
+using KerbalEngineer.Simulation;
 using UnityEngine;
 
 namespace KerbalEngineer.FlightEngineer
@@ -79,33 +80,39 @@ namespace KerbalEngineer.FlightEngineer
 
         public void Update()
         {
-            // Update all visible fixed sections.
-            foreach (Section section in SectionList.Instance.FixedSections)
-                if (section.Visible)
-                    section.Update();
+            if (SectionList.Instance.HasVisibleSections())
+            {
+                // Update all visible fixed sections.
+                foreach (Section section in SectionList.Instance.FixedSections)
+                    if (section.Visible)
+                        section.Update();
 
-            // Update all visible user sections.
-            foreach (Section section in SectionList.Instance.UserSections)
-                if (section.Visible)
-                    section.Update();
+                // Update all visible user sections.
+                foreach (Section section in SectionList.Instance.UserSections)
+                    if (section.Visible)
+                        section.Update();
 
-            Surface.AtmosphericDetails.Instance.Update();
+                Surface.AtmosphericDetails.Instance.Update();
+                SimulationManager.Instance.TryStartSimulation();
+            }
         }
 
         public void Draw()
         {
-            if (!_hasInitStyles) InitialiseStyles();
-
-            // Handle window resizing if something has changed within the GUI.
-            if (_requireResize)
-            {
-                _requireResize = false;
-                _windowPosition.width = 0f;
-                _windowPosition.height = 0f;
-            }
-
             if (SectionList.Instance.HasVisibleSections())
+            {
+                if (!_hasInitStyles) InitialiseStyles();
+
+                // Handle window resizing if something has changed within the GUI.
+                if (_requireResize)
+                {
+                    _requireResize = false;
+                    _windowPosition.width = 0f;
+                    _windowPosition.height = 0f;
+                }
+
                 _windowPosition = GUILayout.Window(_windowID, _windowPosition, Window, string.Empty, _windowStyle).ClampToScreen();
+            }
         }
 
         private void Window(int windowID)

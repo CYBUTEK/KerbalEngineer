@@ -84,6 +84,13 @@
     <Compile Include="FlightEngineer\Surface\Longitude.cs" />
     <Compile Include="FlightEngineer\Surface\Horizontal Speed.cs" />
     <Compile Include="FlightEngineer\Surface\VerticalSpeed.cs" />
+    <Compile Include="FlightEngineer\Vessel\ThrustActual.cs" />
+    <Compile Include="FlightEngineer\Vessel\ThrustToWeight.cs" />
+    <Compile Include="FlightEngineer\Vessel\ThrustTotal.cs" />
+    <Compile Include="FlightEngineer\Vessel\TotalMass.cs" />
+    <Compile Include="FlightEngineer\Vessel\SpecificImpulse.cs" />
+    <Compile Include="FlightEngineer\Vessel\DeltaVTotal.cs" />
+    <Compile Include="FlightEngineer\Vessel\DeltaVStaged.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Settings\Setting.cs" />
     <Compile Include="Settings\SettingList.cs" />

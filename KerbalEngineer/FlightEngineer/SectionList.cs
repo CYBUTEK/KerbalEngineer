@@ -59,6 +59,7 @@ namespace KerbalEngineer.FlightEngineer
         {
             _fixedSections.Add(new Section() { Title = "Orbital", Readouts = ReadoutList.Instance.GetCategory(ReadoutCategory.Orbital) });
             _fixedSections.Add(new Section() { Title = "Surface", Readouts = ReadoutList.Instance.GetCategory(ReadoutCategory.Surface) });
+            _fixedSections.Add(new Section() { Title = "Vessel", Readouts = ReadoutList.Instance.GetCategory(ReadoutCategory.Vessel) });
         }
 
         #endregion
@@ -81,6 +82,9 @@ namespace KerbalEngineer.FlightEngineer
             return false;
         }
 
+        /// <summary>
+        /// Gets the fixed section with the provided name.
+        /// </summary>
         public Section GetFixedSection(string name)
         {
             foreach (Section section in _fixedSections)

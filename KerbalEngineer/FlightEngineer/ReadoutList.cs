@@ -65,6 +65,14 @@ namespace KerbalEngineer.FlightEngineer
             _readouts.Add(new Surface.Latitude());
             _readouts.Add(new Surface.TerminalVelocity());
             _readouts.Add(new Surface.AtmosEfficiency());
+
+            _readouts.Add(new Vessel.DeltaVStaged());
+            _readouts.Add(new Vessel.DeltaVTotal());
+            _readouts.Add(new Vessel.SpecificImpulse());
+            _readouts.Add(new Vessel.TotalMass());
+            _readouts.Add(new Vessel.ThrustTotal());
+            _readouts.Add(new Vessel.ThrustActual());
+            _readouts.Add(new Vessel.ThrustToWeight());
         }
 
         #endregion

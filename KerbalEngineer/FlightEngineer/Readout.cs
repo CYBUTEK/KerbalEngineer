@@ -23,14 +23,14 @@ namespace KerbalEngineer.FlightEngineer
         protected GUIStyle DataStyle { get; private set; }
 
         // Width of the name column.
-        private float _nameWidth = 150f;
+        private float _nameWidth = 125f;
         protected float NameWidth
         {
             get { return _nameWidth; }
         }
 
         // Width of the data column.
-        private float _dataWidth = 100f;
+        private float _dataWidth = 125f;
         protected float DataWidth
         {
             get { return _dataWidth; }

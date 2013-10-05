@@ -24,10 +24,20 @@ namespace KerbalEngineer.Extensions
         /// </summary>
         public static string ToForce(this double value, bool showNotation = true)
         {
-            if (showNotation)
-                return value.ToString("#,0.#") + "kN";
+            if (HighLogic.LoadedSceneIsFlight)
+            {
+                if (showNotation)
+                    return value.ToString("#,0.00") + "kN";
+                else
+                    return value.ToString("#,0.00");
+            }
             else
-                return value.ToString("#,0.#");
+            {
+                if (showNotation)
+                    return value.ToString("#,0.##") + "kN";
+                else
+                    return value.ToString("#,0.##");
+            }
         }
 
         /// <summary>
@@ -36,9 +46,9 @@ namespace KerbalEngineer.Extensions
         public static string ToSpeed(this double value, bool showNotation = true)
         {
             if (showNotation)
-                return value.ToString("0") + "m/s";
+                return value.ToString("#,0.00") + "m/s";
             else
-                return value.ToString("0");
+                return value.ToString("#,0.00");
         }
 
         /// <summary>
