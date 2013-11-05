@@ -48,11 +48,13 @@ namespace KerbalEngineer.FlightEngineer
 
         #region Initialisation
 
-        public EditDisplay()
+        // Runs when the object is created.
+        private void Start()
         {
             RenderingManager.AddToPostDrawQueue(0, Draw);
         }
 
+        // Initialises the gui styles upon request.
         private void InitialiseStyles()
         {
             _hasInitStyles = true;
@@ -104,12 +106,15 @@ namespace KerbalEngineer.FlightEngineer
 
         private void Window(int windowID)
         {
+            // Selected category has not been selected.
             if (_selectedCategory == ReadoutCategory.None)
             {
+                // Set selected category to first category.
                 if (_section.Categories.Count > 0)
                     _selectedCategory = _section.Categories[0];
             }
 
+            // Show categories selection if there is more than one.
             if (_section.Categories.Count > 1)
                 Categories();
 
@@ -119,6 +124,7 @@ namespace KerbalEngineer.FlightEngineer
             GUI.DragWindow();
         }
 
+        // Draws the available categories selection.
         private void Categories()
         {
             GUILayout.BeginHorizontal(GUILayout.Height(30f));
@@ -131,28 +137,39 @@ namespace KerbalEngineer.FlightEngineer
             GUILayout.EndHorizontal();
         }
 
+        // Draws the available readouts panel.
         private void Available(ReadoutCategory category)
         {
             GUI.skin = HighLogic.Skin;
             _scrollAvailablePosition = GUILayout.BeginScrollView(_scrollAvailablePosition, false, true, GUILayout.Height(150f));
             GUI.skin = null;
 
+            // Panel title.
             GUILayout.Label("AVAILABLE", _titleStyle);
 
             GUILayout.BeginVertical();
             int count = 0;
             foreach (Readout readout in ReadoutList.Instance.GetCategory(category))
             {
+                // Readout is already installed.
                 if (_section.Readouts.Contains(readout)) continue;
 
                 count++;
 
                 GUILayout.BeginHorizontal(_rowStyle);
 
+                // Readout name.
                 GUILayout.BeginVertical();
                 GUILayout.Label(readout.Name, _labelStyle);
                 GUILayout.EndVertical();
 
+                // Info button.
+                GUILayout.BeginVertical(GUILayout.Width(30f));
+                //if (GUILayout.Button("?", _buttonStyle))
+                    //_section.Readouts.Remove(readout);
+                GUILayout.EndVertical();
+
+                // Install button
                 GUILayout.BeginVertical(GUILayout.Width(100f));
                 if (GUILayout.Button("INSTALL", _buttonStyle))
                     _section.Readouts.Add(readout);
@@ -161,6 +178,7 @@ namespace KerbalEngineer.FlightEngineer
                 GUILayout.EndHorizontal();
             }
 
+            // Panel is void of readouts.
             if (count == 0)
             {
                 GUILayout.BeginHorizontal(_rowStyle);
@@ -171,15 +189,18 @@ namespace KerbalEngineer.FlightEngineer
             GUILayout.EndVertical();
             GUILayout.EndScrollView();
 
+            // Insert space between available and installed panels.
             GUILayout.Space(5f);
         }
 
+        // Draws the installed readouts panel.
         private void Installed()
         {
             GUI.skin = HighLogic.Skin;
             _scrollInstalledPosition = GUILayout.BeginScrollView(_scrollInstalledPosition, false, true);
             GUI.skin = null;
 
+            // Panel title
             GUILayout.Label("INSTALLED", _titleStyle);
 
             GUILayout.BeginVertical();
@@ -187,10 +208,44 @@ namespace KerbalEngineer.FlightEngineer
             {
                 GUILayout.BeginHorizontal(_rowStyle);
 
+                // Readout name.
                 GUILayout.BeginVertical();
                 GUILayout.Label(readout.Name, _labelStyle);
                 GUILayout.EndVertical();
 
+                // Move position up button.
+                GUILayout.BeginVertical(GUILayout.Width(30f));
+                if (GUILayout.Button("▲", _buttonStyle))
+                {
+                    int index = _section.Readouts.IndexOf(readout);
+                    if (index > 0)
+                    {
+                        _section.Readouts[index] = _section.Readouts[index - 1];
+                        _section.Readouts[index - 1] = readout;
+                    }
+                }
+                GUILayout.EndVertical();
+
+                // Move position down button.
+                GUILayout.BeginVertical(GUILayout.Width(30f));
+                if (GUILayout.Button("▼", _buttonStyle))
+                {
+                    int index = _section.Readouts.IndexOf(readout);
+                    if (index < _section.Readouts.Count - 1)
+                    {
+                        _section.Readouts[index] = _section.Readouts[index + 1];
+                        _section.Readouts[index + 1] = readout;
+                    }
+                }
+                GUILayout.EndVertical();
+
+                // Info button.
+                GUILayout.BeginVertical(GUILayout.Width(30f));
+                //if (GUILayout.Button("?", _buttonStyle))
+                    //_section.Readouts.Remove(readout);
+                GUILayout.EndVertical();
+
+                // Remove button.
                 GUILayout.BeginVertical(GUILayout.Width(100f));
                 if (GUILayout.Button("REMOVE", _buttonStyle))
                 {
@@ -202,6 +257,7 @@ namespace KerbalEngineer.FlightEngineer
                 GUILayout.EndHorizontal();
             }
 
+            // Panel is void of readouts.
             if (_section.Readouts.Count == 0)
             {
                 GUILayout.BeginHorizontal(_rowStyle);
