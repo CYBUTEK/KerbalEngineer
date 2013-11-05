@@ -57,6 +57,7 @@
     <Compile Include="Extensions\PartExtensions.cs" />
     <Compile Include="Extensions\PartResourceExtensions.cs" />
     <Compile Include="Extensions\RectExtensions.cs" />
+    <Compile Include="FlightEngineer\EditDisplay.cs" />
     <Compile Include="FlightEngineer\FlightController.cs" />
     <Compile Include="FlightEngineer\FlightDisplay.cs" />
     <Compile Include="FlightEngineer\FlightEngineer.cs" />
@@ -104,8 +105,7 @@
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>
-    </PostBuildEvent>
+    <PostBuildEvent>xcopy "$(SolutionDir)Output\*" "$(SolutionDir)Game\GameData\*" /D /E /C /R /I /K /Y</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

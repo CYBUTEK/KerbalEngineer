@@ -3,6 +3,7 @@
 // License: Attribution-NonCommercial-ShareAlike 3.0 Unported
 
 using KerbalEngineer.Extensions;
+using KerbalEngineer.Simulation;
 using UnityEngine;
 
 namespace KerbalEngineer.FlightEngineer.Surface

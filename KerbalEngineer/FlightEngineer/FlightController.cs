@@ -128,7 +128,7 @@ namespace KerbalEngineer.FlightEngineer
             // Draw fixed section edit toggles.
             GUILayout.BeginVertical(GUILayout.Width(50f));
             foreach (Section section in SectionList.Instance.FixedSections)
-                GUILayout.Toggle(false, "EDIT", _buttonStyle);
+                section.EditDisplay.Visible = GUILayout.Toggle(section.EditDisplay.Visible, "EDIT", _buttonStyle);
             GUILayout.EndVertical();
 
             GUILayout.EndHorizontal();

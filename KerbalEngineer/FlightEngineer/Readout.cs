@@ -8,6 +8,7 @@ namespace KerbalEngineer.FlightEngineer
 {
     public enum ReadoutCategory
     {
+        None,
         Orbital,
         Surface,
         Vessel,

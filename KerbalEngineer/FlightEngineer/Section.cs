@@ -51,12 +51,33 @@ namespace KerbalEngineer.FlightEngineer
             set { _title = value; }
         }
 
+        private EditDisplay _editDisplay;
+        /// <summary>
+        /// Gets the edit display associated with the section.
+        /// </summary>
+        public EditDisplay EditDisplay
+        {
+            get { return _editDisplay; }
+        }
+
+        private List<ReadoutCategory> _categories = new List<ReadoutCategory>();
+        /// <summary>
+        /// Gets and sets the categories associated with the section.
+        /// </summary>
+        public List<ReadoutCategory> Categories
+        {
+            get { return _categories; }
+            set { _categories = value; }
+        }
+
         #endregion
 
         #region Initialisation
 
         public Section()
         {
+            _editDisplay = HighLogic.fetch.gameObject.AddComponent<EditDisplay>();
+            _editDisplay.Section = this;
             InitialiseStyles();
         }
 
