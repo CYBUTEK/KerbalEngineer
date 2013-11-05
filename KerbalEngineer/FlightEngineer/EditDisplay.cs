@@ -13,7 +13,7 @@ namespace KerbalEngineer.FlightEngineer
 
         private Rect _windowPosition = new Rect(Screen.width / 2 - 250f, Screen.height / 2 - 250f, 500f, 500f);
         private int _windowID = EngineerGlobals.GetNextWindowID();
-        private GUIStyle _windowStyle, _scrollStyle, _rowStyle, _buttonStyle, _titleStyle, _labelStyle;
+        private GUIStyle _windowStyle, _rowStyle, _buttonStyle, _titleStyle, _labelStyle;
         private Vector2 _scrollAvailablePosition = Vector2.zero;
         private Vector2 _scrollInstalledPosition = Vector2.zero;
         private ReadoutCategory _selectedCategory = ReadoutCategory.None;
@@ -60,9 +60,6 @@ namespace KerbalEngineer.FlightEngineer
             _hasInitStyles = true;
 
             _windowStyle = new GUIStyle(HighLogic.Skin.window);
-            _windowStyle.alignment = TextAnchor.UpperCenter;
-
-            _scrollStyle = new GUIStyle(HighLogic.Skin.scrollView);
 
             _rowStyle = new GUIStyle();
             _rowStyle.margin = new RectOffset(5, 5, 5, 5);
@@ -94,6 +91,7 @@ namespace KerbalEngineer.FlightEngineer
 
         #region Drawing
 
+        // Runs when the object is called to draw.
         private void Draw()
         {
             if (_visible)
@@ -165,8 +163,11 @@ namespace KerbalEngineer.FlightEngineer
 
                 // Info button.
                 GUILayout.BeginVertical(GUILayout.Width(30f));
-                //if (GUILayout.Button("?", _buttonStyle))
-                    //_section.Readouts.Remove(readout);
+                if (GUILayout.Button("?", _buttonStyle))
+                {
+                    InfoDisplay.Instance.Readout = readout;
+                    InfoDisplay.Instance.Visible = true;
+                }
                 GUILayout.EndVertical();
 
                 // Install button
@@ -241,8 +242,11 @@ namespace KerbalEngineer.FlightEngineer
 
                 // Info button.
                 GUILayout.BeginVertical(GUILayout.Width(30f));
-                //if (GUILayout.Button("?", _buttonStyle))
-                    //_section.Readouts.Remove(readout);
+                if (GUILayout.Button("?", _buttonStyle))
+                {
+                    InfoDisplay.Instance.Readout = readout;
+                    InfoDisplay.Instance.Visible = true;
+                }
                 GUILayout.EndVertical();
 
                 // Remove button.

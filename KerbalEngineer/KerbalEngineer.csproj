@@ -57,6 +57,7 @@
     <Compile Include="Extensions\PartExtensions.cs" />
     <Compile Include="Extensions\PartResourceExtensions.cs" />
     <Compile Include="Extensions\RectExtensions.cs" />
+    <Compile Include="FlightEngineer\InfoDisplay.cs" />
     <Compile Include="FlightEngineer\EditDisplay.cs" />
     <Compile Include="FlightEngineer\FlightController.cs" />
     <Compile Include="FlightEngineer\FlightDisplay.cs" />
