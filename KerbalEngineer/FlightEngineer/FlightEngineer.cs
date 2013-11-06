@@ -26,6 +26,7 @@ namespace KerbalEngineer.FlightEngineer
         {
             if (HighLogic.LoadedSceneIsFlight && FlightGlobals.ActiveVessel == this.vessel && this.part.IsPrimary(this.vessel.parts, this))
             {
+                SectionList.Instance.Update();
                 FlightController.Instance.Update();
                 FlightDisplay.Instance.Update();
             }

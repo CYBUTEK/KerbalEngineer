@@ -10,6 +10,12 @@ namespace KerbalEngineer.FlightEngineer
 {
     public class SectionList
     {
+        #region Static Fields
+
+        private static bool _hasLoadedSections = false;
+
+        #endregion
+
         #region Instance
 
         private static SectionList _instance;
@@ -94,6 +100,27 @@ namespace KerbalEngineer.FlightEngineer
             return null;
         }
 
+        /// <summary>
+        /// Gets the user section with the provided name.
+        /// </summary>
+        public Section GetUserSection(string name)
+        {
+            foreach (Section section in _userSections)
+                if (section.Title == name)
+                    return section;
+
+            return null;
+        }
+
+        #endregion
+
+        #region Update
+
+        public void Update()
+        {
+            if (_hasLoadedSections) _hasLoadedSections = false;
+        }
+
         #endregion
 
         #region Save and Load
@@ -133,15 +160,53 @@ namespace KerbalEngineer.FlightEngineer
         {
             try
             {
-                SettingList list = SettingList.CreateFromFile(EngineerGlobals.AssemblyPath + "Settings/FlightSections");
+                if (!_hasLoadedSections)
+                {
+                    _hasLoadedSections = true;
 
-                List<string> fixedSectionNames = list.GetSetting("fixed_sections", new List<string>()) as List<string>;
-                List<string> userSectionNames = list.GetSetting("user_sections", new List<string>()) as List<string>;
+                    SettingList list = SettingList.CreateFromFile(EngineerGlobals.AssemblyPath + "Settings/FlightSections");
 
-                foreach (string name in fixedSectionNames)
-                    GetFixedSection(name).Load();
+                    List<string> fixedSectionNames = list.GetSetting("fixed_sections", new List<string>()) as List<string>;
+                    List<string> userSectionNames = list.GetSetting("user_sections", new List<string>()) as List<string>;
 
-                MonoBehaviour.print("[KerbalEngineer/FlightSections]: Successfully loaded settings.");
+                    // Load fixed sections.
+                    foreach (string name in fixedSectionNames)
+                    {
+                        Section section = GetFixedSection(name);
+
+                        if (section == null)
+                        {
+                            section = new Section(true, false) { Title = name };
+                            _fixedSections.Add(section);
+                        }
+                        else
+                        {
+                            RenderingManager.AddToPostDrawQueue(0, section.EditDisplay.Draw);
+                        }
+
+                        section.Load();
+                    }
+
+                    // Load user sections.
+                    foreach (string name in userSectionNames)
+                    {
+                        Section section = GetUserSection(name);
+
+                        if (section == null)
+                        {
+                            section = new Section(true, false) { Title = name };
+                            _userSections.Add(section);
+                        }
+                        else
+                        {
+                            RenderingManager.AddToPostDrawQueue(0, section.EditDisplay.Draw);
+                        }
+
+                        section.Load();
+                    }
+
+                    MonoBehaviour.print("[KerbalEngineer/FlightSections]: Successfully loaded settings.");
+                }  
             }
             catch { MonoBehaviour.print("[KerbalEngineer/FlightSections]: Failed to load settings."); }
         }

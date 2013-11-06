@@ -18,24 +18,28 @@ namespace KerbalEngineer.FlightEngineer
 
     public abstract class Readout
     {
-        #region Properties
-
-        protected GUIStyle NameStyle { get; private set; }
-        protected GUIStyle DataStyle { get; private set; }
+        #region Static Properties
 
         // Width of the name column.
-        private float _nameWidth = 125f;
-        protected float NameWidth
+        private static float _nameWidth = 125f;
+        public static float NameWidth
         {
             get { return _nameWidth; }
         }
 
         // Width of the data column.
-        private float _dataWidth = 125f;
-        protected float DataWidth
+        private static float _dataWidth = 125f;
+        public static float DataWidth
         {
             get { return _dataWidth; }
         }
+
+        #endregion
+
+        #region Properties
+
+        protected GUIStyle NameStyle { get; private set; }
+        protected GUIStyle DataStyle { get; private set; }
 
         private string _name = string.Empty;
         /// <summary>

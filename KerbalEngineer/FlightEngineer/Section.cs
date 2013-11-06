@@ -14,6 +14,7 @@ namespace KerbalEngineer.FlightEngineer
 
         protected GUIStyle TitleStyle { get; private set; }
         protected GUIStyle AreaStyle { get; private set; }
+        protected GUIStyle LabelStyle { get; private set; }
 
         private List<Readout> _readouts = new List<Readout>();
         /// <summary>
@@ -51,6 +52,16 @@ namespace KerbalEngineer.FlightEngineer
             set { _title = value; }
         }
 
+        private bool _isUser = false;
+        /// <summary>
+        /// Gets and sets whether the section was user created.
+        /// </summary>
+        public bool IsUser
+        {
+            get { return _isUser; }
+            set { _isUser = value; }
+        }
+
         private EditDisplay _editDisplay;
         /// <summary>
         /// Gets the edit display associated with the section.
@@ -74,10 +85,28 @@ namespace KerbalEngineer.FlightEngineer
 
         #region Initialisation
 
-        public Section()
+        public Section(bool isUserSection = false, bool isNewSection = true)
         {
             _editDisplay = HighLogic.fetch.gameObject.AddComponent<EditDisplay>();
             _editDisplay.Section = this;
+            RenderingManager.AddToPostDrawQueue(0, _editDisplay.Draw);
+
+            if (isUserSection)
+            {
+                _isUser = true;
+
+                Title = "Custom " + (SectionList.Instance.UserSections.Count + 1);
+                Categories.Add(ReadoutCategory.Orbital);
+                Categories.Add(ReadoutCategory.Surface);
+                Categories.Add(ReadoutCategory.Vessel);
+                Categories.Add(ReadoutCategory.Rendezvous);
+                Categories.Add(ReadoutCategory.Misc);
+                Visible = true;
+
+                if (isNewSection)
+                    _editDisplay.Visible = true;
+            }
+
             InitialiseStyles();
         }
 
@@ -94,6 +123,15 @@ namespace KerbalEngineer.FlightEngineer
             AreaStyle = new GUIStyle(HighLogic.Skin.box);
             AreaStyle.margin = new RectOffset();
             AreaStyle.padding = new RectOffset(5, 5, 5, 5);
+
+            LabelStyle = new GUIStyle(HighLogic.Skin.label);
+            LabelStyle.normal.textColor = Color.white;
+            LabelStyle.margin = new RectOffset();
+            LabelStyle.padding = new RectOffset(3, 3, 3, 3);
+            LabelStyle.alignment = TextAnchor.MiddleCenter;
+            LabelStyle.fontSize = 12;
+            LabelStyle.fontStyle = FontStyle.Bold;
+            LabelStyle.stretchWidth = true;
         }
 
         #endregion
@@ -110,8 +148,17 @@ namespace KerbalEngineer.FlightEngineer
         {
             GUILayout.Label(_title.ToUpper(), TitleStyle);
             GUILayout.BeginVertical(AreaStyle);
-            foreach (Readout readout in _readouts)
-                readout.Draw();
+            if (_readouts.Count > 0)
+            {
+                foreach (Readout readout in _readouts)
+                    readout.Draw();
+            }
+            else
+            {
+                GUILayout.BeginHorizontal(GUILayout.Width(Readout.NameWidth + Readout.DataWidth));
+                GUILayout.Label("No readouts installed!", LabelStyle);
+                GUILayout.EndHorizontal();
+            }
             GUILayout.EndVertical();
         }
 
@@ -131,6 +178,7 @@ namespace KerbalEngineer.FlightEngineer
             {
                 SettingList list = new SettingList();
                 list.AddSetting("visible", _visible);
+                list.AddSetting("categories", _categories);
                 list.AddSetting("readouts", readoutNames);
                 SettingList.SaveToFile(EngineerGlobals.AssemblyPath + "Settings/Sections/" + _title, list);
 
@@ -146,6 +194,7 @@ namespace KerbalEngineer.FlightEngineer
             {
                 SettingList list = SettingList.CreateFromFile(EngineerGlobals.AssemblyPath + "Settings/Sections/" + _title);
                 _visible = (bool)list.GetSetting("visible", _visible);
+                _categories = list.GetSetting("categories", _categories) as List<ReadoutCategory>;
 
                 _readouts.Clear();
                 List<string> readoutNames = list.GetSetting("readouts", new List<string>()) as List<string>;

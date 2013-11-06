@@ -2,6 +2,7 @@
 // Author:  CYBUTEK
 // License: Attribution-NonCommercial-ShareAlike 3.0 Unported
 
+using System.Collections.Generic;
 using System.IO;
 using KerbalEngineer.Settings;
 using UnityEngine;
@@ -49,6 +50,20 @@ namespace KerbalEngineer.FlightEngineer
 
         #endregion
 
+        #region Properties
+
+        private bool _requireResize = false;
+        /// <summary>
+        /// Gets and sets whether the display requires a resize.
+        /// </summary>
+        public bool RequireResize
+        {
+            get { return _requireResize; }
+            set { _requireResize = value; }
+        }
+
+        #endregion
+
         #region Initialisation
 
         private FlightController()
@@ -69,6 +84,7 @@ namespace KerbalEngineer.FlightEngineer
             _windowStyle = new GUIStyle(HighLogic.Skin.window);
             _windowStyle.margin = new RectOffset();
             _windowStyle.padding = new RectOffset(3, 3, 3, 3);
+            _windowStyle.fixedWidth = _windowPosition.width;
 
             _buttonStyle = new GUIStyle(HighLogic.Skin.button);
             _buttonStyle.normal.textColor = Color.white;
@@ -109,6 +125,13 @@ namespace KerbalEngineer.FlightEngineer
         {
             if (!_hasInitStyles) InitialiseStyles();
 
+            // Handle window resizing if something has changed within the GUI.
+            if (_requireResize)
+            {
+                _requireResize = false;
+                _windowPosition.height = 0f;
+            }
+
             DrawButton();
 
             if (_windowPosition.y + _windowPosition.height > 0f || _windowPosition.height == 0f)
@@ -132,6 +155,26 @@ namespace KerbalEngineer.FlightEngineer
             GUILayout.EndVertical();
 
             GUILayout.EndHorizontal();
+            GUILayout.BeginHorizontal();
+
+            // Draw user section display toggles.
+            GUILayout.BeginVertical();
+            foreach (Section section in SectionList.Instance.UserSections)
+            {
+                section.Visible = GUILayout.Toggle(section.Visible, section.Title.ToUpper(), _buttonStyle);
+            }
+            GUILayout.EndVertical();
+
+            // Draw user section edit toggles.
+            GUILayout.BeginVertical(GUILayout.Width(50f));
+            foreach (Section section in SectionList.Instance.UserSections)
+                section.EditDisplay.Visible = GUILayout.Toggle(section.EditDisplay.Visible, "EDIT", _buttonStyle);
+            GUILayout.EndVertical();
+
+            GUILayout.EndHorizontal();
+
+            if (GUILayout.Button("NEW USER SECTION", _buttonStyle))
+                SectionList.Instance.UserSections.Add(new Section(true));
         }
 
         private void DrawButton()
