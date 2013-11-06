@@ -52,6 +52,16 @@ namespace KerbalEngineer.FlightEngineer
             set { _title = value; }
         }
 
+        private string _shortTitle = string.Empty;
+        /// <summary>
+        /// Gets and sets the section short title.
+        /// </summary>
+        public string ShortTitle
+        {
+            get { return _shortTitle; }
+            set { _shortTitle = value; }
+        }
+
         private bool _isUser = false;
         /// <summary>
         /// Gets and sets whether the section was user created.

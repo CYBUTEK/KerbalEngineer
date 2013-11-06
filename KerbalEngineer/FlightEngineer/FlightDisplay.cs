@@ -32,7 +32,7 @@ namespace KerbalEngineer.FlightEngineer
 
         #region Fields
 
-        private GUIStyle _windowStyle;
+        private GUIStyle _windowStyle, _buttonStyle, _titleStyle;
         private int _windowID = EngineerGlobals.GetNextWindowID();
 
         private bool _hasInitStyles = false;
@@ -61,6 +61,22 @@ namespace KerbalEngineer.FlightEngineer
             set { _requireResize = value; }
         }
 
+        private bool _controlBar = false;
+        /// <summary>
+        /// Gets and sets the visibility of the control bar.
+        /// </summary>
+        public bool ControlBar
+        {
+            get { return _controlBar; }
+            set
+            {
+                if (_controlBar && !value)
+                    _requireResize = true;
+
+                _controlBar = value;
+            }
+        }
+
         #endregion
 
         #region Initialisation
@@ -72,6 +88,18 @@ namespace KerbalEngineer.FlightEngineer
             _windowStyle = new GUIStyle(HighLogic.Skin.window);
             _windowStyle.margin = new RectOffset();
             _windowStyle.padding = new RectOffset(5, 5, 3, 5);
+            _windowStyle.fixedWidth = 270f;
+
+            _buttonStyle = new GUIStyle(HighLogic.Skin.button);
+            _buttonStyle.normal.textColor = Color.white;
+            _buttonStyle.fontSize = 11;
+            _buttonStyle.fontStyle = FontStyle.Bold;
+
+            _titleStyle = new GUIStyle(HighLogic.Skin.label);
+            _titleStyle.alignment = TextAnchor.MiddleCenter;
+            _titleStyle.fontSize = 13;
+            _titleStyle.fontStyle = FontStyle.Bold;
+            _titleStyle.stretchWidth = true;
         }
 
         #endregion
@@ -101,7 +129,7 @@ namespace KerbalEngineer.FlightEngineer
 
         public void Draw()
         {
-            if (SectionList.Instance.HasVisibleSections())
+            if (SectionList.Instance.HasVisibleSections() || _controlBar)
             {
                 if (!_hasInitStyles) InitialiseStyles();
 
@@ -119,6 +147,16 @@ namespace KerbalEngineer.FlightEngineer
 
         private void Window(int windowID)
         {
+            // Draw control bar.
+            if (_controlBar)
+            {
+                GUILayout.Label("FLIGHT ENGINEER " + EngineerGlobals.AssemblyVersion, _titleStyle);
+                GUILayout.BeginHorizontal();
+                foreach (Section section in SectionList.Instance.FixedSections)
+                    section.Visible = GUILayout.Toggle(section.Visible, section.ShortTitle, _buttonStyle, GUILayout.Height(25f));
+                GUILayout.EndHorizontal();
+            }
+
             // Draw all visible fixed sections.
             foreach (Section section in SectionList.Instance.FixedSections)
                 if (section.Visible)

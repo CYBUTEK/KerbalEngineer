@@ -140,7 +140,10 @@ namespace KerbalEngineer.FlightEngineer
 
         private void Window(int windowID)
         {
-            GUILayout.BeginHorizontal();
+            // Control bar toggle.
+            FlightDisplay.Instance.ControlBar = GUILayout.Toggle(FlightDisplay.Instance.ControlBar, "CONTROL BAR", _buttonStyle);
+
+            GUILayout.BeginHorizontal(); // Begin fixed sections.
 
             // Draw fixed section display toggles.
             GUILayout.BeginVertical();
@@ -154,8 +157,8 @@ namespace KerbalEngineer.FlightEngineer
                 section.EditDisplay.Visible = GUILayout.Toggle(section.EditDisplay.Visible, "EDIT", _buttonStyle);
             GUILayout.EndVertical();
 
-            GUILayout.EndHorizontal();
-            GUILayout.BeginHorizontal();
+            GUILayout.EndHorizontal(); // End fixed sections.
+            GUILayout.BeginHorizontal(); // Begin user sections.
 
             // Draw user section display toggles.
             GUILayout.BeginVertical();
@@ -171,8 +174,9 @@ namespace KerbalEngineer.FlightEngineer
                 section.EditDisplay.Visible = GUILayout.Toggle(section.EditDisplay.Visible, "EDIT", _buttonStyle);
             GUILayout.EndVertical();
 
-            GUILayout.EndHorizontal();
+            GUILayout.EndHorizontal(); // End user sections.
 
+            // New custom user section button.
             if (GUILayout.Button("NEW USER SECTION", _buttonStyle))
                 SectionList.Instance.UserSections.Add(new Section(true));
         }

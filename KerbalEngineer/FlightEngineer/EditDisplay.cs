@@ -132,10 +132,10 @@ namespace KerbalEngineer.FlightEngineer
         // Draws the user section controls.
         private void UserControls()
         {
-            GUILayout.BeginHorizontal(_rowStyle);
+            GUILayout.BeginHorizontal(GUILayout.Height(30f));
 
             GUILayout.BeginVertical(GUILayout.Width(50f));
-            GUILayout.Label("TITLE: ", _labelStyle);
+            GUILayout.Label("TITLE - ", _labelStyle);
             GUILayout.EndVertical();
 
             GUILayout.BeginVertical();
