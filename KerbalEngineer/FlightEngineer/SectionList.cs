@@ -66,6 +66,7 @@ namespace KerbalEngineer.FlightEngineer
             _fixedSections.Add(new Section() { Title = "Orbital", Readouts = ReadoutList.Instance.GetCategory(ReadoutCategory.Orbital), Categories = new List<ReadoutCategory> { ReadoutCategory.Orbital }, ShortTitle = "ORBT" });
             _fixedSections.Add(new Section() { Title = "Surface", Readouts = ReadoutList.Instance.GetCategory(ReadoutCategory.Surface), Categories = new List<ReadoutCategory> { ReadoutCategory.Surface }, ShortTitle = "SURF" });
             _fixedSections.Add(new Section() { Title = "Vessel", Readouts = ReadoutList.Instance.GetCategory(ReadoutCategory.Vessel), Categories = new List<ReadoutCategory> { ReadoutCategory.Vessel }, ShortTitle = "VESL" });
+            _fixedSections.Add(new Section() { Title = "Rendezvous", Readouts = ReadoutList.Instance.GetCategory(ReadoutCategory.Rendezvous), Categories = new List<ReadoutCategory> { ReadoutCategory.Rendezvous }, ShortTitle = "RDZV" });
         }
 
         #endregion

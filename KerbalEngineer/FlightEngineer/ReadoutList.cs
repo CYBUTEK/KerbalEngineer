@@ -73,6 +73,8 @@ namespace KerbalEngineer.FlightEngineer
             _readouts.Add(new Vessel.ThrustTotal());
             _readouts.Add(new Vessel.ThrustActual());
             _readouts.Add(new Vessel.ThrustToWeight());
+
+            _readouts.Add(new Rendezvous.TargetSelector());
         }
 
         #endregion

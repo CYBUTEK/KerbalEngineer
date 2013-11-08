@@ -107,7 +107,7 @@ namespace KerbalEngineer.FlightEngineer
             {
                 if (!_hasInitStyles) InitialiseStyles();
 
-                _windowPosition = GUILayout.Window(_windowID, _windowPosition, Window, "INFORMATION", _windowStyle).ClampToScreen();
+                _windowPosition = GUILayout.Window(_windowID, _windowPosition, Window, "READOUT INFORMATION", _windowStyle).ClampToScreen();
             }
         }
 

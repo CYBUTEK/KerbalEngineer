@@ -73,6 +73,7 @@
     <Compile Include="FlightEngineer\Orbital\PeriapsisHeight.cs" />
     <Compile Include="FlightEngineer\Orbital\TimeToApoapsis.cs" />
     <Compile Include="FlightEngineer\ReadoutList.cs" />
+    <Compile Include="FlightEngineer\Rendezvous\TargetSelector.cs" />
     <Compile Include="FlightEngineer\SectionList.cs" />
     <Compile Include="FlightEngineer\Orbital\ApoapsisHeight.cs" />
     <Compile Include="FlightEngineer\Readout.cs" />

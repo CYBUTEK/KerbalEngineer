@@ -61,7 +61,7 @@ namespace KerbalEngineer.FlightEngineer
             set { _requireResize = value; }
         }
 
-        private bool _controlBar = false;
+        private bool _controlBar = true;
         /// <summary>
         /// Gets and sets the visibility of the control bar.
         /// </summary>
@@ -182,6 +182,7 @@ namespace KerbalEngineer.FlightEngineer
                 SettingList list = new SettingList();
                 list.AddSetting("x", _windowPosition.x);
                 list.AddSetting("y", _windowPosition.y);
+                list.AddSetting("controlBar", _controlBar);
                 SettingList.SaveToFile(EngineerGlobals.AssemblyPath + "Settings/FlightDisplay", list);
                 
                 MonoBehaviour.print("[KerbalEngineer/FlightDisplay]: Successfully saved settings.");
@@ -197,6 +198,7 @@ namespace KerbalEngineer.FlightEngineer
                 SettingList list = SettingList.CreateFromFile(EngineerGlobals.AssemblyPath + "Settings/FlightDisplay");
                 _windowPosition.x = (float)list.GetSetting("x", _windowPosition.x);
                 _windowPosition.y = (float)list.GetSetting("y", _windowPosition.y);
+                _controlBar = (bool)list.GetSetting("controlBar", _controlBar);
 
                 MonoBehaviour.print("[KerbalEngineer/FlightDisplay]: Successfully loaded settings.");
             }

@@ -40,6 +40,7 @@ namespace KerbalEngineer.FlightEngineer
 
         protected GUIStyle NameStyle { get; private set; }
         protected GUIStyle DataStyle { get; private set; }
+        protected GUIStyle MsgStyle { get; private set; }
 
         private string _name = string.Empty;
         /// <summary>
@@ -99,6 +100,9 @@ namespace KerbalEngineer.FlightEngineer
             DataStyle.fontStyle = FontStyle.Normal;
             DataStyle.alignment = TextAnchor.MiddleRight;
             DataStyle.stretchWidth = true;
+
+            MsgStyle = new GUIStyle(NameStyle);
+            MsgStyle.alignment = TextAnchor.MiddleCenter;
         }
 
         protected virtual void Initialise() { }
@@ -144,6 +148,16 @@ namespace KerbalEngineer.FlightEngineer
             GUILayout.Label(data, DataStyle);
             GUILayout.EndVertical();
 
+            GUILayout.EndHorizontal();
+        }
+
+        /// <summary>
+        /// Draws a single line message that is centred.
+        /// </summary>
+        protected void DrawMessageLine(string message)
+        {
+            GUILayout.BeginHorizontal();
+            GUILayout.Label(message, MsgStyle);
             GUILayout.EndHorizontal();
         }
 
