@@ -65,8 +65,8 @@ namespace KerbalEngineer.FlightEngineer.Rendezvous
                 }
                 else
                 {
-                    DrawTargetList();
                     DrawBackToTypes();
+                    DrawTargetList();
                 }
             }
             else
@@ -152,28 +152,28 @@ namespace KerbalEngineer.FlightEngineer.Rendezvous
         // Draws the target information when selected.
         private void DrawTarget()
         {
-            DrawLine("Selected Target", FlightGlobals.fetch.VesselTarget.GetName());
-
-            GUILayout.Space(3f);
-
             if (GUILayout.Button("Go Back to Target Selection", _buttonStyle))
             {
                 FlightGlobals.fetch.SetVesselTarget(null);
                 FlightDisplay.Instance.RequireResize = true;
             }
+
+            GUILayout.Space(3f);
+
+            DrawLine("Selected Target", FlightGlobals.fetch.VesselTarget.GetName());
         }
 
         // Draws back to types button.
         private void DrawBackToTypes()
         {
-            GUILayout.Space(3f);
-
             if (GUILayout.Button("Go Back to Type Selection", _buttonStyle))
             {
                 _typeIsBody = false;
                 _vesselType = VesselType.Unknown;
                 FlightDisplay.Instance.RequireResize = true;
             }
+
+            GUILayout.Space(3f);
         }
 
         // Draws the target list.
