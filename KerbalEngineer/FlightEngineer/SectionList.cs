@@ -4,6 +4,7 @@
 
 using System.Collections.Generic;
 using KerbalEngineer.Settings;
+using KerbalEngineer.Simulation;
 using UnityEngine;
 
 namespace KerbalEngineer.FlightEngineer
@@ -57,6 +58,34 @@ namespace KerbalEngineer.FlightEngineer
             set { _userSections = value; }
         }
 
+        private bool _requireResize = false;
+        /// <summary>
+        /// Gets and sets whether to resize all displays.
+        /// </summary>
+        public bool RequireResize
+        {
+            get { return _requireResize; }
+            set { _requireResize = value; }
+        }
+
+        private bool _hasVisibleSections = false;
+        /// <summary>
+        /// Gets whether there are visible sections.
+        /// </summary>
+        public bool HasVisibleSections
+        {
+            get { return _hasVisibleSections; }
+        }
+
+        private bool _hasAttachedSections = false;
+        /// <summary>
+        /// Gets whether there are attached sections.
+        /// </summary>
+        public bool HasAttachedSections
+        {
+            get { return _hasAttachedSections; }
+        }
+
         #endregion
 
         #region Initialisation
@@ -72,22 +101,6 @@ namespace KerbalEngineer.FlightEngineer
         #endregion
 
         #region Public Methods
-
-        /// <summary>
-        /// Gets whether there are sections that are set to be visible.
-        /// </summary>
-        public bool HasVisibleSections()
-        {
-            foreach (Section section in _fixedSections)
-                if (section.Visible)
-                    return true;
-
-            foreach (Section section in _userSections)
-                if (section.Visible)
-                    return true;
-
-            return false;
-        }
 
         /// <summary>
         /// Gets the fixed section with the provided name.
@@ -120,6 +133,49 @@ namespace KerbalEngineer.FlightEngineer
         public void Update()
         {
             if (_hasLoadedSections) _hasLoadedSections = false;
+
+            // If a resize is required propagate it to the handling objects.
+            if (_requireResize)
+            {
+                _requireResize = false;
+                FlightDisplay.Instance.RequireResize = true;
+
+                foreach (Section section in _fixedSections)
+                    section.Window.RequireResize = true;
+
+                foreach (Section section in _userSections)
+                    section.Window.RequireResize = true;
+            }
+
+            _hasVisibleSections = false;
+            _hasAttachedSections = false;
+
+            // Update all visible fixed sections.
+            foreach (Section section in _fixedSections)
+            {
+                if (section.Visible)
+                {
+                    if (!_hasVisibleSections) _hasVisibleSections = true;
+                    if (!section.Window.Visible && !_hasAttachedSections) _hasAttachedSections = true;
+                    section.Update();
+                }
+            }
+
+            // Update all visible user sections.
+            foreach (Section section in _userSections)
+            {
+                if (section.Visible)
+                {
+                    if (!_hasVisibleSections) _hasVisibleSections = true;
+                    if (!section.Window.Visible && !_hasAttachedSections) _hasAttachedSections = true;
+                    section.Update();
+                }
+            }
+
+            Surface.AtmosphericDetails.Instance.Update();
+            SimulationManager.Instance.Gravity = FlightGlobals.getGeeForceAtPosition(FlightGlobals.ActiveVessel.GetWorldPos3D()).magnitude;
+            SimulationManager.Instance.Atmosphere = FlightGlobals.getAtmDensity(FlightGlobals.ActiveVessel.atmDensity);
+            SimulationManager.Instance.TryStartSimulation();
         }
 
         #endregion
@@ -182,6 +238,7 @@ namespace KerbalEngineer.FlightEngineer
                         }
                         else
                         {
+                            RenderingManager.AddToPostDrawQueue(0, section.Window.Draw);
                             RenderingManager.AddToPostDrawQueue(0, section.EditDisplay.Draw);
                         }
 
@@ -200,6 +257,7 @@ namespace KerbalEngineer.FlightEngineer
                         }
                         else
                         {
+                            RenderingManager.AddToPostDrawQueue(0, section.Window.Draw);
                             RenderingManager.AddToPostDrawQueue(0, section.EditDisplay.Draw);
                         }
 

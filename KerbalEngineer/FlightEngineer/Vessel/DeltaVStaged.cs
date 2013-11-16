@@ -40,7 +40,7 @@ namespace KerbalEngineer.FlightEngineer.Vessel
             }
 
             if (stageCount < _stageCount)
-                FlightDisplay.Instance.RequireResize = true;
+                SectionList.Instance.RequireResize = true;
 
             if (stageCount != _stageCount)
                 _stageCount = stageCount;

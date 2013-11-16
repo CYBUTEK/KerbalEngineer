@@ -78,6 +78,7 @@
     <Compile Include="FlightEngineer\Orbital\ApoapsisHeight.cs" />
     <Compile Include="FlightEngineer\Readout.cs" />
     <Compile Include="FlightEngineer\Section.cs" />
+    <Compile Include="FlightEngineer\SectionWindow.cs" />
     <Compile Include="FlightEngineer\Surface\AltitudeSeaLevel.cs" />
     <Compile Include="FlightEngineer\Surface\AltitudeTerrain.cs" />
     <Compile Include="FlightEngineer\Surface\AtmosphericDetails.cs" />

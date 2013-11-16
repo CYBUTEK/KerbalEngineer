@@ -284,19 +284,19 @@ namespace KerbalEngineer.FlightEngineer.Rendezvous
         private void SetTypeAs(VesselType vesselType)
         {
             _vesselType = vesselType;
-            FlightDisplay.Instance.RequireResize = true;
+            SectionList.Instance.RequireResize = true;
         }
 
         private void SetTypeAsBody()
         {
             _typeIsBody = true;
-            FlightDisplay.Instance.RequireResize = true;
+            SectionList.Instance.RequireResize = true;
         }
 
         private void SetTargetAs(ITargetable target)
         {
             FlightGlobals.fetch.SetVesselTarget(target);
-            FlightDisplay.Instance.RequireResize = true;
+            SectionList.Instance.RequireResize = true;
         }
 
         #endregion

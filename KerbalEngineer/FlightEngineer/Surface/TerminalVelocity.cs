@@ -38,7 +38,7 @@ namespace KerbalEngineer.FlightEngineer.Surface
                 if (_visible)
                 {
                     _visible = false;
-                    FlightDisplay.Instance.RequireResize = true;
+                    SectionList.Instance.RequireResize = true;
                 }
             }
         }

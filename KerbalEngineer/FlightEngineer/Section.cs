@@ -3,6 +3,7 @@
 // License: Attribution-NonCommercial-ShareAlike 3.0 Unported
 
 using System.Collections.Generic;
+using System.IO;
 using KerbalEngineer.Settings;
 using UnityEngine;
 
@@ -62,6 +63,16 @@ namespace KerbalEngineer.FlightEngineer
             set { _shortTitle = value; }
         }
 
+        private string _fileName = string.Empty;
+        /// <summary>
+        /// Gets and sets the filename of the section.
+        /// </summary>
+        public string FileName
+        {
+            get { return _fileName; }
+            set { _fileName = value; }
+        }
+
         private bool _isUser = false;
         /// <summary>
         /// Gets and sets whether the section was user created.
@@ -79,6 +90,12 @@ namespace KerbalEngineer.FlightEngineer
         public EditDisplay EditDisplay
         {
             get { return _editDisplay; }
+        }
+
+        private SectionWindow _window;
+        public SectionWindow Window
+        {
+            get { return _window; }
         }
 
         private List<ReadoutCategory> _categories = new List<ReadoutCategory>();
@@ -100,6 +117,10 @@ namespace KerbalEngineer.FlightEngineer
             _editDisplay = HighLogic.fetch.gameObject.AddComponent<EditDisplay>();
             _editDisplay.Section = this;
             RenderingManager.AddToPostDrawQueue(0, _editDisplay.Draw);
+
+            _window = HighLogic.fetch.gameObject.AddComponent<SectionWindow>();
+            _window.Section = this;
+            RenderingManager.AddToPostDrawQueue(0, _window.Draw);
 
             if (isUserSection)
             {
@@ -179,6 +200,14 @@ namespace KerbalEngineer.FlightEngineer
         // Saves the settings associated with this section.
         public void Save()
         {
+            if (_title != _fileName)
+            {
+                if (File.Exists(EngineerGlobals.AssemblyPath + "Settings/Sections/" + _fileName))
+                    File.Delete(EngineerGlobals.AssemblyPath + "Settings/Sections/" + _fileName);
+            }
+
+            _fileName = _title;
+
             List<string> readoutNames = new List<string>();
 
             foreach (Readout readout in _readouts)
@@ -188,9 +217,12 @@ namespace KerbalEngineer.FlightEngineer
             {
                 SettingList list = new SettingList();
                 list.AddSetting("visible", _visible);
+                list.AddSetting("windowed", _window.Visible);
+                list.AddSetting("x", _window.PosX);
+                list.AddSetting("y", _window.PosY);
                 list.AddSetting("categories", _categories);
                 list.AddSetting("readouts", readoutNames);
-                SettingList.SaveToFile(EngineerGlobals.AssemblyPath + "Settings/Sections/" + _title, list);
+                SettingList.SaveToFile(EngineerGlobals.AssemblyPath + "Settings/Sections/" + _fileName, list);
 
                 MonoBehaviour.print("[KerbalEngineer/FlightSection/" + _title + "]: Successfully saved settings.");
             }
@@ -200,10 +232,15 @@ namespace KerbalEngineer.FlightEngineer
         // Loads the settings associated with this section.
         public void Load()
         {
+            _fileName = _title;
+
             try
             {
-                SettingList list = SettingList.CreateFromFile(EngineerGlobals.AssemblyPath + "Settings/Sections/" + _title);
+                SettingList list = SettingList.CreateFromFile(EngineerGlobals.AssemblyPath + "Settings/Sections/" + _fileName);
                 _visible = (bool)list.GetSetting("visible", _visible);
+                _window.Visible = (bool)list.GetSetting("windowed", _window.Visible);
+                _window.PosX = (float)list.GetSetting("x", _window.PosX);
+                _window.PosY = (float)list.GetSetting("y", _window.PosY);
                 _categories = list.GetSetting("categories", _categories) as List<ReadoutCategory>;
 
                 _readouts.Clear();

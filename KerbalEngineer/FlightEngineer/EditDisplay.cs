@@ -2,6 +2,7 @@
 // Author:  CYBUTEK
 // License: Attribution-NonCommercial-ShareAlike 3.0 Unported
 
+using System.IO;
 using KerbalEngineer.Extensions;
 using UnityEngine;
 
@@ -13,7 +14,7 @@ namespace KerbalEngineer.FlightEngineer
 
         private Rect _windowPosition = new Rect(Screen.width / 2 - 250f, Screen.height / 2 - 250f, 500f, 500f);
         private int _windowID = EngineerGlobals.GetNextWindowID();
-        private GUIStyle _windowStyle, _rowStyle, _buttonStyle, _textStyle, _titleStyle, _labelStyle;
+        private GUIStyle _windowStyle, _customControlBarStyle, _rowStyle, _buttonStyle, _textStyle, _titleStyle, _labelStyle;
         private Vector2 _scrollAvailablePosition = Vector2.zero;
         private Vector2 _scrollInstalledPosition = Vector2.zero;
         private ReadoutCategory _selectedCategory = ReadoutCategory.None;
@@ -54,6 +55,9 @@ namespace KerbalEngineer.FlightEngineer
             _hasInitStyles = true;
 
             _windowStyle = new GUIStyle(HighLogic.Skin.window);
+
+            _customControlBarStyle = new GUIStyle();
+            _customControlBarStyle.fixedHeight = 25f;
 
             _rowStyle = new GUIStyle();
             _rowStyle.margin = new RectOffset(5, 5, 5, 5);
@@ -123,8 +127,15 @@ namespace KerbalEngineer.FlightEngineer
             Available(_selectedCategory);
             Installed();
 
-            if (GUILayout.Button("CLOSE", _buttonStyle, GUILayout.Height(30f)))
-                _visible = false;
+            // Detach and close buttons.
+            GUILayout.BeginHorizontal(GUILayout.Height(30f));
+            if (GUILayout.Toggle(_section.Window.Visible, "DETACH INTO WINDOW", _buttonStyle, GUILayout.Width(150f)) != _section.Window.Visible)
+            {
+                _section.Window.Visible = !_section.Window.Visible;
+                FlightDisplay.Instance.RequireResize = true;
+            }
+            if (GUILayout.Button("CLOSE EDITOR", _buttonStyle)) _visible = false;
+            GUILayout.EndHorizontal();
 
             GUI.DragWindow();
         }
@@ -132,24 +143,38 @@ namespace KerbalEngineer.FlightEngineer
         // Draws the user section controls.
         private void UserControls()
         {
-            GUILayout.BeginHorizontal(GUILayout.Height(30f));
+            GUILayout.BeginHorizontal(_customControlBarStyle);
 
             GUILayout.BeginVertical(GUILayout.Width(50f));
             GUILayout.Label("TITLE - ", _labelStyle);
             GUILayout.EndVertical();
 
+            // Title text box.
             GUILayout.BeginVertical();
             _section.Title = GUILayout.TextField(_section.Title, _textStyle);
             GUILayout.EndVertical();
 
+            // Delete button and handling.
             GUILayout.BeginVertical(GUILayout.Width(100f));
             if (GUILayout.Button("DELETE", _buttonStyle))
             {
+                // Remove objects from lists and render queues.
                 SectionList.Instance.UserSections.Remove(_section);
                 FlightController.Instance.RequireResize = true;
                 if (_section.Visible)
                     FlightDisplay.Instance.RequireResize = true;
                 RenderingManager.RemoveFromPostDrawQueue(0, Draw);
+                RenderingManager.RemoveFromPostDrawQueue(0, _section.Window.Draw);
+
+                // Delete the settings file.
+                if (File.Exists(EngineerGlobals.AssemblyPath + "Settings/Sections/" + _section.FileName))
+                    File.Delete(EngineerGlobals.AssemblyPath + "Settings/Sections/" + _section.FileName);
+
+                // Set MonoBehaviour objects to be destroyed.
+                Destroy(_section.Window);
+                Destroy(this);
+
+                print("[KerbalEngineer]: Deleted " + _section.Title + " section.");
             }
             GUILayout.EndVertical();
 

@@ -4,7 +4,6 @@
 
 using KerbalEngineer.Extensions;
 using KerbalEngineer.Settings;
-using KerbalEngineer.Simulation;
 using UnityEngine;
 
 namespace KerbalEngineer.FlightEngineer
@@ -53,7 +52,7 @@ namespace KerbalEngineer.FlightEngineer
 
         private bool _requireResize = false;
         /// <summary>
-        /// Gets and sets whether the display requires a resize.
+        /// Gets and sets whether the window requires a resize.
         /// </summary>
         public bool RequireResize
         {
@@ -108,28 +107,11 @@ namespace KerbalEngineer.FlightEngineer
 
         public void Update()
         {
-            if (SectionList.Instance.HasVisibleSections())
-            {
-                // Update all visible fixed sections.
-                foreach (Section section in SectionList.Instance.FixedSections)
-                    if (section.Visible)
-                        section.Update();
-
-                // Update all visible user sections.
-                foreach (Section section in SectionList.Instance.UserSections)
-                    if (section.Visible)
-                        section.Update();
-
-                Surface.AtmosphericDetails.Instance.Update();
-                SimulationManager.Instance.Gravity = FlightGlobals.getGeeForceAtPosition(FlightGlobals.ActiveVessel.GetWorldPos3D()).magnitude;
-                SimulationManager.Instance.Atmosphere = FlightGlobals.getAtmDensity(FlightGlobals.ActiveVessel.atmDensity);
-                SimulationManager.Instance.TryStartSimulation();
-            }
         }
 
         public void Draw()
         {
-            if (SectionList.Instance.HasVisibleSections() || _controlBar)
+            if ((SectionList.Instance.HasVisibleSections && SectionList.Instance.HasAttachedSections) || _controlBar)
             {
                 if (!_hasInitStyles) InitialiseStyles();
 
@@ -159,12 +141,12 @@ namespace KerbalEngineer.FlightEngineer
 
             // Draw all visible fixed sections.
             foreach (Section section in SectionList.Instance.FixedSections)
-                if (section.Visible)
+                if (section.Visible && !section.Window.Visible)
                     section.Draw();
 
             // Draw all visible user sections.
             foreach (Section section in SectionList.Instance.UserSections)
-                if (section.Visible)
+                if (section.Visible && !section.Window.Visible)
                     section.Draw();
 
             GUI.DragWindow();

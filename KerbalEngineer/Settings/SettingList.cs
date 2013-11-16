@@ -65,7 +65,10 @@ namespace KerbalEngineer.Settings
             {
                 try
                 {
-                    return new BinaryFormatter().Deserialize(File.OpenRead(filename)) as SettingList;
+                    FileStream stream = File.OpenRead(filename);
+                    SettingList list = new BinaryFormatter().Deserialize(stream) as SettingList;
+                    stream.Close();
+                    return list;
                 }
                 catch { throw new Exception("Could not load settings from file."); }
             }
@@ -83,7 +86,9 @@ namespace KerbalEngineer.Settings
 
             try
             {
-                new BinaryFormatter().Serialize(File.OpenWrite(filename), settingList);
+                FileStream stream = File.OpenWrite(filename);
+                new BinaryFormatter().Serialize(stream, settingList);
+                stream.Close();
             }
             catch { throw new Exception("Could not save settings to file."); }
         }
