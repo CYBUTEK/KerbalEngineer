@@ -109,7 +109,7 @@ namespace KerbalEngineer.BuildEngineer
                     SimulationManager.Instance.Gravity = CelestialBodies.Instance.SelectedBodyInfo.Gravity;
 
                     if (BuildAdvanced.Instance.UseAtmosphericDetails)
-                        SimulationManager.Instance.Atmosphere = CelestialBodies.Instance.SelectedBodyInfo.Atmosphere;
+                        SimulationManager.Instance.Atmosphere = CelestialBodies.Instance.SelectedBodyInfo.Atmosphere * 0.01d;
                     else
                         SimulationManager.Instance.Atmosphere = 0d;
 
