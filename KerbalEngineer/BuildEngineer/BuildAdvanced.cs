@@ -138,7 +138,7 @@ namespace KerbalEngineer.BuildEngineer
         {
             try
             {
-                if (EditorLogic.fetch != null && EditorLogic.SortedShipList.Count > 0)
+                if (_visible && EditorLogic.fetch != null && EditorLogic.fetch.ship.Count > 0)
                 {
                     // Configure the simulation parameters based on the selected reference body.
                     SimulationManager.Instance.Gravity = CelestialBodies.Instance.SelectedBodyInfo.Gravity;
@@ -166,7 +166,7 @@ namespace KerbalEngineer.BuildEngineer
         {
             try
             {
-                if (_visible && EditorLogic.fetch != null && EditorLogic.SortedShipList.Count > 0 && EditorLogic.fetch.editorScreen == EditorLogic.EditorScreen.Parts)
+                if (_visible && EditorLogic.fetch != null && EditorLogic.fetch.ship.Count > 0)
                 {
                     SimulationManager.Instance.RequestSimulation();
 
@@ -192,14 +192,14 @@ namespace KerbalEngineer.BuildEngineer
         // Checks whether the editor should be looked to stop click-through.
         private void CheckEditorLock()
         {
-            if (_windowPosition.MouseIsOver() && !_isEditorLocked) // Lock editor
+            if (_windowPosition.MouseIsOver())
             {
-                EditorLogic.fetch.Lock(true, true, true, _windowID.ToString());
+                EditorLogic.fetch.State = EditorLogic.EditorState.GUI_SELECTED;
                 _isEditorLocked = true;
             }
-            else if (!_windowPosition.MouseIsOver() && _isEditorLocked) // Unlock editor
+            else if (!_windowPosition.MouseIsOver() && _isEditorLocked)
             {
-                EditorLogic.fetch.Unlock(_windowID.ToString());
+                EditorLogic.fetch.State = EditorLogic.EditorState.PAD_UNSELECTED;
                 _isEditorLocked = false;
             }
         }
