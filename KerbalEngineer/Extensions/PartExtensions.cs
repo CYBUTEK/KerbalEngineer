@@ -36,6 +36,18 @@ namespace KerbalEngineer.Extensions
         }
 
         /// <summary>
+        /// Gets the first typed PartModule in the part's module list.
+        /// </summary>
+        public static T GetModule<T>(this Part part) where T : PartModule
+        {
+            foreach (PartModule module in part.Modules)
+                if (module is T)
+                    return module as T;
+
+            return null;
+        }
+
+        /// <summary>
         /// Gets a typed PartModule.
         /// </summary>
         public static T GetModule<T>(this Part part, string className) where T : PartModule
@@ -56,7 +68,23 @@ namespace KerbalEngineer.Extensions
         /// </summary>
         public static ModuleEngines GetModuleEngines(this Part part)
         {
-            return part.GetModule<ModuleEngines>("ModuleEngines");
+            return part.GetModule<ModuleEngines>();
+        }
+
+        /// <summary>
+        /// Gets the current selected ModuleEnginesFX.
+        /// </summary>
+        public static ModuleEnginesFX GetModuleEnginesFX(this Part part)
+        {
+            string mode = part.GetModule<MultiModeEngine>().mode;
+
+            foreach (ModuleEnginesFX engine in part.Modules.OfType<ModuleEnginesFX>())
+            {
+                if (engine.engineID == mode)
+                    return engine;
+            }
+
+            return null;
         }
 
         /// <summary>
@@ -64,7 +92,7 @@ namespace KerbalEngineer.Extensions
         /// </summary>
         public static ModuleGimbal GetModuleGimbal(this Part part)
         {
-            return part.GetModule<ModuleGimbal>("ModuleGimbal");
+            return part.GetModule<ModuleGimbal>();
         }
 
         /// <summary>
@@ -72,7 +100,7 @@ namespace KerbalEngineer.Extensions
         /// </summary>
         public static ModuleDeployableSolarPanel GetModuleDeployableSolarPanel(this Part part)
         {
-            return part.GetModule<ModuleDeployableSolarPanel>("ModuleDeployableSolarPanel");
+            return part.GetModule<ModuleDeployableSolarPanel>();
         }
 
         /// <summary>
@@ -80,7 +108,7 @@ namespace KerbalEngineer.Extensions
         /// </summary>
         public static ModuleAlternator GetModuleAlternator(this Part part)
         {
-            return part.GetModule<ModuleAlternator>("ModuleAlternator");
+            return part.GetModule<ModuleAlternator>();
         }
 
         /// <summary>
@@ -88,7 +116,7 @@ namespace KerbalEngineer.Extensions
         /// </summary>
         public static ModuleGenerator GetModuleGenerator(this Part part)
         {
-            return part.GetModule<ModuleGenerator>("ModuleGenerator");
+            return part.GetModule<ModuleGenerator>();
         }
 
         /// <summary>
@@ -96,7 +124,7 @@ namespace KerbalEngineer.Extensions
         /// </summary>
         public static ModuleParachute GetModuleParachute(this Part part)
         {
-            return part.GetModule<ModuleParachute>("ModuleParachute");
+            return part.GetModule<ModuleParachute>();
         }
 
         /// <summary>
@@ -120,12 +148,33 @@ namespace KerbalEngineer.Extensions
         /// </summary>
         public static double GetMaxThrust(this Part part)
         {
-            return (part.IsEngine()) ? part.GetModuleEngines().maxThrust : 0d;
+            if (part.HasModule<ModuleEngines>())
+            {
+                return part.GetModuleEngines().maxThrust;
+            }
+            else if (part.HasModule<MultiModeEngine>())
+            {
+                return part.GetModuleEnginesFX().maxThrust;
+            }
+
+            return 0d;
         }
 
+        /// <summary>
+        /// Gets the current specific impulse for the engine.
+        /// </summary>
         public static double GetSpecificImpulse(this Part part, float atmosphere)
         {
-            return (part.IsEngine()) ? part.GetModuleEngines().atmosphereCurve.Evaluate(atmosphere) : 0d;
+            if (part.HasModule<ModuleEngines>())
+            {
+                return part.GetModuleEngines().atmosphereCurve.Evaluate(atmosphere);
+            }
+            else if (part.HasModule<MultiModeEngine>())
+            {
+                return part.GetModuleEnginesFX().atmosphereCurve.Evaluate(atmosphere);
+            }
+
+            return 0d;
         }
 
         /// <summary>
@@ -133,7 +182,16 @@ namespace KerbalEngineer.Extensions
         /// </summary>
         public static bool EngineHasFuel(this Part part)
         {
-            return part.IsEngine() && !part.GetModuleEngines().getFlameoutState;
+            if (part.HasModule<ModuleEngines>())
+            {
+                return part.GetModuleEngines().getFlameoutState;
+            }
+            else if (part.HasModule<MultiModeEngine>())
+            {
+                return part.GetModuleEnginesFX().getFlameoutState;
+            }
+
+            return false;
         }
 
         /// <summary>
@@ -154,7 +212,7 @@ namespace KerbalEngineer.Extensions
         /// </summary>
         public static bool IsDecoupler(this Part part)
         {
-            return part.HasModule("ModuleDecouple") || part.HasModule("ModuleAnchoredDecoupler");
+            return part.HasModule<ModuleDecouple>() || part.HasModule<ModuleAnchoredDecoupler>();
         }
 
         /// <summary>
@@ -172,7 +230,7 @@ namespace KerbalEngineer.Extensions
         /// </summary>
         public static bool IsLaunchClamp(this Part part)
         {
-            return part.HasModule("LaunchClamp");
+            return part.HasModule<LaunchClamp>();
         }
 
         /// <summary>
@@ -180,7 +238,7 @@ namespace KerbalEngineer.Extensions
         /// </summary>
         public static bool IsEngine(this Part part)
         {
-            return part.HasModule("ModuleEngines");
+            return part.HasModule<ModuleEngines>() || part.HasModule<MultiModeEngine>();
         }
 
         /// <summary>
@@ -188,7 +246,7 @@ namespace KerbalEngineer.Extensions
         /// </summary>
         public static bool IsSolarPanel(this Part part)
         {
-            return part.HasModule("ModuleDeployableSolarPanel");
+            return part.HasModule<ModuleDeployableSolarPanel>();
         }
 
         /// <summary>
@@ -196,7 +254,7 @@ namespace KerbalEngineer.Extensions
         /// </summary>
         public static bool IsGenerator(this Part part)
         {
-            return part.HasModule("ModuleGenerator");
+            return part.HasModule<ModuleGenerator>();
         }
 
         /// <summary>
@@ -204,7 +262,7 @@ namespace KerbalEngineer.Extensions
         /// </summary>
         public static bool IsCommandModule(this Part part)
         {
-            return part.HasModule("ModuleCommand");
+            return part.HasModule<ModuleCommand>();
         }
 
         /// <summary>
@@ -212,7 +270,7 @@ namespace KerbalEngineer.Extensions
         /// </summary>
         public static bool IsParachute(this Part part)
         {
-            return part.HasModule("ModuleParachute");
+            return part.HasModule<ModuleParachute>();
         }
 
         /// <summary>
@@ -220,7 +278,7 @@ namespace KerbalEngineer.Extensions
         /// </summary>
         public static bool IsSolidRocket(this Part part)
         {
-            return part.IsEngine() && part.GetModuleEngines().throttleLocked;
+            return part.HasModule<ModuleEngines>() && part.GetModuleEngines().throttleLocked;
         }
 
         /// <summary>
@@ -267,9 +325,9 @@ namespace KerbalEngineer.Extensions
         /// </summary>
         public static bool HasOneShotAnimation(this Part part)
         {
-            if (part.HasModule("ModuleAnimateGeneric"))
+            if (part.HasModule<ModuleAnimateGeneric>())
             {
-                return part.GetModule<ModuleAnimateGeneric>("ModuleAnimateGeneric").isOneShot;
+                return part.GetModule<ModuleAnimateGeneric>().isOneShot;
             }
 
             return false;

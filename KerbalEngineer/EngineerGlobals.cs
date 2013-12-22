@@ -2,8 +2,10 @@
 // Author:  CYBUTEK
 // License: Attribution-NonCommercial-ShareAlike 3.0 Unported
 
+using System.Diagnostics;
 using System.IO;
 using System.Reflection;
+using UnityEngine;
 
 namespace KerbalEngineer
 {

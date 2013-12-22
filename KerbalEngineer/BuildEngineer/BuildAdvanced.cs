@@ -192,17 +192,16 @@ namespace KerbalEngineer.BuildEngineer
         // Checks whether the editor should be looked to stop click-through.
         private void CheckEditorLock()
         {
-            if (_windowPosition.MouseIsOver() && !EditorLogic.editorLocked)
+            if (_windowPosition.MouseIsOver() && !_isEditorLocked) // Lock editor
             {
-                EditorLogic.fetch.Lock(true, true, true);
+                EditorLogic.fetch.Lock(true, true, true, _windowID.ToString());
                 _isEditorLocked = true;
             }
-            else if (_isEditorLocked && !_windowPosition.MouseIsOver() && EditorLogic.editorLocked)
+            else if (!_windowPosition.MouseIsOver() && _isEditorLocked) // Unlock editor
             {
-                EditorLogic.fetch.Unlock();
+                EditorLogic.fetch.Unlock(_windowID.ToString());
+                _isEditorLocked = false;
             }
-
-            if (!EditorLogic.editorLocked) _isEditorLocked = false;
         }
 
         private void Window(int windowID)

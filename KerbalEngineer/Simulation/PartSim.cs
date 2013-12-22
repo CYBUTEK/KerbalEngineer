@@ -11,6 +11,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using KerbalEngineer.Extensions;
 using UnityEngine;
 
 namespace KerbalEngineer.Simulation
@@ -39,21 +40,37 @@ namespace KerbalEngineer.Simulation
             }
 
             foreach (ModuleEngines engine in part.Modules.OfType<ModuleEngines>())
-            {
-                if (part.vessel != null)
-                {
-                    actualThrust += engine.requestedThrust;
-                    isp = engine.atmosphereCurve.Evaluate((float)part.staticPressureAtm);
-                }
-                else
-                {
-                    isp = engine.atmosphereCurve.Evaluate((float)atmosphere);
-                }
+                SetEngineInfo(engine.requestedThrust, engine.maxThrust, engine.thrustPercentage, engine.atmosphereCurve, atmosphere);
 
-                thrust += engine.maxThrust;
+            if (part.HasModule<MultiModeEngine>())
+            {
+                string mode = part.GetModule<MultiModeEngine>().mode;
+
+                foreach (ModuleEnginesFX engine in part.Modules.OfType<ModuleEnginesFX>())
+                {
+                    if (engine.engineID == mode)
+                        SetEngineInfo(engine.requestedThrust, engine.maxThrust, engine.thrustPercentage, engine.atmosphereCurve, atmosphere);
+                }
             }
 
             decoupledInStage = DecoupledInStage();
+        }
+
+        public void SetEngineInfo(float requestedThrust, float maxThrust, float thrustPercentage, FloatCurve atmosphereCurve, double atmosphere)
+        {
+            float thrustLimiter = (thrustPercentage > 0) ? thrustPercentage / 100f : 0f;
+
+            if (part.vessel != null)
+            {
+                actualThrust += requestedThrust * thrustLimiter;
+                isp = atmosphereCurve.Evaluate((float)part.staticPressureAtm);
+            }
+            else
+            {
+                isp = atmosphereCurve.Evaluate((float)atmosphere);
+            }
+
+            thrust += maxThrust * thrustLimiter;
         }
 
         public bool CanDrawNeededResources(List<PartSim> partSims)
@@ -97,54 +114,79 @@ namespace KerbalEngineer.Simulation
         {
             foreach (ModuleEngines engine in part.Modules.OfType<ModuleEngines>())
             {
-                double flowRate = 0d;
-                if (part.vessel != null)
+                float thrustLimiter = (engine.thrustPercentage > 0) ? engine.thrustPercentage / 100f : 0f;
+                double flowRate = GetPropellantFlowRate(engine.requestedThrust * thrustLimiter, engine.maxThrust * thrustLimiter, engine.throttleLocked);
+                double flowMass = GetPropellantFlowMass(engine.propellants);
+                SetPropellantConsumptionRate(engine.propellants, flowRate, flowMass);
+            }
+
+            if (part.HasModule<MultiModeEngine>())
+            {
+                string mode = part.GetModule<MultiModeEngine>().mode;
+
+                foreach (ModuleEnginesFX engine in part.Modules.OfType<ModuleEnginesFX>())
                 {
-                    if (engine.throttleLocked)
+                    if (engine.engineID == mode)
                     {
-                        flowRate = engine.maxThrust / (isp * 9.81d);
+                        float thrustLimiter = (engine.thrustPercentage > 0) ? engine.thrustPercentage / 100f : 0f;
+                        double flowRate = GetPropellantFlowRate(engine.requestedThrust * thrustLimiter, engine.maxThrust * thrustLimiter, engine.throttleLocked);
+                        double flowMass = GetPropellantFlowMass(engine.propellants);
+                        SetPropellantConsumptionRate(engine.propellants, flowRate, flowMass);
                     }
-                    else
-                    {
-                        if (part.vessel.Landed)
-                        {
-                            flowRate = Math.Max(0.000001d, engine.maxThrust * FlightInputHandler.state.mainThrottle) / (isp * 9.81d);
-                        }
-                        else
-                        {
-                            if (engine.requestedThrust > 0)
-                            {
-                                flowRate = engine.requestedThrust / (isp * 9.81d);
-                            }
-                            else
-                            {
-                                flowRate = engine.maxThrust / (isp * 9.81d);
-                            }
-                        }
-                    }
+                }
+            }
+        }
+
+        public double GetPropellantFlowRate(float requestedThrust, float maxThrust, bool throttleLocked)
+        {
+            if (part.vessel != null)
+            {
+                if (throttleLocked)
+                {
+                    return maxThrust / (isp * Simulation.STD_GRAVITY);
                 }
                 else
                 {
-                    flowRate = engine.maxThrust / (isp * 9.81d);
-                }
-
-                float flowMass = 0f;
-
-                foreach (ModuleEngines.Propellant propellant in engine.propellants)
-                {
-                    flowMass += propellant.ratio * ResourceContainer.GetResourceDensity(propellant.id);
-                }
-
-                foreach (ModuleEngines.Propellant propellant in engine.propellants)
-                {
-                    if (propellant.name == "ElectricCharge" || propellant.name == "IntakeAir")
+                    if (part.vessel.Landed)
                     {
-                        continue;
+                        return Math.Max(0.000001d, maxThrust * FlightInputHandler.state.mainThrottle) / (isp * Simulation.STD_GRAVITY);
                     }
-
-                    double consumptionRate = propellant.ratio * flowRate / flowMass;
-                    resourceConsumptions.Add(propellant.id, consumptionRate);
+                    else
+                    {
+                        if (requestedThrust > 0)
+                            return requestedThrust / (isp * Simulation.STD_GRAVITY);
+                        else
+                            return maxThrust / (isp * Simulation.STD_GRAVITY);
+                    }
                 }
+            }
+            else
+            {
+                return maxThrust / (isp * Simulation.STD_GRAVITY);
+            }
+        }
+
+        public double GetPropellantFlowMass(List<Propellant> propellants)
+        {
+            double flowMass = 0d;
+            foreach (Propellant propellant in propellants)
+            {
+                flowMass += propellant.ratio * ResourceContainer.GetResourceDensity(propellant.id);
+            }
+            return flowMass;
+        }
+
+        public void SetPropellantConsumptionRate(List<Propellant> propellants, double flowRate, double flowMass)
+        {
+            foreach (Propellant propellant in propellants)
+            {
+                if (propellant.name == "ElectricCharge" || propellant.name == "IntakeAir")
+                {
+                    continue;
+                }
+
+                double consumptionRate = propellant.ratio * flowRate / flowMass;
+                resourceConsumptions.Add(propellant.id, consumptionRate);
             }
         }
 
@@ -260,26 +302,6 @@ namespace KerbalEngineer.Simulation
             }
 
             return part is Decoupler || part is RadialDecoupler || part.Modules.OfType<ModuleDecouple>().Count() > 0 || part.Modules.OfType<ModuleAnchoredDecoupler>().Count() > 0;
-        }
-
-        public bool IsDockingNode(Part part = null)
-        {
-            if (part == null)
-            {
-                part = this.part;
-            }
-
-            return part.Modules.OfType<ModuleDockingNode>().Count() > 0;
-        }
-
-        public bool IsStrutFuelLine(Part part = null)
-        {
-            if (part == null)
-            {
-                part = this.part;
-            }
-
-            return (part is StrutConnector || part is FuelLine) ? true : false;
         }
 
         private void SetResourceDrainRateAllVessel(int type, double amount, List<PartSim> partSims)
@@ -484,14 +506,6 @@ namespace KerbalEngineer.Simulation
             }
         }
 
-        public bool IsEngine
-        {
-            get
-            {
-                return thrust > 0;
-            }
-        }
-
         public bool IsSolidMotor
         {
             get
@@ -502,34 +516,6 @@ namespace KerbalEngineer.Simulation
                     {
                         return true;
                     }
-                }
-
-                return false;
-            }
-        }
-
-        public bool IsSepratron
-        {
-            get
-            {
-                if (!part.ActivatesEvenIfDisconnected)
-                {
-                    return false;
-                }
-
-                if (part is SolidRocket)
-                {
-                    return true;
-                }
-
-                if (part.Modules.OfType<ModuleEngines>().Count() == 0)
-                {
-                    return false;
-                }
-
-                if (part.Modules.OfType<ModuleEngines>().First().throttleLocked == true)
-                {
-                    return true;
                 }
 
                 return false;

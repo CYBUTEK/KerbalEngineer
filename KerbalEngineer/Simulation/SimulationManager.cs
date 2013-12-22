@@ -114,8 +114,8 @@ namespace KerbalEngineer.Simulation
 
             if (parts.Count > 0)
             {
-                ThreadPool.QueueUserWorkItem(RunSimulation, new Simulation(parts));
-                //RunSimulation(new Simulation(parts));
+                //ThreadPool.QueueUserWorkItem(RunSimulation, new Simulation(parts));
+                RunSimulation(new Simulation(parts));
             }
             else
             {
