@@ -258,6 +258,14 @@ namespace KerbalEngineer.BuildEngineer
                         DrawTooltipInfo(ref position, "Contains Alternator");
                 }
 
+                // Show details for RCS.
+                if (part.IsRCSModule())
+                {
+                    ModuleRCS moduleRCS = part.GetModuleRCS();
+                    DrawTooltipInfo(ref position, "Thrust Power: " + moduleRCS.thrusterPower.ToDouble().ToForce());
+                    DrawTooltipInfo(ref position, "Specific Impulse: " + moduleRCS.atmosphereCurve.Evaluate(1f) + " / " + moduleRCS.atmosphereCurve.Evaluate(0f) + "s");
+                }
+
                 // Show details for solar panels.
                 if (part.IsSolarPanel())
                 {
