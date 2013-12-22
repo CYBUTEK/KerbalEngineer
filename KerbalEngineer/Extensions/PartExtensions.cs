@@ -87,6 +87,11 @@ namespace KerbalEngineer.Extensions
             return null;
         }
 
+        public static ModuleRCS GetModuleRCS(this Part part)
+        {
+            return part.GetModule<ModuleRCS>();
+        }
+
         /// <summary>
         /// Gets a ModuleGimbal typed PartModule.
         /// </summary>
@@ -239,6 +244,11 @@ namespace KerbalEngineer.Extensions
         public static bool IsEngine(this Part part)
         {
             return part.HasModule<ModuleEngines>() || part.HasModule<MultiModeEngine>();
+        }
+
+        public static bool IsRCSModule(this Part part)
+        {
+            return part.HasModule<ModuleRCS>();
         }
 
         /// <summary>

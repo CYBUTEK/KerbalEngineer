@@ -114,8 +114,8 @@ namespace KerbalEngineer.Simulation
 
             if (parts.Count > 0)
             {
-                //ThreadPool.QueueUserWorkItem(RunSimulation, new Simulation(parts));
-                RunSimulation(new Simulation(parts));
+                ThreadPool.QueueUserWorkItem(RunSimulation, new Simulation(parts));
+                //RunSimulation(new Simulation(parts));
             }
             else
             {
@@ -126,14 +126,19 @@ namespace KerbalEngineer.Simulation
 
         private void RunSimulation(object simObject)
         {
-            int stagesWithDeltaV = this.Stages.Where(s => s.deltaV > 0d).Count();
-            this.Stages = (simObject as Simulation).RunSimulation(this.Gravity, this.Atmosphere);
-            this.LastStage = this.Stages.Last();
-            if (this.Stages.Length != _numberOfStages || this.Stages.Where(s => s.deltaV > 0d).Count() != stagesWithDeltaV)
+            try
             {
-                _numberOfStages = this.Stages.Length;
-                _stagingChanged = true;
+                int stagesWithDeltaV = this.Stages.Where(s => s.deltaV > 0d).Count();
+                this.Stages = (simObject as Simulation).RunSimulation(this.Gravity, this.Atmosphere);
+
+                this.LastStage = this.Stages.Last();
+                if (this.Stages.Length != _numberOfStages || this.Stages.Where(s => s.deltaV > 0d).Count() != stagesWithDeltaV)
+                {
+                    _numberOfStages = this.Stages.Length;
+                    _stagingChanged = true;
+                }
             }
+            catch { /* Something went wrong! */ }
 
             _timer.Stop();
             _millisecondsBetweenSimulations = 10 * _timer.ElapsedMilliseconds;
