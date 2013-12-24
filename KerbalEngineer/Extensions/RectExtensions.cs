@@ -14,10 +14,8 @@ namespace KerbalEngineer.Extensions
         /// </summary>
         public static Rect ClampInsideScreen(this Rect value)
         {
-            if (value.x < 0f) value.x = 0f;
-            if (value.x + value.width > Screen.width) value.x = Screen.width - value.width;
-            if (value.y < 0f) value.y = 0f;
-            if (value.y + value.height > Screen.height) value.y = Screen.height - value.height;
+            value.x = Mathf.Clamp(value.x, 0f, Screen.width - value.width);
+            value.y = Mathf.Clamp(value.y, 0f, Screen.height - value.height);
 
             return value;
         }
@@ -27,10 +25,8 @@ namespace KerbalEngineer.Extensions
         /// </summary>
         public static Rect ClampToScreen(this Rect value, float margin = 25f)
         {
-            if (value.x + value.width < margin) value.x = margin - value.width;
-            if (value.x > Screen.width - margin) value.x = Screen.width - margin;
-            if (value.y + value.height < margin) value.y = margin - value.height;
-            if (value.y > Screen.height - margin) value.y = Screen.height - margin;
+            value.x = Mathf.Clamp(value.x, -(value.width - margin), Screen.width - margin);
+            value.y = Mathf.Clamp(value.y, -(value.height - margin), Screen.height - margin);
 
             return value;
         }
