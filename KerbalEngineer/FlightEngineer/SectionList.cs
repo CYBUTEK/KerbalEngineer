@@ -174,7 +174,7 @@ namespace KerbalEngineer.FlightEngineer
 
             Surface.AtmosphericDetails.Instance.Update();
             SimulationManager.Instance.Gravity = FlightGlobals.getGeeForceAtPosition(FlightGlobals.ActiveVessel.GetWorldPos3D()).magnitude;
-            SimulationManager.Instance.Atmosphere = FlightGlobals.getAtmDensity(FlightGlobals.ActiveVessel.atmDensity);
+            SimulationManager.Instance.Atmosphere = FlightGlobals.getAtmDensity(FlightGlobals.ActiveVessel.staticPressure);
             SimulationManager.Instance.TryStartSimulation();
         }
 

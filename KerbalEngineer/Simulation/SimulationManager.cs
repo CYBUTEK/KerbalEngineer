@@ -110,7 +110,7 @@ namespace KerbalEngineer.Simulation
             _simRunning = true;
             _timer.Start();
 
-            List<Part> parts = HighLogic.LoadedSceneIsEditor ? EditorLogic.SortedShipList : FlightGlobals.ActiveVessel.Parts;
+            List<Part> parts = HighLogic.LoadedSceneIsEditor ? EditorLogic.fetch.ship.Parts : FlightGlobals.ActiveVessel.Parts;
 
             if (parts.Count > 0)
             {
