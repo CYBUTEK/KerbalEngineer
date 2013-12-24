@@ -40,11 +40,12 @@ namespace KerbalEngineer.BuildEngineer
         // Initialises all of the GUI styles that are required.
         private void InitialiseStyles()
         {
-            _tooltipTitleStyle = new GUIStyle(GUI.skin.label);
+            _tooltipTitleStyle = new GUIStyle(HighLogic.Skin.label);
+            _tooltipTitleStyle.normal.textColor = Color.white;
             _tooltipTitleStyle.fontSize = 13;
             _tooltipTitleStyle.fontStyle = FontStyle.Bold;
 
-            _tooltipInfoStyle = new GUIStyle(GUI.skin.label);
+            _tooltipInfoStyle = new GUIStyle(HighLogic.Skin.label);
             _tooltipInfoStyle.fontSize = 11;
             _tooltipInfoStyle.fontStyle = FontStyle.Bold;
         }
@@ -53,11 +54,17 @@ namespace KerbalEngineer.BuildEngineer
 
         #region Update and Drawing
 
+        private void Update()
+        {
+            if (Input.GetKeyDown(KeyCode.Backslash))
+            {
+                ButtonClickedLeft();
+            }
+        }
+
         private void OnDraw()
         {
             if (!_hasInitStyles) InitialiseStyles();
-
-            //if (EditorLogic.fetch.editorScreen != EditorLogic.EditorScreen.Parts) return;
 
             if (EditorLogic.fetch.ship.Count > 0)
             {
@@ -120,8 +127,8 @@ namespace KerbalEngineer.BuildEngineer
         // Draws the tooltip next to the mouse cursor.
         private void DrawToolTip()
         {
-            GUI.Label(new Rect(Event.current.mousePosition.x + 16f, Event.current.mousePosition.y, 256f, 25f), "Kerbal Engineer Redux", _tooltipTitleStyle);
-            GUI.Label(new Rect(Event.current.mousePosition.x + 16f, Event.current.mousePosition.y + 16f, 256f, 25f), "[Left Click] Advanced - [Right Click] Overlay", _tooltipInfoStyle);
+            GUI.Label(new Rect(Event.current.mousePosition.x + 16f, Event.current.mousePosition.y, 500f, 25f), "Kerbal Engineer Redux", _tooltipTitleStyle);
+            GUI.Label(new Rect(Event.current.mousePosition.x + 16f, Event.current.mousePosition.y + 16f, 500f, 25f), "[Left Click / Backslash] Advanced - [Right Click] Overlay", _tooltipInfoStyle);
             //GUI.Label(new Rect(Event.current.mousePosition.x + 16f, Event.current.mousePosition.y + 30f, 256f, 25f), "", _tooltipInfoStyle);
         }
 
