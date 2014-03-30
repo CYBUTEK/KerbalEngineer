@@ -236,9 +236,9 @@ namespace KerbalEngineer.FlightEngineer
             }
 
             AtmosphericDetails.Instance.Update();
-            SimulationManager.Instance.Gravity = FlightGlobals.getGeeForceAtPosition(FlightGlobals.ActiveVessel.GetWorldPos3D()).magnitude;
-            SimulationManager.Instance.Atmosphere = FlightGlobals.getAtmDensity(FlightGlobals.ActiveVessel.staticPressure);
-            SimulationManager.Instance.TryStartSimulation();
+            SimulationManager.Gravity = FlightGlobals.getGeeForceAtPosition(FlightGlobals.ActiveVessel.GetWorldPos3D()).magnitude;
+            SimulationManager.Atmosphere = FlightGlobals.getAtmDensity(FlightGlobals.ActiveVessel.staticPressure);
+            SimulationManager.TryStartSimulation();
         }
 
         #endregion

@@ -4,6 +4,7 @@
 
 #region Using Directives
 
+using KerbalEngineer.Extensions;
 using KerbalEngineer.Simulation;
 
 #endregion
@@ -23,20 +24,20 @@ namespace KerbalEngineer.FlightEngineer.Vessel
 
         public override void Update()
         {
-            SimulationManager.Instance.RequestSimulation();
+            SimulationManager.RequestSimulation();
         }
 
         public override void Draw()
         {
             var stageCount = 0;
 
-            for (var i = SimulationManager.Instance.Stages.Length - 1; i > -1; i--)
+            for (var i = SimulationManager.Stages.Length - 1; i > -1; i--)
             {
-                var stage = SimulationManager.Instance.Stages[i];
-                if (stage.thrust > 0)
+                var stage = SimulationManager.Stages[i];
+                if (stage.Thrust > 0)
                 {
                     stageCount++;
-                    this.DrawLine("DeltaV (" + stage.Number + ")", stage.DeltaV);
+                    this.DrawLine("DeltaV (" + stage.Number + ")", stage.DeltaV.ToSpeed());
                 }
             }
 

@@ -98,9 +98,12 @@
     <Compile Include="FlightEngineer\Vessel\SpecificImpulse.cs" />
     <Compile Include="FlightEngineer\Vessel\DeltaVTotal.cs" />
     <Compile Include="FlightEngineer\Vessel\DeltaVStaged.cs" />
+    <Compile Include="LogMsg.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Settings\Setting.cs" />
     <Compile Include="Settings\SettingList.cs" />
+    <Compile Include="Simulation\AttachNodeSim.cs" />
+    <Compile Include="Simulation\EngineSim.cs" />
     <Compile Include="Simulation\PartSim.cs" />
     <Compile Include="Simulation\ResourceContainer.cs" />
     <Compile Include="Simulation\SimulationManager.cs" />

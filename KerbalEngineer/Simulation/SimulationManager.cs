@@ -1,154 +1,151 @@
-﻿// Name:    Kerbal Engineer Redux
-// Author:  CYBUTEK
-// License: Attribution-NonCommercial-ShareAlike 3.0 Unported
+﻿// Project:	KerbalEngineer
+// Author:	CYBUTEK
+// License:	Attribution-NonCommercial-ShareAlike 3.0 Unported
+
+#region Using Directives
 
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Threading;
 using System.Linq;
+using System.Threading;
+
+using UnityEngine;
+
+#endregion
 
 namespace KerbalEngineer.Simulation
 {
     public class SimulationManager
     {
-        #region Instance
+        private static bool bRequested;
+        private static bool bRunning;
+        private static readonly Stopwatch timer = new Stopwatch();
+        private static long delayBetweenSims;
+        private static bool stagingChanged;
+        private static int numberOfStages;
 
-        private static SimulationManager _instance;
-        /// <summary>
-        /// Gets the current instance of the simulation manager.
-        /// </summary>
-        public static SimulationManager Instance
+        private static Stopwatch _func = new Stopwatch();
+
+        public static Stage[] Stages { get; private set; }
+        public static Stage LastStage { get; private set; }
+        public static String failMessage { get; private set; }
+
+        public static double Gravity { get; set; }
+        public static double Atmosphere { get; set; }
+
+        public static bool StagingChanged
         {
             get
             {
-                if (_instance == null) _instance = new SimulationManager();
-                return _instance;
-            }
-        }
-
-        #endregion
-
-        #region Fields
-
-        private bool _simRequested = false;
-        private bool _simRunning = false;
-        private Stopwatch _timer = new Stopwatch();
-        private long _millisecondsBetweenSimulations = 0;
-        private int _numberOfStages = 0;
-
-        #endregion
-
-        #region Properties
-
-        public Stage[] Stages { get; private set; }
-        public Stage LastStage { get; private set; }
-
-        public double Gravity { get; set; }
-        public double Atmosphere { get; set; }
-
-        private bool _stagingChanged = false;
-        public bool StagingChanged
-        {
-            get
-            {
-                if (_stagingChanged)
+                if (stagingChanged)
                 {
-                    _stagingChanged = false;
+                    stagingChanged = false;
                     return true;
                 }
                 return false;
             }
         }
 
-        #endregion
-
-        #region Initialisation
-
-        public SimulationManager()
+        public static void RequestSimulation()
         {
-            Stages = new Stage[0];
-            LastStage = new Stage();
-
-            Gravity = 9.81d;
-            Atmosphere = 0d;
-        }
-
-        #endregion
-
-        #region Updating
-
-        public void RequestSimulation()
-        {
-            _simRequested = true;
-            if (!_timer.IsRunning) _timer.Start();
-        }
-
-        public void TryStartSimulation()
-        {
-            if ((HighLogic.LoadedSceneIsEditor || FlightGlobals.ActiveVessel != null) && !_simRunning)
+            bRequested = true;
+            if (!timer.IsRunning)
             {
-                if (_timer.ElapsedMilliseconds > _millisecondsBetweenSimulations)
-                {
-                    if (_simRequested)
-                    {
-                        _simRequested = false;
-                        _timer.Reset();
-
-                        StartSimulation();
-                    }
-                }
+                timer.Start();
             }
         }
 
-        #endregion
-
-        #region Processing
-
-        private void StartSimulation()
+        public static void TryStartSimulation()
         {
-            _simRunning = true;
-            _timer.Start();
-
-            List<Part> parts = HighLogic.LoadedSceneIsEditor ? EditorLogic.fetch.ship.Parts : FlightGlobals.ActiveVessel.Parts;
-
-            if (parts.Count > 0)
+            if (bRequested && !bRunning && (HighLogic.LoadedSceneIsEditor || FlightGlobals.ActiveVessel != null) && timer.ElapsedMilliseconds > delayBetweenSims)
             {
-                ThreadPool.QueueUserWorkItem(RunSimulation, new Simulation(parts));
-                //RunSimulation(new Simulation(parts));
-            }
-            else
-            {
-                this.Stages = new Stage[0];
-                this.LastStage = new Stage();
+                bRequested = false;
+                timer.Reset();
+                StartSimulation();
             }
         }
 
-        private void RunSimulation(object simObject)
+        public static bool ResultsReady()
+        {
+            return !bRunning;
+        }
+
+        private static void ClearResults()
+        {
+            failMessage = "";
+            Stages = null;
+            LastStage = null;
+        }
+
+        private static void StartSimulation()
         {
             try
             {
-                int stagesWithDeltaV = this.Stages.Where(s => s.deltaV > 0d).Count();
-                this.Stages = (simObject as Simulation).RunSimulation(this.Gravity, this.Atmosphere);
+                bRunning = true;
+                ClearResults();
+                timer.Start();
 
-                this.LastStage = this.Stages.Last();
-                if (this.Stages.Length != _numberOfStages || this.Stages.Where(s => s.deltaV > 0d).Count() != stagesWithDeltaV)
+                List<Part> parts = HighLogic.LoadedSceneIsEditor ? EditorLogic.SortedShipList : FlightGlobals.ActiveVessel.Parts;
+
+                // Create the Simulation object in this thread
+                Simulation sim = new Simulation();
+
+                // This call doesn't ever fail at the moment but we'll check and return a sensible error for display
+                if (sim.PrepareSimulation(parts, Gravity, Atmosphere))
                 {
-                    _numberOfStages = this.Stages.Length;
-                    _stagingChanged = true;
+                    ThreadPool.QueueUserWorkItem(RunSimulation, sim);
+                }
+                else
+                {
+                    failMessage = "PrepareSimulation failed";
+                    bRunning = false;
                 }
             }
-            catch { /* Something went wrong! */ }
-
-            _timer.Stop();
-            _millisecondsBetweenSimulations = 10 * _timer.ElapsedMilliseconds;
-
-            _timer.Reset();
-            _timer.Start();
-
-            _simRunning = false;
+            catch (Exception e)
+            {
+                MonoBehaviour.print("Exception in StartSimulation: " + e);
+                failMessage = e.ToString();
+                bRunning = false;
+            }
         }
 
-        #endregion
+        private static void RunSimulation(object simObject)
+        {
+            try
+            {
+                Stages = (simObject as Simulation).RunSimulation();
+                if (Stages != null)
+                {
+#if LOG
+                    foreach (Stage stage in Stages)
+                        stage.Dump();
+#endif
+                    LastStage = Stages.Last();
+
+                    if (numberOfStages != Stages.Length)
+                    {
+                        numberOfStages = Stages.Length;
+                        stagingChanged = true;
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                MonoBehaviour.print("Exception in RunSimulation: " + e);
+                Stages = null;
+                LastStage = null;
+                failMessage = e.ToString();
+            }
+
+            timer.Stop();
+            MonoBehaviour.print("RunSimulation took " + timer.ElapsedMilliseconds + "ms");
+            delayBetweenSims = 10 * timer.ElapsedMilliseconds;
+
+            timer.Reset();
+            timer.Start();
+
+            bRunning = false;
+        }
     }
 }

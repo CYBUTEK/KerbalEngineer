@@ -179,21 +179,21 @@ namespace KerbalEngineer.BuildEngineer
                 }
 
                 // Configure the simulation parameters based on the selected reference body.
-                SimulationManager.Instance.Gravity = CelestialBodies.Instance.SelectedBodyInfo.Gravity;
+                SimulationManager.Gravity = CelestialBodies.Instance.SelectedBodyInfo.Gravity;
                 if (this.useAtmosphericDetails)
                 {
-                    SimulationManager.Instance.Atmosphere = CelestialBodies.Instance.SelectedBodyInfo.Atmosphere *
+                    SimulationManager.Atmosphere = CelestialBodies.Instance.SelectedBodyInfo.Atmosphere *
                                                             0.01d;
                 }
                 else
                 {
-                    SimulationManager.Instance.Atmosphere = 0;
+                    SimulationManager.Atmosphere = 0;
                 }
 
-                SimulationManager.Instance.TryStartSimulation();
+                SimulationManager.TryStartSimulation();
 
                 // Reset the window size when the staging or something else has changed.
-                if (this.hasChanged || SimulationManager.Instance.StagingChanged)
+                if (this.hasChanged || SimulationManager.StagingChanged)
                 {
                     this.hasChanged = false;
 
@@ -216,7 +216,7 @@ namespace KerbalEngineer.BuildEngineer
                     return;
                 }
 
-                SimulationManager.Instance.RequestSimulation();
+                SimulationManager.RequestSimulation();
 
                 // Change the window title based on whether in compact mode or not.
                 string title;
@@ -355,11 +355,11 @@ namespace KerbalEngineer.BuildEngineer
         {
             GUILayout.BeginVertical(GUILayout.Width(30.0f));
             GUILayout.Label("", this.titleStyle);
-            foreach (var stage in SimulationManager.Instance.Stages)
+            foreach (var stage in SimulationManager.Stages)
             {
-                if (this.showAllStages || stage.deltaV > 0)
+                if (this.showAllStages || stage.DeltaV > 0)
                 {
-                    GUILayout.Label(stage.Number, this.titleStyle);
+                    GUILayout.Label(stage.Number.ToString(), this.titleStyle);
                 }
             }
             GUILayout.EndVertical();
@@ -372,11 +372,11 @@ namespace KerbalEngineer.BuildEngineer
         {
             GUILayout.BeginVertical(GUILayout.Width(50.0f));
             GUILayout.Label("PARTS", this.titleStyle);
-            foreach (var stage in SimulationManager.Instance.Stages)
+            foreach (var stage in SimulationManager.Stages)
             {
-                if (this.showAllStages || stage.deltaV > 0)
+                if (this.showAllStages || stage.DeltaV > 0)
                 {
-                    GUILayout.Label(stage.Parts, this.infoStyle);
+                    //GUILayout.Label(stage.Parts, this.infoStyle);
                 }
             }
             GUILayout.EndVertical();
@@ -389,11 +389,11 @@ namespace KerbalEngineer.BuildEngineer
         {
             GUILayout.BeginVertical(GUILayout.Width(100.0f));
             GUILayout.Label("COST", this.titleStyle);
-            foreach (var stage in SimulationManager.Instance.Stages)
+            foreach (var stage in SimulationManager.Stages)
             {
-                if (this.showAllStages || stage.deltaV > 0)
+                if (this.showAllStages || stage.DeltaV > 0)
                 {
-                    GUILayout.Label(stage.Cost, this.infoStyle);
+                    GUILayout.Label(stage.Cost.ToString(), this.infoStyle);
                 }
             }
             GUILayout.EndVertical();
@@ -406,11 +406,11 @@ namespace KerbalEngineer.BuildEngineer
         {
             GUILayout.BeginVertical(GUILayout.Width(100.0f));
             GUILayout.Label("MASS", this.titleStyle);
-            foreach (var stage in SimulationManager.Instance.Stages)
+            foreach (var stage in SimulationManager.Stages)
             {
-                if (this.showAllStages || stage.deltaV > 0)
+                if (this.showAllStages || stage.DeltaV > 0)
                 {
-                    GUILayout.Label(stage.Mass, this.infoStyle);
+                    GUILayout.Label(stage.Mass.ToMass(), this.infoStyle);
                 }
             }
             GUILayout.EndVertical();
@@ -423,11 +423,11 @@ namespace KerbalEngineer.BuildEngineer
         {
             GUILayout.BeginVertical(GUILayout.Width(50.0f));
             GUILayout.Label("ISP", this.titleStyle);
-            foreach (var stage in SimulationManager.Instance.Stages)
+            foreach (var stage in SimulationManager.Stages)
             {
-                if (this.showAllStages || stage.deltaV > 0)
+                if (this.showAllStages || stage.DeltaV > 0)
                 {
-                    GUILayout.Label(stage.Isp, this.infoStyle);
+                    GUILayout.Label(stage.Isp.ToString("0."), this.infoStyle);
                 }
             }
             GUILayout.EndVertical();
@@ -440,11 +440,11 @@ namespace KerbalEngineer.BuildEngineer
         {
             GUILayout.BeginVertical(GUILayout.Width(75.0f));
             GUILayout.Label("THRUST", this.titleStyle);
-            foreach (var stage in SimulationManager.Instance.Stages)
+            foreach (var stage in SimulationManager.Stages)
             {
-                if (this.showAllStages || stage.deltaV > 0)
+                if (this.showAllStages || stage.DeltaV > 0)
                 {
-                    GUILayout.Label(stage.Thrust, this.infoStyle);
+                    GUILayout.Label(stage.Thrust.ToForce(), this.infoStyle);
                 }
             }
             GUILayout.EndVertical();
@@ -457,11 +457,11 @@ namespace KerbalEngineer.BuildEngineer
         {
             GUILayout.BeginVertical(GUILayout.Width(50.0f));
             GUILayout.Label("TWR", this.titleStyle);
-            foreach (var stage in SimulationManager.Instance.Stages)
+            foreach (var stage in SimulationManager.Stages)
             {
-                if (this.showAllStages || stage.deltaV > 0)
+                if (this.showAllStages || stage.DeltaV > 0)
                 {
-                    GUILayout.Label(stage.TWR, this.infoStyle);
+                    GUILayout.Label(stage.ThrustToWeight.ToString("0.00"), this.infoStyle);
                 }
             }
             GUILayout.EndVertical();
@@ -474,11 +474,11 @@ namespace KerbalEngineer.BuildEngineer
         {
             GUILayout.BeginVertical(GUILayout.Width(100.0f));
             GUILayout.Label("DELTA-V", this.titleStyle);
-            foreach (var stage in SimulationManager.Instance.Stages)
+            foreach (var stage in SimulationManager.Stages)
             {
-                if (this.showAllStages || stage.deltaV > 0)
+                if (this.showAllStages || stage.DeltaV > 0)
                 {
-                    GUILayout.Label(stage.DeltaV, this.infoStyle);
+                    GUILayout.Label(stage.DeltaV.ToSpeed(), this.infoStyle);
                 }
             }
             GUILayout.EndVertical();
@@ -491,11 +491,11 @@ namespace KerbalEngineer.BuildEngineer
         {
             GUILayout.BeginVertical(GUILayout.Width(75.0f));
             GUILayout.Label("BURN", this.titleStyle);
-            foreach (var stage in SimulationManager.Instance.Stages)
+            foreach (var stage in SimulationManager.Stages)
             {
-                if (this.showAllStages || stage.deltaV > 0)
+                if (this.showAllStages || stage.DeltaV > 0)
                 {
-                    GUILayout.Label(stage.Time, this.infoStyle);
+                    GUILayout.Label(stage.Time.ToTime(), this.infoStyle);
                 }
             }
             GUILayout.EndVertical();

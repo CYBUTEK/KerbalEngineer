@@ -21,12 +21,12 @@ namespace KerbalEngineer.FlightEngineer.Vessel
 
         public override void Update()
         {
-            SimulationManager.Instance.RequestSimulation();
+            SimulationManager.RequestSimulation();;
         }
 
         public override void Draw()
-        {
-            this.DrawLine(SimulationManager.Instance.LastStage.Isp);
+        {          
+            this.DrawLine(SimulationManager.LastStage.Isp.ToString());
         }
     }
 }

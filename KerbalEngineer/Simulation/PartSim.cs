@@ -1,4 +1,4 @@
-﻿// Name:    Kerbal Engineer Redux
+﻿// Kerbal Engineer Redux
 // Author:  CYBUTEK
 // License: Attribution-NonCommercial-ShareAlike 3.0 Unported
 //
@@ -7,469 +7,452 @@
 // to how well the MuMech code works and the robustness of the simulation algorithem used.
 
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
+
 using KerbalEngineer.Extensions;
+
 using UnityEngine;
 
 namespace KerbalEngineer.Simulation
 {
     public class PartSim
     {
-        ResourceContainer resources = new ResourceContainer();
+        public ResourceContainer resources = new ResourceContainer();
+        public ResourceContainer resourceDrains = new ResourceContainer();
+        ResourceContainer resourceFlowStates = new ResourceContainer();
         ResourceContainer resourceConsumptions = new ResourceContainer();
-        ResourceContainer resourceDrains = new ResourceContainer();
 
-        List<PartSim> sourceParts = new List<PartSim>();
+        Dictionary<int, bool> resourceCanSupply = new Dictionary<int, bool>();
 
-        public Part part;
+        List<AttachNodeSim> attachNodes = new List<AttachNodeSim>();
+
+        public Part part;              // This is only set while the data structures are being initialised
+        public int partId = 0;
+        public String name;
+        public PartSim parent;
+        public PartSim fuelLineTarget;
+        public bool hasVessel;
+        public bool isLanded;
         public int decoupledInStage;
+        public int inverseStage;
+        public int cost;
+        double baseMass = 0d;
+        double startMass = 0d;
         public double thrust = 0;
         public double actualThrust = 0;
         public double isp = 0;
+        public String noCrossFeedNodeKey;
+        public bool fuelCrossFeed;
+        public bool isEngine;
+        public bool isFuelLine;
+        public bool isFuelTank;
+        public bool isDecoupler;
+        public bool isDockingNode;
+        public bool isStrutOrFuelLine;
+        public bool isSolidMotor;
+        public bool isSepratron;
+        public bool hasMultiModeEngine;
+        public bool hasModuleEnginesFX;
+        public bool hasModuleEngines;
 
-        public PartSim(Part part, double atmosphere)
+        public PartSim(Part thePart, int id, double atmosphere)
         {
-            this.part = part;
+            this.part = thePart;
+            this.partId = id;
+            this.name = this.part.partInfo.name;
+            //MonoBehaviour.print("Create PartSim for " + name);
+            
+            this.parent = null;
+            this.fuelCrossFeed = this.part.fuelCrossFeed;
+            this.noCrossFeedNodeKey = this.part.NoCrossFeedNodeKey;
+            this.decoupledInStage = this.DecoupledInStage(this.part);
+            this.isDecoupler = this.IsDecoupler(this.part);
+            this.isDockingNode = this.IsDockingNode();
+            this.isFuelLine = this.part is FuelLine;
+            this.isFuelTank = this.part is FuelTank;
+            this.isStrutOrFuelLine = this.IsStrutOrFuelLine();
+            this.isSolidMotor = this.IsSolidMotor();
+            this.isSepratron = this.IsSepratron();
+            this.inverseStage = this.part.inverseStage;
+            //MonoBehaviour.print("inverseStage = " + inverseStage);
 
-            foreach (PartResource resource in part.Resources)
+            this.cost = this.part.partInfo.cost;
+
+            if (!this.part.Modules.Contains("LaunchClamp") && this.part.physicalSignificance == Part.PhysicalSignificance.FULL)
+                this.baseMass = this.part.mass;
+
+            foreach (PartResource resource in this.part.Resources)
             {
-                resources.Add(resource.info.id, resource.amount);
-            }
-
-            foreach (ModuleEngines engine in part.Modules.OfType<ModuleEngines>())
-                SetEngineInfo(engine.requestedThrust, engine.maxThrust, engine.thrustPercentage, engine.atmosphereCurve, atmosphere);
-
-            if (part.HasModule<MultiModeEngine>())
-            {
-                string mode = part.GetModule<MultiModeEngine>().mode;
-
-                foreach (ModuleEnginesFX engine in part.Modules.OfType<ModuleEnginesFX>())
+                // Make sure it isn't NaN as this messes up the part mass and hence most of the values
+                // This can happen if a resource capacity is 0 and tweakable
+                if (!Double.IsNaN(resource.amount))
                 {
-                    if (engine.engineID == mode)
-                        SetEngineInfo(engine.requestedThrust, engine.maxThrust, engine.thrustPercentage, engine.atmosphereCurve, atmosphere);
-                }
-            }
-
-            decoupledInStage = DecoupledInStage();
-        }
-
-        public void SetEngineInfo(float requestedThrust, float maxThrust, float thrustPercentage, FloatCurve atmosphereCurve, double atmosphere)
-        {
-            float thrustLimiter = (thrustPercentage > 0) ? thrustPercentage / 100f : 0f;
-
-            if (part.vessel != null)
-            {
-                actualThrust += requestedThrust * thrustLimiter;
-                isp = atmosphereCurve.Evaluate((float)part.staticPressureAtm);
-            }
-            else
-            {
-                isp = atmosphereCurve.Evaluate((float)atmosphere);
-            }
-
-            thrust += maxThrust * thrustLimiter;
-        }
-
-        public bool CanDrawNeededResources(List<PartSim> partSims)
-        {
-            foreach (int type in resourceConsumptions.Types)
-            {
-                switch (ResourceContainer.GetResourceFlowMode(type))
-                {
-                    case ResourceFlowMode.NO_FLOW:
-                        if (resources[type] < 1f)
-                        {
-                            return false;
-                        }
-                        break;
-
-                    case ResourceFlowMode.ALL_VESSEL:
-                        foreach (PartSim partSim in partSims)
-                        {
-                            if (partSim.resources[type] > 1f)
-                            {
-                                return true;
-                            }
-                        }
-                        return false;
-
-                    case ResourceFlowMode.STACK_PRIORITY_SEARCH:
-                        if (!CanSupplyResourceRecursive(type))
-                        {
-                            return false;
-                        }
-                        break;
-
-                    default:
-                        return false;
-                }
-            }
-            return true;
-        }
-
-        public void SetResourceConsumptions()
-        {
-            foreach (ModuleEngines engine in part.Modules.OfType<ModuleEngines>())
-            {
-                float thrustLimiter = (engine.thrustPercentage > 0) ? engine.thrustPercentage / 100f : 0f;
-                double flowRate = GetPropellantFlowRate(engine.requestedThrust * thrustLimiter, engine.maxThrust * thrustLimiter, engine.throttleLocked);
-                double flowMass = GetPropellantFlowMass(engine.propellants);
-                SetPropellantConsumptionRate(engine.propellants, flowRate, flowMass);
-            }
-
-            if (part.HasModule<MultiModeEngine>())
-            {
-                string mode = part.GetModule<MultiModeEngine>().mode;
-
-                foreach (ModuleEnginesFX engine in part.Modules.OfType<ModuleEnginesFX>())
-                {
-                    if (engine.engineID == mode)
-                    {
-                        float thrustLimiter = (engine.thrustPercentage > 0) ? engine.thrustPercentage / 100f : 0f;
-                        double flowRate = GetPropellantFlowRate(engine.requestedThrust * thrustLimiter, engine.maxThrust * thrustLimiter, engine.throttleLocked);
-                        double flowMass = GetPropellantFlowMass(engine.propellants);
-                        SetPropellantConsumptionRate(engine.propellants, flowRate, flowMass);
-                    }
-                }
-            }
-        }
-
-        public double GetPropellantFlowRate(float requestedThrust, float maxThrust, bool throttleLocked)
-        {
-            if (part.vessel != null)
-            {
-                if (throttleLocked)
-                {
-                    return maxThrust / (isp * Simulation.STD_GRAVITY);
+                    //MonoBehaviour.print(resource.resourceName + " = " + resource.amount);
+                    this.resources.Add(resource.info.id, resource.amount);
+                    this.resourceFlowStates.Add(resource.info.id, resource.flowState ? 1 : 0);
                 }
                 else
                 {
-                    if (part.vessel.Landed)
+                    MonoBehaviour.print(resource.resourceName + " is NaN. Skipping.");
+                }
+            }
+
+            this.startMass = this.GetMass();
+
+            this.hasVessel = (this.part.vessel != null);
+            this.isLanded = this.hasVessel && this.part.vessel.Landed;
+
+            this.hasMultiModeEngine = this.part.HasModule<MultiModeEngine>();
+            this.hasModuleEnginesFX = this.part.HasModule<ModuleEnginesFX>();
+            this.hasModuleEngines = this.part.HasModule<ModuleEngines>();
+
+            this.isEngine = this.hasMultiModeEngine || this.hasModuleEnginesFX || this.hasModuleEngines;
+
+            //MonoBehaviour.print("Created " + name + ". Decoupled in stage " + decoupledInStage);
+        }
+
+        public void CreateEngineSims(List<EngineSim> allEngines, double atmosphere)
+        {
+            LogMsg log = new LogMsg();
+            log.buf.AppendLine("CreateEngineSims for " + this.name);
+
+            foreach (PartModule partMod in this.part.Modules)
+            {
+                log.buf.AppendLine("Module: " + partMod.moduleName);
+            }
+
+            if (this.hasMultiModeEngine)
+            {
+                // A multi-mode engine has multiple ModuleEnginesFX but only one is active at any point
+                // The mode of the engine is the engineID of the ModuleEnginesFX that is active
+                string mode = this.part.GetModule<MultiModeEngine>().mode;
+
+                foreach (ModuleEnginesFX engine in this.part.GetModules<ModuleEnginesFX>())
+                {
+                    if (engine.engineID == mode)
                     {
-                        return Math.Max(0.000001d, maxThrust * FlightInputHandler.state.mainThrottle) / (isp * Simulation.STD_GRAVITY);
-                    }
-                    else
-                    {
-                        if (requestedThrust > 0)
-                            return requestedThrust / (isp * Simulation.STD_GRAVITY);
-                        else
-                            return maxThrust / (isp * Simulation.STD_GRAVITY);
+                        EngineSim engineSim = new EngineSim(this, atmosphere,
+                                                            engine.maxThrust,
+                                                            engine.thrustPercentage,
+                                                            engine.requestedThrust,
+                                                            engine.atmosphereCurve,
+                                                            engine.throttleLocked,
+                                                            engine.propellants);
+                        allEngines.Add(engineSim);
                     }
                 }
             }
             else
             {
-                return maxThrust / (isp * Simulation.STD_GRAVITY);
-            }
-        }
 
-        public double GetPropellantFlowMass(List<Propellant> propellants)
-        {
-            double flowMass = 0d;
-            foreach (Propellant propellant in propellants)
-            {
-                flowMass += propellant.ratio * ResourceContainer.GetResourceDensity(propellant.id);
-            }
-            return flowMass;
-        }
-
-        public void SetPropellantConsumptionRate(List<Propellant> propellants, double flowRate, double flowMass)
-        {
-            foreach (Propellant propellant in propellants)
-            {
-                if (propellant.name == "ElectricCharge" || propellant.name == "IntakeAir")
+                if (this.hasModuleEnginesFX)
                 {
-                    continue;
+                    foreach (ModuleEnginesFX engine in this.part.GetModules<ModuleEnginesFX>())
+                    {
+                        EngineSim engineSim = new EngineSim(this, atmosphere,
+                                                            engine.maxThrust,
+                                                            engine.thrustPercentage,
+                                                            engine.requestedThrust,
+                                                            engine.atmosphereCurve,
+                                                            engine.throttleLocked,
+                                                            engine.propellants);
+                        allEngines.Add(engineSim);
+                    }
                 }
 
-                double consumptionRate = propellant.ratio * flowRate / flowMass;
-                resourceConsumptions.Add(propellant.id, consumptionRate);
-            }
-        }
-
-        public void SetResourceDrainRates(List<PartSim> partSims)
-        {
-            foreach (int type in resourceConsumptions.Types)
-            {
-                double amount = resourceConsumptions[type];
-
-                switch (ResourceContainer.GetResourceFlowMode(type))
+                if (this.hasModuleEngines)
                 {
-                    case ResourceFlowMode.NO_FLOW:
-                        this.resourceDrains.Add(type, amount);
-                        break;
-
-                    case ResourceFlowMode.ALL_VESSEL:
-                        SetResourceDrainRateAllVessel(type, amount, partSims);
-                        break;
-
-                    case ResourceFlowMode.STACK_PRIORITY_SEARCH:
-                        SetResourceDrainRateRecursive(type, amount);
-                        break;
-                }
-            }
-        }
-
-        public void SetSourceNodes(Hashtable partSimLookup)
-        {
-            foreach (PartSim partSim in partSimLookup.Values)
-            {
-                if (partSim.part is FuelLine && (partSim.part as FuelLine).target == this.part)
-                {
-                    sourceParts.Add(partSim);
+                    foreach (ModuleEngines engine in this.part.GetModules<ModuleEngines>())
+                    {
+                        EngineSim engineSim = new EngineSim(this, atmosphere,
+                                                            engine.maxThrust,
+                                                            engine.thrustPercentage,
+                                                            engine.requestedThrust,
+                                                            engine.atmosphereCurve,
+                                                            engine.throttleLocked,
+                                                            engine.propellants);
+                        allEngines.Add(engineSim);
+                    }
                 }
             }
 
+            log.Flush();
+        }
+
+
+        public void SetupAttachNodes(Dictionary<Part, PartSim> partSimLookup)
+        {
+            this.attachNodes.Clear();
             foreach (AttachNode attachNode in this.part.attachNodes)
             {
-                if (attachNode.attachedPart != null && attachNode.nodeType == AttachNode.NodeType.Stack &&
-                    (attachNode.attachedPart.fuelCrossFeed || attachNode.attachedPart is FuelTank) &&
-                    !(this.part.NoCrossFeedNodeKey.Length > 0 && attachNode.id.Contains(this.part.NoCrossFeedNodeKey)))
+                if (attachNode.attachedPart != null)
                 {
-                    sourceParts.Add((PartSim)partSimLookup[attachNode.attachedPart]);
+                    PartSim attachedSim;
+                    if (partSimLookup.TryGetValue(attachNode.attachedPart, out attachedSim))
+                    {
+                        this.attachNodes.Add(new AttachNodeSim(attachedSim, attachNode.id, attachNode.nodeType));
+                    }
+                    else
+                    {
+                        MonoBehaviour.print("No PartSim for attached part (" + attachNode.attachedPart.partInfo.name + ")");
+                    }
                 }
             }
 
-            if (this.part.parent != null && this.part.parent.fuelCrossFeed == true && !IsDecoupler(this.part.parent))
+            if (this.isFuelLine)
             {
-                sourceParts.Add((PartSim)partSimLookup[this.part.parent]);
-            }
-        }
-
-        public void RemoveSourcePart(PartSim part)
-        {
-            if (sourceParts.Contains(part))
-            {
-                sourceParts.Remove(part);
-            }
-        }
-
-        public int DecoupledInStage(Part part = null, int stage = -1)
-        {
-            if (part == null)
-            {
-                part = this.part;
-            }
-
-            if (IsDecoupler(part))
-            {
-                if (part.inverseStage > stage)
+                if ((this.part as FuelLine).target != null)
                 {
-                    stage = part.inverseStage;
+                    PartSim targetSim;
+                    if (partSimLookup.TryGetValue((this.part as FuelLine).target, out targetSim))
+                    {
+                        this.fuelLineTarget = targetSim;
+                    }
+                }
+                else
+                {
+                    this.fuelLineTarget = null;
                 }
             }
 
-            if (part.parent != null)
+            if (this.part.parent != null)
             {
-                stage = DecoupledInStage(part.parent, stage);
+                this.parent = null;
+                if (!partSimLookup.TryGetValue(this.part.parent, out this.parent))
+                {
+                    MonoBehaviour.print("No PartSim for parent part (" + this.part.parent.partInfo.name + ")");
+                }
+            }
+        }
+
+        public int DecoupledInStage(Part thePart, int stage = -1)
+        {
+            if (this.IsDecoupler(thePart))
+            {
+                if (thePart.inverseStage > stage)
+                {
+                    stage = thePart.inverseStage;
+                }
+            }
+
+            if (thePart.parent != null)
+            {
+                stage = this.DecoupledInStage(thePart.parent, stage);
             }
 
             return stage;
         }
 
-        public void DrainResources(double time)
+        private bool IsDecoupler(Part thePart)
         {
-            foreach (int type in resourceDrains.Types)
-            {
-                resources.Add(type, -time * resourceDrains[type]);
-            }
+            return thePart is Decoupler || thePart is RadialDecoupler || thePart.Modules.OfType<ModuleDecouple>().Count() > 0 || thePart.Modules.OfType<ModuleAnchoredDecoupler>().Count() > 0;
         }
 
-        public double TimeToDrainResource()
+        private bool IsDockingNode()
         {
-            double time = double.MaxValue;
-
-            foreach (int type in resourceDrains.Types)
-            {
-                if (resourceDrains[type] > 0)
-                {
-                    time = Math.Min(time, resources[type] / resourceDrains[type]);
-                }
-            }
-
-            return time;
+            return this.part.Modules.OfType<ModuleDockingNode>().Count() > 0;
         }
 
-        public bool IsDecoupler(Part part = null)
+        private bool IsStrutOrFuelLine()
         {
-
-            if (part == null)
-            {
-                part = this.part;
-            }
-
-            return part is Decoupler || part is RadialDecoupler || part.Modules.OfType<ModuleDecouple>().Count() > 0 || part.Modules.OfType<ModuleAnchoredDecoupler>().Count() > 0;
+            return (this.part is StrutConnector || this.part is FuelLine) ? true : false;
         }
 
-        private void SetResourceDrainRateAllVessel(int type, double amount, List<PartSim> partSims)
+        private bool IsSolidMotor()
         {
-            PartSim source = null;
-
-            foreach (PartSim partSim in partSims)
+            foreach (ModuleEngines engine in this.part.Modules.OfType<ModuleEngines>())
             {
-                if (partSim.resources[type] > 1f)
-                {
-                    if (source == null || partSim.InverseStage > source.InverseStage)
-                    {
-                        source = partSim;
-                    }
-                }
-            }
-
-            if (source != null)
-            {
-                source.resourceDrains.Add(type, amount);
-            }
-        }
-
-        private void SetResourceDrainRateRecursive(int type, double amount, List<PartSim> visited = null)
-        {
-            if (visited == null)
-            {
-                visited = new List<PartSim>();
-            }
-
-            List<PartSim> newVisited = new List<PartSim>(visited);
-            newVisited.Add(this);
-
-            List<PartSim> fuelLines = new List<PartSim>();
-            foreach (PartSim partSim in sourceParts)
-            {
-                if (partSim.part is FuelLine && !visited.Contains(partSim))
-                {
-                    if (partSim.CanSupplyResourceRecursive(type, newVisited))
-                    {
-                        fuelLines.Add(partSim);
-                    }
-                }
-            }
-
-            if (fuelLines.Count > 0)
-            {
-                foreach (PartSim fuelLine in fuelLines)
-                {
-                    fuelLine.SetResourceDrainRateRecursive(type, amount / fuelLines.Count, newVisited);
-                }
-                return;
-            }
-
-            foreach (PartSim partSim in sourceParts)
-            {
-                if (!visited.Contains(partSim) && partSim.CanSupplyResourceRecursive(type, newVisited))
-                {
-                    if (DrainFromSourceBeforeSelf(type, partSim))
-                    {
-                        partSim.SetResourceDrainRateRecursive(type, amount, newVisited);
-                        return;
-                    }
-                }
-            }
-
-            if (this.resources[type] > 0)
-            {
-                resourceDrains.Add(type, amount);
-            }
-        }
-
-        private bool CanSupplyResourceRecursive(int type, List<PartSim> visited = null)
-        {
-            if (visited == null)
-            {
-                visited = new List<PartSim>();
-            }
-
-            if (this.resources[type] > 1f)
-            {
-                return true;
-            }
-
-            List<PartSim> newVisited = new List<PartSim>(visited);
-            newVisited.Add(this);
-
-            foreach (PartSim partSim in sourceParts)
-            {
-                if (!visited.Contains(partSim))
-                {
-                    if (partSim.CanSupplyResourceRecursive(type, newVisited))
-                    {
-                        return true;
-                    }
-                }
+                if (engine.throttleLocked)
+                    return true;
             }
 
             return false;
         }
 
-        private bool DrainFromSourceBeforeSelf(int type, PartSim source)
+        private bool IsSepratron()
         {
-            if (resources[type] < 1f)
-            {
+            if (!this.part.ActivatesEvenIfDisconnected)
+                return false;
+
+            if (this.part is SolidRocket)
                 return true;
+
+            if (this.part.Modules.OfType<ModuleEngines>().Count() == 0)
+                return false;
+
+            if (this.part.Modules.OfType<ModuleEngines>().First().throttleLocked == true)
+                return true;
+
+            return false;
+        }
+
+        public void ReleasePart()
+        {
+            this.part = null;
+        }
+
+
+        // All functions below this point must not rely on the part member (it may be null)
+        //
+
+        public HashSet<PartSim> GetSourceSet(int type, List<PartSim> allParts, List<PartSim> allFuelLines, HashSet<PartSim> visited)
+        {
+            //MonoBehaviour.print("GetSourceSet(" + ResourceContainer.GetResourceName(type) + ") for " + name + ":" + partId);
+
+            HashSet<PartSim> allSources = new HashSet<PartSim>();
+            HashSet<PartSim> partSources = new HashSet<PartSim>();
+
+            // Rule 1: Each part can be only visited once, If it is visited for second time in particular search it returns empty list.
+            if (visited.Contains(this))
+            {
+                //MonoBehaviour.print("Returning empty set, already visited (" + name + ":" + partId + ")");
+                return allSources;
             }
 
-            if (source.part != this.part.parent)
-            {
-                return true;
-            }
+            //MonoBehaviour.print("Adding this to visited");
+            visited.Add(this);
 
-            if (this.part.parent == null)
+            // Rule 2: Part performs scan on start of every fuel pipe ending in it. This scan is done in order in which pipes were installed. Then it makes an union of fuel tank sets each pipe scan returned. If the resulting list is not empty, it is returned as result.
+            //MonoBehaviour.print("foreach fuel line");
+            foreach (PartSim partSim in allFuelLines)
             {
-                return true;
-            }
-
-            foreach (AttachNode attachNode in this.part.parent.attachNodes)
-            {
-                if (attachNode.attachedPart == this.part && attachNode.nodeType != AttachNode.NodeType.Stack)
+                if (partSim.fuelLineTarget == this)
                 {
-                    return false;
+                    //MonoBehaviour.print("Adding fuel line as source (" + partSim.name + ":" + partSim.partId + ")");
+                    partSources = partSim.GetSourceSet(type, allParts, allFuelLines, visited);
+                    if (partSources.Count > 0)
+                    {
+                        allSources.UnionWith(partSources);
+                        partSources.Clear();
+                    }
                 }
             }
 
-            return true;
+            if (allSources.Count > 0)
+            {
+                //MonoBehaviour.print("Returning " + allSources.Count + " fuel line sources (" + name + ":" + partId + ")");
+                return allSources;
+            }
+
+            // Rule 3: If the part is not crossfeed capable, it returns empty list.
+            //MonoBehaviour.print("Test crossfeed");
+            if (!this.fuelCrossFeed)
+            {
+                //MonoBehaviour.print("Returning empty set, no cross feed (" + name + ":" + partId + ")");
+                return allSources;
+            }
+
+            // Rule 4: Part performs scan on each of its axially mounted neighbors. 
+            //  Couplers (bicoupler, tricoupler, ...) are an exception, they only scan one attach point on the single attachment side, skip the points on the side where multiple points are. [Experiment]
+            //  Again, the part creates union of scan lists from each of its neighbor and if it is not empty, returns this list. 
+            //  The order in which mount points of a part are scanned appears to be fixed and defined by the part specification file. [Experiment]
+            //MonoBehaviour.print("foreach attach node");
+            foreach (AttachNodeSim attachSim in this.attachNodes)
+            {
+                if (attachSim.attachedPartSim != null)
+                {
+                    if (attachSim.nodeType == AttachNode.NodeType.Stack &&
+                        (attachSim.attachedPartSim.fuelCrossFeed || attachSim.attachedPartSim.isFuelTank) &&
+                        !(this.noCrossFeedNodeKey != null && this.noCrossFeedNodeKey.Length > 0 && attachSim.id.Contains(this.noCrossFeedNodeKey)))
+                    {
+                        //MonoBehaviour.print("Adding attached part as source (" + attachSim.attachedPartSim.name + ":" + attachSim.attachedPartSim.partId + ")");
+                        partSources = attachSim.attachedPartSim.GetSourceSet(type, allParts, allFuelLines, visited);
+                        if (partSources.Count > 0)
+                        {
+                            allSources.UnionWith(partSources);
+                            partSources.Clear();
+                        }
+                    }
+                }
+            }
+
+            if (allSources.Count > 0)
+            {
+                //MonoBehaviour.print("Returning " + allSources.Count + " attached sources (" + name + ":" + partId + ")");
+                return allSources;
+            }
+
+            // Rule 5: If the part is fuel container for searched type of fuel (i.e. it has capability to contain that type of fuel and the fuel type was not disabled [Experiment]) and it contains fuel, it returns itself.
+            // Rule 6: If the part is fuel container for searched type of fuel (i.e. it has capability to contain that type of fuel and the fuel type was not disabled) but it does not contain the requested fuel, it returns empty list. [Experiment]
+            //MonoBehaviour.print("testing enabled container");
+            if (this.resources.HasType(type) && this.resourceFlowStates[type] != 0)
+            {
+                if (this.resources[type] > 1f)
+                    allSources.Add(this);
+
+                //MonoBehaviour.print("Returning this as only source (" + name + ":" + partId + ")");
+                return allSources;
+            }
+
+            // Rule 7: If the part is radially attached to another part and it is child of that part in the ship's tree structure, it scans its parent and returns whatever the parent scan returned. [Experiment] [Experiment]
+            if (this.parent != null)
+            {
+                allSources = this.parent.GetSourceSet(type, allParts, allFuelLines, visited);
+                if (allSources.Count > 0)
+                {
+                    //MonoBehaviour.print("Returning " + allSources.Count + " parent sources (" + name + ":" + partId + ")");
+                    return allSources;
+                }
+            }
+
+            // Rule 8: If all preceding rules failed, part returns empty list.
+            //MonoBehaviour.print("Returning empty set, no sources found (" + name + ":" + partId + ")");
+            return allSources;
         }
 
-        public double GetStartMass(int currentStage)
+
+        public void RemoveAttachedParts(HashSet<PartSim> partSims)
         {
-            double mass = 0d;
-
-            if (part.Modules.Contains("LaunchClamp"))
+            // Loop through the attached parts
+            foreach (AttachNodeSim attachSim in this.attachNodes)
             {
-                return 0d;
+                // If the part is in the set then "remove" it by clearing the PartSim reference
+                if (partSims.Contains(attachSim.attachedPartSim))
+                    attachSim.attachedPartSim = null;
             }
-
-            if (part.physicalSignificance == Part.PhysicalSignificance.NONE)
-            {
-                mass = part.GetResourceMass();
-            }
-            else
-            {
-                mass = part.mass + part.GetResourceMass();
-            }
-
-            return mass;
         }
 
-        public double GetMass(int currentStage)
+
+        public void DrainResources(double time)
         {
-            double mass = 0d;
-
-            if (part.Modules.Contains("LaunchClamp"))
+            //MonoBehaviour.print("DrainResources(" + name + ":" + partId + ", " + time + ")");
+            foreach (int type in this.resourceDrains.Types)
             {
-                return 0d;
+                //MonoBehaviour.print("draining " + (time * resourceDrains[type]) + " " + ResourceContainer.GetResourceName(type));
+                this.resources.Add(type, -time * this.resourceDrains[type]);
+                //MonoBehaviour.print(ResourceContainer.GetResourceName(type) + " left = " + resources[type]);
+            }
+        }
+
+        public double TimeToDrainResource()
+        {
+            //MonoBehaviour.print("TimeToDrainResource(" + name + ":" + partId + ")");
+            double time = double.MaxValue;
+
+            foreach (int type in this.resourceDrains.Types)
+            {
+                //MonoBehaviour.print("type = " + ResourceContainer.GetResourceName(type) + "  amount = " + resources[type] + "  rate = " + resourceDrains[type]);
+                if (this.resourceDrains[type] > 0)
+                    time = Math.Min(time, this.resources[type] / this.resourceDrains[type]);
             }
 
-            if (part.physicalSignificance == Part.PhysicalSignificance.FULL)
-            {
-                mass = part.mass;
-            }
+            //if (time < double.MaxValue)
+            //    MonoBehaviour.print("TimeToDrainResource(" + name + ":" + partId + ") = " + time);
+            return time;
+        }
 
-            foreach (int type in resources.Types)
-            {
-                mass += resources.GetResourceMass(type);
-            }
+        public double GetStartMass()
+        {
+            return this.startMass;
+        }
+
+        public double GetMass()
+        {
+            double mass = this.baseMass;
+
+            foreach (int type in this.resources.Types)
+                mass += this.resources.GetResourceMass(type);
 
             return mass;
         }
@@ -498,28 +481,56 @@ namespace KerbalEngineer.Simulation
             }
         }
 
-        public int InverseStage
+#if LOG
+        public String DumpPartAndParentsToBuffer(StringBuilder buffer, String prefix)
         {
-            get
+            if (parent != null)
             {
-                return part.inverseStage;
+                prefix = parent.DumpPartAndParentsToBuffer(buffer, prefix) + " ";
             }
+
+            DumpPartToBuffer(buffer, prefix);
+
+            return prefix;
         }
 
-        public bool IsSolidMotor
+        public void DumpPartToBuffer(StringBuilder buffer, String prefix, List<PartSim> allParts = null)
         {
-            get
+            buffer.Append(prefix);
+            buffer.Append(name);
+            buffer.AppendFormat(":[id = {0:d}, decouple = {1:d}, invstage = {2:d}", partId, decoupledInStage, inverseStage);
+
+            buffer.AppendFormat(", isSep = {0}", isSepratron);
+
+            foreach (int type in resources.Types)
+                buffer.AppendFormat(", {0} = {1:g6}", ResourceContainer.GetResourceName(type), resources[type]);
+
+            if (attachNodes.Count > 0)
             {
-                foreach (ModuleEngines engine in part.Modules.OfType<ModuleEngines>())
+                buffer.Append(", attached = <");
+                attachNodes[0].DumpToBuffer(buffer);
+                for (int i = 1; i < attachNodes.Count; i++)
                 {
-                    if (engine.throttleLocked)
-                    {
-                        return true;
-                    }
+                    buffer.Append(", ");
+                    attachNodes[i].DumpToBuffer(buffer);
                 }
+                buffer.Append(">");
+            }
 
-                return false;
+            // Add more info here
+
+            buffer.Append("]\n");
+
+            if (allParts != null)
+            {
+                String newPrefix = prefix + " ";
+                foreach (PartSim partSim in allParts)
+                {
+                    if (partSim.parent == this)
+                        partSim.DumpPartToBuffer(buffer, newPrefix, allParts);
+                }
             }
         }
+#endif
     }
 }

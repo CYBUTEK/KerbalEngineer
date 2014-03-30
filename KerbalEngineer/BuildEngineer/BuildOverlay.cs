@@ -146,18 +146,18 @@ namespace KerbalEngineer.BuildEngineer
                 }
 
                 // Configure the simulation parameters based on the selected reference body.
-                SimulationManager.Instance.Gravity = CelestialBodies.Instance.SelectedBodyInfo.Gravity;
+                SimulationManager.Gravity = CelestialBodies.Instance.SelectedBodyInfo.Gravity;
 
                 if (BuildAdvanced.Instance.UseAtmosphericDetails)
                 {
-                    SimulationManager.Instance.Atmosphere = CelestialBodies.Instance.SelectedBodyInfo.Atmosphere * 0.01d;
+                    SimulationManager.Atmosphere = CelestialBodies.Instance.SelectedBodyInfo.Atmosphere * 0.01d;
                 }
                 else
                 {
-                    SimulationManager.Instance.Atmosphere = 0;
+                    SimulationManager.Atmosphere = 0;
                 }
 
-                SimulationManager.Instance.TryStartSimulation();
+                SimulationManager.TryStartSimulation();
             }
             catch
             {
@@ -174,7 +174,7 @@ namespace KerbalEngineer.BuildEngineer
                     return;
                 }
 
-                SimulationManager.Instance.RequestSimulation();
+                SimulationManager.RequestSimulation();
 
                 this.windowPosition = GUILayout.Window(this.windowId, this.windowPosition, this.Window, string.Empty, this.windowStyle);
 
@@ -244,9 +244,9 @@ namespace KerbalEngineer.BuildEngineer
 
             // Details
             GUILayout.BeginVertical(GUILayout.Width(100.0f));
-            GUILayout.Label(SimulationManager.Instance.LastStage.partCount.ToString(), this.infoStyle);
-            GUILayout.Label(SimulationManager.Instance.LastStage.totalDeltaV.ToString("#,0.") + " m/s", this.infoStyle);
-            GUILayout.Label(SimulationManager.Instance.LastStage.TWR, this.infoStyle);
+            //GUILayout.Label(SimulationManager.Instance.LastStage.partCount.ToString(), this.infoStyle);
+            GUILayout.Label(SimulationManager.LastStage.TotalDeltaV.ToString("#,0.") + " m/s", this.infoStyle);
+            //GUILayout.Label(SimulationManager.Instance.LastStage.TWR, this.infoStyle);
             GUILayout.EndVertical();
 
             GUILayout.EndHorizontal();

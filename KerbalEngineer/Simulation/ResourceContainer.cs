@@ -1,8 +1,7 @@
-﻿// Name:    Kerbal Engineer Redux
+﻿// Kerbal Engineer Redux
 // Author:  CYBUTEK
 // License: Attribution-NonCommercial-ShareAlike 3.0 Unported
 
-using System;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -16,9 +15,9 @@ namespace KerbalEngineer.Simulation
         {
             get
             {
-                if (resources.ContainsKey(type))
+                if (this.resources.ContainsKey(type))
                 {
-                    return (double)resources[type];
+                    return (double)this.resources[type];
                 }
                 else
                 {
@@ -27,15 +26,20 @@ namespace KerbalEngineer.Simulation
             }
             set
             {
-                if (resources.ContainsKey(type))
+                if (this.resources.ContainsKey(type))
                 {
-                    resources[type] = value;
+                    this.resources[type] = value;
                 }
                 else
                 {
-                    resources.Add(type, value);
+                    this.resources.Add(type, value);
                 }
             }
+        }
+
+        public bool HasType(int type)
+        {
+            return this.resources.ContainsKey(type);
         }
 
         public List<int> Types
@@ -44,7 +48,7 @@ namespace KerbalEngineer.Simulation
             {
                 List<int> types = new List<int>();
 
-                foreach (int key in resources.Keys)
+                foreach (int key in this.resources.Keys)
                 {
                     types.Add(key);
                 }
@@ -59,7 +63,7 @@ namespace KerbalEngineer.Simulation
             {
                 double mass = 0d;
 
-                foreach (double resource in resources.Values)
+                foreach (double resource in this.resources.Values)
                 {
                     mass += resource;
                 }
@@ -72,9 +76,9 @@ namespace KerbalEngineer.Simulation
         {
             get
             {
-                foreach (int type in resources.Keys)
+                foreach (int type in this.resources.Keys)
                 {
-                    if ((double)resources[type] > 1d)
+                    if ((double)this.resources[type] > 1d)
                     {
                         return false;
                     }
@@ -86,32 +90,32 @@ namespace KerbalEngineer.Simulation
 
         public void Add(int type, double amount)
         {
-            if (resources.ContainsKey(type))
+            if (this.resources.ContainsKey(type))
             {
-                resources[type] = (double)resources[type] + amount;
+                this.resources[type] = (double)this.resources[type] + amount;
             }
             else
             {
-                resources.Add(type, amount);
+                this.resources.Add(type, amount);
             }
         }
 
         public void Reset()
         {
-            resources = new Hashtable();
+            this.resources = new Hashtable();
         }
 
         public void Debug()
         {
-            foreach (int key in resources.Keys)
+            foreach (int key in this.resources.Keys)
             {
-                UnityEngine.MonoBehaviour.print(" -> " + GetResourceName(key) + " = " + resources[key]);
+                UnityEngine.MonoBehaviour.print(" -> " + GetResourceName(key) + " = " + this.resources[key]);
             }
         }
 
         public double GetResourceMass(int type)
         {
-            return (double)resources[type] * GetResourceDensity(type);
+            return (double)this.resources[type] * GetResourceDensity(type);
         }
 
         public static ResourceFlowMode GetResourceFlowMode(int type)

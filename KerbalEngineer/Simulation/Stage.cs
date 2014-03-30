@@ -1,134 +1,48 @@
-﻿// Project:	KerbalEngineer
-// Author:	CYBUTEK
-// License:	Attribution-NonCommercial-ShareAlike 3.0 Unported
-
-#region Using Directives
-
-using KerbalEngineer.Extensions;
-
-#endregion
+﻿// Kerbal Engineer Redux
+// Author:  CYBUTEK
+// License: Attribution-NonCommercial-ShareAlike 3.0 Unported
 
 namespace KerbalEngineer.Simulation
 {
     public class Stage
     {
-        #region Fields
-
-        public double actualThrust = 0;
-        public double actualThrustToWeight = 0;
-        public int cost = 0;
-        public double deltaV = 0;
-        public double inverseTotalDeltaV = 0;
-        public double isp = 0;
-        public double mass = 0;
-        public int number = 0;
-        public int partCount = 0;
-        public double thrust = 0;
-        public double thrustToWeight = 0;
-        public double time = 0;
-        public int totalCost = 0;
-        public double totalDeltaV = 0;
-        public double totalMass = 0;
-        public double totalTime = 0;
-
-        #endregion
-
-        #region Properties
-
-        public string Number
+        public int Number = 0;
+        public int Cost = 0;
+        public int TotalCost = 0;
+        public double Time = 0f;
+        public double TotalTime = 0f;
+        public double Mass = 0f;
+        public double TotalMass = 0f;
+        public double Isp = 0f;
+        public double Thrust = 0f;
+        public double ActualThrust = 0f;
+        public double ThrustToWeight = 0f;
+        public double ActualThrustToWeight = 0f;
+        public double DeltaV = 0f;
+        public double TotalDeltaV = 0f;
+        public double InverseTotalDeltaV = 0f;
+#if LOG
+        public void Dump()
         {
-            get { return "S" + this.number; }
+            StringBuilder str = new StringBuilder("", 512);
+            str.AppendFormat("number        : {0:d}\n", number);
+            str.AppendFormat("cost          : {0:d}\n", cost);
+            str.AppendFormat("totalCost     : {0:d}\n", totalCost);
+            str.AppendFormat("time          : {0:g6}\n", time);
+            str.AppendFormat("totalTime     : {0:g6}\n", totalTime);
+            str.AppendFormat("mass          : {0:g6}\n", mass);
+            str.AppendFormat("totalMass     : {0:g6}\n", totalMass);
+            str.AppendFormat("isp           : {0:g6}\n", isp);
+            str.AppendFormat("thrust        : {0:g6}\n", thrust);
+            str.AppendFormat("actualThrust  : {0:g6}\n", actualThrust);
+            str.AppendFormat("thrustToWeight: {0:g6}\n", thrustToWeight);
+            str.AppendFormat("actualTWR     : {0:g6}\n", actualThrustToWeight);
+            str.AppendFormat("deltaV        : {0:g6}\n", deltaV);
+            str.AppendFormat("totalDeltaV   : {0:g6}\n", totalDeltaV);
+            str.AppendFormat("invTotDeltaV  : {0:g6}\n", inverseTotalDeltaV);
+            
+            MonoBehaviour.print(str);
         }
-
-        public string Parts
-        {
-            get { return this.partCount.ToString(); }
-        }
-
-        public string Cost
-        {
-            get { return this.cost + " / " + this.totalCost; }
-        }
-
-        public string Mass
-        {
-            get
-            {
-                if (HighLogic.LoadedSceneIsFlight)
-                {
-                    return this.totalMass.ToMass();
-                }
-                return this.mass.ToMass(false) + " / " + this.totalMass.ToMass();
-            }
-        }
-
-        public string Isp
-        {
-            get { return this.isp.ToString("#,0.00") + "s"; }
-        }
-
-        public string Thrust
-        {
-            get { return this.thrust.ToForce(); }
-        }
-
-        public string ActualThrust
-        {
-            get { return this.actualThrust.ToForce(); }
-        }
-
-        public string TWR
-        {
-            get
-            {
-                if (HighLogic.LoadedSceneIsFlight)
-                {
-                    return this.actualThrustToWeight.ToString("0.00") + " / " + this.thrustToWeight.ToString("0.00");
-                }
-                return this.thrustToWeight.ToString("0.00");
-            }
-        }
-
-        public string DeltaV
-        {
-            get
-            {
-                if (HighLogic.LoadedSceneIsFlight)
-                {
-                    return this.deltaV.ToSpeed();
-                }
-                return this.deltaV.ToString("#,0.") + " / " + this.inverseTotalDeltaV.ToString("#,0.") + "m/s";
-            }
-        }
-
-        public string TotalDeltaV
-        {
-            get
-            {
-                if (HighLogic.LoadedSceneIsFlight)
-                {
-                    return this.totalDeltaV.ToSpeed();
-                }
-                return this.inverseTotalDeltaV.ToString("#,0.") + "m/s";
-            }
-        }
-
-        public string Time
-        {
-            get { return this.time.ToTime(); }
-        }
-
-        #endregion
-
-        #region Initialisation
-
-        public Stage() { }
-
-        public Stage(int stageNumber)
-        {
-            this.number = stageNumber;
-        }
-
-        #endregion
+#endif
     }
 }

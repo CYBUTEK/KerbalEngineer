@@ -62,6 +62,11 @@ namespace KerbalEngineer.Extensions
             return (T)Convert.ChangeType(part.Modules[classId], typeof (T));
         }
 
+        public static List<T> GetModules<T>(this Part part) where T : PartModule
+        {
+            return part.Modules.OfType<T>().ToList();
+        }
+
         /// <summary>
         ///     Gets a ModuleEngines typed PartModule.
         /// </summary>
