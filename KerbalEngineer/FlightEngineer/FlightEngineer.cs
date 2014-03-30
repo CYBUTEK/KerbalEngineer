@@ -1,10 +1,12 @@
-﻿// Name:    Kerbal Engineer Redux
-// Author:  CYBUTEK
-// License: Attribution-NonCommercial-ShareAlike 3.0 Unported
+﻿// Project:	KerbalEngineer
+// Author:	CYBUTEK
+// License:	Attribution-NonCommercial-ShareAlike 3.0 Unported
+
+#region Using Directives
 
 using KerbalEngineer.Extensions;
-using KerbalEngineer.Settings;
-using UnityEngine;
+
+#endregion
 
 namespace KerbalEngineer.FlightEngineer
 {
@@ -15,7 +17,9 @@ namespace KerbalEngineer.FlightEngineer
         public void Start()
         {
             if (HighLogic.LoadedSceneIsFlight)
-                RenderingManager.AddToPostDrawQueue(0, OnDraw);
+            {
+                RenderingManager.AddToPostDrawQueue(0, this.OnDraw);
+            }
         }
 
         #endregion
@@ -45,32 +49,40 @@ namespace KerbalEngineer.FlightEngineer
 
         #region Save and Load
 
-        // Saves the settings when the module is set to save.
+        /// <summary>
+        ///     Saves the settings when the module is told to save.
+        /// </summary>
         public override void OnSave(ConfigNode node)
         {
+            if (!HighLogic.LoadedSceneIsFlight)
+            {
+                return;
+            }
+
             try
             {
-                if (HighLogic.LoadedSceneIsFlight)
-                {
-                    SectionList.Instance.Save();
-                    FlightController.Instance.Save();
-                    FlightDisplay.Instance.Save();
-                }
+                SectionList.Instance.Save();
+                FlightController.Instance.Save();
+                FlightDisplay.Instance.Save();
             }
             catch { }
         }
 
-        // Loads the settings when the module is set to load.
+        /// <summary>
+        ///     Loads the settings when the module is told to load.
+        /// </summary>
         public override void OnLoad(ConfigNode node)
         {
+            if (!HighLogic.LoadedSceneIsFlight)
+            {
+                return;
+            }
+
             try
             {
-                if (HighLogic.LoadedSceneIsFlight)
-                {
-                    SectionList.Instance.Load();
-                    FlightController.Instance.Load();
-                    FlightDisplay.Instance.Load();
-                }
+                SectionList.Instance.Load();
+                FlightController.Instance.Load();
+                FlightDisplay.Instance.Load();
             }
             catch { }
         }

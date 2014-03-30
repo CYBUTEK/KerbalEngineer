@@ -1,9 +1,14 @@
-﻿// Name:    Kerbal Engineer Redux
-// Author:  CYBUTEK
-// License: Attribution-NonCommercial-ShareAlike 3.0 Unported
+﻿// Project:	KerbalEngineer
+// Author:	CYBUTEK
+// License:	Attribution-NonCommercial-ShareAlike 3.0 Unported
+
+#region Using Directives
 
 using System.IO;
+
 using UnityEngine;
+
+#endregion
 
 namespace KerbalEngineer.BuildEngineer
 {
@@ -12,42 +17,57 @@ namespace KerbalEngineer.BuildEngineer
     {
         #region Fields
 
-        private Rect _position = new Rect(Screen.width / 2f - 300f, 0f, 50f, 45f);
-        private GUIStyle _tooltipTitleStyle, _tooltipInfoStyle;
-        private Texture2D _normal = new Texture2D(50, 45, TextureFormat.RGBA32, false);
-        private Texture2D _hover = new Texture2D(50, 45, TextureFormat.RGBA32, false);
-        private Texture2D _down = new Texture2D(50, 45, TextureFormat.RGBA32, false);
-        private Texture2D _locked = new Texture2D(50, 45, TextureFormat.RGBA32, false);
+        private readonly Texture2D down = new Texture2D(50, 45, TextureFormat.RGBA32, false);
+        private readonly Texture2D hover = new Texture2D(50, 45, TextureFormat.RGBA32, false);
+        private readonly Texture2D locked = new Texture2D(50, 45, TextureFormat.RGBA32, false);
+        private readonly Texture2D normal = new Texture2D(50, 45, TextureFormat.RGBA32, false);
 
-        private bool _clicked = false;
-        private bool _hasInitStyles = false;
+        private bool clicked;
+        private Rect position = new Rect(Screen.width * 0.5f - 300.0f, 0, 50.0f, 45.0f);
+
+        #region Styles
+
+        private GUIStyle tooltipInfoStyle;
+        private GUIStyle tooltipTitleStyle;
+
+        #endregion
 
         #endregion
 
         #region Initialisation
 
-        public void Start()
+        private void Start()
         {
             // Load the button textures directly from the PNG files. (Would of used GameDatabase but it compresses them so it looks shit!)
-            _normal.LoadImage(File.ReadAllBytes(EngineerGlobals.AssemblyPath + "GUI/BuildButton/Normal.png"));
-            _hover.LoadImage(File.ReadAllBytes(EngineerGlobals.AssemblyPath + "GUI/BuildButton/Hover.png"));
-            _down.LoadImage(File.ReadAllBytes(EngineerGlobals.AssemblyPath + "GUI/BuildButton/Down.png"));
-            _locked.LoadImage(File.ReadAllBytes(EngineerGlobals.AssemblyPath + "GUI/BuildButton/Locked.png"));
+            this.normal.LoadImage(File.ReadAllBytes(EngineerGlobals.AssemblyPath + "GUI/BuildButton/Normal.png"));
+            this.hover.LoadImage(File.ReadAllBytes(EngineerGlobals.AssemblyPath + "GUI/BuildButton/Hover.png"));
+            this.down.LoadImage(File.ReadAllBytes(EngineerGlobals.AssemblyPath + "GUI/BuildButton/Down.png"));
+            this.locked.LoadImage(File.ReadAllBytes(EngineerGlobals.AssemblyPath + "GUI/BuildButton/Locked.png"));
 
-            RenderingManager.AddToPostDrawQueue(0, OnDraw);
+            this.InitialiseStyles();
+            RenderingManager.AddToPostDrawQueue(0, this.OnDraw);
         }
 
-        // Initialises all of the GUI styles that are required.
+        /// <summary>
+        ///     Initialises all of the GUI styles that are required.
+        /// </summary>
         private void InitialiseStyles()
         {
-            _tooltipTitleStyle = new GUIStyle(HighLogic.Skin.label);
-            _tooltipTitleStyle.normal.textColor = Color.white;
-            _tooltipTitleStyle.fontSize = 13;
-            _tooltipTitleStyle.fontStyle = FontStyle.Bold;
+            this.tooltipTitleStyle = new GUIStyle(HighLogic.Skin.label)
+            {
+                normal =
+                {
+                    textColor = Color.white
+                },
+                fontSize = 13,
+                fontStyle = FontStyle.Bold
+            };
 
-            _tooltipInfoStyle = new GUIStyle(HighLogic.Skin.label);
-            _tooltipInfoStyle.fontSize = 11;
-            _tooltipInfoStyle.fontStyle = FontStyle.Bold;
+            this.tooltipInfoStyle = new GUIStyle(HighLogic.Skin.label)
+            {
+                fontSize = 11,
+                fontStyle = FontStyle.Bold
+            };
         }
 
         #endregion
@@ -58,92 +78,109 @@ namespace KerbalEngineer.BuildEngineer
         {
             if (Input.GetKeyDown(KeyCode.Backslash))
             {
-                ButtonClickedLeft();
+                LeftClick();
             }
         }
 
         private void OnDraw()
         {
-            if (!_hasInitStyles) InitialiseStyles();
-
             if (EditorLogic.fetch.ship.Count > 0)
             {
-                if (_clicked) // Button has been clicked whilst being hovered.
+                if (this.clicked) // Button has been clicked whilst being hovered.
                 {
-                    GUI.DrawTexture(_position, _down);
+                    GUI.DrawTexture(this.position, this.down);
 
-                    if (_position.Contains(Event.current.mousePosition)) // Mouse is hovering over the button.
+                    if (this.position.Contains(Event.current.mousePosition)) // Mouse is hovering over the button.
                     {
-                        DrawToolTip();
+                        this.DrawToolTip();
 
                         if (Mouse.Left.GetButtonUp()) // The mouse up event has been triggered whilst over the button.
                         {
-                            _clicked = false;
-                            ButtonClickedLeft();
+                            this.clicked = false;
+                            LeftClick();
                         }
                         else if (Mouse.Right.GetButtonUp())
                         {
-                            _clicked = false;
-                            ButtonClickedRight();
+                            this.clicked = false;
+                            RightClick();
                         }
                     }
                 }
                 else // The button is not registering as being clicked.
                 {
-                    if (_position.Contains(Event.current.mousePosition)) // Mouse is hovering over the button.
+                    if (this.position.Contains(Event.current.mousePosition)) // Mouse is hovering over the button.
                     {
                         // If the left mouse button has just been pressed, see the button as being clicked.
-                        if (!_clicked && (Mouse.Left.GetButtonDown() || Mouse.Right.GetButtonDown())) _clicked = true;
-
-                        if (_clicked) // The button has just been clicked.
+                        if (!this.clicked && (Mouse.Left.GetButtonDown() || Mouse.Right.GetButtonDown()))
                         {
-                            GUI.DrawTexture(_position, _down);
+                            this.clicked = true;
+                        }
+
+                        if (this.clicked) // The button has just been clicked.
+                        {
+                            GUI.DrawTexture(this.position, this.down);
                         }
                         else if (!Mouse.Left.GetButton() && !Mouse.Right.GetButton()) // Mouse button is not down and is just hovering.
                         {
-                            GUI.DrawTexture(_position, _hover);
-                            DrawToolTip();
+                            GUI.DrawTexture(this.position, this.hover);
+                            this.DrawToolTip();
                         }
                         else // Mouse button is down but no click was registered over the button.
                         {
-                            GUI.DrawTexture(_position, _normal);
+                            GUI.DrawTexture(this.position, this.normal);
                         }
                     }
                     else // The mouse is not being hovered.
                     {
-                        GUI.DrawTexture(_position, _normal);
+                        GUI.DrawTexture(this.position, this.normal);
                     }
                 }
 
                 // Check for an unclick event whilst the mouse is not hovering.
-                if (_clicked && (Mouse.Left.GetButtonUp() || Mouse.Right.GetButtonUp())) _clicked = false;
+                if (this.clicked && (Mouse.Left.GetButtonUp() || Mouse.Right.GetButtonUp()))
+                {
+                    this.clicked = false;
+                }
             }
             else // The editor is set as being locked.
             {
-                GUI.DrawTexture(_position, _locked);
+                GUI.DrawTexture(this.position, this.locked);
             }
         }
 
-        // Draws the tooltip next to the mouse cursor.
+        /// <summary>
+        ///     Draws the tooltop next to the mouse cursor.
+        /// </summary>
         private void DrawToolTip()
         {
-            GUI.Label(new Rect(Event.current.mousePosition.x + 16f, Event.current.mousePosition.y, 500f, 25f), "Kerbal Engineer Redux", _tooltipTitleStyle);
-            GUI.Label(new Rect(Event.current.mousePosition.x + 16f, Event.current.mousePosition.y + 16f, 500f, 25f), "[Left Click / Backslash] Advanced - [Right Click] Overlay", _tooltipInfoStyle);
-            //GUI.Label(new Rect(Event.current.mousePosition.x + 16f, Event.current.mousePosition.y + 30f, 256f, 25f), "", _tooltipInfoStyle);
+            GUI.Label(new Rect(Event.current.mousePosition.x + 16.0f, Event.current.mousePosition.y, 500.0f, 25.0f), "Kerbal Engineer Redux", this.tooltipTitleStyle);
+            GUI.Label(new Rect(Event.current.mousePosition.x + 16.0f, Event.current.mousePosition.y + 16.0f, 500.0f, 25.0f), "[Left Click / Backslash] Advanced - [Right Click] Overlay", this.tooltipInfoStyle);
         }
 
-        // Runs the stuff to do when the button is clicked with the left mouse button.
-        private void ButtonClickedLeft()
+        #endregion
+
+        #region Static Methods
+
+        /// <summary>
+        ///     Runs when the button is clicked with the left mouse button.
+        /// </summary>
+        public static void LeftClick()
         {
             if (BuildAdvanced.Instance != null)
+            {
                 BuildAdvanced.Instance.Visible = !BuildAdvanced.Instance.Visible;
+            }
         }
 
-        // Runs the stuff to do when the button is clicked with the right mouse button.
-        private void ButtonClickedRight()
+        /// <summary>
+        ///     Runs when the button is clicked with the right mouse button.
+        /// </summary>
+        private static void RightClick()
         {
             if (BuildOverlay.Instance != null)
+            {
                 BuildOverlay.Instance.Visible = !BuildOverlay.Instance.Visible;
+            }
         }
 
         #endregion

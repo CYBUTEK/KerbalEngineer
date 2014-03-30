@@ -1,11 +1,12 @@
-﻿// Name:    Kerbal Engineer Redux
-// Author:  CYBUTEK
-// License: Attribution-NonCommercial-ShareAlike 3.0 Unported
+﻿// Project:	KerbalEngineer
+// Author:	CYBUTEK
+// License:	Attribution-NonCommercial-ShareAlike 3.0 Unported
 
-using System;
-using KerbalEngineer.Extensions;
+#region Using Directives
+
 using KerbalEngineer.Simulation;
-using UnityEngine;
+
+#endregion
 
 namespace KerbalEngineer.FlightEngineer.Vessel
 {
@@ -13,9 +14,9 @@ namespace KerbalEngineer.FlightEngineer.Vessel
     {
         protected override void Initialise()
         {
-            Name = "Thrust (Actual)";
-            Description = "Shows the actual vessel thrust.";
-            Category = ReadoutCategory.Vessel;
+            this.Name = "Thrust (Actual)";
+            this.Description = "Shows the actual vessel thrust.";
+            this.Category = ReadoutCategory.Vessel;
         }
 
         public override void Update()
@@ -25,7 +26,7 @@ namespace KerbalEngineer.FlightEngineer.Vessel
 
         public override void Draw()
         {
-            DrawLine(SimulationManager.Instance.LastStage.ActualThrust);
+            this.DrawLine(SimulationManager.Instance.LastStage.ActualThrust);
         }
     }
 }

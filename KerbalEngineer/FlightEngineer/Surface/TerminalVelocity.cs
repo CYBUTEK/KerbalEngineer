@@ -1,44 +1,51 @@
-﻿// Name:    Kerbal Engineer Redux
-// Author:  CYBUTEK
-// License: Attribution-NonCommercial-ShareAlike 3.0 Unported
+﻿// Project:	KerbalEngineer
+// Author:	CYBUTEK
+// License:	Attribution-NonCommercial-ShareAlike 3.0 Unported
 
-using System;
-using System.Linq;
+#region Using Directives
+
 using KerbalEngineer.Extensions;
-using UnityEngine;
+
+#endregion
 
 namespace KerbalEngineer.FlightEngineer.Surface
 {
     public class TerminalVelocity : Readout
     {
-        private bool _visible = false;
+        private bool visible;
 
         protected override void Initialise()
         {
-            Name = "Terminal Velocity";
-            Description = "Shows your terminal velocity in atmosphere.";
-            Category = ReadoutCategory.Surface;
+            this.Name = "Terminal Velocity";
+            this.Description = "Shows your terminal velocity in atmosphere.";
+            this.Category = ReadoutCategory.Surface;
         }
 
         public override void Update()
         {
-            if (FlightGlobals.ActiveVessel.atmDensity > 0d)
-                AtmosphericDetails.Instance.RequestUpdate = true;
+            if (FlightGlobals.ActiveVessel.atmDensity > 0)
+            {
+                AtmosphericDetails.Instance.RequestUpdate();
+            }
         }
 
         public override void Draw()
         {
-            if (FlightGlobals.ActiveVessel.atmDensity > 0d)
+            if (FlightGlobals.ActiveVessel.atmDensity > 0)
             {
-                if (!_visible) _visible = true;
-                DrawLine(AtmosphericDetails.Instance.TerminalVelocity.ToSpeed());
+                if (!this.visible)
+                {
+                    this.visible = true;
+                }
+
+                this.DrawLine(AtmosphericDetails.Instance.TerminalVelocity.ToSpeed());
             }
             else
             {
-                if (_visible)
+                if (this.visible)
                 {
-                    _visible = false;
-                    SectionList.Instance.RequireResize = true;
+                    this.visible = false;
+                    SectionList.Instance.RequestResize();
                 }
             }
         }

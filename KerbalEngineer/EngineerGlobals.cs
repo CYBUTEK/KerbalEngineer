@@ -1,77 +1,71 @@
-﻿// Name:    Kerbal Engineer Redux
-// Author:  CYBUTEK
-// License: Attribution-NonCommercial-ShareAlike 3.0 Unported
+﻿// Project:	KerbalEngineer
+// Author:	CYBUTEK
+// License:	Attribution-NonCommercial-ShareAlike 3.0 Unported
 
-using System.Diagnostics;
+#region Using Directives
+
 using System.IO;
 using System.Reflection;
-using UnityEngine;
+
+#endregion
 
 namespace KerbalEngineer
 {
     public class EngineerGlobals
     {
-        #region Properties
+        #region Constants
 
         /// <summary>
-        /// Current version of the Kerbal Engineer assembly.
+        ///     Current version of the Kerbal Engineer assembly.
         /// </summary>
         public const string AssemblyVersion = "1.0.0.0";
 
+        #endregion
+
+        #region Fields
+
+        private static int _windowId = int.MaxValue;
+
+        #endregion
+
+        #region Properties
+
         private static string _assemblyFile;
+        private static string _assemblyName;
+        private static string _assemblyPath;
+
         /// <summary>
-        /// Gets the Kerbal Engineer assembly's path including the file name.
+        ///     Gets the Kerbal Engineer assembly's path including the file name.
         /// </summary>
         public static string AssemblyFile
         {
-            get
-            {
-                if (_assemblyFile == null)
-                    _assemblyFile = Assembly.GetExecutingAssembly().Location;
-
-                return _assemblyFile;
-            }
+            get { return _assemblyFile ?? (_assemblyFile = Assembly.GetExecutingAssembly().Location); }
         }
 
-        private static string _assemblyName;
         /// <summary>
-        /// Gets the Kerbal Engineer assembly's file name.
+        ///     Gets the Kerbal Engineer assembly's file name.
         /// </summary>
         public static string AssemblyName
         {
-            get
-            {
-                if (_assemblyName == null)
-                    _assemblyName = new FileInfo(AssemblyFile).Name;
-
-                return _assemblyName;
-            }
+            get { return _assemblyName ?? (_assemblyName = new FileInfo(AssemblyFile).Name); }
         }
 
-        private static string _assemblyPath;
         /// <summary>
-        /// Gets the Kerbal Engineer assembly's path excluding the file name.
+        ///     Gets the Kerbal Engineer assembly's path excluding the file name.
         /// </summary>
         public static string AssemblyPath
         {
-            get
-            {
-                if (_assemblyPath == null)
-                    _assemblyPath = AssemblyFile.Replace(new FileInfo(AssemblyFile).Name, "");
-
-                return _assemblyPath;
-            }
+            get { return _assemblyPath ?? (_assemblyPath = AssemblyFile.Replace(new FileInfo(AssemblyFile).Name, "")); }
         }
 
         #endregion
 
         #region Methods
 
-        private static int _windowID = int.MaxValue;
-        public static int GetNextWindowID()
+        public static int GetNextWindowId()
         {
-            _windowID--;
-            return _windowID;
+            _windowId--;
+            return _windowId;
         }
 
         #endregion

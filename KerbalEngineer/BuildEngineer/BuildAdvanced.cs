@@ -1,12 +1,16 @@
-﻿// Name:    Kerbal Engineer Redux
-// Author:  CYBUTEK
-// License: Attribution-NonCommercial-ShareAlike 3.0 Unported
+﻿// Project:	KerbalEngineer
+// Author:	CYBUTEK
+// License:	Attribution-NonCommercial-ShareAlike 3.0 Unported
 
-using System;
+#region Using Directives
+
 using KerbalEngineer.Extensions;
 using KerbalEngineer.Settings;
 using KerbalEngineer.Simulation;
+
 using UnityEngine;
+
+#endregion
 
 namespace KerbalEngineer.BuildEngineer
 {
@@ -16,7 +20,7 @@ namespace KerbalEngineer.BuildEngineer
         #region Instance
 
         /// <summary>
-        /// Gets the current instance if started or returns null.
+        ///     Gets the current instance if started or returns null.
         /// </summary>
         public static BuildAdvanced Instance { get; private set; }
 
@@ -24,259 +28,318 @@ namespace KerbalEngineer.BuildEngineer
 
         #region Fields
 
-        private Rect _windowPosition = new Rect(265f, 45f, 0f, 0f);
-        private GUIStyle _windowStyle, _areaStyle, _areaBodiesStyle, _buttonStyle, _titleStyle, _infoStyle;
-        private int _windowID = EngineerGlobals.GetNextWindowID();
-        private bool _hasInitStyles = false;
-        private bool _hasChanged = false;
-        private bool _isEditorLocked = false;
+        private readonly int windowId = EngineerGlobals.GetNextWindowId();
+
+        private bool hasChanged;
+        private bool isEditorLocked;
+        private Rect windowPosition = new Rect(265.0f, 45.0f, 0, 0);
+
+        #region Styles
+
+        private GUIStyle areaBodiesStyle;
+        private GUIStyle areaStyle;
+        private GUIStyle buttonStyle;
+        private GUIStyle infoStyle;
+        private GUIStyle titleStyle;
+        private GUIStyle windowStyle;
+
+        #endregion
 
         #endregion
 
         #region Properties
 
-        private bool _visible = false;
+        private bool compactMode;
+        private bool showAllStages;
+        private bool showReferenceBodies;
+        private bool useAtmosphericDetails;
+        private bool visible;
+
         /// <summary>
-        /// Gets and sets whether the display is enabled.
+        ///     Gets and sets whether the display is enabled.
         /// </summary>
         public bool Visible
         {
-            get { return _visible; }
-            set { _visible = value; }
+            get { return this.visible; }
+            set { this.visible = value; }
         }
 
-        private bool _compactMode = false;
         /// <summary>
-        /// Gets and sets whether to show in compact mode.
+        ///     Gets and sets whether to show in compact mode.
         /// </summary>
         public bool CompactMode
         {
-            get { return _compactMode; }
-            set { _compactMode = value; }
+            get { return this.compactMode; }
+            set { this.compactMode = value; }
         }
 
-        private bool _showAllStages = false;
         /// <summary>
-        /// Gets and sets whether to show all stages.
+        ///     Gets and sets whether to show all stages.
         /// </summary>
         public bool ShowAllStages
         {
-            get { return _showAllStages; }
-            set { _showAllStages = value; }
+            get { return this.showAllStages; }
+            set { this.showAllStages = value; }
         }
 
-        private bool _useAtmosphericDetails = false;
         /// <summary>
-        /// Gets and sets whether to use atmospheric details.
+        ///     Gets and sets whether to use atmospheric details.
         /// </summary>
         public bool UseAtmosphericDetails
         {
-            get { return _useAtmosphericDetails; }
-            set { _useAtmosphericDetails = value; }
+            get { return this.useAtmosphericDetails; }
+            set { this.useAtmosphericDetails = value; }
         }
 
-        private bool _showReferenceBodies = false;
         /// <summary>
-        /// Gets and sets whether to show the reference body selection.
+        ///     Gets and sets whether to show the reference body selection.
         /// </summary>
         public bool ShowReferenceBodies
         {
-            get { return _showReferenceBodies; }
-            set { _showReferenceBodies = value; }
+            get { return this.showReferenceBodies; }
+            set { this.showReferenceBodies = value; }
         }
 
         #endregion
 
         #region Initialisation
 
-        public void Start()
+        private void Awake()
         {
-            // Set the instance to this object.
             Instance = this;
-
-            RenderingManager.AddToPostDrawQueue(0, OnDraw);
+            this.Load();
         }
 
-        // Initialises all of the GUI styles that are required.
+        private void Start()
+        {
+            this.InitialiseStyles();
+            RenderingManager.AddToPostDrawQueue(0, this.OnDraw);
+        }
+
+        /// <summary>
+        ///     Initialises all the styles that are required.
+        /// </summary>
         private void InitialiseStyles()
         {
-            _hasInitStyles = true;
+            this.areaBodiesStyle = new GUIStyle(HighLogic.Skin.box);
 
-            _windowStyle = new GUIStyle(HighLogic.Skin.window);
-            _windowStyle.alignment = TextAnchor.UpperLeft;
+            this.windowStyle = new GUIStyle(HighLogic.Skin.window)
+            {
+                alignment = TextAnchor.UpperLeft
+            };
 
-            _areaStyle = new GUIStyle(HighLogic.Skin.box);
-            _areaStyle.padding = new RectOffset(0, 0, 9, 0);
+            this.areaStyle = new GUIStyle(HighLogic.Skin.box)
+            {
+                padding = new RectOffset(0, 0, 9, 0)
+            };
 
-            _areaBodiesStyle = new GUIStyle(HighLogic.Skin.box);
+            this.buttonStyle = new GUIStyle(HighLogic.Skin.button)
+            {
+                normal =
+                {
+                    textColor = Color.white
+                },
+                fontSize = 11,
+                fontStyle = FontStyle.Bold,
+                alignment = TextAnchor.MiddleCenter
+            };
 
-            _buttonStyle = new GUIStyle(HighLogic.Skin.button);
-            _buttonStyle.normal.textColor = Color.white;
-            _buttonStyle.fontSize = 11;
-            _buttonStyle.fontStyle = FontStyle.Bold;
-            _buttonStyle.alignment = TextAnchor.MiddleCenter;
+            this.titleStyle = new GUIStyle(HighLogic.Skin.label)
+            {
+                normal =
+                {
+                    textColor = Color.white
+                },
+                fontSize = 11,
+                fontStyle = FontStyle.Bold,
+                alignment = TextAnchor.MiddleCenter,
+                stretchWidth = true
+            };
 
-            _titleStyle = new GUIStyle(HighLogic.Skin.label);
-            _titleStyle.normal.textColor = Color.white;
-            _titleStyle.fontSize = 11;
-            _titleStyle.fontStyle = FontStyle.Bold;
-            _titleStyle.alignment = TextAnchor.MiddleCenter;
-            _titleStyle.stretchWidth = true;
-
-            _infoStyle = new GUIStyle(HighLogic.Skin.label);
-            _infoStyle.fontSize = 11;
-            _infoStyle.fontStyle = FontStyle.Bold;
-            _infoStyle.alignment = TextAnchor.MiddleCenter;
-            _infoStyle.stretchWidth = true;
+            this.infoStyle = new GUIStyle(HighLogic.Skin.label)
+            {
+                fontSize = 11,
+                fontStyle = FontStyle.Bold,
+                alignment = TextAnchor.MiddleCenter,
+                stretchWidth = true
+            };
         }
 
         #endregion
 
         #region Update and Drawing
 
-        public void Update()
+        private void Update()
         {
             try
             {
-                if (_visible && EditorLogic.fetch != null && EditorLogic.fetch.ship.Count > 0)
+                if (!this.visible || EditorLogic.fetch == null || EditorLogic.fetch.ship.Count <= 0)
                 {
-                    // Configure the simulation parameters based on the selected reference body.
-                    SimulationManager.Instance.Gravity = CelestialBodies.Instance.SelectedBodyInfo.Gravity;
-                    if (_useAtmosphericDetails)
-                        SimulationManager.Instance.Atmosphere = CelestialBodies.Instance.SelectedBodyInfo.Atmosphere * 0.01d;
-                    else
-                        SimulationManager.Instance.Atmosphere = 0d;
+                    return;
+                }
 
-                    SimulationManager.Instance.TryStartSimulation();
+                // Configure the simulation parameters based on the selected reference body.
+                SimulationManager.Instance.Gravity = CelestialBodies.Instance.SelectedBodyInfo.Gravity;
+                if (this.useAtmosphericDetails)
+                {
+                    SimulationManager.Instance.Atmosphere = CelestialBodies.Instance.SelectedBodyInfo.Atmosphere *
+                                                            0.01d;
+                }
+                else
+                {
+                    SimulationManager.Instance.Atmosphere = 0;
+                }
 
-                    // Reset the window size when the staging or something else has changed.
-                    if (_hasChanged || SimulationManager.Instance.StagingChanged)
-                    {
-                        _hasChanged = false;
+                SimulationManager.Instance.TryStartSimulation();
 
-                        _windowPosition.width = 0f;
-                        _windowPosition.height = 0f;
-                    }
+                // Reset the window size when the staging or something else has changed.
+                if (this.hasChanged || SimulationManager.Instance.StagingChanged)
+                {
+                    this.hasChanged = false;
+
+                    this.windowPosition.width = 0;
+                    this.windowPosition.height = 0;
                 }
             }
-            catch { /* A null reference exception is thrown when checking if EditorLogic.fetch != null??? */ }
+            catch
+            {
+                /* A null reference exception is thrown when checking if EditorLogic.fetch != null??? */
+            }
         }
 
         private void OnDraw()
         {
             try
             {
-                if (_visible && EditorLogic.fetch != null && EditorLogic.fetch.ship.Count > 0)
+                if (!this.visible || EditorLogic.fetch == null || EditorLogic.fetch.ship.Count <= 0)
                 {
-                    SimulationManager.Instance.RequestSimulation();
-
-                    // Initialise the GUI styles, but only once as needed.
-                    if (!_hasInitStyles) InitialiseStyles();
-
-                    // Change the window title based on whether in compact mode or not.
-                    string title;
-                    if (!_compactMode)
-                        title = "KERBAL ENGINEER REDUX " + EngineerGlobals.AssemblyVersion;
-                    else
-                        title = "K.E.R. " + EngineerGlobals.AssemblyVersion;
-
-                    _windowPosition = GUILayout.Window(_windowID, _windowPosition, Window, title, _windowStyle).ClampToScreen();
-
-                    // Check editor lock to manage click-through.
-                    CheckEditorLock();
+                    return;
                 }
+
+                SimulationManager.Instance.RequestSimulation();
+
+                // Change the window title based on whether in compact mode or not.
+                string title;
+                if (!this.compactMode)
+                {
+                    title = "KERBAL ENGINEER REDUX " + EngineerGlobals.AssemblyVersion;
+                }
+                else
+                {
+                    title = "K.E.R. " + EngineerGlobals.AssemblyVersion;
+                }
+
+                this.windowPosition = GUILayout.Window(this.windowId, this.windowPosition, this.Window, title, this.windowStyle).ClampToScreen();
+
+                // Check editor lock to manage click-through.
+                this.CheckEditorLock();
             }
-            catch { /* A null reference exception is thrown when checking if EditorLogic.fetch != null??? */ }
+            catch
+            {
+                /* A null reference exception is thrown when checking if EditorLogic.fetch != null??? */
+            }
         }
 
-        // Checks whether the editor should be looked to stop click-through.
+        /// <summary>
+        ///     Checks whether the editor should be locked to stop click-through.
+        /// </summary>
         private void CheckEditorLock()
         {
-            if (_windowPosition.MouseIsOver())
+            if (this.windowPosition.MouseIsOver())
             {
                 EditorLogic.fetch.State = EditorLogic.EditorState.GUI_SELECTED;
-                _isEditorLocked = true;
+                this.isEditorLocked = true;
             }
-            else if (!_windowPosition.MouseIsOver() && _isEditorLocked)
+            else if (!this.windowPosition.MouseIsOver() && this.isEditorLocked)
             {
                 EditorLogic.fetch.State = EditorLogic.EditorState.PAD_UNSELECTED;
-                _isEditorLocked = false;
+                this.isEditorLocked = false;
             }
         }
 
-        private void Window(int windowID)
+        /// <summary>
+        ///     Draws the OnGUI window.
+        /// </summary>
+        private void Window(int windowId)
         {
             // Draw the compact mode toggle.
-            if (GUI.Toggle(new Rect(_windowPosition.width - 70f, 5f, 65f, 20f), _compactMode, "COMPACT", _buttonStyle) != _compactMode)
+            if (GUI.Toggle(new Rect(this.windowPosition.width - 70.0f, 5.0f, 65.0f, 20.0f), this.compactMode, "COMPACT", this.buttonStyle) != this.compactMode)
             {
-                _hasChanged = true;
-                _compactMode = !_compactMode;
+                this.hasChanged = true;
+                this.compactMode = !this.compactMode;
             }
 
             // When not in compact mode draw the 'All Stages' and 'Atmospheric' toggles.
-            if (!_compactMode)
+            if (!this.compactMode)
             {
-                if (GUI.Toggle(new Rect(_windowPosition.width - 153f, 5f, 80f, 20f), _showAllStages, "ALL STAGES", _buttonStyle) != _showAllStages)
+                if (GUI.Toggle(new Rect(this.windowPosition.width - 153.0f, 5.0f, 80.0f, 20.0f), this.showAllStages, "ALL STAGES", this.buttonStyle) != this.showAllStages)
                 {
-                    _hasChanged = true;
-                    _showAllStages = !_showAllStages;
+                    this.hasChanged = true;
+                    this.showAllStages = !this.showAllStages;
                 }
 
-                _useAtmosphericDetails = GUI.Toggle(new Rect(_windowPosition.width - 251f, 5f, 95f, 20f), _useAtmosphericDetails, "ATMOSPHERIC", _buttonStyle);
-                if (GUI.Toggle(new Rect(_windowPosition.width - 379f, 5f, 125f, 20f), _showReferenceBodies, "REFERENCE BODIES", _buttonStyle) != _showReferenceBodies)
+                this.useAtmosphericDetails = GUI.Toggle(new Rect(this.windowPosition.width - 251.0f, 5.0f, 95.0f, 20.0f), this.useAtmosphericDetails, "ATMOSPHERIC", this.buttonStyle);
+
+                if (GUI.Toggle(new Rect(this.windowPosition.width - 379.0f, 5.0f, 125.0f, 20.0f), this.showReferenceBodies, "REFERENCE BODIES", this.buttonStyle) != this.showReferenceBodies)
                 {
-                    _hasChanged = true;
-                    _showReferenceBodies = !_showReferenceBodies;
+                    this.hasChanged = true;
+                    this.showReferenceBodies = !this.showReferenceBodies;
                 }
             }
 
             // Draw the main informational display box.
-            
-            if (!_compactMode)
+
+            if (!this.compactMode)
             {
-                GUILayout.BeginHorizontal(_areaStyle);
-                DrawStageNumbers();
-                DrawPartCount();
-                DrawCost();
-                DrawMass();
-                DrawIsp();
-                DrawThrust();
-                DrawTWR();
-                DrawDeltaV();
-                DrawBurnTime();
+                GUILayout.BeginHorizontal(this.areaStyle);
+                this.DrawStageNumbers();
+                this.DrawPartCount();
+                this.DrawCost();
+                this.DrawMass();
+                this.DrawIsp();
+                this.DrawThrust();
+                this.DrawTwr();
+                this.DrawDeltaV();
+                this.DrawBurnTime();
                 GUILayout.EndHorizontal();
 
-                if (_showReferenceBodies)
+                if (this.showReferenceBodies)
                 {
-                    GUILayout.BeginVertical(_areaBodiesStyle);
-                    DrawReferenceBodies();
+                    GUILayout.BeginVertical(this.areaBodiesStyle);
+                    this.DrawReferenceBodies();
                     GUILayout.EndVertical();
                 }
             }
             else // Draw only a few details when in compact mode.
             {
-                GUILayout.BeginHorizontal(_areaStyle);
-                DrawStageNumbers();
-                DrawTWR();
-                DrawDeltaV();
+                GUILayout.BeginHorizontal(this.areaStyle);
+                this.DrawStageNumbers();
+                this.DrawTwr();
+                this.DrawDeltaV();
                 GUILayout.EndHorizontal();
             }
-            
+
             GUI.DragWindow();
         }
 
-        // Draws all the reference bodies.
+        /// <summary>
+        ///     Draws all the reference bodies.
+        /// </summary>
         private void DrawReferenceBodies()
         {
-            int index = 0;
-            foreach (string bodyName in CelestialBodies.Instance.BodyList.Keys)
+            var index = 0;
+
+            foreach (var bodyName in CelestialBodies.Instance.BodyList.Keys)
             {
                 if (index % 8 == 0)
                 {
-                    if (index > 0) GUILayout.EndHorizontal();
+                    if (index > 0)
+                    {
+                        GUILayout.EndHorizontal();
+                    }
                     GUILayout.BeginHorizontal();
                 }
-                if (GUILayout.Toggle(CelestialBodies.Instance.SelectedBodyName == bodyName, bodyName, _buttonStyle))
+                if (GUILayout.Toggle(CelestialBodies.Instance.SelectedBodyName == bodyName, bodyName, this.buttonStyle))
                 {
                     CelestialBodies.Instance.SelectedBodyName = bodyName;
                 }
@@ -285,119 +348,155 @@ namespace KerbalEngineer.BuildEngineer
             GUILayout.EndHorizontal();
         }
 
-        // Draws the stage number column.
+        /// <summary>
+        ///     Draws the stage number column.
+        /// </summary>
         private void DrawStageNumbers()
         {
-            GUILayout.BeginVertical(GUILayout.Width(30f));
-            GUILayout.Label("", _titleStyle);
-            foreach (Stage stage in SimulationManager.Instance.Stages)
+            GUILayout.BeginVertical(GUILayout.Width(30.0f));
+            GUILayout.Label("", this.titleStyle);
+            foreach (var stage in SimulationManager.Instance.Stages)
             {
-                if (_showAllStages || stage.deltaV > 0d)
-                    GUILayout.Label(stage.Number, _titleStyle);
+                if (this.showAllStages || stage.deltaV > 0)
+                {
+                    GUILayout.Label(stage.Number, this.titleStyle);
+                }
             }
             GUILayout.EndVertical();
         }
 
-        // Draws the part count column.
+        /// <summary>
+        ///     Draws the part count column.
+        /// </summary>
         private void DrawPartCount()
         {
-            GUILayout.BeginVertical(GUILayout.Width(50f));
-            GUILayout.Label("PARTS", _titleStyle);
-            foreach (Stage stage in SimulationManager.Instance.Stages)
+            GUILayout.BeginVertical(GUILayout.Width(50.0f));
+            GUILayout.Label("PARTS", this.titleStyle);
+            foreach (var stage in SimulationManager.Instance.Stages)
             {
-                if (_showAllStages || stage.deltaV > 0d)
-                    GUILayout.Label(stage.Parts, _infoStyle);
+                if (this.showAllStages || stage.deltaV > 0)
+                {
+                    GUILayout.Label(stage.Parts, this.infoStyle);
+                }
             }
             GUILayout.EndVertical();
         }
 
-        // Draws the cost column.
+        /// <summary>
+        ///     Draws the cost column.
+        /// </summary>
         private void DrawCost()
         {
-            GUILayout.BeginVertical(GUILayout.Width(100f));
-            GUILayout.Label("COST", _titleStyle);
-            foreach (Stage stage in SimulationManager.Instance.Stages)
+            GUILayout.BeginVertical(GUILayout.Width(100.0f));
+            GUILayout.Label("COST", this.titleStyle);
+            foreach (var stage in SimulationManager.Instance.Stages)
             {
-                if (_showAllStages || stage.deltaV > 0d)
-                    GUILayout.Label(stage.Cost, _infoStyle);
+                if (this.showAllStages || stage.deltaV > 0)
+                {
+                    GUILayout.Label(stage.Cost, this.infoStyle);
+                }
             }
             GUILayout.EndVertical();
         }
 
-        // Draws the mass column.
+        /// <summary>
+        ///     Draws the mass column.
+        /// </summary>
         private void DrawMass()
         {
-            GUILayout.BeginVertical(GUILayout.Width(100f));
-            GUILayout.Label("MASS", _titleStyle);
-            foreach (Stage stage in SimulationManager.Instance.Stages)
+            GUILayout.BeginVertical(GUILayout.Width(100.0f));
+            GUILayout.Label("MASS", this.titleStyle);
+            foreach (var stage in SimulationManager.Instance.Stages)
             {
-                if (_showAllStages || stage.deltaV > 0d)
-                    GUILayout.Label(stage.Mass, _infoStyle);
+                if (this.showAllStages || stage.deltaV > 0)
+                {
+                    GUILayout.Label(stage.Mass, this.infoStyle);
+                }
             }
             GUILayout.EndVertical();
         }
 
-        // Draws the specific impulse column.
+        /// <summary>
+        ///     Draws the specific impluse column.
+        /// </summary>
         private void DrawIsp()
         {
-            GUILayout.BeginVertical(GUILayout.Width(50f));
-            GUILayout.Label("ISP", _titleStyle);
-            foreach (Stage stage in SimulationManager.Instance.Stages)
+            GUILayout.BeginVertical(GUILayout.Width(50.0f));
+            GUILayout.Label("ISP", this.titleStyle);
+            foreach (var stage in SimulationManager.Instance.Stages)
             {
-                if (_showAllStages || stage.deltaV > 0d)
-                    GUILayout.Label(stage.Isp, _infoStyle);
+                if (this.showAllStages || stage.deltaV > 0)
+                {
+                    GUILayout.Label(stage.Isp, this.infoStyle);
+                }
             }
             GUILayout.EndVertical();
         }
 
-        // Draws the thrust column.
+        /// <summary>
+        ///     Draws the thrust column.
+        /// </summary>
         private void DrawThrust()
         {
-            GUILayout.BeginVertical(GUILayout.Width(75f));
-            GUILayout.Label("THRUST", _titleStyle);
-            foreach (Stage stage in SimulationManager.Instance.Stages)
+            GUILayout.BeginVertical(GUILayout.Width(75.0f));
+            GUILayout.Label("THRUST", this.titleStyle);
+            foreach (var stage in SimulationManager.Instance.Stages)
             {
-                if (_showAllStages || stage.deltaV > 0d)
-                    GUILayout.Label(stage.Thrust, _infoStyle);
+                if (this.showAllStages || stage.deltaV > 0)
+                {
+                    GUILayout.Label(stage.Thrust, this.infoStyle);
+                }
             }
             GUILayout.EndVertical();
         }
 
-        // Draws the thrust to weight ratio column.
-        private void DrawTWR()
+        /// <summary>
+        ///     Drwas the thrust to weight ratio column.
+        /// </summary>
+        private void DrawTwr()
         {
-            GUILayout.BeginVertical(GUILayout.Width(50f));
-            GUILayout.Label("TWR", _titleStyle);
-            foreach (Stage stage in SimulationManager.Instance.Stages)
+            GUILayout.BeginVertical(GUILayout.Width(50.0f));
+            GUILayout.Label("TWR", this.titleStyle);
+            foreach (var stage in SimulationManager.Instance.Stages)
             {
-                if (_showAllStages || stage.deltaV > 0d)
-                    GUILayout.Label(stage.TWR, _infoStyle);
+                if (this.showAllStages || stage.deltaV > 0)
+                {
+                    GUILayout.Label(stage.TWR, this.infoStyle);
+                }
             }
             GUILayout.EndVertical();
         }
 
-        // Draws the deltaV column.
+        /// <summary>
+        ///     Draws the deltaV column.
+        /// </summary>
         private void DrawDeltaV()
         {
-            GUILayout.BeginVertical(GUILayout.Width(100f));
-            GUILayout.Label("DELTA-V", _titleStyle);
-            foreach (Stage stage in SimulationManager.Instance.Stages)
+            GUILayout.BeginVertical(GUILayout.Width(100.0f));
+            GUILayout.Label("DELTA-V", this.titleStyle);
+            foreach (var stage in SimulationManager.Instance.Stages)
             {
-                if (_showAllStages || stage.deltaV > 0d)
-                    GUILayout.Label(stage.DeltaV, _infoStyle);
+                if (this.showAllStages || stage.deltaV > 0)
+                {
+                    GUILayout.Label(stage.DeltaV, this.infoStyle);
+                }
             }
             GUILayout.EndVertical();
         }
 
-        // Draws the burn time column.
+        /// <summary>
+        ///     Draws the burn time column.
+        /// </summary>
         private void DrawBurnTime()
         {
-            GUILayout.BeginVertical(GUILayout.Width(75f));
-            GUILayout.Label("BURN", _titleStyle);
-            foreach (Stage stage in SimulationManager.Instance.Stages)
+            GUILayout.BeginVertical(GUILayout.Width(75.0f));
+            GUILayout.Label("BURN", this.titleStyle);
+            foreach (var stage in SimulationManager.Instance.Stages)
             {
-                if (_showAllStages || stage.deltaV > 0d)
-                    GUILayout.Label(stage.Time, _infoStyle);
+                if (this.showAllStages || stage.deltaV > 0)
+                {
+                    GUILayout.Label(stage.Time, this.infoStyle);
+                }
             }
             GUILayout.EndVertical();
         }
@@ -406,45 +505,55 @@ namespace KerbalEngineer.BuildEngineer
 
         #region Save and Load
 
-        // Saves the settings when this object is destroyed.
-        public void OnDestroy()
+        /// <summary>
+        ///     Saves the settings when this object is destroyed.
+        /// </summary>
+        private void OnDestroy()
         {
             try
             {
-                SettingList list = new SettingList();
-                list.AddSetting("visible", _visible);
-                list.AddSetting("x", _windowPosition.x);
-                list.AddSetting("y", _windowPosition.y);
-                list.AddSetting("compact", _compactMode);
-                list.AddSetting("all_stages", _showAllStages);
-                list.AddSetting("atmosphere", _useAtmosphericDetails);
-                list.AddSetting("bodies", _showReferenceBodies);
+                var list = new SettingList();
+                list.AddSetting("visible", this.visible);
+                list.AddSetting("x", this.windowPosition.x);
+                list.AddSetting("y", this.windowPosition.y);
+                list.AddSetting("compact", this.compactMode);
+                list.AddSetting("all_stages", this.showAllStages);
+                list.AddSetting("atmosphere", this.useAtmosphericDetails);
+                list.AddSetting("bodies", this.showReferenceBodies);
                 list.AddSetting("selected_body", CelestialBodies.Instance.SelectedBodyName);
                 SettingList.SaveToFile(EngineerGlobals.AssemblyPath + "Settings/BuildAdvanced", list);
 
                 print("[KerbalEngineer/BuildAdvanced]: Successfully saved settings.");
             }
-            catch { print("[KerbalEngineer/BuildAdvanced]: Failed to save settings."); }
+            catch
+            {
+                print("[KerbalEngineer/BuildAdvanced]: Failed to save settings.");
+            }
         }
 
-        // Loads the settings when this object is created.
-        public void Awake()
+        /// <summary>
+        ///     Loads the settings when this object is created.
+        /// </summary>
+        private void Load()
         {
             try
             {
-                SettingList list = SettingList.CreateFromFile(EngineerGlobals.AssemblyPath + "Settings/BuildAdvanced");
-                _visible = (bool)list.GetSetting("visible", _visible);
-                _windowPosition.x = (float)list.GetSetting("x", _windowPosition.x);
-                _windowPosition.y = (float)list.GetSetting("y", _windowPosition.y);
-                _compactMode = (bool)list.GetSetting("compact", _compactMode);
-                _showAllStages = (bool)list.GetSetting("all_stages", _showAllStages);
-                _useAtmosphericDetails = (bool)list.GetSetting("atmosphere", _useAtmosphericDetails);
-                _showReferenceBodies = (bool)list.GetSetting("bodies", _showReferenceBodies);
+                var list = SettingList.CreateFromFile(EngineerGlobals.AssemblyPath + "Settings/BuildAdvanced");
+                this.visible = (bool)list.GetSetting("visible", this.visible);
+                this.windowPosition.x = (float)list.GetSetting("x", this.windowPosition.x);
+                this.windowPosition.y = (float)list.GetSetting("y", this.windowPosition.y);
+                this.compactMode = (bool)list.GetSetting("compact", this.compactMode);
+                this.showAllStages = (bool)list.GetSetting("all_stages", this.showAllStages);
+                this.useAtmosphericDetails = (bool)list.GetSetting("atmosphere", this.useAtmosphericDetails);
+                this.showReferenceBodies = (bool)list.GetSetting("bodies", this.showReferenceBodies);
                 CelestialBodies.Instance.SelectedBodyName = (string)list.GetSetting("selected_body", "Kerbin");
 
                 print("[KerbalEngineer/BuildAdvanced]: Successfully loaded settings.");
             }
-            catch { print("[KerbalEngineer/BuildAdvanced]: Failed to load settings."); }
+            catch
+            {
+                print("[KerbalEngineer/BuildAdvanced]: Failed to load settings.");
+            }
         }
 
         #endregion

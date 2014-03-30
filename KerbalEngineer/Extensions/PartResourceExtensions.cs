@@ -1,15 +1,13 @@
-﻿// Name:    Kerbal Engineer Redux
-// Author:  CYBUTEK
-// License: Attribution-NonCommercial-ShareAlike 3.0 Unported
-
-using UnityEngine;
+﻿// Project:	KerbalEngineer
+// Author:	CYBUTEK
+// License:	Attribution-NonCommercial-ShareAlike 3.0 Unported
 
 namespace KerbalEngineer.Extensions
 {
     public static class PartResourceExtensions
     {
         /// <summary>
-        /// Gets the definition object for the resource.
+        ///     Gets the definition object for the resource.
         /// </summary>
         public static PartResourceDefinition GetDefinition(this PartResource value)
         {
@@ -17,7 +15,7 @@ namespace KerbalEngineer.Extensions
         }
 
         /// <summary>
-        /// Gets the density of the resource.
+        ///     Gets the density of the resource.
         /// </summary>
         public static double GetDensity(this PartResource value)
         {
@@ -25,7 +23,7 @@ namespace KerbalEngineer.Extensions
         }
 
         /// <summary>
-        /// Gets the mass of the resource.
+        ///     Gets the mass of the resource.
         /// </summary>
         public static double GetMass(this PartResource value)
         {

@@ -1,23 +1,24 @@
-﻿// Name:    Kerbal Engineer Redux
-// Author:  CYBUTEK
-// License: Attribution-NonCommercial-ShareAlike 3.0 Unported
+﻿// Project:	KerbalEngineer
+// Author:	CYBUTEK
+// License:	Attribution-NonCommercial-ShareAlike 3.0 Unported
 
-using System;
-using KerbalEngineer.Extensions;
+#region Using Directives
+
 using KerbalEngineer.Simulation;
-using UnityEngine;
+
+#endregion
 
 namespace KerbalEngineer.FlightEngineer.Vessel
 {
     public class DeltaVStaged : Readout
     {
-        private int _stageCount = 0;
+        private int stageCount;
 
         protected override void Initialise()
         {
-            Name = "DeltaV Staged";
-            Description = "Shows the deltaV for each stage.";
-            Category = ReadoutCategory.Vessel;
+            this.Name = "DeltaV Staged";
+            this.Description = "Shows the deltaV for each stage.";
+            this.Category = ReadoutCategory.Vessel;
         }
 
         public override void Update()
@@ -27,23 +28,24 @@ namespace KerbalEngineer.FlightEngineer.Vessel
 
         public override void Draw()
         {
-            int stageCount = 0;
+            var stageCount = 0;
 
-            for (int i = SimulationManager.Instance.Stages.Length - 1; i > -1; i--)
+            for (var i = SimulationManager.Instance.Stages.Length - 1; i > -1; i--)
             {
-                Stage stage = SimulationManager.Instance.Stages[i];
-                if (stage.thrust > 0d)
+                var stage = SimulationManager.Instance.Stages[i];
+                if (stage.thrust > 0)
                 {
                     stageCount++;
-                    DrawLine("DeltaV (" + stage.Number + ")", stage.DeltaV);
+                    this.DrawLine("DeltaV (" + stage.Number + ")", stage.DeltaV);
                 }
             }
 
-            if (stageCount < _stageCount)
-                SectionList.Instance.RequireResize = true;
+            if (stageCount < this.stageCount)
+            {
+                SectionList.Instance.RequestResize();
+            }
 
-            if (stageCount != _stageCount)
-                _stageCount = stageCount;
+            this.stageCount = stageCount;
         }
     }
 }

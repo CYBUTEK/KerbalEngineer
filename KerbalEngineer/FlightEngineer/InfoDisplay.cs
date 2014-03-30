@@ -1,9 +1,14 @@
-﻿// Name:    Kerbal Engineer Redux
-// Author:  CYBUTEK
-// License: Attribution-NonCommercial-ShareAlike 3.0 Unported
+﻿// Project:	KerbalEngineer
+// Author:	CYBUTEK
+// License:	Attribution-NonCommercial-ShareAlike 3.0 Unported
+
+#region Using Directives
 
 using KerbalEngineer.Extensions;
+
 using UnityEngine;
+
+#endregion
 
 namespace KerbalEngineer.FlightEngineer
 {
@@ -12,54 +17,56 @@ namespace KerbalEngineer.FlightEngineer
         #region Instance
 
         private static InfoDisplay _instance;
+
         /// <summary>
-        /// Gets the current instance of the InfoDisplay object.
+        ///     Gets the current instance of the InfoDisplay object.
         /// </summary>
         public static InfoDisplay Instance
         {
-            get
-            {
-                if (_instance == null)
-                    _instance = HighLogic.fetch.gameObject.AddComponent<InfoDisplay>();
-
-                return _instance;
-            }
+            get { return _instance ?? (_instance = HighLogic.fetch.gameObject.AddComponent<InfoDisplay>()); }
         }
 
         #endregion
 
         #region Fields
 
-        private Rect _windowPosition = new Rect(Screen.width / 2 - 150f, Screen.height / 2 - 100f, 300f, 200f);
-        private int _windowID = EngineerGlobals.GetNextWindowID();
-        private GUIStyle _windowStyle, _infoStyle, _buttonStyle, _labelStyle;
-        private Vector2 _scrollPosition = Vector2.zero;
+        private readonly int windowId = EngineerGlobals.GetNextWindowId();
 
-        private bool _hasInitStyles = false;
+        private Vector2 scrollPosition = Vector2.zero;
+        private Rect windowPosition = new Rect(Screen.width * 0.5f - 150.0f, Screen.height * 0.5f - 100.0f, 300.0f, 200.0f);
+
+        #region Styles
+
+        private GUIStyle buttonStyle;
+        private GUIStyle infoStyle;
+        private GUIStyle labelStyle;
+        private GUIStyle windowStyle;
+
+        #endregion
 
         #endregion
 
         #region Properties
 
-        private bool _visible = false;
+        private Readout readout;
+        private bool visible;
+
         /// <summary>
-        /// Gets and sets whether the display is visible.
+        ///     Gets and sets whether the display is visible.
         /// </summary>
         public bool Visible
         {
-            get { return _visible; }
-            set { _visible = value; }
+            get { return this.visible; }
+            set { this.visible = value; }
         }
 
-
-        private Readout _readout;
         /// <summary>
-        /// Gets and sets the information to be displayed.
+        ///     Gets and sets the information to be displayed.
         /// </summary>
         public Readout Readout
         {
-            get { return _readout; }
-            set { _readout = value; }
+            get { return this.readout; }
+            set { this.readout = value; }
         }
 
         #endregion
@@ -69,67 +76,80 @@ namespace KerbalEngineer.FlightEngineer
         // Runs when the object is created.
         private void Start()
         {
-            RenderingManager.AddToPostDrawQueue(0, Draw);
+            this.InitialiseStyles();
+            RenderingManager.AddToPostDrawQueue(0, this.Draw);
         }
 
         // Initialises the gui styles upon request.
         private void InitialiseStyles()
         {
-            _hasInitStyles = true;
+            this.windowStyle = new GUIStyle(HighLogic.Skin.window);
 
-            _windowStyle = new GUIStyle(HighLogic.Skin.window);
+            this.infoStyle = new GUIStyle
+            {
+                margin = new RectOffset(5, 5, 5, 5)
+            };
 
-            _infoStyle = new GUIStyle();
-            _infoStyle.margin = new RectOffset(5, 5, 5, 5);
+            this.buttonStyle = new GUIStyle(HighLogic.Skin.button)
+            {
+                normal =
+                {
+                    textColor = Color.white
+                },
+                fontSize = 11,
+                fontStyle = FontStyle.Bold,
+                stretchWidth = true
+            };
 
-            _buttonStyle = new GUIStyle(HighLogic.Skin.button);
-            _buttonStyle.normal.textColor = Color.white;
-            _buttonStyle.fontSize = 11;
-            _buttonStyle.fontStyle = FontStyle.Bold;
-            _buttonStyle.stretchWidth = true;
-
-            _labelStyle = new GUIStyle(HighLogic.Skin.label);
-            _labelStyle.normal.textColor = Color.white;
-            _labelStyle.alignment = TextAnchor.MiddleLeft;
-            _labelStyle.fontSize = 12;
-            _labelStyle.fontStyle = FontStyle.Bold;
-            _labelStyle.stretchWidth = true;
+            this.labelStyle = new GUIStyle(HighLogic.Skin.label)
+            {
+                normal =
+                {
+                    textColor = Color.white
+                },
+                alignment = TextAnchor.MiddleLeft,
+                fontSize = 12,
+                fontStyle = FontStyle.Bold,
+                stretchWidth = true
+            };
         }
 
         #endregion
 
         #region Drawing
 
-        // Runs when the object is called to draw.
+        /// <summary>
+        ///     Runs when the object is called to draw.
+        /// </summary>
         private void Draw()
         {
-            if (_visible)
+            if (this.visible)
             {
-                if (!_hasInitStyles) InitialiseStyles();
-
-                _windowPosition = GUILayout.Window(_windowID, _windowPosition, Window, "READOUT INFORMATION", _windowStyle).ClampToScreen();
+                this.windowPosition = GUILayout.Window(this.windowId, this.windowPosition, this.Window, "READOUT INFORMATION", this.windowStyle).ClampToScreen();
             }
         }
 
-        private void Window(int windowID)
+        private void Window(int windowId)
         {
             GUI.skin = HighLogic.Skin;
-            _scrollPosition = GUILayout.BeginScrollView(_scrollPosition, false, true);
+            this.scrollPosition = GUILayout.BeginScrollView(this.scrollPosition, false, true);
             GUI.skin = null;
 
-            if (_readout != null)
+            if (this.readout != null)
             {
-                GUILayout.Label(_readout.Name, _labelStyle);
+                GUILayout.Label(this.readout.Name, this.labelStyle);
 
-                GUILayout.BeginHorizontal(_infoStyle);
-                GUILayout.Label(_readout.Description, _labelStyle);
+                GUILayout.BeginHorizontal(this.infoStyle);
+                GUILayout.Label(this.readout.Description, this.labelStyle);
                 GUILayout.EndHorizontal();
             }
 
             GUILayout.EndScrollView();
 
-            if (GUILayout.Button("CLOSE", _buttonStyle))
-                _visible = false;
+            if (GUILayout.Button("CLOSE", this.buttonStyle))
+            {
+                this.visible = false;
+            }
 
             GUI.DragWindow();
         }

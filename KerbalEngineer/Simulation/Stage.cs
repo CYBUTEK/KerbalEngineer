@@ -1,8 +1,12 @@
-﻿// Name:    Kerbal Engineer Redux
-// Author:  CYBUTEK
-// License: Attribution-NonCommercial-ShareAlike 3.0 Unported
+﻿// Project:	KerbalEngineer
+// Author:	CYBUTEK
+// License:	Attribution-NonCommercial-ShareAlike 3.0 Unported
+
+#region Using Directives
 
 using KerbalEngineer.Extensions;
+
+#endregion
 
 namespace KerbalEngineer.Simulation
 {
@@ -10,22 +14,22 @@ namespace KerbalEngineer.Simulation
     {
         #region Fields
 
-        public int number = 0;
+        public double actualThrust = 0;
+        public double actualThrustToWeight = 0;
         public int cost = 0;
-        public int totalCost = 0;
+        public double deltaV = 0;
+        public double inverseTotalDeltaV = 0;
+        public double isp = 0;
+        public double mass = 0;
+        public int number = 0;
         public int partCount = 0;
-        public double time = 0d;
-        public double totalTime = 0d;
-        public double mass = 0d;
-        public double totalMass = 0d;
-        public double isp = 0d;
-        public double thrust = 0d;
-        public double actualThrust = 0d;
-        public double thrustToWeight = 0d;
-        public double actualThrustToWeight = 0d;
-        public double deltaV = 0d;
-        public double totalDeltaV = 0d;
-        public double inverseTotalDeltaV = 0d;
+        public double thrust = 0;
+        public double thrustToWeight = 0;
+        public double time = 0;
+        public int totalCost = 0;
+        public double totalDeltaV = 0;
+        public double totalMass = 0;
+        public double totalTime = 0;
 
         #endregion
 
@@ -33,17 +37,17 @@ namespace KerbalEngineer.Simulation
 
         public string Number
         {
-            get { return "S" + number; }
+            get { return "S" + this.number; }
         }
 
         public string Parts
         {
-            get { return partCount.ToString(); }
+            get { return this.partCount.ToString(); }
         }
 
         public string Cost
         {
-            get { return cost + " / " + totalCost; }
+            get { return this.cost + " / " + this.totalCost; }
         }
 
         public string Mass
@@ -51,25 +55,26 @@ namespace KerbalEngineer.Simulation
             get
             {
                 if (HighLogic.LoadedSceneIsFlight)
-                    return totalMass.ToMass();
-                else
-                    return mass.ToMass(false) + " / " + totalMass.ToMass();
+                {
+                    return this.totalMass.ToMass();
+                }
+                return this.mass.ToMass(false) + " / " + this.totalMass.ToMass();
             }
         }
 
         public string Isp
         {
-            get { return isp.ToString("#,0.00") + "s"; }
+            get { return this.isp.ToString("#,0.00") + "s"; }
         }
 
         public string Thrust
         {
-            get { return thrust.ToForce(); }
+            get { return this.thrust.ToForce(); }
         }
 
         public string ActualThrust
         {
-            get { return actualThrust.ToForce(); }
+            get { return this.actualThrust.ToForce(); }
         }
 
         public string TWR
@@ -77,9 +82,10 @@ namespace KerbalEngineer.Simulation
             get
             {
                 if (HighLogic.LoadedSceneIsFlight)
-                    return actualThrustToWeight.ToString("0.00") + " / " + thrustToWeight.ToString("0.00");
-                else
-                    return thrustToWeight.ToString("0.00");
+                {
+                    return this.actualThrustToWeight.ToString("0.00") + " / " + this.thrustToWeight.ToString("0.00");
+                }
+                return this.thrustToWeight.ToString("0.00");
             }
         }
 
@@ -88,9 +94,10 @@ namespace KerbalEngineer.Simulation
             get
             {
                 if (HighLogic.LoadedSceneIsFlight)
-                    return deltaV.ToSpeed();
-                else
-                    return deltaV.ToString("#,0.") + " / " + inverseTotalDeltaV.ToString("#,0.") + "m/s";
+                {
+                    return this.deltaV.ToSpeed();
+                }
+                return this.deltaV.ToString("#,0.") + " / " + this.inverseTotalDeltaV.ToString("#,0.") + "m/s";
             }
         }
 
@@ -99,18 +106,16 @@ namespace KerbalEngineer.Simulation
             get
             {
                 if (HighLogic.LoadedSceneIsFlight)
-                    return totalDeltaV.ToSpeed();
-                else
-                    return inverseTotalDeltaV.ToString("#,0.") + "m/s";
+                {
+                    return this.totalDeltaV.ToSpeed();
+                }
+                return this.inverseTotalDeltaV.ToString("#,0.") + "m/s";
             }
         }
 
         public string Time
         {
-            get
-            {
-                return time.ToTime();
-            }
+            get { return this.time.ToTime(); }
         }
 
         #endregion
@@ -121,7 +126,7 @@ namespace KerbalEngineer.Simulation
 
         public Stage(int stageNumber)
         {
-            number = stageNumber;
+            this.number = stageNumber;
         }
 
         #endregion

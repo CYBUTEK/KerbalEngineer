@@ -1,9 +1,12 @@
-﻿// Name:    Kerbal Engineer Redux
-// Author:  CYBUTEK
-// License: Attribution-NonCommercial-ShareAlike 3.0 Unported
+﻿// Project:	KerbalEngineer
+// Author:	CYBUTEK
+// License:	Attribution-NonCommercial-ShareAlike 3.0 Unported
+
+#region Using Directives
 
 using KerbalEngineer.Extensions;
-using UnityEngine;
+
+#endregion
 
 namespace KerbalEngineer.FlightEngineer.Orbital
 {
@@ -11,14 +14,14 @@ namespace KerbalEngineer.FlightEngineer.Orbital
     {
         protected override void Initialise()
         {
-            Name = "Semi-major Axis";
-            Description = "Shows your semi-major axis.";
-            Category = ReadoutCategory.Orbital;
+            this.Name = "Semi-major Axis";
+            this.Description = "Shows your semi-major axis.";
+            this.Category = ReadoutCategory.Orbital;
         }
 
         public override void Draw()
         {
-            DrawLine(FlightGlobals.ActiveVessel.orbit.semiMajorAxis.ToDistance());
+            this.DrawLine(FlightGlobals.ActiveVessel.orbit.semiMajorAxis.ToDistance());
         }
     }
 }

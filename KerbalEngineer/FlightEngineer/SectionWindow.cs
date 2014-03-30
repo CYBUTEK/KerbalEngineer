@@ -1,9 +1,14 @@
-﻿// Name:    Kerbal Engineer Redux
-// Author:  CYBUTEK
-// License: Attribution-NonCommercial-ShareAlike 3.0 Unported
+﻿// Project:	KerbalEngineer
+// Author:	CYBUTEK
+// License:	Attribution-NonCommercial-ShareAlike 3.0 Unported
+
+#region Using Directives
 
 using KerbalEngineer.Extensions;
+
 using UnityEngine;
+
+#endregion
 
 namespace KerbalEngineer.FlightEngineer
 {
@@ -11,107 +16,109 @@ namespace KerbalEngineer.FlightEngineer
     {
         #region Fields
 
-        private Rect _position = new Rect(Screen.width / 2f - 125f, 100f, 250f, 0f);
-        private GUIStyle _windowStyle;
-        private int _windowID = EngineerGlobals.GetNextWindowID();
-
-        private bool _hasInitStyles = false;
+        private readonly int windowId = EngineerGlobals.GetNextWindowId();
+        private Rect position = new Rect(Screen.width * 0.5f - 125.0f, 100.0f, 250.0f, 0);
+        private GUIStyle windowStyle;
 
         #endregion
 
         #region Properties
 
+        private bool requireResize;
+        private Section section;
+        private bool visible;
+
         /// <summary>
-        /// Gets and sets the X position of the window.
+        ///     Gets and sets the X position of the window.
         /// </summary>
         public float PosX
         {
-            get { return _position.x; }
-            set { _position.x = value; }
+            get { return this.position.x; }
+            set { this.position.x = value; }
         }
 
         /// <summary>
-        /// Gets and sets the Y position of the window.
+        ///     Gets and sets the Y position of the window.
         /// </summary>
         public float PosY
         {
-            get { return _position.y; }
-            set { _position.y = value; }
+            get { return this.position.y; }
+            set { this.position.y = value; }
         }
 
-        private bool _visible = false;
         /// <summary>
-        /// Gets and sets the visibility of the window.
+        ///     Gets and sets the visibility of the window.
         /// </summary>
         public bool Visible
         {
-            get { return _visible; }
-            set { _visible = value; }
+            get { return this.visible; }
+            set { this.visible = value; }
         }
 
-        private Section _section;
         /// <summary>
-        /// Gets and sets the parent section.
+        ///     Gets and sets the parent section.
         /// </summary>
         public Section Section
         {
-            get { return _section; }
-            set { _section = value; }
+            get { return this.section; }
+            set { this.section = value; }
         }
 
-        private bool _requireResize = false;
         /// <summary>
-        /// Gets and sets whether the window requires a resize.
+        ///     Gets and sets whether the window requires a resize.
         /// </summary>
         public bool RequireResize
         {
-            get { return _requireResize; }
-            set { _requireResize = value; }
+            get { return this.requireResize; }
+            set { this.requireResize = value; }
         }
 
         #endregion
 
         #region Initialisation
 
+        private void Start()
+        {
+            this.InitialiseStyles();
+        }
+
         private void InitialiseStyles()
         {
-            _hasInitStyles = true;
-
-            _windowStyle = new GUIStyle(HighLogic.Skin.window);
-            _windowStyle.margin = new RectOffset();
-            _windowStyle.padding = new RectOffset(5, 5, 3, 5);
-            _windowStyle.fixedWidth = 270f;
+            this.windowStyle = new GUIStyle(HighLogic.Skin.window)
+            {
+                margin = new RectOffset(),
+                padding = new RectOffset(5, 5, 3, 5),
+                fixedWidth = 270.0f
+            };
         }
 
         #endregion
 
         #region Update and Drawing
 
-        private void Update()
-        {
-        }
+        private void Update() { }
 
         public void Draw()
         {
-            if (_section.Visible && _visible)
+            if (!this.section.Visible || !this.visible)
             {
-                if (!_hasInitStyles) InitialiseStyles();
-
-                // Handle window resizing if something has changed within the GUI.
-                if (_requireResize)
-                {
-                    _requireResize = false;
-                    _position.width = 0f;
-                    _position.height = 0f;
-                }
-
-                _position = GUILayout.Window(_windowID, _position, Window, string.Empty, _windowStyle).ClampToScreen();
+                return;
             }
+
+            // Handle window resizing if something has changed within the GUI.
+            if (this.requireResize)
+            {
+                this.requireResize = false;
+                this.position.width = 0;
+                this.position.height = 0;
+            }
+
+            this.position = GUILayout.Window(this.windowId, this.position, this.Window, string.Empty, this.windowStyle).ClampToScreen();
         }
 
-        private void Window(int windowID)
+        private void Window(int windowId)
         {
-            _section.Draw();
+            this.section.Draw();
             GUI.DragWindow();
         }
 

@@ -1,8 +1,12 @@
-﻿// Name:    Kerbal Engineer Redux
-// Author:  CYBUTEK
-// License: Attribution-NonCommercial-ShareAlike 3.0 Unported
+﻿// Project:	KerbalEngineer
+// Author:	CYBUTEK
+// License:	Attribution-NonCommercial-ShareAlike 3.0 Unported
+
+#region Using Directives
 
 using UnityEngine;
+
+#endregion
 
 namespace KerbalEngineer.FlightEngineer.Rendezvous
 {
@@ -10,14 +14,20 @@ namespace KerbalEngineer.FlightEngineer.Rendezvous
     {
         #region Fields
 
-        private GUIStyle _buttonStyle, _searchStyle;
-        private float _typeButtonWidth = 0f;
-        private string _searchQuery = string.Empty;
-        private string _searchText = string.Empty;
-        private bool _usingSearch = false;
-        private VesselType _vesselType = VesselType.Unknown;
-        private bool _typeIsBody = false;
-        private int _targetCount = 0;
+        private string searchQuery = string.Empty;
+        private string searchText = string.Empty;
+        private int targetCount;
+        private float typeButtonWidth;
+        private bool typeIsBody;
+        private bool usingSearch;
+        private VesselType vesselType = VesselType.Unknown;
+
+        #region Styles
+
+        private GUIStyle buttonStyle;
+        private GUIStyle searchStyle;
+
+        #endregion
 
         #endregion
 
@@ -25,134 +35,184 @@ namespace KerbalEngineer.FlightEngineer.Rendezvous
 
         protected override void Initialise()
         {
-            Name = "Target Selector";
-            Description = "A tool to allow easy browsing, searching and selection of targets.";
-            Category = ReadoutCategory.Rendezvous;
-            InitialiseStyles();
+            this.Name = "Target Selector";
+            this.Description = "A tool to allow easy browsing, searching and selection of targets.";
+            this.Category = ReadoutCategory.Rendezvous;
+            this.InitialiseStyles();
         }
 
         private void InitialiseStyles()
         {
-            _buttonStyle = new GUIStyle(HighLogic.Skin.button);
-            _buttonStyle.normal.textColor = Color.white;
-            _buttonStyle.margin = new RectOffset();
-            _buttonStyle.padding = new RectOffset(5, 5, 5, 5);
-            _buttonStyle.fontSize = 11;
-            _buttonStyle.fontStyle = FontStyle.Bold;
+            this.buttonStyle = new GUIStyle(HighLogic.Skin.button)
+            {
+                normal =
+                {
+                    textColor = Color.white
+                },
+                margin = new RectOffset(),
+                padding = new RectOffset(5, 5, 5, 5),
+                fontSize = 11,
+                fontStyle = FontStyle.Bold
+            };
 
-            _searchStyle = new GUIStyle(HighLogic.Skin.textField);
-            _searchStyle.stretchHeight = true;
+            this.searchStyle = new GUIStyle(HighLogic.Skin.textField)
+            {
+                stretchHeight = true
+            };
 
-            _typeButtonWidth = Mathf.Round((Readout.NameWidth + Readout.DataWidth) / 2f);
+            this.typeButtonWidth = Mathf.Round((NameWidth + DataWidth) * 0.5f);
         }
 
         #endregion
 
         #region Drawing
 
-        // Draws the target selector structure.
+        /// <summary>
+        ///     Draws the target selector structure.
+        /// </summary>
         public override void Draw()
         {
             if (FlightGlobals.fetch.VesselTarget == null)
             {
-                if (_vesselType == VesselType.Unknown && !_typeIsBody)
+                if (this.vesselType == VesselType.Unknown && !this.typeIsBody)
                 {
-                    DrawSearch();
-                    if (_searchQuery.Length == 0)
-                        DrawTypes();
+                    this.DrawSearch();
+                    if (this.searchQuery.Length == 0)
+                    {
+                        this.DrawTypes();
+                    }
                     else
-                        DrawTargetList();
+                    {
+                        this.DrawTargetList();
+                    }
                 }
                 else
                 {
-                    DrawBackToTypes();
-                    DrawTargetList();
+                    this.DrawBackToTypes();
+                    this.DrawTargetList();
                 }
             }
             else
             {
-                DrawTarget();
+                this.DrawTarget();
             }
         }
 
-        // Draws the search bar.
+        /// <summary>
+        ///     Draws the search bar.
+        /// </summary>
         private void DrawSearch()
         {
-            GUILayout.BeginHorizontal(GUILayout.Height(30f));
-            GUILayout.BeginVertical(GUILayout.Width(75f));
-            GUILayout.Label("SEARCH:", NameStyle, GUILayout.ExpandHeight(true));
+            GUILayout.BeginHorizontal(GUILayout.Height(30.0f));
+            GUILayout.BeginVertical(GUILayout.Width(75.0f));
+            GUILayout.Label("SEARCH:", this.NameStyle, GUILayout.ExpandHeight(true));
             GUILayout.EndVertical();
             GUILayout.BeginVertical();
 
-            _searchText = GUILayout.TextField(_searchText, _searchStyle);
+            this.searchText = GUILayout.TextField(this.searchText, this.searchStyle);
 
-            if (_searchText.Length > 0 || _searchQuery.Length > 0)
+            if (this.searchText.Length > 0 || this.searchQuery.Length > 0)
             {
-                _searchQuery = _searchText.ToLower();
+                this.searchQuery = this.searchText.ToLower();
 
-                if (!_usingSearch)
+                if (!this.usingSearch)
                 {
-                    _usingSearch = true;
+                    this.usingSearch = true;
                     FlightDisplay.Instance.RequireResize = true;
                 }
             }
-            else
-                if (_usingSearch)
-                    _usingSearch = false;
+            else if (this.usingSearch)
+            {
+                this.usingSearch = false;
+            }
 
             GUILayout.EndVertical();
             GUILayout.EndHorizontal();
         }
 
-        // Draws the button list of target types.
+        /// <summary>
+        ///     Draws the button list of target types.
+        /// </summary>
         private void DrawTypes()
         {
             GUILayout.BeginHorizontal();
-            GUILayout.BeginVertical(GUILayout.Width(_typeButtonWidth));
-            if (GUILayout.Button("Celestial Bodies", _buttonStyle)) SetTypeAsBody();
+            GUILayout.BeginVertical(GUILayout.Width(this.typeButtonWidth));
+            if (GUILayout.Button("Celestial Bodies", this.buttonStyle))
+            {
+                this.SetTypeAsBody();
+            }
             GUILayout.EndVertical();
-            GUILayout.BeginVertical(GUILayout.Width(_typeButtonWidth));
-            if (GUILayout.Button("Debris", _buttonStyle)) SetTypeAs(VesselType.Debris);
-            GUILayout.EndVertical();
-            GUILayout.EndHorizontal();
-            GUILayout.BeginHorizontal();
-            GUILayout.BeginVertical(GUILayout.Width(_typeButtonWidth));
-            if (GUILayout.Button("Probes", _buttonStyle)) SetTypeAs(VesselType.Probe);
-            GUILayout.EndVertical();
-            GUILayout.BeginVertical(GUILayout.Width(_typeButtonWidth));
-            if (GUILayout.Button("Rovers", _buttonStyle)) SetTypeAs(VesselType.Rover);
+            GUILayout.BeginVertical(GUILayout.Width(this.typeButtonWidth));
+            if (GUILayout.Button("Debris", this.buttonStyle))
+            {
+                this.SetTypeAs(VesselType.Debris);
+            }
             GUILayout.EndVertical();
             GUILayout.EndHorizontal();
             GUILayout.BeginHorizontal();
-            GUILayout.BeginVertical(GUILayout.Width(_typeButtonWidth));
-            if (GUILayout.Button("Landers", _buttonStyle)) SetTypeAs(VesselType.Lander);
+            GUILayout.BeginVertical(GUILayout.Width(this.typeButtonWidth));
+            if (GUILayout.Button("Probes", this.buttonStyle))
+            {
+                this.SetTypeAs(VesselType.Probe);
+            }
             GUILayout.EndVertical();
-            GUILayout.BeginVertical(GUILayout.Width(_typeButtonWidth));
-            if (GUILayout.Button("Ships", _buttonStyle)) SetTypeAs(VesselType.Ship);
-            GUILayout.EndVertical();
-            GUILayout.EndHorizontal();
-            GUILayout.BeginHorizontal();
-            GUILayout.BeginVertical(GUILayout.Width(_typeButtonWidth));
-            if (GUILayout.Button("Stations", _buttonStyle)) SetTypeAs(VesselType.Station);
-            GUILayout.EndVertical();
-            GUILayout.BeginVertical(GUILayout.Width(_typeButtonWidth));
-            if (GUILayout.Button("Bases", _buttonStyle)) SetTypeAs(VesselType.Base);
+            GUILayout.BeginVertical(GUILayout.Width(this.typeButtonWidth));
+            if (GUILayout.Button("Rovers", this.buttonStyle))
+            {
+                this.SetTypeAs(VesselType.Rover);
+            }
             GUILayout.EndVertical();
             GUILayout.EndHorizontal();
             GUILayout.BeginHorizontal();
-            GUILayout.BeginVertical(GUILayout.Width(_typeButtonWidth));
-            if (GUILayout.Button("EVAs", _buttonStyle)) SetTypeAs(VesselType.EVA);
+            GUILayout.BeginVertical(GUILayout.Width(this.typeButtonWidth));
+            if (GUILayout.Button("Landers", this.buttonStyle))
+            {
+                this.SetTypeAs(VesselType.Lander);
+            }
             GUILayout.EndVertical();
-            GUILayout.BeginVertical(GUILayout.Width(_typeButtonWidth));
-            if (GUILayout.Button("Flags", _buttonStyle)) SetTypeAs(VesselType.Flag);
+            GUILayout.BeginVertical(GUILayout.Width(this.typeButtonWidth));
+            if (GUILayout.Button("Ships", this.buttonStyle))
+            {
+                this.SetTypeAs(VesselType.Ship);
+            }
+            GUILayout.EndVertical();
+            GUILayout.EndHorizontal();
+            GUILayout.BeginHorizontal();
+            GUILayout.BeginVertical(GUILayout.Width(this.typeButtonWidth));
+            if (GUILayout.Button("Stations", this.buttonStyle))
+            {
+                this.SetTypeAs(VesselType.Station);
+            }
+            GUILayout.EndVertical();
+            GUILayout.BeginVertical(GUILayout.Width(this.typeButtonWidth));
+            if (GUILayout.Button("Bases", this.buttonStyle))
+            {
+                this.SetTypeAs(VesselType.Base);
+            }
+            GUILayout.EndVertical();
+            GUILayout.EndHorizontal();
+            GUILayout.BeginHorizontal();
+            GUILayout.BeginVertical(GUILayout.Width(this.typeButtonWidth));
+            if (GUILayout.Button("EVAs", this.buttonStyle))
+            {
+                this.SetTypeAs(VesselType.EVA);
+            }
+            GUILayout.EndVertical();
+            GUILayout.BeginVertical(GUILayout.Width(this.typeButtonWidth));
+            if (GUILayout.Button("Flags", this.buttonStyle))
+            {
+                this.SetTypeAs(VesselType.Flag);
+            }
             GUILayout.EndVertical();
             GUILayout.EndHorizontal();
         }
 
-        // Draws the target information when selected.
+        /// <summary>
+        ///     Draws the target information when selected.
+        /// </summary>
         private void DrawTarget()
         {
-            if (GUILayout.Button("Go Back to Target Selection", _buttonStyle))
+            if (GUILayout.Button("Go Back to Target Selection", this.buttonStyle))
             {
                 FlightGlobals.fetch.SetVesselTarget(null);
                 FlightDisplay.Instance.RequireResize = true;
@@ -160,143 +220,167 @@ namespace KerbalEngineer.FlightEngineer.Rendezvous
 
             GUILayout.Space(3f);
 
-            DrawLine("Selected Target", FlightGlobals.fetch.VesselTarget.GetName());
+            this.DrawLine("Selected Target", FlightGlobals.fetch.VesselTarget.GetName());
         }
 
-        // Draws back to types button.
+        /// <summary>
+        ///     Draws the back to types button.
+        /// </summary>
         private void DrawBackToTypes()
         {
-            if (GUILayout.Button("Go Back to Type Selection", _buttonStyle))
+            if (GUILayout.Button("Go Back to Type Selection", this.buttonStyle))
             {
-                _typeIsBody = false;
-                _vesselType = VesselType.Unknown;
+                this.typeIsBody = false;
+                this.vesselType = VesselType.Unknown;
                 FlightDisplay.Instance.RequireResize = true;
             }
 
             GUILayout.Space(3f);
         }
 
-        // Draws the target list.
+        /// <summary>
+        ///     Draws the target list.
+        /// </summary>
         private void DrawTargetList()
         {
-            int count = 0;
+            var count = 0;
 
-            if (_searchQuery.Length == 0)
+            if (this.searchQuery.Length == 0)
             {
-                if (_typeIsBody)
+                if (this.typeIsBody)
                 {
-                    count += DrawMoons();
-                    count += DrawPlanets();
+                    count += this.DrawMoons();
+                    count += this.DrawPlanets();
                 }
                 else
                 {
-                    count += DrawVessels();
+                    count += this.DrawVessels();
                 }
             }
             else
             {
-                count += DrawVessels();
-                count += DrawMoons();
-                count += DrawPlanets();
+                count += this.DrawVessels();
+                count += this.DrawMoons();
+                count += this.DrawPlanets();
             }
 
-            if (count == 0) DrawMessageLine("No targets found!");
-            if (count != _targetCount)
+            if (count == 0)
             {
-                _targetCount = count;
+                this.DrawMessageLine("No targets found!");
+            }
+
+            if (count != this.targetCount)
+            {
+                this.targetCount = count;
                 FlightDisplay.Instance.RequireResize = true;
             }
         }
 
-        // Draws targettable moons.
+        /// <summary>
+        ///     Draws targetable moons.
+        /// </summary>
         private int DrawMoons()
         {
-            int count = 0;
-            foreach (CelestialBody body in FlightGlobals.Bodies)
+            var count = 0;
+
+            foreach (var body in FlightGlobals.Bodies)
             {
-                if (body == Planetarium.fetch.Sun) continue;
-
-                if (FlightGlobals.ActiveVessel.mainBody == body.referenceBody)
+                if (FlightGlobals.ActiveVessel.mainBody != body.referenceBody || body == Planetarium.fetch.Sun)
                 {
-                    if (_searchQuery.Length > 0 && !body.bodyName.ToLower().Contains(_searchQuery)) continue;
-
-                    count++;
-                    if (GUILayout.Button(body.bodyName, _buttonStyle))
-                        SetTargetAs(body);
+                    continue;
                 }
 
+                if (this.searchQuery.Length > 0 && !body.bodyName.ToLower().Contains(this.searchQuery))
+                {
+                    continue;
+                }
+
+                count++;
+                if (GUILayout.Button(body.bodyName, this.buttonStyle))
+                {
+                    this.SetTargetAs(body);
+                }
             }
             return count;
         }
 
-        // Draws targettable planets.
+        /// <summary>
+        ///     Draws the targetable planets.
+        /// </summary>
         private int DrawPlanets()
         {
-            int count = 0;
-            foreach (CelestialBody body in FlightGlobals.Bodies)
+            var count = 0;
+            foreach (var body in FlightGlobals.Bodies)
             {
-                if (body == Planetarium.fetch.Sun || body == FlightGlobals.ActiveVessel.mainBody) continue;
-
-                if (FlightGlobals.ActiveVessel.mainBody.referenceBody == body.referenceBody)
+                if (FlightGlobals.ActiveVessel.mainBody.referenceBody != body.referenceBody || body == Planetarium.fetch.Sun || body == FlightGlobals.ActiveVessel.mainBody)
                 {
-                    if (_searchQuery.Length > 0 && !body.bodyName.ToLower().Contains(_searchQuery)) continue;
+                    continue;
+                }
 
-                    count++;
-                    if (GUILayout.Button(body.GetName(), _buttonStyle))
-                        SetTargetAs(body);
+                if (this.searchQuery.Length > 0 && !body.bodyName.ToLower().Contains(this.searchQuery))
+                {
+                    continue;
+                }
+
+                count++;
+                if (GUILayout.Button(body.GetName(), this.buttonStyle))
+                {
+                    this.SetTargetAs(body);
                 }
             }
             return count;
         }
 
-        // Draws targettable vessels.
+        /// <summary>
+        ///     Draws targetable vessels.
+        /// </summary>
         private int DrawVessels()
         {
-            int count = 0;
-            foreach (global::Vessel vessel in FlightGlobals.Vessels)
+            var count = 0;
+            foreach (var vessel in FlightGlobals.Vessels)
             {
-                if (vessel == FlightGlobals.ActiveVessel) continue;
-
-                if (_searchQuery.Length == 0)
+                if (vessel == FlightGlobals.ActiveVessel || vessel.vesselType != this.vesselType)
                 {
-                    if (vessel.vesselType == _vesselType)
-                    {
-                        count++;
-                        if (GUILayout.Button(vessel.GetName(), _buttonStyle))
-                            SetTargetAs(vessel);
-                    }
+                    continue;
                 }
-                else if (vessel.vesselName.ToLower().Contains(_searchQuery))
+
+                if (this.searchQuery.Length == 0)
                 {
                     count++;
-                    if (GUILayout.Button(vessel.GetName(), _buttonStyle))
-                        SetTargetAs(vessel);
+
+                    if (GUILayout.Button(vessel.GetName(), this.buttonStyle))
+                    {
+                        this.SetTargetAs(vessel);
+                    }
+                }
+                else if (vessel.vesselName.ToLower().Contains(this.searchQuery))
+                {
+                    count++;
+                    if (GUILayout.Button(vessel.GetName(), this.buttonStyle))
+                    {
+                        this.SetTargetAs(vessel);
+                    }
                 }
             }
             return count;
         }
-       
-
-        #endregion
-
-        #region Private Methods
 
         private void SetTypeAs(VesselType vesselType)
         {
-            _vesselType = vesselType;
-            SectionList.Instance.RequireResize = true;
+            this.vesselType = vesselType;
+            SectionList.Instance.RequestResize();
         }
 
         private void SetTypeAsBody()
         {
-            _typeIsBody = true;
-            SectionList.Instance.RequireResize = true;
+            this.typeIsBody = true;
+            SectionList.Instance.RequestResize();
         }
 
         private void SetTargetAs(ITargetable target)
         {
             FlightGlobals.fetch.SetVesselTarget(target);
-            SectionList.Instance.RequireResize = true;
+            SectionList.Instance.RequestResize();
         }
 
         #endregion

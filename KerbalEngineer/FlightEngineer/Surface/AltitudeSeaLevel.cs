@@ -1,10 +1,12 @@
-﻿// Name:    Kerbal Engineer Redux
-// Author:  CYBUTEK
-// License: Attribution-NonCommercial-ShareAlike 3.0 Unported
+﻿// Project:	KerbalEngineer
+// Author:	CYBUTEK
+// License:	Attribution-NonCommercial-ShareAlike 3.0 Unported
+
+#region Using Directives
 
 using KerbalEngineer.Extensions;
-using KerbalEngineer.Simulation;
-using UnityEngine;
+
+#endregion
 
 namespace KerbalEngineer.FlightEngineer.Surface
 {
@@ -12,14 +14,14 @@ namespace KerbalEngineer.FlightEngineer.Surface
     {
         protected override void Initialise()
         {
-            Name = "Altitude (Sea Level)";
-            Description = "Shows your altitude relative to sea level.";
-            Category = ReadoutCategory.Surface;
+            this.Name = "Altitude (Sea Level)";
+            this.Description = "Shows your altitude relative to sea level.";
+            this.Category = ReadoutCategory.Surface;
         }
 
         public override void Draw()
         {
-            DrawLine(FlightGlobals.ActiveVessel.altitude.ToDistance());
+            this.DrawLine(FlightGlobals.ActiveVessel.altitude.ToDistance());
         }
     }
 }

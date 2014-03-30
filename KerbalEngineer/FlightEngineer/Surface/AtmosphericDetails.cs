@@ -1,11 +1,15 @@
-﻿// Name:    Kerbal Engineer Redux
-// Author:  CYBUTEK
-// License: Attribution-NonCommercial-ShareAlike 3.0 Unported
+﻿// Project:	KerbalEngineer
+// Author:	CYBUTEK
+// License:	Attribution-NonCommercial-ShareAlike 3.0 Unported
+
+#region Using Directives
 
 using System;
 using System.Linq;
+
 using KerbalEngineer.Extensions;
-using UnityEngine;
+
+#endregion
 
 namespace KerbalEngineer.FlightEngineer.Surface
 {
@@ -14,70 +18,82 @@ namespace KerbalEngineer.FlightEngineer.Surface
         #region Instance
 
         private static AtmosphericDetails _instance;
+
         /// <summary>
-        /// Gets the current instance of atmospheric details.
+        ///     Gets the current instance of atmospheric details.
         /// </summary>
         public static AtmosphericDetails Instance
         {
-            get
-            {
-                if (_instance == null)
-                    _instance = new AtmosphericDetails();
-
-                return _instance;
-            }
+            get { return _instance ?? (_instance = new AtmosphericDetails()); }
         }
+
+        #endregion
+
+        #region Fields
+
+        private bool updateRequested;
 
         #endregion
 
         #region Properties
 
-        private bool _requestUpdate = false;
+        private double efficiency;
+        private double terminalVelocity;
+
         /// <summary>
-        /// Gets and sets whether an update has been requested.
+        ///     Gets whether an update has been requested.
         /// </summary>
-        public bool RequestUpdate
+        public bool UpdateRequested
         {
-            get { return _requestUpdate; }
-            set { _requestUpdate = value; }
+            get { return this.updateRequested; }
         }
 
-        private double _terminalVelocity = 0d;
         /// <summary>
-        /// Gets the terminal velocity of the active vessel.
+        ///     Gets the terminal velocity of the active vessel.
         /// </summary>
         public double TerminalVelocity
         {
-            get { return _terminalVelocity; }
+            get { return this.terminalVelocity; }
         }
 
-        private double _efficiency = 0d;
         /// <summary>
-        /// Gets the difference between current velocity and terminal velocity.
+        ///     Gets the difference between current velocity and terminal velocity.
         /// </summary>
         public double Efficiency
         {
-            get { return _efficiency; }
+            get { return this.efficiency; }
         }
 
         #endregion
 
-        // Updates the details by recalculating if requested.
+        /// <summary>
+        /// Updated the details by recalculating if requested.
+        /// </summary>
         public void Update()
         {
-            if (_requestUpdate)
+            if (!this.updateRequested)
             {
-                _requestUpdate = false;
-
-                double mass = FlightGlobals.ActiveVessel.parts.Sum(p => p.GetWetMass());
-                double drag = FlightGlobals.ActiveVessel.parts.Sum(p => p.GetWetMass() * p.maximum_drag);
-                double grav = FlightGlobals.getGeeForceAtPosition(FlightGlobals.ActiveVessel.CoM).magnitude;
-                double atmo = FlightGlobals.ActiveVessel.atmDensity;
-                double coef = FlightGlobals.DragMultiplier;
-
-                _terminalVelocity = Math.Sqrt((2 * mass * grav) / (atmo * drag * coef));
-                _efficiency = FlightGlobals.ActiveVessel.srf_velocity.magnitude / _terminalVelocity;
+                return;
             }
+
+            this.updateRequested = false;
+
+            var mass = FlightGlobals.ActiveVessel.parts.Sum(p => p.GetWetMass());
+            var drag = FlightGlobals.ActiveVessel.parts.Sum(p => p.GetWetMass() * p.maximum_drag);
+            var grav = FlightGlobals.getGeeForceAtPosition(FlightGlobals.ActiveVessel.CoM).magnitude;
+            var atmo = FlightGlobals.ActiveVessel.atmDensity;
+            var coef = FlightGlobals.DragMultiplier;
+
+            this.terminalVelocity = Math.Sqrt((2 * mass * grav) / (atmo * drag * coef));
+            this.efficiency = FlightGlobals.ActiveVessel.srf_velocity.magnitude / this.terminalVelocity;
+        }
+
+        /// <summary>
+        /// Request an update to recalculate the details.
+        /// </summary>
+        public void RequestUpdate()
+        {
+            this.updateRequested = true;
         }
     }
 }

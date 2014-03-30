@@ -1,8 +1,18 @@
-﻿// Name:    Kerbal Engineer Redux
-// Author:  CYBUTEK
-// License: Attribution-NonCommercial-ShareAlike 3.0 Unported
+﻿// Project:	KerbalEngineer
+// Author:	CYBUTEK
+// License:	Attribution-NonCommercial-ShareAlike 3.0 Unported
+
+#region Using Directives
 
 using System.Collections.Generic;
+using System.Linq;
+
+using KerbalEngineer.FlightEngineer.Orbital;
+using KerbalEngineer.FlightEngineer.Rendezvous;
+using KerbalEngineer.FlightEngineer.Surface;
+using KerbalEngineer.FlightEngineer.Vessel;
+
+#endregion
 
 namespace KerbalEngineer.FlightEngineer
 {
@@ -11,32 +21,28 @@ namespace KerbalEngineer.FlightEngineer
         #region Instance
 
         private static ReadoutList _instance;
+
         /// <summary>
-        /// Gets the current instance of the readout list.
+        ///     Gets the current instance of the readout list.
         /// </summary>
         public static ReadoutList Instance
         {
-            get
-            {
-                if (_instance == null)
-                    _instance = new ReadoutList();
-
-                return _instance;
-            }
+            get { return _instance ?? (_instance = new ReadoutList()); }
         }
 
         #endregion
 
         #region Properties
 
-        private List<Readout> _readouts = new List<Readout>();
+        private List<Readout> readouts = new List<Readout>();
+
         /// <summary>
-        /// Gets and sets the available readouts.
+        ///     Gets and sets the available readouts.
         /// </summary>
         public List<Readout> Readouts
         {
-            get { return _readouts; }
-            set { _readouts = value; }
+            get { return this.readouts; }
+            set { this.readouts = value; }
         }
 
         #endregion
@@ -45,66 +51,56 @@ namespace KerbalEngineer.FlightEngineer
 
         private ReadoutList()
         {
-            _readouts.Add(new Orbital.ApoapsisHeight());
-            _readouts.Add(new Orbital.PeriapsisHeight());
-            _readouts.Add(new Orbital.TimeToApoapsis());
-            _readouts.Add(new Orbital.TimeToPeriapsis());
-            _readouts.Add(new Orbital.Inclination());
-            _readouts.Add(new Orbital.Eccentricity());
-            _readouts.Add(new Orbital.OrbitalPeriod());
-            _readouts.Add(new Orbital.LongitudeOfAN());
-            _readouts.Add(new Orbital.LongitudeOfPe());
-            _readouts.Add(new Orbital.SemiMajorAxis());
-            _readouts.Add(new Orbital.SemiMinorAxis());
+            this.readouts.Add(new ApoapsisHeight());
+            this.readouts.Add(new PeriapsisHeight());
+            this.readouts.Add(new TimeToApoapsis());
+            this.readouts.Add(new TimeToPeriapsis());
+            this.readouts.Add(new Inclination());
+            this.readouts.Add(new Eccentricity());
+            this.readouts.Add(new OrbitalPeriod());
+            this.readouts.Add(new LongitudeOfAN());
+            this.readouts.Add(new LongitudeOfPe());
+            this.readouts.Add(new SemiMajorAxis());
+            this.readouts.Add(new SemiMinorAxis());
 
-            _readouts.Add(new Surface.AltitudeSeaLevel());
-            _readouts.Add(new Surface.AltitudeTerrain());
-            _readouts.Add(new Surface.VerticalSpeed());
-            _readouts.Add(new Surface.HorizontalSpeed());
-            _readouts.Add(new Surface.Longitude());
-            _readouts.Add(new Surface.Latitude());
-            _readouts.Add(new Surface.TerminalVelocity());
-            _readouts.Add(new Surface.AtmosEfficiency());
+            this.readouts.Add(new AltitudeSeaLevel());
+            this.readouts.Add(new AltitudeTerrain());
+            this.readouts.Add(new VerticalSpeed());
+            this.readouts.Add(new HorizontalSpeed());
+            this.readouts.Add(new Longitude());
+            this.readouts.Add(new Latitude());
+            this.readouts.Add(new TerminalVelocity());
+            this.readouts.Add(new AtmosEfficiency());
 
-            _readouts.Add(new Vessel.DeltaVStaged());
-            _readouts.Add(new Vessel.DeltaVTotal());
-            _readouts.Add(new Vessel.SpecificImpulse());
-            _readouts.Add(new Vessel.TotalMass());
-            _readouts.Add(new Vessel.ThrustTotal());
-            _readouts.Add(new Vessel.ThrustActual());
-            _readouts.Add(new Vessel.ThrustToWeight());
+            this.readouts.Add(new DeltaVStaged());
+            this.readouts.Add(new DeltaVTotal());
+            this.readouts.Add(new SpecificImpulse());
+            this.readouts.Add(new TotalMass());
+            this.readouts.Add(new ThrustTotal());
+            this.readouts.Add(new ThrustActual());
+            this.readouts.Add(new ThrustToWeight());
 
-            _readouts.Add(new Rendezvous.TargetSelector());
+            this.readouts.Add(new TargetSelector());
         }
 
         #endregion
 
-        #region Public Methods
+        #region Methods
 
         /// <summary>
-        /// Gets a readout matching the name provided.
+        ///     Gets a readout matching the name provided.
         /// </summary>
         public Readout GetReadout(string name)
         {
-            foreach (Readout readout in _readouts)
-                if (readout.Name == name)
-                    return readout;
-
-            return null;
+            return this.readouts.FirstOrDefault(readout => readout.Name == name);
         }
 
         /// <summary>
-        /// Gets a list of readouts based on the category provided.
+        ///     Gets a list of readouts based on the category provided.
         /// </summary>
         public List<Readout> GetCategory(ReadoutCategory category)
         {
-            List<Readout> readouts = new List<Readout>();
-
-            foreach (Readout readout in _readouts)
-                if (readout.Category == category)
-                    readouts.Add(readout);
-
-            return readouts;
+            return this.readouts.Where(readout => readout.Category == category).ToList();
         }
 
         #endregion

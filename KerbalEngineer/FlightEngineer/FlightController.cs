@@ -1,11 +1,16 @@
-﻿// Name:    Kerbal Engineer Redux
-// Author:  CYBUTEK
-// License: Attribution-NonCommercial-ShareAlike 3.0 Unported
+﻿// Project:	KerbalEngineer
+// Author:	CYBUTEK
+// License:	Attribution-NonCommercial-ShareAlike 3.0 Unported
 
-using System.Collections.Generic;
+#region Using Directives
+
 using System.IO;
+
 using KerbalEngineer.Settings;
+
 using UnityEngine;
+
+#endregion
 
 namespace KerbalEngineer.FlightEngineer
 {
@@ -14,52 +19,53 @@ namespace KerbalEngineer.FlightEngineer
         #region Instance
 
         private static FlightController _instance;
+
         /// <summary>
-        /// Gets the current instance of the flight controller.
+        ///     Gets the current instance of the flight controller.
         /// </summary>
         public static FlightController Instance
         {
-            get
-            {
-                if (_instance == null)
-                    _instance = new FlightController();
-
-                return _instance;
-            }
+            get { return _instance ?? (_instance = new FlightController()); }
         }
 
         #endregion
 
         #region Fields
 
-        private Rect _windowPosition = new Rect(Screen.width / 2f + 150f, 0f, 200f, 0f);
-        private Rect _handlePosition = new Rect(Screen.width / 2f + 200f, 0f, 100f, 17f);
-        private GUIStyle _windowStyle, _buttonStyle;
-        private Texture2D _closedNormal = new Texture2D(100, 17, TextureFormat.RGBA32, false);
-        private Texture2D _closedHover = new Texture2D(100, 17, TextureFormat.RGBA32, false);
-        private Texture2D _closedDown = new Texture2D(100, 17, TextureFormat.RGBA32, false);
-        private Texture2D _openNormal = new Texture2D(100, 17, TextureFormat.RGBA32, false);
-        private Texture2D _openHover = new Texture2D(100, 17, TextureFormat.RGBA32, false);
-        private Texture2D _openDown = new Texture2D(100, 17, TextureFormat.RGBA32, false);
-        private int _windowID = EngineerGlobals.GetNextWindowID();
+        private readonly Texture2D closedDown = new Texture2D(100, 17, TextureFormat.RGBA32, false);
+        private readonly Texture2D closedHover = new Texture2D(100, 17, TextureFormat.RGBA32, false);
+        private readonly Texture2D closedNormal = new Texture2D(100, 17, TextureFormat.RGBA32, false);
+        private readonly Texture2D openDown = new Texture2D(100, 17, TextureFormat.RGBA32, false);
+        private readonly Texture2D openHover = new Texture2D(100, 17, TextureFormat.RGBA32, false);
+        private readonly Texture2D openNormal = new Texture2D(100, 17, TextureFormat.RGBA32, false);
+        private readonly int windowId = EngineerGlobals.GetNextWindowId();
 
-        private bool _hasInitStyles = false;
-        private bool _clicked = false;
-        private bool _open = false;
-        private float _openAmount = 0f;
+        private bool clicked;
+        private Rect handlePosition = new Rect(Screen.width * 0.5f + 200.0f, 0, 100.0f, 17.0f);
+        private bool open;
+        private float openAmount;
+        private Rect windowPosition = new Rect(Screen.width * 0.5f + 150.0f, 0, 200.0f, 0);
+
+        #region Styles
+
+        private GUIStyle buttonStyle;
+        private GUIStyle windowStyle;
+
+        #endregion
 
         #endregion
 
         #region Properties
 
-        private bool _requireResize = false;
+        private bool requireResize;
+
         /// <summary>
-        /// Gets and sets whether the display requires a resize.
+        ///     Gets and sets whether the display requires a resize.
         /// </summary>
         public bool RequireResize
         {
-            get { return _requireResize; }
-            set { _requireResize = value; }
+            get { return this.requireResize; }
+            set { this.requireResize = value; }
         }
 
         #endregion
@@ -69,29 +75,36 @@ namespace KerbalEngineer.FlightEngineer
         private FlightController()
         {
             // Load textures directly from the PNG files. (Would of used GameDatabase but it compresses them so it looks shit!)
-            _closedNormal.LoadImage(File.ReadAllBytes(EngineerGlobals.AssemblyPath + "GUI/FlightButton/ClosedNormal.png"));
-            _closedHover.LoadImage(File.ReadAllBytes(EngineerGlobals.AssemblyPath + "GUI/FlightButton/ClosedHover.png"));
-            _closedDown.LoadImage(File.ReadAllBytes(EngineerGlobals.AssemblyPath + "GUI/FlightButton/ClosedDown.png"));
-            _openNormal.LoadImage(File.ReadAllBytes(EngineerGlobals.AssemblyPath + "GUI/FlightButton/OpenNormal.png"));
-            _openHover.LoadImage(File.ReadAllBytes(EngineerGlobals.AssemblyPath + "GUI/FlightButton/OpenHover.png"));
-            _openDown.LoadImage(File.ReadAllBytes(EngineerGlobals.AssemblyPath + "GUI/FlightButton/OpenDown.png"));
+            this.closedNormal.LoadImage(File.ReadAllBytes(EngineerGlobals.AssemblyPath + "GUI/FlightButton/ClosedNormal.png"));
+            this.closedHover.LoadImage(File.ReadAllBytes(EngineerGlobals.AssemblyPath + "GUI/FlightButton/ClosedHover.png"));
+            this.closedDown.LoadImage(File.ReadAllBytes(EngineerGlobals.AssemblyPath + "GUI/FlightButton/ClosedDown.png"));
+            this.openNormal.LoadImage(File.ReadAllBytes(EngineerGlobals.AssemblyPath + "GUI/FlightButton/OpenNormal.png"));
+            this.openHover.LoadImage(File.ReadAllBytes(EngineerGlobals.AssemblyPath + "GUI/FlightButton/OpenHover.png"));
+            this.openDown.LoadImage(File.ReadAllBytes(EngineerGlobals.AssemblyPath + "GUI/FlightButton/OpenDown.png"));
+
+            this.InitialiseStyles();
         }
 
         private void InitialiseStyles()
         {
-            _hasInitStyles = true;
+            this.windowStyle = new GUIStyle(HighLogic.Skin.window)
+            {
+                margin = new RectOffset(),
+                padding = new RectOffset(3, 3, 3, 3),
+                fixedWidth = this.windowPosition.width
+            };
 
-            _windowStyle = new GUIStyle(HighLogic.Skin.window);
-            _windowStyle.margin = new RectOffset();
-            _windowStyle.padding = new RectOffset(3, 3, 3, 3);
-            _windowStyle.fixedWidth = _windowPosition.width;
-
-            _buttonStyle = new GUIStyle(HighLogic.Skin.button);
-            _buttonStyle.normal.textColor = Color.white;
-            _buttonStyle.margin = new RectOffset();
-            _buttonStyle.fixedHeight = 20f;
-            _buttonStyle.fontSize = 11;
-            _buttonStyle.fontStyle = FontStyle.Bold;
+            this.buttonStyle = new GUIStyle(HighLogic.Skin.button)
+            {
+                normal =
+                {
+                    textColor = Color.white
+                },
+                margin = new RectOffset(),
+                fixedHeight = 20.0f,
+                fontSize = 11,
+                fontStyle = FontStyle.Bold
+            };
         }
 
         #endregion
@@ -101,60 +114,68 @@ namespace KerbalEngineer.FlightEngineer
         public void Update()
         {
             // Controls the sliding animation.
-            if (_open && _openAmount < 1f) // Opening
+            if (this.open && this.openAmount < 1f) // Opening
             {
-                _openAmount += ((10f * (1f - _openAmount)) + 0.5f) * Time.deltaTime;
+                this.openAmount += ((10.0f * (1.0f - this.openAmount)) + 0.5f) * Time.deltaTime;
 
-                if (_openAmount > 1f)
-                    _openAmount = 1f;
+                if (this.openAmount > 1.0f)
+                {
+                    this.openAmount = 1.0f;
+                }
             }
-            else if (!_open && _openAmount > 0f) // Closing
+            else if (!this.open && this.openAmount > 0f) // Closing
             {
-                _openAmount -= ((10f * _openAmount) + 0.5f) * Time.deltaTime;
+                this.openAmount -= ((10.0f * this.openAmount) + 0.5f) * Time.deltaTime;
 
-                if (_openAmount < 0f)
-                    _openAmount = 0f;
+                if (this.openAmount < 0)
+                {
+                    this.openAmount = 0;
+                }
             }
 
             // Set the sliding positions.
-            _windowPosition.y = -_windowPosition.height * (1f - _openAmount);
-            _handlePosition.y = _windowPosition.y + _windowPosition.height;
+            this.windowPosition.y = -this.windowPosition.height * (1.0f - this.openAmount);
+            this.handlePosition.y = this.windowPosition.y + this.windowPosition.height;
         }
 
         public void Draw()
         {
-            if (!_hasInitStyles) InitialiseStyles();
-
             // Handle window resizing if something has changed within the GUI.
-            if (_requireResize)
+            if (this.requireResize)
             {
-                _requireResize = false;
-                _windowPosition.height = 0f;
+                this.requireResize = false;
+                this.windowPosition.height = 0;
             }
 
-            DrawButton();
+            this.DrawButton();
 
-            if (_windowPosition.y + _windowPosition.height > 0f || _windowPosition.height == 0f)
-                _windowPosition = GUILayout.Window(_windowID, _windowPosition, Window, string.Empty, _windowStyle);
+            if (this.windowPosition.y + this.windowPosition.height > 0 || this.windowPosition.height == 0)
+            {
+                this.windowPosition = GUILayout.Window(this.windowId, this.windowPosition, this.Window, string.Empty, this.windowStyle);
+            }
         }
 
-        private void Window(int windowID)
+        private void Window(int windowId)
         {
             // Control bar toggle.
-            FlightDisplay.Instance.ControlBar = GUILayout.Toggle(FlightDisplay.Instance.ControlBar, "CONTROL BAR", _buttonStyle);
+            FlightDisplay.Instance.ControlBar = GUILayout.Toggle(FlightDisplay.Instance.ControlBar, "CONTROL BAR", this.buttonStyle);
 
             GUILayout.BeginHorizontal(); // Begin fixed sections.
 
             // Draw fixed section display toggles.
             GUILayout.BeginVertical();
-            foreach (Section section in SectionList.Instance.FixedSections)
-                section.Visible = GUILayout.Toggle(section.Visible, section.Title.ToUpper(), _buttonStyle);
+            foreach (var section in SectionList.Instance.FixedSections)
+            {
+                section.Visible = GUILayout.Toggle(section.Visible, section.Title.ToUpper(), this.buttonStyle);
+            }
             GUILayout.EndVertical();
 
             // Draw fixed section edit toggles.
-            GUILayout.BeginVertical(GUILayout.Width(50f));
-            foreach (Section section in SectionList.Instance.FixedSections)
-                section.EditDisplay.Visible = GUILayout.Toggle(section.EditDisplay.Visible, "EDIT", _buttonStyle);
+            GUILayout.BeginVertical(GUILayout.Width(50.0f));
+            foreach (var section in SectionList.Instance.FixedSections)
+            {
+                section.EditDisplay.Visible = GUILayout.Toggle(section.EditDisplay.Visible, "EDIT", this.buttonStyle);
+            }
             GUILayout.EndVertical();
 
             GUILayout.EndHorizontal(); // End fixed sections.
@@ -162,114 +183,119 @@ namespace KerbalEngineer.FlightEngineer
 
             // Draw user section display toggles.
             GUILayout.BeginVertical();
-            foreach (Section section in SectionList.Instance.UserSections)
+            foreach (var section in SectionList.Instance.UserSections)
             {
-                section.Visible = GUILayout.Toggle(section.Visible, section.Title.ToUpper(), _buttonStyle);
+                section.Visible = GUILayout.Toggle(section.Visible, section.Title.ToUpper(), this.buttonStyle);
             }
             GUILayout.EndVertical();
 
             // Draw user section edit toggles.
             GUILayout.BeginVertical(GUILayout.Width(50f));
-            foreach (Section section in SectionList.Instance.UserSections)
-                section.EditDisplay.Visible = GUILayout.Toggle(section.EditDisplay.Visible, "EDIT", _buttonStyle);
+            foreach (var section in SectionList.Instance.UserSections)
+            {
+                section.EditDisplay.Visible = GUILayout.Toggle(section.EditDisplay.Visible, "EDIT", this.buttonStyle);
+            }
             GUILayout.EndVertical();
 
             GUILayout.EndHorizontal(); // End user sections.
 
             // New custom user section button.
-            if (GUILayout.Button("NEW USER SECTION", _buttonStyle))
+            if (GUILayout.Button("NEW USER SECTION", this.buttonStyle))
+            {
                 SectionList.Instance.UserSections.Add(new Section(true));
+            }
         }
 
         private void DrawButton()
         {
-            if (_clicked) // Button has been clicked whilst being hovered.
+            if (this.clicked) // Button has been clicked whilst being hovered.
             {
-                if (_open)
-                    GUI.DrawTexture(_handlePosition, _openDown);
-                else
-                    GUI.DrawTexture(_handlePosition, _closedDown);
+                GUI.DrawTexture(this.handlePosition, this.open ? this.openDown : this.closedDown);
 
-                if (_handlePosition.Contains(Event.current.mousePosition)) // Mouse is hovering over the button.
+                if (this.handlePosition.Contains(Event.current.mousePosition)) // Mouse is hovering over the button.
                 {
                     if (Mouse.Left.GetButtonUp()) // The mouse up event has been triggered whilst over the button.
                     {
-                        _clicked = false;
-                        _open = !_open;
+                        this.clicked = false;
+                        this.open = !this.open;
                     }
                 }
             }
             else // The button is not registering as being clicked.
             {
-                if (_handlePosition.Contains(Event.current.mousePosition)) // Mouse is hovering over the button.
+                if (this.handlePosition.Contains(Event.current.mousePosition)) // Mouse is hovering over the button.
                 {
                     // If the left mouse button has just been pressed, see the button as being clicked.
-                    if (!_clicked && (Mouse.Left.GetButtonDown())) _clicked = true;
-
-                    if (_clicked) // The button has just been clicked.
+                    if (!this.clicked && (Mouse.Left.GetButtonDown()))
                     {
-                        if (_open)
-                            GUI.DrawTexture(_handlePosition, _openDown);
-                        else
-                            GUI.DrawTexture(_handlePosition, _closedDown);
+                        this.clicked = true;
+                    }
+
+                    if (this.clicked) // The button has just been clicked.
+                    {
+                        GUI.DrawTexture(this.handlePosition, this.open ? this.openDown : this.closedDown);
                     }
                     else if (!Mouse.Left.GetButton()) // Mouse button is not down and is just hovering.
                     {
-                        if (_open)
-                            GUI.DrawTexture(_handlePosition, _openHover);
-                        else
-                            GUI.DrawTexture(_handlePosition, _closedHover);
+                        GUI.DrawTexture(this.handlePosition, this.open ? this.openHover : this.closedHover);
                     }
                     else // Mouse button is down but no click was registered over the button.
                     {
-                        if (_open)
-                            GUI.DrawTexture(_handlePosition, _openNormal);
-                        else
-                            GUI.DrawTexture(_handlePosition, _closedNormal);
+                        GUI.DrawTexture(this.handlePosition, this.open ? this.openNormal : this.closedNormal);
                     }
                 }
                 else // The mouse is not being hovered.
                 {
-                    if (_open)
-                        GUI.DrawTexture(_handlePosition, _openNormal);
-                    else
-                        GUI.DrawTexture(_handlePosition, _closedNormal);
+                    GUI.DrawTexture(this.handlePosition, this.open ? this.openNormal : this.closedNormal);
                 }
             }
 
             // Check for an unclick event whilst the mouse is not hovering.
-            if (_clicked && (Mouse.Left.GetButtonUp())) _clicked = false;
+            if (this.clicked && (Mouse.Left.GetButtonUp()))
+            {
+                this.clicked = false;
+            }
         }
 
         #endregion
 
         #region Save and Load
 
-        // Saves the settings associated with the flight controller.
+        /// <summary>
+        ///     Saves the settings associated with the flight controller.
+        /// </summary>
         public void Save()
         {
             try
             {
-                SettingList list = new SettingList();
-                list.AddSetting("open", _open);
+                var list = new SettingList();
+                list.AddSetting("open", this.open);
                 SettingList.SaveToFile(EngineerGlobals.AssemblyPath + "Settings/FlightController", list);
 
                 MonoBehaviour.print("[KerbalEngineer/FlightController]: Successfully saved settings.");
             }
-            catch { MonoBehaviour.print("[KerbalEngineer/FlightController]: Failed to save settings."); }
+            catch
+            {
+                MonoBehaviour.print("[KerbalEngineer/FlightController]: Failed to save settings.");
+            }
         }
 
-        // Loads the settings associated with the flight controller.
+        /// <summary>
+        ///     Loads the settings associated with the flight controller.
+        /// </summary>
         public void Load()
         {
             try
             {
-                SettingList list = SettingList.CreateFromFile(EngineerGlobals.AssemblyPath + "Settings/FlightController");
-                _open = (bool)list.GetSetting("open", _open);
+                var list = SettingList.CreateFromFile(EngineerGlobals.AssemblyPath + "Settings/FlightController");
+                this.open = (bool)list.GetSetting("open", this.open);
 
                 MonoBehaviour.print("[KerbalEngineer/FlightController]: Successfully loaded settings.");
             }
-            catch { MonoBehaviour.print("[KerbalEngineer/FlightController]: Failed to load settings."); }
+            catch
+            {
+                MonoBehaviour.print("[KerbalEngineer/FlightController]: Failed to load settings.");
+            }
         }
 
         #endregion

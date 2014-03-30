@@ -1,9 +1,12 @@
-﻿// Name:    Kerbal Engineer Redux
-// Author:  CYBUTEK
-// License: Attribution-NonCommercial-ShareAlike 3.0 Unported
+﻿// Project:	KerbalEngineer
+// Author:	CYBUTEK
+// License:	Attribution-NonCommercial-ShareAlike 3.0 Unported
+
+#region Using Directives
 
 using KerbalEngineer.Extensions;
-using UnityEngine;
+
+#endregion
 
 namespace KerbalEngineer.FlightEngineer.Orbital
 {
@@ -11,14 +14,14 @@ namespace KerbalEngineer.FlightEngineer.Orbital
     {
         protected override void Initialise()
         {
-            Name = "Orbital Period";
-            Description = "Shows your orbital period.";
-            Category = ReadoutCategory.Orbital;
+            this.Name = "Orbital Period";
+            this.Description = "Shows your orbital period.";
+            this.Category = ReadoutCategory.Orbital;
         }
 
         public override void Draw()
         {
-            DrawLine(FlightGlobals.ActiveVessel.orbit.period.ToTime());
+            this.DrawLine(FlightGlobals.ActiveVessel.orbit.period.ToTime());
         }
     }
 }

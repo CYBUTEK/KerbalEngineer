@@ -1,10 +1,16 @@
-﻿// Name:    Kerbal Engineer Redux
-// Author:  CYBUTEK
-// License: Attribution-NonCommercial-ShareAlike 3.0 Unported
+﻿// Project:	KerbalEngineer
+// Author:	CYBUTEK
+// License:	Attribution-NonCommercial-ShareAlike 3.0 Unported
+
+#region Using Directives
 
 using System.IO;
+
 using KerbalEngineer.Extensions;
+
 using UnityEngine;
+
+#endregion
 
 namespace KerbalEngineer.FlightEngineer
 {
@@ -12,217 +18,278 @@ namespace KerbalEngineer.FlightEngineer
     {
         #region Fields
 
-        private Rect _windowPosition = new Rect(Screen.width / 2 - 250f, Screen.height / 2 - 250f, 500f, 500f);
-        private int _windowID = EngineerGlobals.GetNextWindowID();
-        private GUIStyle _windowStyle, _customControlBarStyle, _rowStyle, _buttonStyle, _textStyle, _titleStyle, _labelStyle;
-        private Vector2 _scrollAvailablePosition = Vector2.zero;
-        private Vector2 _scrollInstalledPosition = Vector2.zero;
-        private ReadoutCategory _selectedCategory = ReadoutCategory.None;
+        private readonly int windowId = EngineerGlobals.GetNextWindowId();
 
-        private bool _hasInitStyles = false;
+        private Vector2 scrollAvailablePosition = Vector2.zero;
+        private Vector2 scrollInstalledPosition = Vector2.zero;
+        private ReadoutCategory selectedCategory = ReadoutCategory.None;
+        private Rect windowPosition = new Rect(Screen.width * 0.5f - 250.0f, Screen.height * 0.5f - 250.0f, 500.0f, 500.0f);
+
+        #region Styles
+
+        private GUIStyle buttonStyle;
+        private GUIStyle customControlBarStyle;
+        private GUIStyle labelStyle;
+        private GUIStyle rowStyle;
+        private GUIStyle textStyle;
+        private GUIStyle titleStyle;
+        private GUIStyle windowStyle;
+
+        #endregion
 
         #endregion
 
         #region Properties
 
-        private bool _visible = false;
+        private Section section;
+        private bool visible;
+
         /// <summary>
-        /// Gets and sets the visibility of the window.
+        ///     Gets and sets the visibility of the window.
         /// </summary>
         public bool Visible
         {
-            get { return _visible; }
-            set { _visible = value; }
+            get { return this.visible; }
+            set { this.visible = value; }
         }
 
-        private Section _section;
         /// <summary>
-        /// Gets and sets the parent section.
+        ///     Gets and sets the parent section.
         /// </summary>
         public Section Section
         {
-            get { return _section; }
-            set { _section = value; }
+            get { return this.section; }
+            set { this.section = value; }
         }
 
         #endregion
 
         #region Initialisation
 
-        // Initialises the gui styles upon request.
+        private void Start()
+        {
+            this.InitialiseStyles();
+        }
+
+        /// <summary>
+        ///     Initialises the GUI styles upon request.
+        /// </summary>
         private void InitialiseStyles()
         {
-            _hasInitStyles = true;
+            this.windowStyle = new GUIStyle(HighLogic.Skin.window);
 
-            _windowStyle = new GUIStyle(HighLogic.Skin.window);
+            this.customControlBarStyle = new GUIStyle
+            {
+                fixedHeight = 25.0f
+            };
 
-            _customControlBarStyle = new GUIStyle();
-            _customControlBarStyle.fixedHeight = 25f;
+            this.rowStyle = new GUIStyle
+            {
+                margin = new RectOffset(5, 5, 5, 5),
+                fixedHeight = 25.0f
+            };
 
-            _rowStyle = new GUIStyle();
-            _rowStyle.margin = new RectOffset(5, 5, 5, 5);
-            _rowStyle.fixedHeight = 25f;
+            this.buttonStyle = new GUIStyle(HighLogic.Skin.button)
+            {
+                normal =
+                {
+                    textColor = Color.white
+                },
+                fontSize = 11,
+                fontStyle = FontStyle.Bold,
+                stretchHeight = true
+            };
 
-            _buttonStyle = new GUIStyle(HighLogic.Skin.button);
-            _buttonStyle.normal.textColor = Color.white;
-            _buttonStyle.fontSize = 11;
-            _buttonStyle.fontStyle = FontStyle.Bold;
-            _buttonStyle.stretchHeight = true;
+            this.textStyle = new GUIStyle(HighLogic.Skin.textField)
+            {
+                alignment = TextAnchor.MiddleLeft,
+                fontSize = 12,
+                stretchWidth = true,
+                stretchHeight = true
+            };
 
-            _textStyle = new GUIStyle(HighLogic.Skin.textField);
-            _textStyle.alignment = TextAnchor.MiddleLeft;
-            _textStyle.fontSize = 12;
-            _textStyle.stretchWidth = true;
-            _textStyle.stretchHeight = true;
+            this.titleStyle = new GUIStyle(HighLogic.Skin.label)
+            {
+                normal =
+                {
+                    textColor = Color.white
+                },
+                alignment = TextAnchor.MiddleLeft,
+                fontSize = 12,
+                fontStyle = FontStyle.Bold,
+                stretchWidth = true
+            };
 
-            _titleStyle = new GUIStyle(HighLogic.Skin.label);
-            _titleStyle.normal.textColor = Color.white;
-            _titleStyle.alignment = TextAnchor.MiddleLeft;
-            _titleStyle.fontSize = 12;
-            _titleStyle.fontStyle = FontStyle.Bold;
-            _titleStyle.stretchWidth = true;
-
-            _labelStyle = new GUIStyle(HighLogic.Skin.label);
-            _labelStyle.normal.textColor = Color.white;
-            _labelStyle.alignment = TextAnchor.MiddleLeft;
-            _labelStyle.fontSize = 12;
-            _labelStyle.fontStyle = FontStyle.Bold;
-            _labelStyle.stretchHeight = true;
-            _labelStyle.stretchWidth = true;
+            this.labelStyle = new GUIStyle(HighLogic.Skin.label)
+            {
+                normal =
+                {
+                    textColor = Color.white
+                },
+                alignment = TextAnchor.MiddleLeft,
+                fontSize = 12,
+                fontStyle = FontStyle.Bold,
+                stretchHeight = true,
+                stretchWidth = true
+            };
         }
 
         #endregion
 
         #region Drawing
 
-        // Runs when the object is called to draw.
+        /// <summary>
+        ///     Runs when the object is called to draw.
+        /// </summary>
         public void Draw()
         {
-            if (_visible)
+            if (this.visible)
             {
-                if (!_hasInitStyles) InitialiseStyles();
-
-                _windowPosition = GUILayout.Window(_windowID, _windowPosition, Window, "EDIT SECTION - " + _section.Title.ToUpper(), _windowStyle).ClampToScreen();
+                this.windowPosition = GUILayout.Window(this.windowId, this.windowPosition, this.Window, "EDIT SECTION - " + this.section.Title.ToUpper(), this.windowStyle).ClampToScreen();
             }
         }
 
-        private void Window(int windowID)
+        private void Window(int windowId)
         {
             // Selected category has not been selected.
-            if (_selectedCategory == ReadoutCategory.None)
+            if (this.selectedCategory == ReadoutCategory.None)
             {
                 // Set selected category to first category.
-                if (_section.Categories.Count > 0)
-                    _selectedCategory = _section.Categories[0];
+                if (this.section.Categories.Count > 0)
+                {
+                    this.selectedCategory = this.section.Categories[0];
+                }
             }
 
             // Show user controls if the section was user created.
-            if (_section.IsUser)
-                UserControls();
+            if (this.section.IsUser)
+            {
+                this.UserControls();
+            }
 
             // Show categories selection if there is more than one.
-            if (_section.Categories.Count > 1)
-                Categories();
+            if (this.section.Categories.Count > 1)
+            {
+                this.Categories();
+            }
 
-            Available(_selectedCategory);
-            Installed();
+            this.Available(this.selectedCategory);
+            this.Installed();
 
             // Detach and close buttons.
-            GUILayout.BeginHorizontal(GUILayout.Height(30f));
-            if (GUILayout.Toggle(_section.Window.Visible, "DETACH INTO WINDOW", _buttonStyle, GUILayout.Width(150f)) != _section.Window.Visible)
+            GUILayout.BeginHorizontal(GUILayout.Height(30.0f));
+            if (GUILayout.Toggle(this.section.Window.Visible, "DETACH INTO WINDOW", this.buttonStyle, GUILayout.Width(150.0f)) != this.section.Window.Visible)
             {
-                _section.Window.Visible = !_section.Window.Visible;
+                this.section.Window.Visible = !this.section.Window.Visible;
                 FlightDisplay.Instance.RequireResize = true;
             }
-            if (GUILayout.Button("CLOSE EDITOR", _buttonStyle)) _visible = false;
+            if (GUILayout.Button("CLOSE EDITOR", this.buttonStyle))
+            {
+                this.visible = false;
+            }
             GUILayout.EndHorizontal();
 
             GUI.DragWindow();
         }
 
-        // Draws the user section controls.
+        /// <summary>
+        ///     Draws the user section controls.
+        /// </summary>
         private void UserControls()
         {
-            GUILayout.BeginHorizontal(_customControlBarStyle);
+            GUILayout.BeginHorizontal(this.customControlBarStyle);
 
-            GUILayout.BeginVertical(GUILayout.Width(50f));
-            GUILayout.Label("TITLE - ", _labelStyle);
+            GUILayout.BeginVertical(GUILayout.Width(50.0f));
+            GUILayout.Label("TITLE - ", this.labelStyle);
             GUILayout.EndVertical();
 
             // Title text box.
             GUILayout.BeginVertical();
-            _section.Title = GUILayout.TextField(_section.Title, _textStyle);
+            this.section.Title = GUILayout.TextField(this.section.Title, this.textStyle);
             GUILayout.EndVertical();
 
             // Delete button and handling.
-            GUILayout.BeginVertical(GUILayout.Width(100f));
-            if (GUILayout.Button("DELETE", _buttonStyle))
+            GUILayout.BeginVertical(GUILayout.Width(100.0f));
+            if (GUILayout.Button("DELETE", this.buttonStyle))
             {
                 // Remove objects from lists and render queues.
-                SectionList.Instance.UserSections.Remove(_section);
+                SectionList.Instance.UserSections.Remove(this.section);
                 FlightController.Instance.RequireResize = true;
-                if (_section.Visible)
+                if (this.section.Visible)
+                {
                     FlightDisplay.Instance.RequireResize = true;
-                RenderingManager.RemoveFromPostDrawQueue(0, Draw);
-                RenderingManager.RemoveFromPostDrawQueue(0, _section.Window.Draw);
+                }
+                RenderingManager.RemoveFromPostDrawQueue(0, this.Draw);
+                RenderingManager.RemoveFromPostDrawQueue(0, this.section.Window.Draw);
 
                 // Delete the settings file.
-                if (File.Exists(EngineerGlobals.AssemblyPath + "Settings/Sections/" + _section.FileName))
-                    File.Delete(EngineerGlobals.AssemblyPath + "Settings/Sections/" + _section.FileName);
+                if (File.Exists(EngineerGlobals.AssemblyPath + "Settings/Sections/" + this.section.FileName))
+                {
+                    File.Delete(EngineerGlobals.AssemblyPath + "Settings/Sections/" + this.section.FileName);
+                }
 
                 // Set MonoBehaviour objects to be destroyed.
-                Destroy(_section.Window);
+                Destroy(this.section.Window);
                 Destroy(this);
 
-                print("[KerbalEngineer]: Deleted " + _section.Title + " section.");
+                print("[KerbalEngineer]: Deleted " + this.section.Title + " section.");
             }
             GUILayout.EndVertical();
 
             GUILayout.EndHorizontal();
         }
 
-        // Draws the available categories selection.
+        /// <summary>
+        ///     Draws the available categories selection.
+        /// </summary>
         private void Categories()
         {
-            GUILayout.BeginHorizontal(GUILayout.Height(30f));
-            foreach (ReadoutCategory category in _section.Categories)
+            GUILayout.BeginHorizontal(GUILayout.Height(30.0f));
+            foreach (var category in this.section.Categories)
             {
-                bool isSelected = _selectedCategory == category;
-                if (GUILayout.Toggle(isSelected, category.ToString().ToUpper(), _buttonStyle) && !isSelected)
-                    _selectedCategory = category;
+                var isSelected = this.selectedCategory == category;
+                if (GUILayout.Toggle(isSelected, category.ToString().ToUpper(), this.buttonStyle) && !isSelected)
+                {
+                    this.selectedCategory = category;
+                }
             }
             GUILayout.EndHorizontal();
         }
 
-        // Draws the available readouts panel.
+        /// <summary>
+        ///     Draws the available readouts panel.
+        /// </summary>
         private void Available(ReadoutCategory category)
         {
             GUI.skin = HighLogic.Skin;
-            _scrollAvailablePosition = GUILayout.BeginScrollView(_scrollAvailablePosition, false, true, GUILayout.Height(150f));
+            this.scrollAvailablePosition = GUILayout.BeginScrollView(this.scrollAvailablePosition, false, true, GUILayout.Height(150f));
             GUI.skin = null;
 
             // Panel title.
-            GUILayout.Label("AVAILABLE", _titleStyle);
+            GUILayout.Label("AVAILABLE", this.titleStyle);
 
             GUILayout.BeginVertical();
-            int count = 0;
-            foreach (Readout readout in ReadoutList.Instance.GetCategory(category))
+            var count = 0;
+            foreach (var readout in ReadoutList.Instance.GetCategory(category))
             {
                 // Readout is already installed.
-                if (_section.Readouts.Contains(readout)) continue;
+                if (this.section.Readouts.Contains(readout))
+                {
+                    continue;
+                }
 
                 count++;
 
-                GUILayout.BeginHorizontal(_rowStyle);
+                GUILayout.BeginHorizontal(this.rowStyle);
 
                 // Readout name.
                 GUILayout.BeginVertical();
-                GUILayout.Label(readout.Name, _labelStyle);
+                GUILayout.Label(readout.Name, this.labelStyle);
                 GUILayout.EndVertical();
 
                 // Info button.
-                GUILayout.BeginVertical(GUILayout.Width(30f));
-                if (GUILayout.Button("?", _buttonStyle))
+                GUILayout.BeginVertical(GUILayout.Width(30.0f));
+                if (GUILayout.Button("?", this.buttonStyle))
                 {
                     InfoDisplay.Instance.Readout = readout;
                     InfoDisplay.Instance.Visible = true;
@@ -230,9 +297,11 @@ namespace KerbalEngineer.FlightEngineer
                 GUILayout.EndVertical();
 
                 // Install button
-                GUILayout.BeginVertical(GUILayout.Width(100f));
-                if (GUILayout.Button("INSTALL", _buttonStyle))
-                    _section.Readouts.Add(readout);
+                GUILayout.BeginVertical(GUILayout.Width(100.0f));
+                if (GUILayout.Button("INSTALL", this.buttonStyle))
+                {
+                    this.section.Readouts.Add(readout);
+                }
                 GUILayout.EndVertical();
 
                 GUILayout.EndHorizontal();
@@ -241,8 +310,8 @@ namespace KerbalEngineer.FlightEngineer
             // Panel is void of readouts.
             if (count == 0)
             {
-                GUILayout.BeginHorizontal(_rowStyle);
-                GUILayout.Label("All readouts are installed!", _labelStyle);
+                GUILayout.BeginHorizontal(this.rowStyle);
+                GUILayout.Label("All readouts are installed!", this.labelStyle);
                 GUILayout.EndHorizontal();
             }
 
@@ -253,55 +322,57 @@ namespace KerbalEngineer.FlightEngineer
             GUILayout.Space(5f);
         }
 
-        // Draws the installed readouts panel.
+        /// <summary>
+        ///     Draws the installed readouts panel.
+        /// </summary>
         private void Installed()
         {
             GUI.skin = HighLogic.Skin;
-            _scrollInstalledPosition = GUILayout.BeginScrollView(_scrollInstalledPosition, false, true);
+            this.scrollInstalledPosition = GUILayout.BeginScrollView(this.scrollInstalledPosition, false, true);
             GUI.skin = null;
 
             // Panel title
-            GUILayout.Label("INSTALLED", _titleStyle);
+            GUILayout.Label("INSTALLED", this.titleStyle);
 
             GUILayout.BeginVertical();
-            foreach (Readout readout in _section.Readouts)
+            foreach (var readout in this.section.Readouts)
             {
-                GUILayout.BeginHorizontal(_rowStyle);
+                GUILayout.BeginHorizontal(this.rowStyle);
 
                 // Readout name.
                 GUILayout.BeginVertical();
-                GUILayout.Label(readout.Name, _labelStyle);
+                GUILayout.Label(readout.Name, this.labelStyle);
                 GUILayout.EndVertical();
 
                 // Move position up button.
-                GUILayout.BeginVertical(GUILayout.Width(30f));
-                if (GUILayout.Button("▲", _buttonStyle))
+                GUILayout.BeginVertical(GUILayout.Width(30.0f));
+                if (GUILayout.Button("▲", this.buttonStyle))
                 {
-                    int index = _section.Readouts.IndexOf(readout);
+                    var index = this.section.Readouts.IndexOf(readout);
                     if (index > 0)
                     {
-                        _section.Readouts[index] = _section.Readouts[index - 1];
-                        _section.Readouts[index - 1] = readout;
+                        this.section.Readouts[index] = this.section.Readouts[index - 1];
+                        this.section.Readouts[index - 1] = readout;
                     }
                 }
                 GUILayout.EndVertical();
 
                 // Move position down button.
-                GUILayout.BeginVertical(GUILayout.Width(30f));
-                if (GUILayout.Button("▼", _buttonStyle))
+                GUILayout.BeginVertical(GUILayout.Width(30.0f));
+                if (GUILayout.Button("▼", this.buttonStyle))
                 {
-                    int index = _section.Readouts.IndexOf(readout);
-                    if (index < _section.Readouts.Count - 1)
+                    var index = this.section.Readouts.IndexOf(readout);
+                    if (index < this.section.Readouts.Count - 1)
                     {
-                        _section.Readouts[index] = _section.Readouts[index + 1];
-                        _section.Readouts[index + 1] = readout;
+                        this.section.Readouts[index] = this.section.Readouts[index + 1];
+                        this.section.Readouts[index + 1] = readout;
                     }
                 }
                 GUILayout.EndVertical();
 
                 // Info button.
-                GUILayout.BeginVertical(GUILayout.Width(30f));
-                if (GUILayout.Button("?", _buttonStyle))
+                GUILayout.BeginVertical(GUILayout.Width(30.0f));
+                if (GUILayout.Button("?", this.buttonStyle))
                 {
                     InfoDisplay.Instance.Readout = readout;
                     InfoDisplay.Instance.Visible = true;
@@ -309,10 +380,10 @@ namespace KerbalEngineer.FlightEngineer
                 GUILayout.EndVertical();
 
                 // Remove button.
-                GUILayout.BeginVertical(GUILayout.Width(100f));
-                if (GUILayout.Button("REMOVE", _buttonStyle))
+                GUILayout.BeginVertical(GUILayout.Width(100.0f));
+                if (GUILayout.Button("REMOVE", this.buttonStyle))
                 {
-                    _section.Readouts.Remove(readout);
+                    this.section.Readouts.Remove(readout);
                     FlightDisplay.Instance.RequireResize = true;
                 }
                 GUILayout.EndVertical();
@@ -321,10 +392,10 @@ namespace KerbalEngineer.FlightEngineer
             }
 
             // Panel is void of readouts.
-            if (_section.Readouts.Count == 0)
+            if (this.section.Readouts.Count == 0)
             {
-                GUILayout.BeginHorizontal(_rowStyle);
-                GUILayout.Label("No readouts are installed!", _labelStyle);
+                GUILayout.BeginHorizontal(this.rowStyle);
+                GUILayout.Label("No readouts are installed!", this.labelStyle);
                 GUILayout.EndHorizontal();
             }
 

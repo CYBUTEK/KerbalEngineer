@@ -1,13 +1,18 @@
-﻿// Name:    Kerbal Engineer Redux
-// Author:  CYBUTEK
-// License: Attribution-NonCommercial-ShareAlike 3.0 Unported
+﻿// Project:	KerbalEngineer
+// Author:	CYBUTEK
+// License:	Attribution-NonCommercial-ShareAlike 3.0 Unported
 
-using System.Collections.Generic;
+#region Using Directives
+
 using System.Diagnostics;
+
 using KerbalEngineer.Extensions;
 using KerbalEngineer.Settings;
 using KerbalEngineer.Simulation;
+
 using UnityEngine;
+
+#endregion
 
 namespace KerbalEngineer.BuildEngineer
 {
@@ -17,7 +22,7 @@ namespace KerbalEngineer.BuildEngineer
         #region Instance
 
         /// <summary>
-        /// Gets the current instance if started or returns null.
+        ///     Gets the current instance if started or returns null.
         /// </summary>
         public static BuildOverlay Instance { get; private set; }
 
@@ -25,327 +30,411 @@ namespace KerbalEngineer.BuildEngineer
 
         #region Fields
 
-        private Rect _windowPosition = new Rect(265f, 0f, 0f, 0f);
-        private GUIStyle _windowStyle, _titleStyle, _infoStyle, _tooltipTitleStyle, _tooltipInfoStyle;
-        private int _windowID = EngineerGlobals.GetNextWindowID();
-        private bool _hasInitStyles = false;
+        private readonly Stopwatch tooltipInfoTimer = new Stopwatch();
+        private readonly int windowId = EngineerGlobals.GetNextWindowId();
+        private Part selectedPart;
+        private Rect windowPosition = new Rect(265.0f, 0, 0, 0);
 
-        private Part _selectedPart = null;
-        private Stopwatch _tooltipInfoTimer = new Stopwatch();
-        private double _tooltipInfoDelay = 0.5d;
+        #region Styles
+
+        private GUIStyle infoStyle;
+        private GUIStyle titleStyle;
+        private GUIStyle tooltipInfoStyle;
+        private GUIStyle tooltipTitleStyle;
+        private GUIStyle windowStyle;
+
+        #endregion
 
         #endregion
 
         #region Properties
 
-        private bool _visible = false;
+        private float tooltipInfoDelay = 0.5f;
+        private bool visible;
+
+        public float TooltipInfoDelay
+        {
+            get { return this.tooltipInfoDelay; }
+            set { this.tooltipInfoDelay = value; }
+        }
+
         /// <summary>
-        /// Gets and sets whether the display is enabled.
+        ///     Gets and sets whether the display is enabled.
         /// </summary>
         public bool Visible
         {
-            get { return _visible; }
-            set { _visible = value; }
+            get { return this.visible; }
+            set { this.visible = value; }
         }
 
         #endregion
 
         #region Initialisation
 
-        public void Start()
+        private void Awake()
         {
-            // Set the instance to this object.
             Instance = this;
+            this.Load();
+        }
 
-            RenderingManager.AddToPostDrawQueue(0, OnDraw);
+        private void Start()
+        {
+            this.InitialiseStyles();
+            RenderingManager.AddToPostDrawQueue(0, this.OnDraw);
         }
 
         private void InitialiseStyles()
         {
-            _hasInitStyles = true;
+            this.windowStyle = new GUIStyle(GUIStyle.none)
+            {
+                margin = new RectOffset(),
+                padding = new RectOffset()
+            };
 
-            _windowStyle = new GUIStyle(GUIStyle.none);
-            _windowStyle.margin = new RectOffset();
-            _windowStyle.padding = new RectOffset();
+            this.titleStyle = new GUIStyle(HighLogic.Skin.label)
+            {
+                normal =
+                {
+                    textColor = Color.white
+                },
+                margin = new RectOffset(),
+                padding = new RectOffset(),
+                fontSize = 11,
+                fontStyle = FontStyle.Bold,
+                stretchWidth = true
+            };
 
-            _titleStyle = new GUIStyle(HighLogic.Skin.label);
-            _titleStyle.normal.textColor = Color.white;
-            _titleStyle.margin = new RectOffset();
-            _titleStyle.padding = new RectOffset();
-            _titleStyle.fontSize = 11;
-            _titleStyle.fontStyle = FontStyle.Bold;
-            _titleStyle.stretchWidth = true;
+            this.infoStyle = new GUIStyle(HighLogic.Skin.label)
+            {
+                margin = new RectOffset(),
+                padding = new RectOffset(),
+                fontSize = 11,
+                fontStyle = FontStyle.Bold,
+                stretchWidth = true
+            };
 
-            _infoStyle = new GUIStyle(HighLogic.Skin.label);
-            _infoStyle.margin = new RectOffset();
-            _infoStyle.padding = new RectOffset();
-            _infoStyle.fontSize = 11;
-            _infoStyle.fontStyle = FontStyle.Bold;
-            _infoStyle.stretchWidth = true;
+            this.tooltipTitleStyle = new GUIStyle(HighLogic.Skin.label)
+            {
+                normal =
+                {
+                    textColor = Color.white
+                },
+                fontSize = 11,
+                fontStyle = FontStyle.Bold,
+                stretchWidth = true
+            };
 
-            _tooltipTitleStyle = new GUIStyle(HighLogic.Skin.label);
-            _tooltipTitleStyle.normal.textColor = Color.white;
-            _tooltipTitleStyle.fontSize = 11;
-            _tooltipTitleStyle.fontStyle = FontStyle.Bold;
-            _tooltipTitleStyle.stretchWidth = true;
-
-            _tooltipInfoStyle = new GUIStyle(HighLogic.Skin.label);
-            _tooltipInfoStyle.fontSize = 11;
-            _tooltipInfoStyle.fontStyle = FontStyle.Bold;
-            _tooltipInfoStyle.stretchWidth = true;
+            this.tooltipInfoStyle = new GUIStyle(HighLogic.Skin.label)
+            {
+                fontSize = 11,
+                fontStyle = FontStyle.Bold,
+                stretchWidth = true
+            };
         }
 
         #endregion
 
         #region Update and Drawing
 
-        public void Update()
+        private void Update()
         {
             try
             {
-                if (EditorLogic.fetch != null && EditorLogic.SortedShipList.Count > 0)
+                if (EditorLogic.fetch == null || EditorLogic.SortedShipList.Count <= 0)
                 {
-                    // Configure the simulation parameters based on the selected reference body.
-                    SimulationManager.Instance.Gravity = CelestialBodies.Instance.SelectedBodyInfo.Gravity;
-
-                    if (BuildAdvanced.Instance.UseAtmosphericDetails)
-                        SimulationManager.Instance.Atmosphere = CelestialBodies.Instance.SelectedBodyInfo.Atmosphere * 0.01d;
-                    else
-                        SimulationManager.Instance.Atmosphere = 0d;
-
-                    SimulationManager.Instance.TryStartSimulation();
+                    return;
                 }
-            } catch { /* A null reference exception is thrown when checking if EditorLogic.fetch != null??? */ }
+
+                // Configure the simulation parameters based on the selected reference body.
+                SimulationManager.Instance.Gravity = CelestialBodies.Instance.SelectedBodyInfo.Gravity;
+
+                if (BuildAdvanced.Instance.UseAtmosphericDetails)
+                {
+                    SimulationManager.Instance.Atmosphere = CelestialBodies.Instance.SelectedBodyInfo.Atmosphere * 0.01d;
+                }
+                else
+                {
+                    SimulationManager.Instance.Atmosphere = 0;
+                }
+
+                SimulationManager.Instance.TryStartSimulation();
+            }
+            catch
+            {
+                /* A null reference exception is thrown when checking if EditorLogic.fetch != null??? */
+            }
         }
 
         private void OnDraw()
         {
             try
             {
-                if (_visible && EditorLogic.fetch != null && EditorLogic.SortedShipList.Count > 0 && EditorLogic.fetch.editorScreen == EditorLogic.EditorScreen.Parts)
+                if (!this.visible || EditorLogic.fetch == null || EditorLogic.SortedShipList.Count <= 0 || EditorLogic.fetch.editorScreen != EditorLogic.EditorScreen.Parts)
                 {
-                    SimulationManager.Instance.RequestSimulation();
+                    return;
+                }
 
-                    // Initialise the GUI styles, but only once as needed.
-                    if (!_hasInitStyles) InitialiseStyles();
+                SimulationManager.Instance.RequestSimulation();
 
-                    _windowPosition = GUILayout.Window(_windowID, _windowPosition, Window, string.Empty, _windowStyle);
+                this.windowPosition = GUILayout.Window(this.windowId, this.windowPosition, this.Window, string.Empty, this.windowStyle);
 
-                    // Check and set that the window is at the bottom of the screen.
-                    if (_windowPosition.y + _windowPosition.height != Screen.height - 5f)
-                        _windowPosition.y = Screen.height - _windowPosition.height - 5f;
+                // Check and set that the window is at the bottom of the screen.
+                if (this.windowPosition.y + this.windowPosition.height != Screen.height - 5.0f)
+                {
+                    this.windowPosition.y = Screen.height - this.windowPosition.height - 5.0f;
+                }
 
-                    // Find if a part is selected or being hovered over.
-                    if (EditorLogic.SelectedPart != null)
+                // Find if a part is selected or being hovered over.
+                if (EditorLogic.SelectedPart != null)
+                {
+                    // Do not allow the extended information to be shown.
+                    if (this.selectedPart != null)
                     {
-                        // Do not allow the extended information to be shown.
-                        if (_selectedPart != null)
-                        {
-                            _selectedPart = null;
-                            _tooltipInfoTimer.Reset();
-                        }
-
-                        DrawTooltip(EditorLogic.SelectedPart);
+                        this.selectedPart = null;
+                        this.tooltipInfoTimer.Reset();
                     }
-                    else
+
+                    this.DrawTooltip(EditorLogic.SelectedPart);
+                }
+                else
+                {
+                    var isPartSelected = false;
+                    foreach (var part in EditorLogic.SortedShipList)
                     {
-                        bool isPartSelected = false;
-                        foreach (Part part in EditorLogic.SortedShipList)
-                        { 
-                            if (part.stackIcon.highlightIcon)
-                            {
-                                // Start the extended information timer.
-                                if (part != _selectedPart)
-                                {
-                                    _selectedPart = part;
-                                    _tooltipInfoTimer.Reset();
-                                    _tooltipInfoTimer.Start();
-                                }
-                                isPartSelected = true;
-
-                                DrawTooltip(part);
-                                break;
-                            }
-                        }
-
-                        // If no part is being hovered over we must reset the extended information timer.
-                        if (!isPartSelected)
+                        if (part.stackIcon.highlightIcon)
                         {
-                            if (_selectedPart != null)
+                            // Start the extended information timer.
+                            if (part != this.selectedPart)
                             {
-                                _selectedPart = null;
-                                _tooltipInfoTimer.Reset();
+                                this.selectedPart = part;
+                                this.tooltipInfoTimer.Reset();
+                                this.tooltipInfoTimer.Start();
                             }
+                            isPartSelected = true;
+
+                            this.DrawTooltip(part);
+                            break;
                         }
+                    }
+
+                    // If no part is being hovered over we must reset the extended information timer.
+                    if (!isPartSelected && this.selectedPart != null)
+                    {
+                        this.selectedPart = null;
+                        this.tooltipInfoTimer.Reset();
                     }
                 }
             }
-            catch { /* A null reference exception is thrown when checking if EditorLogic.fetch != null??? */ }
+            catch
+            {
+                /* A null reference exception is thrown when checking if EditorLogic.fetch != null??? */
+            }
         }
 
-        private void Window(int windowID)
+        private void Window(int windowId)
         {
             GUILayout.BeginHorizontal();
 
             // Titles
-            GUILayout.BeginVertical(GUILayout.Width(75f));
-            GUILayout.Label("Parts:", _titleStyle);
-            GUILayout.Label("Delta-V:", _titleStyle);
-            GUILayout.Label("TWR:", _titleStyle);
+            GUILayout.BeginVertical(GUILayout.Width(75.0f));
+            GUILayout.Label("Parts:", this.titleStyle);
+            GUILayout.Label("Delta-V:", this.titleStyle);
+            GUILayout.Label("TWR:", this.titleStyle);
             GUILayout.EndVertical();
 
             // Details
-            GUILayout.BeginVertical(GUILayout.Width(100f));
-            GUILayout.Label(SimulationManager.Instance.LastStage.partCount.ToString(), _infoStyle);
-            GUILayout.Label(SimulationManager.Instance.LastStage.totalDeltaV.ToString("#,0.") + " m/s", _infoStyle);
-            GUILayout.Label(SimulationManager.Instance.LastStage.TWR, _infoStyle);
+            GUILayout.BeginVertical(GUILayout.Width(100.0f));
+            GUILayout.Label(SimulationManager.Instance.LastStage.partCount.ToString(), this.infoStyle);
+            GUILayout.Label(SimulationManager.Instance.LastStage.totalDeltaV.ToString("#,0.") + " m/s", this.infoStyle);
+            GUILayout.Label(SimulationManager.Instance.LastStage.TWR, this.infoStyle);
             GUILayout.EndVertical();
 
             GUILayout.EndHorizontal();
         }
 
-        // Draws the tooltip details of the selected/highlighted part.
+        /// <summary>
+        ///     Draws the tooltip details of the selected/highlighted part.
+        /// </summary>
         private void DrawTooltip(Part part)
         {
             // Tooltip title (name of part).
-            GUIContent content = new GUIContent(part.partInfo.title);
-            Vector2 size = _tooltipTitleStyle.CalcSize(content);
-            Rect position = new Rect(Event.current.mousePosition.x + 16f, Event.current.mousePosition.y, size.x, size.y).ClampInsideScreen();
-            if (position.x < Event.current.mousePosition.x + 16f) position.y += 16f;
-            GUI.Label(position, content, _tooltipTitleStyle);
+            var content = new GUIContent(part.partInfo.title);
+            var size = this.tooltipTitleStyle.CalcSize(content);
+            var position = new Rect(Event.current.mousePosition.x + 16.0f, Event.current.mousePosition.y, size.x, size.y).ClampInsideScreen();
+
+            if (position.x < Event.current.mousePosition.x + 16.0f)
+            {
+                position.y += 16.0f;
+            }
+            GUI.Label(position, content, this.tooltipTitleStyle);
 
             // After hovering for a period of time, show extended information.
-            if (_tooltipInfoTimer.Elapsed.TotalSeconds >= _tooltipInfoDelay)
+            if (this.tooltipInfoTimer.Elapsed.TotalSeconds >= this.tooltipInfoDelay)
             {
                 // Stop the timer as it is no longer needed.
-                if (_tooltipInfoTimer.IsRunning)
-                    _tooltipInfoTimer.Stop();
+                if (this.tooltipInfoTimer.IsRunning)
+                {
+                    this.tooltipInfoTimer.Stop();
+                }
 
                 // Show the dry mass of the part if applicable.
                 if (part.physicalSignificance == Part.PhysicalSignificance.FULL)
-                    DrawTooltipInfo(ref position, "Dry Mass: " + part.GetDryMass().ToMass());
+                {
+                    this.DrawTooltipInfo(ref position, "Dry Mass: " + part.GetDryMass().ToMass());
+                }
 
                 // Show resources contained within the part.
                 if (part.ContainsResources())
                 {
                     // Show the wet mass of the part if applicable.
-                    if (part.GetResourceMass() > 0f)
-                        DrawTooltipInfo(ref position, "Wet Mass: " + part.GetWetMass().ToMass());
+                    if (part.GetResourceMass() > 0)
+                    {
+                        this.DrawTooltipInfo(ref position, "Wet Mass: " + part.GetWetMass().ToMass());
+                    }
 
                     // List all the resources contained within the part.
                     foreach (PartResource resource in part.Resources)
                     {
-                        double density = resource.GetDensity();
-                        if (density > 0d)
-                            DrawTooltipInfo(ref position, resource.info.name + ": " + resource.GetMass().ToMass() + " (" + resource.amount + ")");
+                        if (resource.GetDensity() > 0)
+                        {
+                            this.DrawTooltipInfo(ref position, resource.info.name + ": " + resource.GetMass().ToMass() + " (" + resource.amount + ")");
+                        }
                         else
-                            DrawTooltipInfo(ref position, resource.info.name + ": " + resource.amount);
+                        {
+                            this.DrawTooltipInfo(ref position, resource.info.name + ": " + resource.amount);
+                        }
                     }
                 }
 
                 // Show details for engines.
                 if (part.IsEngine())
                 {
-                    DrawTooltipInfo(ref position, "Maximum Thrust: " + part.GetMaxThrust().ToForce());
-                    DrawTooltipInfo(ref position, "Specific Impulse: " + part.GetSpecificImpulse(1f) + " / " + part.GetSpecificImpulse(0f) + "s");
+                    this.DrawTooltipInfo(ref position, "Maximum Thrust: " + part.GetMaxThrust().ToForce());
+                    this.DrawTooltipInfo(ref position, "Specific Impulse: " + part.GetSpecificImpulse(1f) + " / " + part.GetSpecificImpulse(0f) + "s");
 
                     // Thrust vectoring.
                     if (part.HasModule("ModuleGimbal"))
-                        DrawTooltipInfo(ref position, "Thrust Vectoring Enabled");
+                    {
+                        this.DrawTooltipInfo(ref position, "Thrust Vectoring Enabled");
+                    }
 
                     // Contains alternator.
                     if (part.HasModule("ModuleAlternator"))
-                        DrawTooltipInfo(ref position, "Contains Alternator");
+                    {
+                        this.DrawTooltipInfo(ref position, "Contains Alternator");
+                    }
                 }
 
                 // Show details for RCS.
-                if (part.IsRCSModule())
+                if (part.IsRcsModule())
                 {
-                    ModuleRCS moduleRCS = part.GetModuleRCS();
-                    DrawTooltipInfo(ref position, "Thrust Power: " + moduleRCS.thrusterPower.ToDouble().ToForce());
-                    DrawTooltipInfo(ref position, "Specific Impulse: " + moduleRCS.atmosphereCurve.Evaluate(1f) + " / " + moduleRCS.atmosphereCurve.Evaluate(0f) + "s");
+                    var moduleRcs = part.GetModuleRcs();
+                    this.DrawTooltipInfo(ref position, "Thrust Power: " + moduleRcs.thrusterPower.ToDouble().ToForce());
+                    this.DrawTooltipInfo(ref position, "Specific Impulse: " + moduleRcs.atmosphereCurve.Evaluate(1f) + " / " + moduleRcs.atmosphereCurve.Evaluate(0f) + "s");
                 }
 
                 // Show details for solar panels.
                 if (part.IsSolarPanel())
                 {
-                    ModuleDeployableSolarPanel module = part.GetModuleDeployableSolarPanel();
-                    DrawTooltipInfo(ref position, "Charge Rate: " + module.chargeRate.ToDouble().ToRate());
+                    this.DrawTooltipInfo(ref position, "Charge Rate: " + part.GetModuleDeployableSolarPanel().chargeRate.ToDouble().ToRate());
                 }
 
                 // Show details for generators.
                 if (part.IsGenerator())
                 {
-                    foreach (ModuleGenerator.GeneratorResource resource in part.GetModuleGenerator().inputList)
-                        DrawTooltipInfo(ref position, "Input: " + resource.name + " (" + resource.rate.ToDouble().ToRate() + ")");
+                    foreach (var resource in part.GetModuleGenerator().inputList)
+                    {
+                        this.DrawTooltipInfo(ref position, "Input: " + resource.name + " (" + resource.rate.ToDouble().ToRate() + ")");
+                    }
 
-                    foreach (ModuleGenerator.GeneratorResource resource in part.GetModuleGenerator().outputList)
-                        DrawTooltipInfo(ref position, "Output: " + resource.name + " (" + resource.rate.ToDouble().ToRate() + ")");
+                    foreach (var resource in part.GetModuleGenerator().outputList)
+                    {
+                        this.DrawTooltipInfo(ref position, "Output: " + resource.name + " (" + resource.rate.ToDouble().ToRate() + ")");
+                    }
                 }
 
                 // Show details for parachutes.
                 if (part.IsParachute())
                 {
-                    ModuleParachute module = part.GetModuleParachute();
-                    DrawTooltipInfo(ref position, "Semi Deployed Drag: " + module.semiDeployedDrag);
-                    DrawTooltipInfo(ref position, "Fully Deployed Drag: " + module.fullyDeployedDrag);
-                    DrawTooltipInfo(ref position, "Deployment Altitude: " + module.deployAltitude.ToDouble().ToDistance());
+                    var module = part.GetModuleParachute();
+                    this.DrawTooltipInfo(ref position, "Semi Deployed Drag: " + module.semiDeployedDrag);
+                    this.DrawTooltipInfo(ref position, "Fully Deployed Drag: " + module.fullyDeployedDrag);
+                    this.DrawTooltipInfo(ref position, "Deployment Altitude: " + module.deployAltitude.ToDouble().ToDistance());
                 }
 
                 // Contains stability augmentation system.
                 if (part.HasModule("ModuleSAS"))
-                    DrawTooltipInfo(ref position, "Contains SAS");
+                {
+                    this.DrawTooltipInfo(ref position, "Contains SAS");
+                }
 
                 // Contains reaction wheels.
                 if (part.HasModule("ModuleReactionWheel"))
-                    DrawTooltipInfo(ref position, "Contains Reaction Wheels");
+                {
+                    this.DrawTooltipInfo(ref position, "Contains Reaction Wheels");
+                }
 
                 // Show if the part has an animation that can only be used once.
                 if (part.HasOneShotAnimation())
-                    DrawTooltipInfo(ref position, "Single Activation Only");
+                {
+                    this.DrawTooltipInfo(ref position, "Single Activation Only");
+                }
             }
         }
 
-        // Draws a line of extended information below the previous.
+        /// <summary>
+        ///     Draws a line of extended information below the previous.
+        /// </summary>
         private void DrawTooltipInfo(ref Rect position, string value)
         {
-            GUIContent content = new GUIContent(value);
-            Vector2 size = _tooltipInfoStyle.CalcSize(content);
-            position.y += 16f;
+            var content = new GUIContent(value);
+            var size = this.tooltipInfoStyle.CalcSize(content);
+
+            position.y += 16.0f;
             position.width = size.x;
             position.height = size.y;
-            GUI.Label(position, content, _tooltipInfoStyle);
+            GUI.Label(position, content, this.tooltipInfoStyle);
         }
 
         #endregion
 
         #region Save and Load
 
-        // Saves the settings when this object is destroyed.
-        public void OnDestroy()
+        /// <summary>
+        ///     Saves the settings when this object is destroyed.
+        /// </summary>
+        private void OnDestroy()
         {
             try
             {
-                SettingList list = new SettingList();
-                list.AddSetting("visible", _visible);
+                var list = new SettingList();
+                list.AddSetting("visible", this.visible);
                 SettingList.SaveToFile(EngineerGlobals.AssemblyPath + "Settings/BuildOverlay", list);
 
                 print("[KerbalEngineer/BuildOverlay]: Successfully saved settings.");
             }
-            catch { print("[KerbalEngineer/BuildOverlay]: Failed to save settings."); }
+            catch
+            {
+                print("[KerbalEngineer/BuildOverlay]: Failed to save settings.");
+            }
         }
 
-        // loads the settings when this object is created.
-        public void Awake()
+        /// <summary>
+        ///     Loads the settings when this object is created.
+        /// </summary>
+        private void Load()
         {
             try
             {
-                SettingList list = SettingList.CreateFromFile(EngineerGlobals.AssemblyPath + "Settings/BuildOverlay");
-                _visible = (bool)list.GetSetting("visible", _visible);
+                var list = SettingList.CreateFromFile(EngineerGlobals.AssemblyPath + "Settings/BuildOverlay");
+                this.visible = (bool) list.GetSetting("visible", this.visible);
 
                 print("[KerbalEngineer/BuildOverlay]: Successfully loaded settings.");
             }
-            catch { print("[KerbalEngineer/BuildOverlay]: Failed to load settigns."); }
+            catch
+            {
+                print("[KerbalEngineer/BuildOverlay]: Failed to load settigns.");
+            }
         }
 
         #endregion

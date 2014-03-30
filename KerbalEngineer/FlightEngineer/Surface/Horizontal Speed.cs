@@ -1,9 +1,12 @@
-﻿// Name:    Kerbal Engineer Redux
-// Author:  CYBUTEK
-// License: Attribution-NonCommercial-ShareAlike 3.0 Unported
+﻿// Project:	KerbalEngineer
+// Author:	CYBUTEK
+// License:	Attribution-NonCommercial-ShareAlike 3.0 Unported
+
+#region Using Directives
 
 using KerbalEngineer.Extensions;
-using UnityEngine;
+
+#endregion
 
 namespace KerbalEngineer.FlightEngineer.Surface
 {
@@ -11,14 +14,14 @@ namespace KerbalEngineer.FlightEngineer.Surface
     {
         protected override void Initialise()
         {
-            Name = "Horizontal Speed";
-            Description = "Shows your horizontal speed.";
-            Category = ReadoutCategory.Surface;
+            this.Name = "Horizontal Speed";
+            this.Description = "Shows your horizontal speed.";
+            this.Category = ReadoutCategory.Surface;
         }
 
         public override void Draw()
         {
-            DrawLine(FlightGlobals.ActiveVessel.horizontalSrfSpeed.ToSpeed());
+            this.DrawLine(FlightGlobals.ActiveVessel.horizontalSrfSpeed.ToSpeed());
         }
     }
 }

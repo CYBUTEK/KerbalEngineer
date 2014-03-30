@@ -1,146 +1,100 @@
-﻿// Name:    Kerbal Engineer Redux
-// Author:  CYBUTEK
-// License: Attribution-NonCommercial-ShareAlike 3.0 Unported
-//
-// This code is used to run the tape reel and light animations for the ER7500 part
-// that was created for me by Keptin.
-//
-// It is by all means possible to reuse this module with your own part that requires
-// the same kind of animation.  So feel free to use as you see fit :)
+﻿// Project:	KerbalEngineer
+// Author:	CYBUTEK
+// License:	Attribution-NonCommercial-ShareAlike 3.0 Unported
+
+#region Using Directives
 
 using UnityEngine;
+
+using Random = System.Random;
+
+#endregion
 
 namespace KerbalEngineer
 {
     public class TapeDriveAnimator : PartModule
     {
-        #region Fields
+        #region Public Fields
 
-        private System.Random _random;
-        private float _speed = 0f;
-        private float _targetSpeed = 0f;
-        private float _repeatTime = 0f;
-        private float _currentTime = 0f;
-        private float _deltaTime = 0f;
-        private bool _sceneIsEditor = false;
-        private bool _enabled = false;
-
-        private Shader _lightsShaderOn;
-        private Shader _lights1ShaderOff;
-        private Shader _lights2ShaderOff;
-        private Shader _lights3ShaderOff;
-        private Shader _lights4ShaderOff;
-        private Shader _lights5ShaderOff;
-        private Shader _lights6ShaderOff;
-
-        private Transform _reel1Transform;
-        private Transform _reel2Transform;
-        private Transform _lights1Transform;
-        private Transform _lights2Transform;
-        private Transform _lights3Transform;
-        private Transform _lights4Transform;
-        private Transform _lights5Transform;
-        private Transform _lights6Transform;
+        [KSPField] public string Lights1 = "";
+        [KSPField] public float Lights1Speed = 0;
+        [KSPField] public string Lights2 = "";
+        [KSPField] public float Lights2Speed = 0;
+        [KSPField] public string Lights3 = "";
+        [KSPField] public float Lights3Speed = 0;
+        [KSPField] public string Lights4 = "";
+        [KSPField] public float Lights4Speed = 0;
+        [KSPField] public string Lights5 = "";
+        [KSPField] public float Lights5Speed = 0;
+        [KSPField] public string Lights6 = "";
+        [KSPField] public float Lights6Speed = 0;
+        [KSPField] public int MaxReelSpeed = 0;
+        [KSPField] public int MaxRepeatTime = 0;
+        [KSPField] public int MinReelSpeed = 0;
+        [KSPField] public int MinRepeatTime = 0;
+        [KSPField] public string Reel1 = "";
+        [KSPField] public float Reel1SpeedRatio = 1;
+        [KSPField] public string Reel2 = "";
+        [KSPField] public float Reel2SpeedRatio = 1;
+        [KSPField] public float RepeatTimeDenominator = 1;
+        [KSPField] public float SpeedChangeAmount = 0;
+        [KSPField] public float SpeedDeadZone = 0;
+        [KSPField] public float SpeedStopZone = 0;
+        [KSPField] public bool UseBakedAnimation = false;
 
         #endregion
 
-        #region KSP Fields
+        #region Private Fields
 
-        [KSPField]
-        public bool useBakedAnimation = false;
-
-        [KSPField]
-        public int minReelSpeed = 0;
-
-        [KSPField]
-        public int maxReelSpeed = 0;
-
-        [KSPField]
-        public float speedStopZone = 0;
-
-        [KSPField]
-        public float speedDeadZone = 0;
-
-        [KSPField]
-        public float speedChangeAmount = 0;
-
-        [KSPField]
-        public int minRepeatTime = 0;
-
-        [KSPField]
-        public int maxRepeatTime = 0;
-
-        [KSPField]
-        public float repeatTimeDenominator = 1;
-
-        [KSPField]
-        public string reel1 = "";
-
-        [KSPField]
-        public string reel2 = "";
-
-        [KSPField]
-        public float reel1SpeedRatio = 1;
-
-        [KSPField]
-        public float reel2SpeedRatio = 1;
-
-        [KSPField]
-        public string lights1 = "";
-
-        [KSPField]
-        public float lights1Speed = 0;
-
-        [KSPField]
-        public string lights2 = "";
-
-        [KSPField]
-        public float lights2Speed = 0;
-
-        [KSPField]
-        public string lights3 = "";
-
-        [KSPField]
-        public float lights3Speed = 0;
-
-        [KSPField]
-        public string lights4 = "";
-
-        [KSPField]
-        public float lights4Speed = 0;
-
-        [KSPField]
-        public string lights5 = "";
-
-        [KSPField]
-        public float lights5Speed = 0;
-
-        [KSPField]
-        public string lights6 = "";
-
-        [KSPField]
-        public float lights6Speed = 0;
+        private float currentTime;
+        private float deltaTime;
+        private Shader lights1ShaderOff;
+        private Transform lights1Transform;
+        private Shader lights2ShaderOff;
+        private Transform lights2Transform;
+        private Shader lights3ShaderOff;
+        private Transform lights3Transform;
+        private Shader lights4ShaderOff;
+        private Transform lights4Transform;
+        private Shader lights5ShaderOff;
+        private Transform lights5Transform;
+        private Shader lights6ShaderOff;
+        private Transform lights6Transform;
+        private Shader lightsShaderOn;
+        private Random random;
+        private Transform reel1Transform;
+        private Transform reel2Transform;
+        private float repeatTime;
+        private bool sceneIsEditor;
+        private float speed;
+        private float targetSpeed;
 
         #endregion
 
         #region Properties
 
-        public bool Enabled
+        private bool isRunning;
+
+        public bool IsRunning
         {
-            get { return _enabled; }
+            get { return this.isRunning; }
             set
             {
-                _enabled = value;
+                this.isRunning = value;
 
-                if (_enabled)
+                if (this.isRunning)
                 {
-                    if (useBakedAnimation)
-                        StartBakedAnimation();
+                    if (this.UseBakedAnimation)
+                    {
+                        this.StartBakedAnimation();
+                    }
                 }
                 else
                 {
-                    if (useBakedAnimation)
-                        StopBakedAnimation();
+                    if (this.UseBakedAnimation)
+                    {
+                        this.StopBakedAnimation();
+                    }
                 }
             }
         }
@@ -151,81 +105,87 @@ namespace KerbalEngineer
 
         public override void OnStart(StartState state)
         {
-            _random = new System.Random();
+            this.random = new Random();
 
-            StopBakedAnimation();
-            Enabled = false;
+            this.StopBakedAnimation();
+            this.IsRunning = false;
 
             if (HighLogic.LoadedSceneIsEditor)
             {
-                part.OnEditorAttach += OnEditorAttach;
-                part.OnEditorDetach += OnEditorDetach;
+                this.part.OnEditorAttach += this.OnEditorAttach;
+                this.part.OnEditorDetach += this.OnEditorDetach;
 
-                _sceneIsEditor = true;
+                this.sceneIsEditor = true;
 
-                if (part.parent != null)
-                    Enabled = true;
+                if (this.part.parent != null)
+                {
+                    this.IsRunning = true;
+                }
             }
             else if (HighLogic.LoadedSceneIsFlight)
             {
-                Enabled = true;
+                this.IsRunning = true;
             }
 
-            if (!useBakedAnimation)
+            if (!this.UseBakedAnimation)
             {
-                InitialiseReels();
-                InitialiseLights();
+                this.InitialiseReels();
+                this.InitialiseLights();
             }
         }
 
         private void InitialiseReels()
         {
-            if (reel1 != "")
-                _reel1Transform = part.FindModelTransform(reel1);
+            if (this.Reel1 != "")
+            {
+                this.reel1Transform = this.part.FindModelTransform(this.Reel1);
+            }
 
-            if (reel2 != "")
-                _reel2Transform = part.FindModelTransform(reel2);
+            if (this.Reel2 != "")
+            {
+                this.reel2Transform = this.part.FindModelTransform(this.Reel2);
+            }
         }
 
         private void InitialiseLights()
         {
-            if (lights1 != "")
+            if (this.Lights1 != "")
             {
-                _lights1Transform = part.FindModelTransform(lights1);
-                _lights1ShaderOff = _lights1Transform.renderer.material.shader;
+                this.lights1Transform = this.part.FindModelTransform(this.Lights1);
+                this.lights1ShaderOff = this.lights1Transform.renderer.material.shader;
             }
 
-            if (lights2 != "")
+            if (this.Lights2 != "")
             {
-                _lights2Transform = part.FindModelTransform(lights2);
-                _lights2ShaderOff = _lights2Transform.renderer.material.shader;
+                this.lights2Transform = this.part.FindModelTransform(this.Lights2);
+                this.lights2ShaderOff = this.lights2Transform.renderer.material.shader;
             }
 
-            if (lights3 != "")
+            if (this.Lights3 != "")
             {
-                _lights3Transform = part.FindModelTransform(lights3);
-                _lights3ShaderOff = _lights3Transform.renderer.material.shader;
+                this.lights3Transform = this.part.FindModelTransform(this.Lights3);
+                this.lights3ShaderOff = this.lights3Transform.renderer.material.shader;
             }
 
-            if (lights4 != "")
+            if (this.Lights4 != "")
             {
-                _lights4Transform = part.FindModelTransform(lights4);
-                _lights4ShaderOff = _lights4Transform.renderer.material.shader;
+                this.lights4Transform = this.part.FindModelTransform(this.Lights4);
+                this.lights4ShaderOff = this.lights4Transform.renderer.material.shader;
             }
 
-            if (lights5 != "")
+            if (this.Lights5 != "")
             {
-                _lights5Transform = part.FindModelTransform(lights5);
-                _lights5ShaderOff = _lights5Transform.renderer.material.shader;
+                this.lights5Transform = this.part.FindModelTransform(this.Lights5);
+                this.lights5ShaderOff = this.lights5Transform.renderer.material.shader;
             }
 
-            if (lights6 != "")
+            if (this.Lights6 != "")
             {
-                _lights6Transform = part.FindModelTransform(lights6);
-                _lights6ShaderOff = _lights6Transform.renderer.material.shader;
+                this.lights6Transform = this.part.FindModelTransform(this.Lights6);
+                this.lights6ShaderOff = this.lights6Transform.renderer.material.shader;
             }
 
-            _lightsShaderOn = Shader.Find("Self-Illumin/Specular");
+            this.lightsShaderOn = Shader.Find("Self-Illumin/Diffuse");
         }
 
         #endregion
@@ -234,147 +194,179 @@ namespace KerbalEngineer
 
         public override void OnUpdate()
         {
-            if (!useBakedAnimation)
+            if (!this.UseBakedAnimation)
             {
-                if (_sceneIsEditor)
-                    _deltaTime = Time.deltaTime;
-                else
-                    _deltaTime = TimeWarp.deltaTime;
+                this.deltaTime = this.sceneIsEditor ? Time.deltaTime : TimeWarp.deltaTime;
 
-                if (TimeWarp.CurrentRate == 1f || TimeWarp.WarpMode == TimeWarp.Modes.LOW)
+                if (TimeWarp.CurrentRate != 1.0f && TimeWarp.WarpMode != TimeWarp.Modes.LOW)
                 {
-                    if (Enabled)
+                    return;
+                }
+
+                if (this.IsRunning)
+                {
+                    this.UpdateTimerCycle();
+                    this.UpdateSpeed();
+                    this.UpdateReels();
+                    this.UpdateLights();
+                }
+                else
+                {
+                    this.targetSpeed = 0;
+
+                    if (this.speed != 0)
                     {
-                        UpdateTimerCycle();
-                        UpdateSpeed();
-                        UpdateReels();
-                        UpdateLights();
-                    }
-                    else
-                    {
-                        _targetSpeed = 0f;
-                        if (_speed != 0)
-                        {
-                            UpdateSpeed();
-                            UpdateReels();
-                            UpdateLights();
-                        }
+                        this.UpdateSpeed();
+                        this.UpdateReels();
+                        this.UpdateLights();
                     }
                 }
             }
         }
 
-        public void Update()
+        private void Update()
         {
-            if (_sceneIsEditor)
-                OnUpdate();
+            if (this.sceneIsEditor)
+            {
+                this.OnUpdate();
+            }
         }
 
         private void OnEditorAttach()
         {
-            Enabled = true;
+            this.IsRunning = true;
         }
 
         private void OnEditorDetach()
         {
-            Enabled = false;
+            this.IsRunning = false;
         }
 
         private void StopBakedAnimation()
         {
-            foreach (Animation animation in part.FindModelAnimators())
-                animation.Stop();
+            foreach (var animator in this.part.FindModelAnimators())
+            {
+                animator.Stop();
+            }
         }
 
         private void StartBakedAnimation()
         {
-            foreach (Animation animation in part.FindModelAnimators())
-                animation.Play();
+            foreach (var animator in this.part.FindModelAnimators())
+            {
+                animator.Play();
+            }
         }
 
         private void UpdateTimerCycle()
         {
-            _currentTime += _deltaTime;
+            this.currentTime += this.deltaTime;
 
-            if (_currentTime >= _repeatTime)
+            if (this.currentTime >= this.repeatTime)
             {
-                _targetSpeed = _random.Next(minReelSpeed, maxReelSpeed);
+                this.targetSpeed = this.random.Next(this.MinReelSpeed, this.MaxReelSpeed);
 
-                if (_targetSpeed > -speedStopZone && _targetSpeed < speedStopZone)
-                    _targetSpeed = 0f;
+                if (this.targetSpeed > -this.SpeedStopZone && this.targetSpeed < this.SpeedStopZone)
+                {
+                    this.targetSpeed = 0;
+                }
 
-                _repeatTime = _random.Next(minRepeatTime, maxRepeatTime);
+                this.repeatTime = this.random.Next(this.MinRepeatTime, this.MaxRepeatTime);
 
-                if (repeatTimeDenominator != 0)
-                    _repeatTime /= repeatTimeDenominator;
+                if (this.RepeatTimeDenominator != 0)
+                {
+                    this.repeatTime /= this.RepeatTimeDenominator;
+                }
 
-                _currentTime -= _repeatTime;
+                this.currentTime -= this.repeatTime;
             }
         }
 
         private void UpdateSpeed()
         {
-            if (_speed < _targetSpeed)
+            if (this.speed < this.targetSpeed)
             {
-                if (_speed < _targetSpeed - speedDeadZone)
-                    _speed += speedChangeAmount * _deltaTime;
+                if (this.speed < this.targetSpeed - this.SpeedDeadZone)
+                {
+                    this.speed += this.SpeedChangeAmount * this.deltaTime;
+                }
                 else
-                    _speed = _targetSpeed;
+                {
+                    this.speed = this.targetSpeed;
+                }
             }
-            else if (_speed > _targetSpeed)
+            else if (this.speed > this.targetSpeed)
             {
-                if (_speed > _targetSpeed + speedDeadZone)
-                    _speed -= speedChangeAmount * _deltaTime;
+                if (this.speed > this.targetSpeed + this.SpeedDeadZone)
+                {
+                    this.speed -= this.SpeedChangeAmount * this.deltaTime;
+                }
                 else
-                    _speed = _targetSpeed;
+                {
+                    this.speed = this.targetSpeed;
+                }
             }
         }
 
         private void UpdateReels()
         {
-            if (_reel1Transform != null && _speed != 0)
-                _reel1Transform.transform.Rotate(Vector3.right, _speed * reel1SpeedRatio);
+            if (this.reel1Transform != null && this.speed != 0)
+            {
+                this.reel1Transform.transform.Rotate(Vector3.right, this.speed * this.Reel1SpeedRatio);
+            }
 
-            if (_reel2Transform != null && _speed != 0)
-                _reel2Transform.transform.Rotate(Vector3.right, _speed * reel2SpeedRatio);
+            if (this.reel2Transform != null && this.speed != 0)
+            {
+                this.reel2Transform.transform.Rotate(Vector3.right, this.speed * this.Reel2SpeedRatio);
+            }
         }
 
         private void UpdateLights()
         {
-            if (_lights1Transform != null)
-                UpdateLightTransform(_lights1Transform, _lightsShaderOn, _lights1ShaderOff, lights1Speed);
-
-            if (_lights2Transform != null)
-                UpdateLightTransform(_lights2Transform, _lightsShaderOn, _lights2ShaderOff, lights2Speed);
-
-            if (_lights3Transform != null)
-                UpdateLightTransform(_lights3Transform, _lightsShaderOn, _lights3ShaderOff, lights3Speed);
-
-            if (_lights4Transform != null)
-                UpdateLightTransform(_lights4Transform, _lightsShaderOn, _lights4ShaderOff, lights4Speed);
-
-            if (_lights5Transform != null)
-                UpdateLightTransform(_lights5Transform, _lightsShaderOn, _lights5ShaderOff, lights5Speed);
-
-            if (_lights6Transform != null)
-                UpdateLightTransform(_lights6Transform, _lightsShaderOn, _lights6ShaderOff, lights6Speed);
+            if (this.lights1Transform != null)
+            {
+                this.UpdateLightTransform(this.lights1Transform, this.lightsShaderOn, this.lights1ShaderOff, this.Lights1Speed);
+            }
+            if (this.lights2Transform != null)
+            {
+                this.UpdateLightTransform(this.lights2Transform, this.lightsShaderOn, this.lights2ShaderOff, this.Lights2Speed);
+            }
+            if (this.lights3Transform != null)
+            {
+                this.UpdateLightTransform(this.lights3Transform, this.lightsShaderOn, this.lights3ShaderOff, this.Lights3Speed);
+            }
+            if (this.lights4Transform != null)
+            {
+                this.UpdateLightTransform(this.lights4Transform, this.lightsShaderOn, this.lights4ShaderOff, this.Lights4Speed);
+            }
+            if (this.lights5Transform != null)
+            {
+                this.UpdateLightTransform(this.lights5Transform, this.lightsShaderOn, this.lights5ShaderOff, this.Lights5Speed);
+            }
+            if (this.lights6Transform != null)
+            {
+                this.UpdateLightTransform(this.lights6Transform, this.lightsShaderOn, this.lights6ShaderOff, this.Lights6Speed);
+            }
         }
 
-        private void UpdateLightTransform(Transform lights, Shader on, Shader off, float targetSpeed)
+        private void UpdateLightTransform(Component lights, Shader on, Shader off, float targetSpeed)
         {
-            bool lightsOn = false;
+            bool lightsOn;
 
             if (targetSpeed > 0)
-                lightsOn = (_speed > targetSpeed);
+            {
+                lightsOn = (this.speed > targetSpeed);
+            }
             else if (targetSpeed < 0)
-                lightsOn = (_speed < targetSpeed);
+            {
+                lightsOn = (this.speed < targetSpeed);
+            }
             else
-                lightsOn = (_speed == 0);
+            {
+                lightsOn = (this.speed == 0);
+            }
 
-            if (lightsOn)
-                lights.renderer.material.shader = on;
-            else
-                lights.renderer.material.shader = off;
+            lights.renderer.material.shader = lightsOn ? @on : off;
         }
 
         #endregion

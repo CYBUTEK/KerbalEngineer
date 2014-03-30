@@ -1,9 +1,12 @@
-﻿// Name:    Kerbal Engineer Redux
-// Author:  CYBUTEK
-// License: Attribution-NonCommercial-ShareAlike 3.0 Unported
+﻿// Project:	KerbalEngineer
+// Author:	CYBUTEK
+// License:	Attribution-NonCommercial-ShareAlike 3.0 Unported
+
+#region Using Directives
 
 using KerbalEngineer.Extensions;
-using UnityEngine;
+
+#endregion
 
 namespace KerbalEngineer.FlightEngineer.Surface
 {
@@ -11,14 +14,14 @@ namespace KerbalEngineer.FlightEngineer.Surface
     {
         protected override void Initialise()
         {
-            Name = "Longitude";
-            Description = "Shows your angle of longitude.";
-            Category = ReadoutCategory.Surface;
+            this.Name = "Longitude";
+            this.Description = "Shows your angle of longitude.";
+            this.Category = ReadoutCategory.Surface;
         }
 
         public override void Draw()
         {
-            DrawLine(FlightGlobals.ActiveVessel.longitude.ToAngle());
+            this.DrawLine(FlightGlobals.ActiveVessel.longitude.ToAngle());
         }
     }
 }

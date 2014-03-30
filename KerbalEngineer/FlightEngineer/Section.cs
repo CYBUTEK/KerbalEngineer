@@ -1,11 +1,18 @@
-﻿// Name:    Kerbal Engineer Redux
-// Author:  CYBUTEK
-// License: Attribution-NonCommercial-ShareAlike 3.0 Unported
+﻿// Project:	KerbalEngineer
+// Author:	CYBUTEK
+// License:	Attribution-NonCommercial-ShareAlike 3.0 Unported
+
+#region Using Directives
 
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
+
 using KerbalEngineer.Settings;
+
 using UnityEngine;
+
+#endregion
 
 namespace KerbalEngineer.FlightEngineer
 {
@@ -13,99 +20,112 @@ namespace KerbalEngineer.FlightEngineer
     {
         #region Properties
 
+        private readonly EditDisplay editDisplay;
+        private readonly SectionWindow window;
+
+        private List<ReadoutCategory> categories = new List<ReadoutCategory>();
+        private string fileName = string.Empty;
+        private List<Readout> readouts = new List<Readout>();
+        private string shortTitle = string.Empty;
+        private string title = string.Empty;
+        private bool visible;
+
+        /// <summary>
+        ///     Gets the GUIStyle for the section title.
+        /// </summary>
         protected GUIStyle TitleStyle { get; private set; }
+
+        /// <summary>
+        ///     Gets the GUIStyle for the section area.
+        /// </summary>
         protected GUIStyle AreaStyle { get; private set; }
+
+        /// <summary>
+        ///     Gets the GUIStyle for section message labels.
+        /// </summary>
         protected GUIStyle LabelStyle { get; private set; }
 
-        private List<Readout> _readouts = new List<Readout>();
         /// <summary>
-        /// Gets and sets the readouts to be displayed.
+        ///     Gets and sets the readouts to be displayed.
         /// </summary>
         public List<Readout> Readouts
         {
-            get { return _readouts; }
-            set { _readouts = value; }
+            get { return this.readouts; }
+            set { this.readouts = value; }
         }
 
-        private bool _visible = false;
         /// <summary>
-        /// Gets and sets whether the section is visible.
+        ///     Gets and sets whether the section is visible.
         /// </summary>
         public bool Visible
         {
-            get { return _visible; }
+            get { return this.visible; }
             set
             {
-                if (_visible != value)
+                if (this.visible != value)
+                {
                     FlightDisplay.Instance.RequireResize = true;
+                }
 
-                _visible = value;
+                this.visible = value;
             }
         }
 
-        private string _title = string.Empty;
         /// <summary>
-        /// Gets and sets the section title.
+        ///     Gets and sets the section title.
         /// </summary>
         public string Title
         {
-            get { return _title; }
-            set { _title = value; }
+            get { return this.title; }
+            set { this.title = value; }
         }
 
-        private string _shortTitle = string.Empty;
         /// <summary>
-        /// Gets and sets the section short title.
+        ///     Gets and sets the section short title.
         /// </summary>
         public string ShortTitle
         {
-            get { return _shortTitle; }
-            set { _shortTitle = value; }
+            get { return this.shortTitle; }
+            set { this.shortTitle = value; }
         }
 
-        private string _fileName = string.Empty;
         /// <summary>
-        /// Gets and sets the filename of the section.
+        ///     Gets and sets the filename of the section.
         /// </summary>
         public string FileName
         {
-            get { return _fileName; }
-            set { _fileName = value; }
+            get { return this.fileName; }
+            set { this.fileName = value; }
         }
 
-        private bool _isUser = false;
         /// <summary>
-        /// Gets and sets whether the section was user created.
+        ///     Gets and sets whether the section was user created.
         /// </summary>
-        public bool IsUser
-        {
-            get { return _isUser; }
-            set { _isUser = value; }
-        }
+        public bool IsUser { get; set; }
 
-        private EditDisplay _editDisplay;
         /// <summary>
-        /// Gets the edit display associated with the section.
+        ///     Gets the edit display associated with the section.
         /// </summary>
         public EditDisplay EditDisplay
         {
-            get { return _editDisplay; }
+            get { return this.editDisplay; }
         }
 
-        private SectionWindow _window;
+        /// <summary>
+        ///     Gets the section window object.
+        /// </summary>
         public SectionWindow Window
         {
-            get { return _window; }
+            get { return this.window; }
         }
 
-        private List<ReadoutCategory> _categories = new List<ReadoutCategory>();
         /// <summary>
-        /// Gets and sets the categories associated with the section.
+        ///     Gets and sets the categories associated with the section.
         /// </summary>
         public List<ReadoutCategory> Categories
         {
-            get { return _categories; }
-            set { _categories = value; }
+            get { return this.categories; }
+            set { this.categories = value; }
         }
 
         #endregion
@@ -114,55 +134,70 @@ namespace KerbalEngineer.FlightEngineer
 
         public Section(bool isUserSection = false, bool isNewSection = true)
         {
-            _editDisplay = HighLogic.fetch.gameObject.AddComponent<EditDisplay>();
-            _editDisplay.Section = this;
-            RenderingManager.AddToPostDrawQueue(0, _editDisplay.Draw);
+            this.IsUser = false;
+            this.editDisplay = HighLogic.fetch.gameObject.AddComponent<EditDisplay>();
+            this.editDisplay.Section = this;
+            RenderingManager.AddToPostDrawQueue(0, this.editDisplay.Draw);
 
-            _window = HighLogic.fetch.gameObject.AddComponent<SectionWindow>();
-            _window.Section = this;
-            RenderingManager.AddToPostDrawQueue(0, _window.Draw);
+            this.window = HighLogic.fetch.gameObject.AddComponent<SectionWindow>();
+            this.window.Section = this;
+            RenderingManager.AddToPostDrawQueue(0, this.window.Draw);
 
             if (isUserSection)
             {
-                _isUser = true;
+                this.IsUser = true;
 
-                Title = "Custom " + (SectionList.Instance.UserSections.Count + 1);
-                Categories.Add(ReadoutCategory.Orbital);
-                Categories.Add(ReadoutCategory.Surface);
-                Categories.Add(ReadoutCategory.Vessel);
-                Categories.Add(ReadoutCategory.Rendezvous);
-                Categories.Add(ReadoutCategory.Misc);
-                Visible = true;
+                this.Title = "Custom " + (SectionList.Instance.UserSections.Count + 1);
+                this.Categories.Add(ReadoutCategory.Orbital);
+                this.Categories.Add(ReadoutCategory.Surface);
+                this.Categories.Add(ReadoutCategory.Vessel);
+                this.Categories.Add(ReadoutCategory.Rendezvous);
+                this.Categories.Add(ReadoutCategory.Misc);
+                this.Visible = true;
 
                 if (isNewSection)
-                    _editDisplay.Visible = true;
+                {
+                    this.editDisplay.Visible = true;
+                }
             }
 
-            InitialiseStyles();
+            this.InitialiseStyles();
         }
 
         private void InitialiseStyles()
         {
-            TitleStyle = new GUIStyle(HighLogic.Skin.label);
-            TitleStyle.margin = new RectOffset();
-            TitleStyle.padding = new RectOffset(3, 3, 3, 3);
-            TitleStyle.normal.textColor = Color.white;
-            TitleStyle.fontSize = 13;
-            TitleStyle.fontStyle = FontStyle.Bold;
-            TitleStyle.stretchWidth = true;
+            this.TitleStyle = new GUIStyle(HighLogic.Skin.label)
+            {
+                margin = new RectOffset(),
+                padding = new RectOffset(3, 3, 3, 3),
+                normal =
+                {
+                    textColor = Color.white
+                },
+                fontSize = 13,
+                fontStyle = FontStyle.Bold,
+                stretchWidth = true
+            };
 
-            AreaStyle = new GUIStyle(HighLogic.Skin.box);
-            AreaStyle.margin = new RectOffset();
-            AreaStyle.padding = new RectOffset(5, 5, 5, 5);
+            this.AreaStyle = new GUIStyle(HighLogic.Skin.box)
+            {
+                margin = new RectOffset(),
+                padding = new RectOffset(5, 5, 5, 5)
+            };
 
-            LabelStyle = new GUIStyle(HighLogic.Skin.label);
-            LabelStyle.normal.textColor = Color.white;
-            LabelStyle.margin = new RectOffset();
-            LabelStyle.padding = new RectOffset(3, 3, 3, 3);
-            LabelStyle.alignment = TextAnchor.MiddleCenter;
-            LabelStyle.fontSize = 12;
-            LabelStyle.fontStyle = FontStyle.Bold;
-            LabelStyle.stretchWidth = true;
+            this.LabelStyle = new GUIStyle(HighLogic.Skin.label)
+            {
+                normal =
+                {
+                    textColor = Color.white
+                },
+                margin = new RectOffset(),
+                padding = new RectOffset(3, 3, 3, 3),
+                alignment = TextAnchor.MiddleCenter,
+                fontSize = 12,
+                fontStyle = FontStyle.Bold,
+                stretchWidth = true
+            };
         }
 
         #endregion
@@ -171,23 +206,27 @@ namespace KerbalEngineer.FlightEngineer
 
         public void Update()
         {
-            foreach (Readout readout in _readouts)
+            foreach (var readout in this.readouts)
+            {
                 readout.Update();
+            }
         }
 
         public void Draw()
         {
-            GUILayout.Label(_title.ToUpper(), TitleStyle);
-            GUILayout.BeginVertical(AreaStyle);
-            if (_readouts.Count > 0)
+            GUILayout.Label(this.title.ToUpper(), this.TitleStyle);
+            GUILayout.BeginVertical(this.AreaStyle);
+            if (this.readouts.Count > 0)
             {
-                foreach (Readout readout in _readouts)
+                foreach (var readout in this.readouts)
+                {
                     readout.Draw();
+                }
             }
             else
             {
                 GUILayout.BeginHorizontal(GUILayout.Width(Readout.NameWidth + Readout.DataWidth));
-                GUILayout.Label("No readouts installed!", LabelStyle);
+                GUILayout.Label("No readouts installed!", this.LabelStyle);
                 GUILayout.EndHorizontal();
             }
             GUILayout.EndVertical();
@@ -197,60 +236,71 @@ namespace KerbalEngineer.FlightEngineer
 
         #region Save and Load
 
-        // Saves the settings associated with this section.
+        /// <summary>
+        ///     Saves the settings associated with this section.
+        /// </summary>
         public void Save()
         {
-            if (_title != _fileName)
+            if (this.title != this.fileName)
             {
-                if (File.Exists(EngineerGlobals.AssemblyPath + "Settings/Sections/" + _fileName))
-                    File.Delete(EngineerGlobals.AssemblyPath + "Settings/Sections/" + _fileName);
+                if (File.Exists(EngineerGlobals.AssemblyPath + "Settings/Sections/" + this.fileName))
+                {
+                    File.Delete(EngineerGlobals.AssemblyPath + "Settings/Sections/" + this.fileName);
+                }
             }
 
-            _fileName = _title;
+            this.fileName = this.title;
 
-            List<string> readoutNames = new List<string>();
-
-            foreach (Readout readout in _readouts)
-                readoutNames.Add(readout.Name);
+            var readoutNames = this.readouts.Select(readout => readout.Name).ToList();
 
             try
             {
-                SettingList list = new SettingList();
-                list.AddSetting("visible", _visible);
-                list.AddSetting("windowed", _window.Visible);
-                list.AddSetting("x", _window.PosX);
-                list.AddSetting("y", _window.PosY);
-                list.AddSetting("categories", _categories);
+                var list = new SettingList();
+                list.AddSetting("visible", this.visible);
+                list.AddSetting("windowed", this.window.Visible);
+                list.AddSetting("x", this.window.PosX);
+                list.AddSetting("y", this.window.PosY);
+                list.AddSetting("categories", this.categories);
                 list.AddSetting("readouts", readoutNames);
-                SettingList.SaveToFile(EngineerGlobals.AssemblyPath + "Settings/Sections/" + _fileName, list);
+                SettingList.SaveToFile(EngineerGlobals.AssemblyPath + "Settings/Sections/" + this.fileName, list);
 
-                MonoBehaviour.print("[KerbalEngineer/FlightSection/" + _title + "]: Successfully saved settings.");
+                MonoBehaviour.print("[KerbalEngineer/FlightSection/" + this.title + "]: Successfully saved settings.");
             }
-            catch { MonoBehaviour.print("[KerbalEngineer/FlightSection/" + _title + "]: Failed to save settings."); }
+            catch
+            {
+                MonoBehaviour.print("[KerbalEngineer/FlightSection/" + this.title + "]: Failed to save settings.");
+            }
         }
 
-        // Loads the settings associated with this section.
+        /// <summary>
+        ///     Loads the settings associated with this section.
+        /// </summary>
         public void Load()
         {
-            _fileName = _title;
+            this.fileName = this.title;
 
             try
             {
-                SettingList list = SettingList.CreateFromFile(EngineerGlobals.AssemblyPath + "Settings/Sections/" + _fileName);
-                _visible = (bool)list.GetSetting("visible", _visible);
-                _window.Visible = (bool)list.GetSetting("windowed", _window.Visible);
-                _window.PosX = (float)list.GetSetting("x", _window.PosX);
-                _window.PosY = (float)list.GetSetting("y", _window.PosY);
-                _categories = list.GetSetting("categories", _categories) as List<ReadoutCategory>;
+                var list = SettingList.CreateFromFile(EngineerGlobals.AssemblyPath + "Settings/Sections/" + this.fileName);
+                this.visible = (bool)list.GetSetting("visible", this.visible);
+                this.window.Visible = (bool)list.GetSetting("windowed", this.window.Visible);
+                this.window.PosX = (float)list.GetSetting("x", this.window.PosX);
+                this.window.PosY = (float)list.GetSetting("y", this.window.PosY);
+                this.categories = list.GetSetting("categories", this.categories) as List<ReadoutCategory>;
 
-                _readouts.Clear();
-                List<string> readoutNames = list.GetSetting("readouts", new List<string>()) as List<string>;
-                foreach (string name in readoutNames)
-                    Readouts.Add(ReadoutList.Instance.GetReadout(name));
+                this.readouts.Clear();
+                var readoutNames = list.GetSetting("readouts", new List<string>()) as List<string>;
+                foreach (var name in readoutNames)
+                {
+                    this.Readouts.Add(ReadoutList.Instance.GetReadout(name));
+                }
 
-                MonoBehaviour.print("[KerbalEngineer/FlightSection/" + _title + "]: Successfully loaded settings.");
+                MonoBehaviour.print("[KerbalEngineer/FlightSection/" + this.title + "]: Successfully loaded settings.");
             }
-            catch { MonoBehaviour.print("[KerbalEngineer/FlightSection/" + _title + "]: Failed to load settings."); }
+            catch
+            {
+                MonoBehaviour.print("[KerbalEngineer/FlightSection/" + this.title + "]: Failed to load settings.");
+            }
         }
 
         #endregion
