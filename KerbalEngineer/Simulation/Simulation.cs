@@ -262,10 +262,15 @@ namespace KerbalEngineer.Simulation
                 // Store more values in the Stage object and stick it in the array
                 // Recalculate effective stage isp from the stageDeltaV (flip the standard deltaV calculation around)
                 stage.Isp = stageDeltaV / (STD_GRAVITY * Math.Log(stageStartMass / this.ShipMass));
+                if (double.IsNaN(stage.Isp))
+                {
+                    stage.Isp = 0;
+                }
                 stage.DeltaV = stageDeltaV;
                 // Zero stage time if more than a day (this should be moved into the window code)
                 stage.Time = (stageTime < SECONDS_PER_DAY) ? stageTime : 0d;
                 stage.Number = this.currentStage;
+                stage.PartCount = this.allParts.Count;
                 stages[this.currentStage] = stage;
 
                 // Now activate the next stage

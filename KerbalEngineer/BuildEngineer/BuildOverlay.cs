@@ -244,9 +244,9 @@ namespace KerbalEngineer.BuildEngineer
 
             // Details
             GUILayout.BeginVertical(GUILayout.Width(100.0f));
-            //GUILayout.Label(SimulationManager.Instance.LastStage.partCount.ToString(), this.infoStyle);
-            GUILayout.Label(SimulationManager.LastStage.TotalDeltaV.ToString("#,0.") + " m/s", this.infoStyle);
-            //GUILayout.Label(SimulationManager.Instance.LastStage.TWR, this.infoStyle);
+            GUILayout.Label(SimulationManager.LastStage.PartCount.ToString("N0"), this.infoStyle);
+            GUILayout.Label(SimulationManager.LastStage.TotalDeltaV.ToString("N0") + " m/s", this.infoStyle);
+            GUILayout.Label(SimulationManager.LastStage.ThrustToWeight.ToString("F2"), this.infoStyle);
             GUILayout.EndVertical();
 
             GUILayout.EndHorizontal();

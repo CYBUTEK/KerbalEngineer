@@ -22,8 +22,6 @@ namespace KerbalEngineer.Simulation
         private static bool bRunning;
         private static readonly Stopwatch timer = new Stopwatch();
         private static long delayBetweenSims;
-        private static bool stagingChanged;
-        private static int numberOfStages;
 
         private static Stopwatch _func = new Stopwatch();
 
@@ -33,19 +31,6 @@ namespace KerbalEngineer.Simulation
 
         public static double Gravity { get; set; }
         public static double Atmosphere { get; set; }
-
-        public static bool StagingChanged
-        {
-            get
-            {
-                if (stagingChanged)
-                {
-                    stagingChanged = false;
-                    return true;
-                }
-                return false;
-            }
-        }
 
         public static void RequestSimulation()
         {
@@ -122,12 +107,6 @@ namespace KerbalEngineer.Simulation
                         stage.Dump();
 #endif
                     LastStage = Stages.Last();
-
-                    if (numberOfStages != Stages.Length)
-                    {
-                        numberOfStages = Stages.Length;
-                        stagingChanged = true;
-                    }
                 }
             }
             catch (Exception e)

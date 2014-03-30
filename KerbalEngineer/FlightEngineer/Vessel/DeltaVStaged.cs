@@ -37,7 +37,7 @@ namespace KerbalEngineer.FlightEngineer.Vessel
                 if (stage.Thrust > 0)
                 {
                     stageCount++;
-                    this.DrawLine("DeltaV (" + stage.Number + ")", stage.DeltaV.ToSpeed());
+                    this.DrawLine("DeltaV (S" + stage.Number + ")", stage.DeltaV.ToString("N0") + "m/s");
                 }
             }
 

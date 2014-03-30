@@ -21,7 +21,7 @@ namespace KerbalEngineer.Extensions
         {
             value *= 1000;
 
-            return showNotation ? value.ToString("#,0.") + "kg" : value.ToString("#,0.");
+            return showNotation ? value.ToString("N0") + "kg" : value.ToString("N0");
         }
 
         /// <summary>
@@ -29,7 +29,7 @@ namespace KerbalEngineer.Extensions
         /// </summary>
         public static string ToForce(this float value, bool showNotation = true)
         {
-            return showNotation ? value.ToString("#,0.00") + "kN" : value.ToString("#,0.00");
+            return showNotation ? value.ToString("N2") + "kN" : value.ToString("N2");
         }
 
         /// <summary>
@@ -37,7 +37,7 @@ namespace KerbalEngineer.Extensions
         /// </summary>
         public static string ToSpeed(this float value, bool showNotation = true)
         {
-            return showNotation ? value.ToString("#,0.00") + "m/s" : value.ToString("#,0.00");
+            return showNotation ? value.ToString("N2") + "m/s" : value.ToString("N2");
         }
 
         /// <summary>
@@ -62,14 +62,14 @@ namespace KerbalEngineer.Extensions
                     {
                         value = -value;
                     }
-                    return value.ToString("#,0.") + "mm";
+                    return value.ToString("N2") + "mm";
                 }
 
                 if (negative)
                 {
                     value = -value;
                 }
-                return value.ToString("#,0.") + "m";
+                return value.ToString("N2") + "m";
             }
 
             value /= 1000.0f;
@@ -81,14 +81,14 @@ namespace KerbalEngineer.Extensions
                 {
                     value = -value;
                 }
-                return value.ToString("#,0." + "Mm");
+                return value.ToString("N2" + "Mm");
             }
 
             if (negative)
             {
                 value = -value;
             }
-            return value.ToString("#,0." + "km");
+            return value.ToString("N2" + "km");
         }
 
         /// <summary>
@@ -96,7 +96,7 @@ namespace KerbalEngineer.Extensions
         /// </summary>
         public static string ToRate(this float value)
         {
-            return value > 0 ? value.ToString("0.0") + "/sec" : (60.0f * value).ToString("0.0") + "/min";
+            return value > 0 ? value.ToString("F1") + "/sec" : (60.0f * value).ToString("F1") + "/min";
         }
 
         /// <summary>
@@ -104,7 +104,7 @@ namespace KerbalEngineer.Extensions
         /// </summary>
         public static string ToAngle(this float value)
         {
-            return value.ToString("0.000") + "°";
+            return value.ToString("F3") + "°";
         }
 
         /// <summary>
@@ -148,25 +148,25 @@ namespace KerbalEngineer.Extensions
 
             if (y > 0)
             {
-                return y + "y " + d + "d " + h + "h " + m + "m " + s.ToString("00.0") + "s";
+                return y + "y " + d + "d " + h + "h " + m + "m " + s.ToString("F1") + "s";
             }
 
             if (d > 0)
             {
-                return d + "d " + h + "h " + m + "m " + s.ToString("00.0") + "s";
+                return d + "d " + h + "h " + m + "m " + s.ToString("F1") + "s";
             }
 
             if (h > 0)
             {
-                return h + "h " + m + "m " + s.ToString("00.0") + "s";
+                return h + "h " + m + "m " + s.ToString("F1") + "s";
             }
 
             if (m > 0)
             {
-                return m + "m " + s.ToString("00.0") + "s";
+                return m + "m " + s.ToString("F1") + "s";
             }
 
-            return s.ToString("0.0") + "s";
+            return s.ToString("F1") + "s";
         }
     }
 }

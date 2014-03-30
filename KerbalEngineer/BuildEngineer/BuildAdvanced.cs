@@ -4,6 +4,8 @@
 
 #region Using Directives
 
+using System.Linq;
+
 using KerbalEngineer.Extensions;
 using KerbalEngineer.Settings;
 using KerbalEngineer.Simulation;
@@ -32,6 +34,7 @@ namespace KerbalEngineer.BuildEngineer
 
         private bool hasChanged;
         private bool isEditorLocked;
+        private int numberOfStages;
         private Rect windowPosition = new Rect(265.0f, 45.0f, 0, 0);
 
         #region Styles
@@ -182,8 +185,7 @@ namespace KerbalEngineer.BuildEngineer
                 SimulationManager.Gravity = CelestialBodies.Instance.SelectedBodyInfo.Gravity;
                 if (this.useAtmosphericDetails)
                 {
-                    SimulationManager.Atmosphere = CelestialBodies.Instance.SelectedBodyInfo.Atmosphere *
-                                                            0.01d;
+                    SimulationManager.Atmosphere = CelestialBodies.Instance.SelectedBodyInfo.Atmosphere * 0.01d;
                 }
                 else
                 {
@@ -191,15 +193,6 @@ namespace KerbalEngineer.BuildEngineer
                 }
 
                 SimulationManager.TryStartSimulation();
-
-                // Reset the window size when the staging or something else has changed.
-                if (this.hasChanged || SimulationManager.StagingChanged)
-                {
-                    this.hasChanged = false;
-
-                    this.windowPosition.width = 0;
-                    this.windowPosition.height = 0;
-                }
             }
             catch
             {
@@ -227,6 +220,17 @@ namespace KerbalEngineer.BuildEngineer
                 else
                 {
                     title = "K.E.R. " + EngineerGlobals.AssemblyVersion;
+                }
+
+                // Reset the window size when the staging or something else has changed.
+                int stageCount = SimulationManager.Stages.Count(stage => this.showAllStages || stage.DeltaV > 0);
+                if (this.hasChanged || stageCount != this.numberOfStages)
+                {
+                    this.hasChanged = false;
+                    this.numberOfStages = stageCount;
+
+                    this.windowPosition.width = 0;
+                    this.windowPosition.height = 0;
                 }
 
                 this.windowPosition = GUILayout.Window(this.windowId, this.windowPosition, this.Window, title, this.windowStyle).ClampToScreen();
@@ -354,12 +358,12 @@ namespace KerbalEngineer.BuildEngineer
         private void DrawStageNumbers()
         {
             GUILayout.BeginVertical(GUILayout.Width(30.0f));
-            GUILayout.Label("", this.titleStyle);
+            GUILayout.Label(string.Empty, this.titleStyle);
             foreach (var stage in SimulationManager.Stages)
             {
                 if (this.showAllStages || stage.DeltaV > 0)
                 {
-                    GUILayout.Label(stage.Number.ToString(), this.titleStyle);
+                    GUILayout.Label("S" + stage.Number, this.titleStyle);
                 }
             }
             GUILayout.EndVertical();
@@ -376,7 +380,7 @@ namespace KerbalEngineer.BuildEngineer
             {
                 if (this.showAllStages || stage.DeltaV > 0)
                 {
-                    //GUILayout.Label(stage.Parts, this.infoStyle);
+                    GUILayout.Label(stage.PartCount.ToString("N0"), this.infoStyle);
                 }
             }
             GUILayout.EndVertical();
@@ -393,7 +397,7 @@ namespace KerbalEngineer.BuildEngineer
             {
                 if (this.showAllStages || stage.DeltaV > 0)
                 {
-                    GUILayout.Label(stage.Cost.ToString(), this.infoStyle);
+                    GUILayout.Label(stage.Cost.ToString("N0") + " / " + stage.TotalCost.ToString("N0"), this.infoStyle);
                 }
             }
             GUILayout.EndVertical();
@@ -410,7 +414,7 @@ namespace KerbalEngineer.BuildEngineer
             {
                 if (this.showAllStages || stage.DeltaV > 0)
                 {
-                    GUILayout.Label(stage.Mass.ToMass(), this.infoStyle);
+                    GUILayout.Label(stage.Mass.ToMass(false) + " / " + stage.TotalMass.ToMass(), this.infoStyle);
                 }
             }
             GUILayout.EndVertical();
@@ -427,7 +431,7 @@ namespace KerbalEngineer.BuildEngineer
             {
                 if (this.showAllStages || stage.DeltaV > 0)
                 {
-                    GUILayout.Label(stage.Isp.ToString("0."), this.infoStyle);
+                    GUILayout.Label(stage.Isp.ToString("F1") + "s", this.infoStyle);
                 }
             }
             GUILayout.EndVertical();
@@ -461,7 +465,7 @@ namespace KerbalEngineer.BuildEngineer
             {
                 if (this.showAllStages || stage.DeltaV > 0)
                 {
-                    GUILayout.Label(stage.ThrustToWeight.ToString("0.00"), this.infoStyle);
+                    GUILayout.Label(stage.ThrustToWeight.ToString("F2"), this.infoStyle);
                 }
             }
             GUILayout.EndVertical();
@@ -478,7 +482,7 @@ namespace KerbalEngineer.BuildEngineer
             {
                 if (this.showAllStages || stage.DeltaV > 0)
                 {
-                    GUILayout.Label(stage.DeltaV.ToSpeed(), this.infoStyle);
+                    GUILayout.Label(stage.DeltaV.ToString("N0") + " / " + stage.InverseTotalDeltaV.ToString("N0") + "m/s", this.infoStyle);
                 }
             }
             GUILayout.EndVertical();

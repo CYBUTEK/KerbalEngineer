@@ -26,7 +26,7 @@ namespace KerbalEngineer.FlightEngineer.Vessel
 
         public override void Draw()
         {          
-            this.DrawLine(SimulationManager.LastStage.Isp.ToString());
+            this.DrawLine(SimulationManager.LastStage.Isp.ToString("F1") + "s");
         }
     }
 }

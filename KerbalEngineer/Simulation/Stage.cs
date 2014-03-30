@@ -1,6 +1,6 @@
-﻿// Kerbal Engineer Redux
-// Author:  CYBUTEK
-// License: Attribution-NonCommercial-ShareAlike 3.0 Unported
+﻿// Project:	KerbalEngineer
+// Author:	CYBUTEK
+// License:	Attribution-NonCommercial-ShareAlike 3.0 Unported
 
 namespace KerbalEngineer.Simulation
 {
@@ -9,18 +9,19 @@ namespace KerbalEngineer.Simulation
         public int Number = 0;
         public int Cost = 0;
         public int TotalCost = 0;
-        public double Time = 0f;
-        public double TotalTime = 0f;
-        public double Mass = 0f;
-        public double TotalMass = 0f;
-        public double Isp = 0f;
-        public double Thrust = 0f;
-        public double ActualThrust = 0f;
-        public double ThrustToWeight = 0f;
-        public double ActualThrustToWeight = 0f;
-        public double DeltaV = 0f;
-        public double TotalDeltaV = 0f;
-        public double InverseTotalDeltaV = 0f;
+        public int PartCount = 0;
+        public double Time = 0;
+        public double TotalTime = 0;
+        public double Mass = 0;
+        public double TotalMass = 0;
+        public double Isp = 0;
+        public double Thrust = 0;
+        public double ActualThrust = 0;
+        public double ThrustToWeight = 0;
+        public double ActualThrustToWeight = 0;
+        public double DeltaV = 0;
+        public double TotalDeltaV = 0;
+        public double InverseTotalDeltaV = 0;
 #if LOG
         public void Dump()
         {
