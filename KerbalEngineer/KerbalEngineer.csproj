@@ -38,21 +38,23 @@
       <HintPath>..\Game\KSP_Data\Managed\Assembly-CSharp.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="System" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Xml" />
+    <Reference Include="System">
+      <HintPath>..\Game\KSP_Data\Managed\System.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="System.Xml">
+      <HintPath>..\Game\KSP_Data\Managed\System.Xml.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="UnityEngine">
       <HintPath>..\Game\KSP_Data\Managed\UnityEngine.dll</HintPath>
       <Private>False</Private>
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BuildEngineer\BuildButton.cs" />
-    <Compile Include="BuildEngineer\BuildAdvanced.cs" />
-    <Compile Include="BuildEngineer\BuildOverlay.cs" />
+    <Compile Include="Editor\BuildAdvanced.cs" />
+    <Compile Include="Editor\BuildButton.cs" />
+    <Compile Include="Editor\BuildOverlay.cs" />
     <Compile Include="CelestialBodies.cs" />
     <Compile Include="EngineerGlobals.cs" />
     <Compile Include="Extensions\DoubleExtensions.cs" />
@@ -60,48 +62,39 @@
     <Compile Include="Extensions\PartExtensions.cs" />
     <Compile Include="Extensions\PartResourceExtensions.cs" />
     <Compile Include="Extensions\RectExtensions.cs" />
-    <Compile Include="FlightEngineer\InfoDisplay.cs" />
-    <Compile Include="FlightEngineer\EditDisplay.cs" />
-    <Compile Include="FlightEngineer\FlightController.cs" />
-    <Compile Include="FlightEngineer\FlightDisplay.cs" />
-    <Compile Include="FlightEngineer\FlightEngineer.cs" />
-    <Compile Include="FlightEngineer\Orbital\SemiMinorAxis.cs" />
-    <Compile Include="FlightEngineer\Orbital\SemiMajorAxis.cs" />
-    <Compile Include="FlightEngineer\Orbital\LongitudeOfPe.cs" />
-    <Compile Include="FlightEngineer\Orbital\LongitudeOfAN.cs" />
-    <Compile Include="FlightEngineer\Orbital\OrbitalPeriod.cs" />
-    <Compile Include="FlightEngineer\Orbital\Eccentricity.cs" />
-    <Compile Include="FlightEngineer\Orbital\Inclination.cs" />
-    <Compile Include="FlightEngineer\Orbital\TimeToPeriapsis.cs" />
-    <Compile Include="FlightEngineer\Orbital\PeriapsisHeight.cs" />
-    <Compile Include="FlightEngineer\Orbital\TimeToApoapsis.cs" />
-    <Compile Include="FlightEngineer\ReadoutList.cs" />
-    <Compile Include="FlightEngineer\Rendezvous\TargetSelector.cs" />
-    <Compile Include="FlightEngineer\SectionList.cs" />
-    <Compile Include="FlightEngineer\Orbital\ApoapsisHeight.cs" />
-    <Compile Include="FlightEngineer\Readout.cs" />
-    <Compile Include="FlightEngineer\Section.cs" />
-    <Compile Include="FlightEngineer\SectionWindow.cs" />
-    <Compile Include="FlightEngineer\Surface\AltitudeSeaLevel.cs" />
-    <Compile Include="FlightEngineer\Surface\AltitudeTerrain.cs" />
-    <Compile Include="FlightEngineer\Surface\AtmosphericDetails.cs" />
-    <Compile Include="FlightEngineer\Surface\AtmosEfficiency.cs" />
-    <Compile Include="FlightEngineer\Surface\TerminalVelocity.cs" />
-    <Compile Include="FlightEngineer\Surface\Latitude.cs" />
-    <Compile Include="FlightEngineer\Surface\Longitude.cs" />
-    <Compile Include="FlightEngineer\Surface\Horizontal Speed.cs" />
-    <Compile Include="FlightEngineer\Surface\VerticalSpeed.cs" />
-    <Compile Include="FlightEngineer\Vessel\ThrustActual.cs" />
-    <Compile Include="FlightEngineer\Vessel\ThrustToWeight.cs" />
-    <Compile Include="FlightEngineer\Vessel\ThrustTotal.cs" />
-    <Compile Include="FlightEngineer\Vessel\TotalMass.cs" />
-    <Compile Include="FlightEngineer\Vessel\SpecificImpulse.cs" />
-    <Compile Include="FlightEngineer\Vessel\DeltaVTotal.cs" />
-    <Compile Include="FlightEngineer\Vessel\DeltaVStaged.cs" />
+    <Compile Include="Flight\ActionMenu.cs" />
+    <Compile Include="Flight\DisplayStack.cs" />
+    <Compile Include="Flight\FlightEngineerCore.cs" />
+    <Compile Include="Flight\FlightEngineerModule.cs" />
+    <Compile Include="Flight\Readouts\Orbital\ApoapsisHeight.cs" />
+    <Compile Include="Flight\Readouts\Orbital\Eccentricity.cs" />
+    <Compile Include="Flight\Readouts\Orbital\Inclination.cs" />
+    <Compile Include="Flight\Readouts\Orbital\LongitudeOfAscendingNode.cs" />
+    <Compile Include="Flight\Readouts\Orbital\LongitudeOfPeriapsis.cs" />
+    <Compile Include="Flight\Readouts\Orbital\OrbitalPeriod.cs" />
+    <Compile Include="Flight\Readouts\Orbital\PeriapsisHeight.cs" />
+    <Compile Include="Flight\Readouts\Orbital\SemiMajorAxis.cs" />
+    <Compile Include="Flight\Readouts\Orbital\SemiMinorAxis.cs" />
+    <Compile Include="Flight\Readouts\Orbital\TimeToApoapsis.cs" />
+    <Compile Include="Flight\Readouts\Orbital\TimeToPeriapsis.cs" />
+    <Compile Include="Flight\Readouts\ReadoutCategory.cs" />
+    <Compile Include="Flight\Readouts\ReadoutLibrary.cs" />
+    <Compile Include="Flight\Readouts\ReadoutModule.cs" />
+    <Compile Include="Flight\Readouts\Surface\AltitudeSeaLevel.cs" />
+    <Compile Include="Flight\Readouts\Surface\AltitudeTerrain.cs" />
+    <Compile Include="Flight\Readouts\Surface\GeeForce.cs" />
+    <Compile Include="Flight\Readouts\Surface\HorizontalSpeed.cs" />
+    <Compile Include="Flight\Readouts\Surface\Latitude.cs" />
+    <Compile Include="Flight\Readouts\Surface\Longitude.cs" />
+    <Compile Include="Flight\Readouts\Surface\VerticalSpeed.cs" />
+    <Compile Include="Flight\Sections\SectionEditor.cs" />
+    <Compile Include="Flight\Sections\SectionLibrary.cs" />
+    <Compile Include="Flight\Sections\SectionModule.cs" />
+    <Compile Include="Flight\Sections\SectionWindow.cs" />
     <Compile Include="LogMsg.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Settings\Setting.cs" />
-    <Compile Include="Settings\SettingList.cs" />
+    <Compile Include="Settings\SettingHandler.cs" />
+    <Compile Include="Settings\SettingItem.cs" />
     <Compile Include="Simulation\AttachNodeSim.cs" />
     <Compile Include="Simulation\EngineSim.cs" />
     <Compile Include="Simulation\PartSim.cs" />
@@ -112,7 +105,8 @@
     <Compile Include="TapeDriveAnimator.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="FlightEngineer\Misc\" />
+    <Folder Include="Flight\Readouts\Rendezvous\" />
+    <Folder Include="Flight\Readouts\Vessel\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

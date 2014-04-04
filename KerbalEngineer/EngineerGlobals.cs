@@ -20,6 +20,11 @@ namespace KerbalEngineer
         /// </summary>
         public const string AssemblyVersion = "1.0.0.0";
 
+        /// <summary>
+        ///     Current version of Kerbal Engineer Redux.
+        /// </summary>
+        public const string PrettyVersion = "1.0";
+
         #endregion
 
         #region Fields
