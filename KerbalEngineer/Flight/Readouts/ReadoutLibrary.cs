@@ -9,6 +9,7 @@ using System.Linq;
 
 using KerbalEngineer.Flight.Readouts.Orbital;
 using KerbalEngineer.Flight.Readouts.Surface;
+using KerbalEngineer.Settings;
 
 #endregion
 
@@ -62,6 +63,8 @@ namespace KerbalEngineer.Flight.Readouts
             this.readoutModules.Add(new Longitude());
             this.readoutModules.Add(new Latitude());
             this.readoutModules.Add(new GeeForce());
+
+            this.LoadHelpStrings();
         }
 
         #endregion
@@ -79,7 +82,7 @@ namespace KerbalEngineer.Flight.Readouts
 
         #endregion
 
-        #region Methods
+        #region Public Methods
 
         /// <summary>
         ///     Gets a readout module with the specified name or class name. (Returns null if not found.)
@@ -106,6 +109,23 @@ namespace KerbalEngineer.Flight.Readouts
             {
                 readout.Reset();
             }
+        }
+
+        #endregion
+
+        #region Private Methods
+
+        /// <summary>
+        ///     Loads the help strings from file.
+        /// </summary>
+        private void LoadHelpStrings()
+        {
+            var handler = SettingHandler.Load("HelpStrings.xml");
+            foreach (var readout in this.readoutModules)
+            {
+                readout.HelpString = handler.GetSet(readout.GetType().Name, readout.HelpString);
+            }
+            handler.Save("HelpStrings.xml");
         }
 
         #endregion

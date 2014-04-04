@@ -12,6 +12,7 @@ namespace KerbalEngineer.Flight.Readouts.Surface
         {
             this.Name = "G-Force";
             this.Category = ReadoutCategory.Surface;
+            this.HelpString = "Shows the current g-force and maximum g-force experienced.";
         }
 
         public override void Draw()

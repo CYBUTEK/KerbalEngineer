@@ -16,6 +16,7 @@ namespace KerbalEngineer.Flight.Readouts.Surface
         {
             this.Name = "Altitude (Sea Level)";
             this.Category = ReadoutCategory.Surface;
+            this.HelpString = "Shows the vessel's altitude above sea level.";
         }
 
         public override void Draw()

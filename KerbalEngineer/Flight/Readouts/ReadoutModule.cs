@@ -31,7 +31,7 @@ namespace KerbalEngineer.Flight.Readouts
         /// </summary>
         public string Name { get; set; }
 
-        public string HelpMessage { get; set; }
+        public string HelpString { get; set; }
 
         public bool ShowHelp { get; set; }
 
@@ -113,7 +113,7 @@ namespace KerbalEngineer.Flight.Readouts
 
         #endregion
 
-        #region Public Methods
+        #region Protected Methods
 
         /// <summary>
         ///     Draws a single data line.

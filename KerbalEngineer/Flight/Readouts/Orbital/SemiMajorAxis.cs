@@ -16,6 +16,7 @@ namespace KerbalEngineer.Flight.Readouts.Orbital
         {
             this.Name = "Semi-Major Axis";
             this.Category = ReadoutCategory.Orbital;
+            this.HelpString = "Shows the distance from the centre of an orbit to the farthest edge.";
         }
 
         public override void Draw()

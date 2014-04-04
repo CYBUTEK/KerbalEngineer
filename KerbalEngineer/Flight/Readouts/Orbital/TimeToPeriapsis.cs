@@ -16,6 +16,7 @@ namespace KerbalEngineer.Flight.Readouts.Orbital
         {
             this.Name = "Time to Periapsis";
             this.Category = ReadoutCategory.Orbital;
+            this.HelpString = "Shows the time until the vessel reaches periapsis, the lowest point of the orbit.";
         }
 
         public override void Draw()

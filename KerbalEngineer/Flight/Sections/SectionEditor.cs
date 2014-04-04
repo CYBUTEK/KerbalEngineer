@@ -349,9 +349,9 @@ namespace KerbalEngineer.Flight.Sections
             if (readout.ShowHelp)
             {
                 GUILayout.BeginVertical(this.helpBoxStyle);
-                if (readout.HelpMessage != null && readout.HelpMessage.Length > 0)
+                if (readout.HelpString != null && readout.HelpString.Length > 0)
                 {
-                    GUILayout.Label(readout.HelpMessage, this.helpTextStyle);
+                    GUILayout.Label(readout.HelpString, this.helpTextStyle);
                 }
                 else
                 {

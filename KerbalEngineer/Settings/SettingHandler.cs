@@ -121,6 +121,50 @@ namespace KerbalEngineer.Settings
 
         #endregion
 
+        #region GetSet Methods
+
+        /// <summary>
+        ///     Gets a setting from its name or return the default object. Will add the object to the handler if it does not exist.
+        /// </summary>
+        public T GetSet<T>(string name, T defaultObject)
+        {
+            foreach (var item in this.Items)
+            {
+                if (item.Name == name)
+                {
+                    return (T)Convert.ChangeType(item.Value, typeof(T));
+                }
+            }
+            if (defaultObject != null)
+            {
+                this.Items.Add(new SettingItem(name, defaultObject));
+            }
+            return defaultObject;
+        }
+
+        /// <summary>
+        ///     Gets a setting from its name and inputs it into the output object. Will add the object to the handler if it does
+        ///     not exist.
+        /// </summary>
+        public bool GetSet<T>(string name, ref T outputObject)
+        {
+            foreach (var item in this.Items)
+            {
+                if (item.Name == name)
+                {
+                    outputObject = (T)Convert.ChangeType(item.Value, typeof(T));
+                    return true;
+                }
+            }
+            if (outputObject != null)
+            {
+                this.Items.Add(new SettingItem(name, outputObject));
+            }
+            return false;
+        }
+
+        #endregion
+
         #region Saving
 
         /// <summary>
