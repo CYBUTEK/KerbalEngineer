@@ -6,6 +6,7 @@
 
 using System.Collections.Generic;
 
+using KerbalEngineer.Flight.Readouts;
 using KerbalEngineer.Flight.Sections;
 
 using UnityEngine;
@@ -41,6 +42,7 @@ namespace KerbalEngineer.Flight
             this.DisplayStack = this.gameObject.AddComponent<DisplayStack>();
             this.SectionWindows = new List<SectionWindow>();
             this.SectionEditors = new List<SectionEditor>();
+            this.UpdatableModules = new List<IUpdatable>();
         }
 
         /// <summary>
@@ -49,6 +51,7 @@ namespace KerbalEngineer.Flight
         private void Start()
         {
             SectionLibrary.Instance.Load();
+            ReadoutLibrary.Instance.Reset();
         }
 
         #endregion
@@ -75,6 +78,11 @@ namespace KerbalEngineer.Flight
         /// </summary>
         public List<SectionEditor> SectionEditors { get; private set; }
 
+        /// <summary>
+        ///     Gets the list of currently running updatable modules.
+        /// </summary>
+        public List<IUpdatable> UpdatableModules { get; private set; }
+
         #endregion
 
         #region Updating
@@ -85,6 +93,15 @@ namespace KerbalEngineer.Flight
         private void Update()
         {
             SectionLibrary.Instance.Update();
+            this.UpdateModules();
+        }
+
+        private void UpdateModules()
+        {
+            foreach (var updatable in this.UpdatableModules)
+            {
+                updatable.Update();
+            }
         }
 
         #endregion
@@ -149,6 +166,17 @@ namespace KerbalEngineer.Flight
             editor.WindowPosition = new Rect(section.EditorPositionX, section.EditorPositionY, SectionEditor.Width, SectionEditor.Height);
             this.SectionEditors.Add(editor);
             return editor;
+        }
+
+        /// <summary>
+        ///     Adds an updatable object to be automatically updated every frame and will ignore duplicate objects.
+        /// </summary>
+        public void AddUpdatable(IUpdatable updatable)
+        {
+            if (!this.UpdatableModules.Contains(updatable))
+            {
+                this.UpdatableModules.Add(updatable);
+            }
         }
 
         #endregion

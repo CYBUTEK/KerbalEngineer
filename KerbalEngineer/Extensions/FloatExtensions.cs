@@ -62,14 +62,14 @@ namespace KerbalEngineer.Extensions
                     {
                         value = -value;
                     }
-                    return value.ToString("N2") + "mm";
+                    return value.ToString("N0") + "mm";
                 }
 
                 if (negative)
                 {
                     value = -value;
                 }
-                return value.ToString("N2") + "m";
+                return value.ToString("N0") + "m";
             }
 
             value /= 1000.0f;
@@ -81,14 +81,14 @@ namespace KerbalEngineer.Extensions
                 {
                     value = -value;
                 }
-                return value.ToString("N2" + "Mm");
+                return value.ToString("N0" + "Mm");
             }
 
             if (negative)
             {
                 value = -value;
             }
-            return value.ToString("N2" + "km");
+            return value.ToString("N0" + "km");
         }
 
         /// <summary>

@@ -8,7 +8,9 @@ using System.Collections.Generic;
 using System.Linq;
 
 using KerbalEngineer.Flight.Readouts.Orbital;
+using KerbalEngineer.Flight.Readouts.Rendezvous;
 using KerbalEngineer.Flight.Readouts.Surface;
+using KerbalEngineer.Flight.Readouts.Vessel;
 using KerbalEngineer.Settings;
 
 #endregion
@@ -44,6 +46,7 @@ namespace KerbalEngineer.Flight.Readouts
         /// </summary>
         private ReadoutLibrary()
         {
+            // Orbital
             this.readoutModules.Add(new ApoapsisHeight());
             this.readoutModules.Add(new PeriapsisHeight());
             this.readoutModules.Add(new TimeToApoapsis());
@@ -56,6 +59,7 @@ namespace KerbalEngineer.Flight.Readouts
             this.readoutModules.Add(new SemiMajorAxis());
             this.readoutModules.Add(new SemiMinorAxis());
 
+            // Surface
             this.readoutModules.Add(new AltitudeSeaLevel());
             this.readoutModules.Add(new AltitudeTerrain());
             this.readoutModules.Add(new VerticalSpeed());
@@ -63,6 +67,15 @@ namespace KerbalEngineer.Flight.Readouts
             this.readoutModules.Add(new Longitude());
             this.readoutModules.Add(new Latitude());
             this.readoutModules.Add(new GeeForce());
+            this.readoutModules.Add(new TerminalVelocity());
+            this.readoutModules.Add(new AtmosphericEfficiency());
+
+            // Vessel
+            this.readoutModules.Add(new DeltaVStaged());
+            this.readoutModules.Add(new DeltaVTotal());
+
+            // Rendezvous
+            this.readoutModules.Add(new TargetSelector());
 
             this.LoadHelpStrings();
         }

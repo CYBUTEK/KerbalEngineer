@@ -66,6 +66,7 @@
     <Compile Include="Flight\DisplayStack.cs" />
     <Compile Include="Flight\FlightEngineerCore.cs" />
     <Compile Include="Flight\FlightEngineerModule.cs" />
+    <Compile Include="Flight\IUpdatable.cs" />
     <Compile Include="Flight\Readouts\Orbital\ApoapsisHeight.cs" />
     <Compile Include="Flight\Readouts\Orbital\Eccentricity.cs" />
     <Compile Include="Flight\Readouts\Orbital\Inclination.cs" />
@@ -80,13 +81,19 @@
     <Compile Include="Flight\Readouts\ReadoutCategory.cs" />
     <Compile Include="Flight\Readouts\ReadoutLibrary.cs" />
     <Compile Include="Flight\Readouts\ReadoutModule.cs" />
+    <Compile Include="Flight\Readouts\Rendezvous\TargetSelector.cs" />
     <Compile Include="Flight\Readouts\Surface\AltitudeSeaLevel.cs" />
     <Compile Include="Flight\Readouts\Surface\AltitudeTerrain.cs" />
+    <Compile Include="Flight\Readouts\Surface\AtmosphericDetails.cs" />
+    <Compile Include="Flight\Readouts\Surface\AtmosphericEfficiency.cs" />
     <Compile Include="Flight\Readouts\Surface\GeeForce.cs" />
     <Compile Include="Flight\Readouts\Surface\HorizontalSpeed.cs" />
     <Compile Include="Flight\Readouts\Surface\Latitude.cs" />
     <Compile Include="Flight\Readouts\Surface\Longitude.cs" />
+    <Compile Include="Flight\Readouts\Surface\TerminalVelocity.cs" />
     <Compile Include="Flight\Readouts\Surface\VerticalSpeed.cs" />
+    <Compile Include="Flight\Readouts\Vessel\DeltaVStaged.cs" />
+    <Compile Include="Flight\Readouts\Vessel\DeltaVTotal.cs" />
     <Compile Include="Flight\Sections\SectionEditor.cs" />
     <Compile Include="Flight\Sections\SectionLibrary.cs" />
     <Compile Include="Flight\Sections\SectionModule.cs" />
@@ -104,10 +111,7 @@
     <Compile Include="Simulation\Stage.cs" />
     <Compile Include="TapeDriveAnimator.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Flight\Readouts\Rendezvous\" />
-    <Folder Include="Flight\Readouts\Vessel\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>xcopy "$(SolutionDir)Output\*" "$(SolutionDir)Game\GameData\*" /E /Y</PostBuildEvent>

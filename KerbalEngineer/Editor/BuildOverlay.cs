@@ -146,18 +146,18 @@ namespace KerbalEngineer.Editor
                 }
 
                 // Configure the simulation parameters based on the selected reference body.
-                SimulationManager.Gravity = CelestialBodies.Instance.SelectedBodyInfo.Gravity;
+                SimulationManager.Instance.Gravity = CelestialBodies.Instance.SelectedBodyInfo.Gravity;
 
                 if (BuildAdvanced.Instance.UseAtmosphericDetails)
                 {
-                    SimulationManager.Atmosphere = CelestialBodies.Instance.SelectedBodyInfo.Atmosphere * 0.01d;
+                    SimulationManager.Instance.Atmosphere = CelestialBodies.Instance.SelectedBodyInfo.Atmosphere * 0.01d;
                 }
                 else
                 {
-                    SimulationManager.Atmosphere = 0;
+                    SimulationManager.Instance.Atmosphere = 0;
                 }
 
-                SimulationManager.TryStartSimulation();
+                SimulationManager.Instance.TryStartSimulation();
             }
             catch
             {
@@ -174,7 +174,7 @@ namespace KerbalEngineer.Editor
                     return;
                 }
 
-                SimulationManager.RequestSimulation();
+                SimulationManager.Instance.RequestSimulation();
 
                 this.windowPosition = GUILayout.Window(this.windowId, this.windowPosition, this.Window, string.Empty, this.windowStyle);
 
@@ -244,9 +244,9 @@ namespace KerbalEngineer.Editor
 
             // Details
             GUILayout.BeginVertical(GUILayout.Width(100.0f));
-            GUILayout.Label(SimulationManager.LastStage.PartCount.ToString("N0"), this.infoStyle);
-            GUILayout.Label(SimulationManager.LastStage.TotalDeltaV.ToString("N0") + " m/s", this.infoStyle);
-            GUILayout.Label(SimulationManager.LastStage.ThrustToWeight.ToString("F2"), this.infoStyle);
+            GUILayout.Label(SimulationManager.Instance.LastStage.PartCount.ToString("N0"), this.infoStyle);
+            GUILayout.Label(SimulationManager.Instance.LastStage.TotalDeltaV.ToString("N0") + " m/s", this.infoStyle);
+            GUILayout.Label(SimulationManager.Instance.LastStage.ThrustToWeight.ToString("F2"), this.infoStyle);
             GUILayout.EndVertical();
 
             GUILayout.EndHorizontal();

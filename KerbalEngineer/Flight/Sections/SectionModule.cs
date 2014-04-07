@@ -25,7 +25,6 @@ namespace KerbalEngineer.Flight.Sections
 
         private SectionEditor editor;
         private int numberOfReadouts;
-        private SectionWindow window;
 
         #endregion
 
@@ -83,16 +82,16 @@ namespace KerbalEngineer.Flight.Sections
         /// </summary>
         public bool IsFloating
         {
-            get { return this.window != null; }
+            get { return this.Window != null; }
             set
             {
-                if (value && this.window == null)
+                if (value && this.Window == null)
                 {
-                    this.window = FlightEngineerCore.Instance.AddSectionWindow(this);
+                    this.Window = FlightEngineerCore.Instance.AddSectionWindow(this);
                 }
-                else if (!value && this.window != null)
+                else if (!value && this.Window != null)
                 {
-                    Object.Destroy(this.window);
+                    Object.Destroy(this.Window);
                 }
             }
         }
@@ -140,6 +139,11 @@ namespace KerbalEngineer.Flight.Sections
         /// </summary>
         [XmlIgnore] public List<ReadoutModule> ReadoutModules { get; set; }
 
+        /// <summary>
+        ///     Gets and sets the floating window.
+        /// </summary>
+        [XmlIgnore] public SectionWindow Window { get; set; }
+
         #endregion
 
         #region GUIStyles
@@ -157,7 +161,7 @@ namespace KerbalEngineer.Flight.Sections
             this.boxStyle = new GUIStyle(HighLogic.Skin.box)
             {
                 margin = new RectOffset(),
-                padding = new RectOffset(10, 10, 5, 5)
+                padding = new RectOffset(5, 5, 5, 5)
             };
 
             this.titleStyle = new GUIStyle(HighLogic.Skin.label)
@@ -228,7 +232,7 @@ namespace KerbalEngineer.Flight.Sections
                 }
                 else
                 {
-                    this.window.RequestResize();
+                    this.Window.RequestResize();
                 }
             }
         }

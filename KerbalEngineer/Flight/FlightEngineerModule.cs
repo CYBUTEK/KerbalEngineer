@@ -43,7 +43,6 @@ namespace KerbalEngineer.Flight
                 // Checks for an existing instance of FlightEngineerCore, and if this part is the first part containing FlightEngineerModule within the vessel.
                 if (this.flightEngineerCore == null && this.part == this.vessel.parts.FirstOrDefault(p => p.Modules.Contains("FlightEngineerModule")))
                 {
-                    ReadoutLibrary.Instance.Reset();
                     this.flightEngineerCore = this.gameObject.AddComponent<FlightEngineerCore>();
                 }
             }

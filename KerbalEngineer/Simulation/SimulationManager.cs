@@ -10,29 +10,38 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 
+using KerbalEngineer.Flight;
+
 using UnityEngine;
 
 #endregion
 
 namespace KerbalEngineer.Simulation
 {
-    public class SimulationManager
+    public class SimulationManager : IUpdatable
     {
-        private static bool bRequested;
-        private static bool bRunning;
-        private static readonly Stopwatch timer = new Stopwatch();
-        private static long delayBetweenSims;
+        private static readonly SimulationManager instance = new SimulationManager();
 
-        private static Stopwatch _func = new Stopwatch();
+        public static SimulationManager Instance
+        {
+            get { return instance; }
+        }
 
-        public static Stage[] Stages { get; private set; }
-        public static Stage LastStage { get; private set; }
-        public static String failMessage { get; private set; }
+        private bool bRequested;
+        private bool bRunning;
+        private readonly Stopwatch timer = new Stopwatch();
+        private long delayBetweenSims;
 
-        public static double Gravity { get; set; }
-        public static double Atmosphere { get; set; }
+        private Stopwatch _func = new Stopwatch();
 
-        public static void RequestSimulation()
+        public Stage[] Stages { get; private set; }
+        public Stage LastStage { get; private set; }
+        public String failMessage { get; private set; }
+
+        public double Gravity { get; set; }
+        public double Atmosphere { get; set; }
+
+        public void RequestSimulation()
         {
             bRequested = true;
             if (!timer.IsRunning)
@@ -41,7 +50,7 @@ namespace KerbalEngineer.Simulation
             }
         }
 
-        public static void TryStartSimulation()
+        public void TryStartSimulation()
         {
             if (bRequested && !bRunning && (HighLogic.LoadedSceneIsEditor || FlightGlobals.ActiveVessel != null) && timer.ElapsedMilliseconds > delayBetweenSims)
             {
@@ -51,19 +60,19 @@ namespace KerbalEngineer.Simulation
             }
         }
 
-        public static bool ResultsReady()
+        public bool ResultsReady()
         {
             return !bRunning;
         }
 
-        private static void ClearResults()
+        private void ClearResults()
         {
             failMessage = "";
             Stages = null;
             LastStage = null;
         }
 
-        private static void StartSimulation()
+        private void StartSimulation()
         {
             try
             {
@@ -74,7 +83,7 @@ namespace KerbalEngineer.Simulation
                 List<Part> parts = HighLogic.LoadedSceneIsEditor ? EditorLogic.SortedShipList : FlightGlobals.ActiveVessel.Parts;
 
                 // Create the Simulation object in this thread
-                Simulation sim = new Simulation();
+                var sim = new Simulation();
 
                 // This call doesn't ever fail at the moment but we'll check and return a sensible error for display
                 if (sim.PrepareSimulation(parts, Gravity, Atmosphere))
@@ -95,7 +104,7 @@ namespace KerbalEngineer.Simulation
             }
         }
 
-        private static void RunSimulation(object simObject)
+        private void RunSimulation(object simObject)
         {
             try
             {
@@ -125,6 +134,11 @@ namespace KerbalEngineer.Simulation
             timer.Start();
 
             bRunning = false;
+        }
+
+        public void Update()
+        {
+            this.TryStartSimulation();
         }
     }
 }

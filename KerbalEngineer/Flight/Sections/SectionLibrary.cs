@@ -120,7 +120,28 @@ namespace KerbalEngineer.Flight.Sections
                 {
                     if (!section.IsFloating)
                     {
+                        foreach (var readout in section.ReadoutModules)
+                        {
+                            if (readout.ResizeRequested)
+                            {
+                                DisplayStack.Instance.RequestResize();
+                                readout.ResizeRequested = false;
+                            }
+                        }
+
                         this.NumberOfStackSections++;
+                    }
+                    else
+                    {
+                        foreach (var readout in section.ReadoutModules)
+                        {
+                            if (readout.ResizeRequested)
+                            {
+                                section.Window.RequestResize();
+                                readout.ResizeRequested = false;
+                            }
+                        }
+                        
                     }
                     section.Update();
                 }

@@ -35,6 +35,8 @@ namespace KerbalEngineer.Flight.Readouts
 
         public bool ShowHelp { get; set; }
 
+        public bool ResizeRequested { get; set; }
+
         /// <summary>
         ///     Gets ans sets the readout category.
         /// </summary>
@@ -63,9 +65,24 @@ namespace KerbalEngineer.Flight.Readouts
         public GUIStyle ValueStyle { get; set; }
 
         /// <summary>
+        ///     Gets and sets the message style.
+        /// </summary>
+        public GUIStyle MessageStyle { get; set; }
+
+        /// <summary>
+        ///     Gets and sets the flexible label style.
+        /// </summary>
+        public GUIStyle FlexiLabelStyle { get; set; }
+
+        /// <summary>
         ///     Gets and sets the button style.
         /// </summary>
         public GUIStyle ButtonStyle { get; set; }
+
+        /// <summary>
+        ///     Gets and sets the text field style.
+        /// </summary>
+        public GUIStyle TextFieldStyle { get; set; }
 
         /// <summary>
         ///     Initialises all the styles required for this object.
@@ -79,23 +96,44 @@ namespace KerbalEngineer.Flight.Readouts
                     textColor = Color.white
                 },
                 margin = new RectOffset(),
-                padding = new RectOffset(),
+                padding = new RectOffset(5,0,0,0),
                 alignment = TextAnchor.MiddleLeft,
                 fontSize = 11,
                 fontStyle = FontStyle.Bold,
-                fixedWidth = 110.0f,
+                fixedWidth = 115.0f,
                 fixedHeight = 20.0f
             };
 
             this.ValueStyle = new GUIStyle(HighLogic.Skin.label)
             {
                 margin = new RectOffset(),
-                padding = new RectOffset(),
+                padding = new RectOffset(0,5,0,0),
                 alignment = TextAnchor.MiddleRight,
                 fontSize = 11,
                 fontStyle = FontStyle.Normal,
-                fixedWidth = 110.0f,
+                fixedWidth = 115.0f,
                 fixedHeight = 20.0f
+            };
+
+            this.MessageStyle = new GUIStyle(HighLogic.Skin.label)
+            {
+                normal =
+                {
+                    textColor = Color.white
+                },
+                margin = new RectOffset(),
+                padding = new RectOffset(),
+                alignment = TextAnchor.MiddleCenter,
+                fontSize = 11,
+                fontStyle = FontStyle.Normal,
+                fixedWidth = this.ContentWidth,
+                fixedHeight = 20.0f
+            };
+
+            this.FlexiLabelStyle = new GUIStyle(this.NameStyle)
+            {
+                fixedWidth = 0,
+                stretchWidth = true
             };
 
             this.ButtonStyle = new GUIStyle(HighLogic.Skin.button)
@@ -104,10 +142,20 @@ namespace KerbalEngineer.Flight.Readouts
                 {
                     textColor = Color.white
                 },
-                margin = new RectOffset(),
+                margin = new RectOffset(0,0,1,1),
                 padding = new RectOffset(),
+                alignment = TextAnchor.MiddleCenter,
                 fontSize = 11,
-                fixedHeight = 20.0f
+                fixedHeight = 18.0f
+            };
+
+            this.TextFieldStyle = new GUIStyle(HighLogic.Skin.textField)
+            {
+                margin = new RectOffset(0,0,1,1),
+                padding = new RectOffset(5, 5, 0, 0),
+                alignment = TextAnchor.MiddleLeft,
+                fontSize = 11,
+                fixedHeight = 18.0f
             };
         }
 
@@ -134,6 +182,13 @@ namespace KerbalEngineer.Flight.Readouts
             GUILayout.BeginHorizontal();
             GUILayout.Label(this.Name, this.NameStyle);
             GUILayout.Label(value, this.ValueStyle);
+            GUILayout.EndHorizontal();
+        }
+
+        protected void DrawMessageLine(string value)
+        {
+            GUILayout.BeginHorizontal();
+            GUILayout.Label(value, this.MessageStyle);
             GUILayout.EndHorizontal();
         }
 
