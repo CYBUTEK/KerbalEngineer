@@ -73,6 +73,9 @@ namespace KerbalEngineer.Flight.Readouts
             // Vessel
             this.readoutModules.Add(new DeltaVStaged());
             this.readoutModules.Add(new DeltaVTotal());
+            this.readoutModules.Add(new SpecificImpulse());
+            this.readoutModules.Add(new Mass());
+            this.readoutModules.Add(new Thrust());
 
             // Rendezvous
             this.readoutModules.Add(new TargetSelector());
