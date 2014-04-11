@@ -81,6 +81,7 @@ namespace KerbalEngineer.Flight.Readouts
 
             // Rendezvous
             this.readoutModules.Add(new TargetSelector());
+            this.readoutModules.Add(new RelativeInclination());
 
             this.LoadHelpStrings();
         }

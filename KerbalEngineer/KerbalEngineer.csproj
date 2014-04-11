@@ -82,6 +82,7 @@
     <Compile Include="Flight\Readouts\ReadoutCategory.cs" />
     <Compile Include="Flight\Readouts\ReadoutLibrary.cs" />
     <Compile Include="Flight\Readouts\ReadoutModule.cs" />
+    <Compile Include="Flight\Readouts\Rendezvous\RelativeInclination.cs" />
     <Compile Include="Flight\Readouts\Rendezvous\TargetSelector.cs" />
     <Compile Include="Flight\Readouts\Surface\AltitudeSeaLevel.cs" />
     <Compile Include="Flight\Readouts\Surface\AltitudeTerrain.cs" />
