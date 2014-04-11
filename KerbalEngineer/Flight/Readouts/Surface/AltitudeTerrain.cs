@@ -21,7 +21,7 @@ namespace KerbalEngineer.Flight.Readouts.Surface
 
         public override void Draw()
         {
-            this.DrawLine((FlightGlobals.ActiveVessel.altitude - FlightGlobals.ActiveVessel.terrainAltitude).ToDistance());
+            this.DrawLine((FlightGlobals.ship_altitude - FlightGlobals.ActiveVessel.terrainAltitude).ToDistance());
         }
     }
 }

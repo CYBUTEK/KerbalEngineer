@@ -21,7 +21,7 @@ namespace KerbalEngineer.Flight.Readouts.Surface
 
         public override void Draw()
         {
-            this.DrawLine(FlightGlobals.ActiveVessel.latitude.ToAngle());
+            this.DrawLine(FlightGlobals.ship_latitude.ToAngle());
         }
     }
 }

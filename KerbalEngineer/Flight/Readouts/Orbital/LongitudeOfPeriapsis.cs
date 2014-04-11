@@ -21,7 +21,7 @@ namespace KerbalEngineer.Flight.Readouts.Orbital
 
         public override void Draw()
         {
-            this.DrawLine((FlightGlobals.ActiveVessel.orbit.LAN + FlightGlobals.ActiveVessel.orbit.argumentOfPeriapsis).ToAngle());
+            this.DrawLine((FlightGlobals.ship_orbit.LAN + FlightGlobals.ship_orbit.argumentOfPeriapsis).ToAngle());
         }
     }
 }

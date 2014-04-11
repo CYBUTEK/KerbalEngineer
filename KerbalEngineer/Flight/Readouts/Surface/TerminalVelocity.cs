@@ -26,7 +26,10 @@ namespace KerbalEngineer.Flight.Readouts.Surface
 
         public override void Draw()
         {
-            this.DrawLine(AtmosphericDetails.Instance.TerminalVelocity.ToSpeed());
+            if (FlightGlobals.ActiveVessel.atmDensity > 0)
+            {
+                this.DrawLine(AtmosphericDetails.Instance.TerminalVelocity.ToSpeed());
+            }
         }
 
         public override void Reset()

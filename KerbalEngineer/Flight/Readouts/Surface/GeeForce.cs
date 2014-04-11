@@ -17,11 +17,11 @@ namespace KerbalEngineer.Flight.Readouts.Surface
 
         public override void Draw()
         {
-            if (FlightGlobals.ActiveVessel.geeForce > this.maxGeeForce)
+            if (FlightGlobals.ship_geeForce > this.maxGeeForce)
             {
-                this.maxGeeForce = FlightGlobals.ActiveVessel.geeForce;
+                this.maxGeeForce = FlightGlobals.ship_geeForce;
             }
-            this.DrawLine(FlightGlobals.ActiveVessel.geeForce.ToString("F3") + " / " + this.maxGeeForce.ToString("F3"));
+            this.DrawLine(FlightGlobals.ship_geeForce.ToString("F3") + " / " + this.maxGeeForce.ToString("F3"));
         }
 
         public override void Reset()

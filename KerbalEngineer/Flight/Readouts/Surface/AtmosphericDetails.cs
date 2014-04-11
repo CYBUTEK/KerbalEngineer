@@ -80,12 +80,12 @@ namespace KerbalEngineer.Flight.Readouts.Surface
 
             var mass = FlightGlobals.ActiveVessel.parts.Sum(p => p.GetWetMass());
             var drag = FlightGlobals.ActiveVessel.parts.Sum(p => p.GetWetMass() * p.maximum_drag);
-            var grav = FlightGlobals.getGeeForceAtPosition(FlightGlobals.ActiveVessel.CoM).magnitude;
+            var grav = FlightGlobals.getGeeForceAtPosition(FlightGlobals.ship_position).magnitude;
             var atmo = FlightGlobals.ActiveVessel.atmDensity;
             var coef = FlightGlobals.DragMultiplier;
 
             this.terminalVelocity = Math.Sqrt((2 * mass * grav) / (atmo * drag * coef));
-            this.efficiency = FlightGlobals.ActiveVessel.srf_velocity.magnitude / this.terminalVelocity;
+            this.efficiency = FlightGlobals.ship_srfSpeed / this.terminalVelocity;
         }
 
         /// <summary>

@@ -15,7 +15,7 @@ namespace KerbalEngineer.Flight.Readouts.Orbital
 
         public override void Draw()
         {
-            this.DrawLine(FlightGlobals.ActiveVessel.orbit.PeA.ToString("N0") + "m");
+            this.DrawLine(FlightGlobals.ship_orbit.PeA.ToString("N0") + "m");
         }
     }
 }
