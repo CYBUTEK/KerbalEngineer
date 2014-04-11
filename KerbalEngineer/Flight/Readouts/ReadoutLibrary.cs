@@ -53,6 +53,7 @@ namespace KerbalEngineer.Flight.Readouts
             this.readoutModules.Add(new TimeToPeriapsis());
             this.readoutModules.Add(new Inclination());
             this.readoutModules.Add(new Eccentricity());
+            this.readoutModules.Add(new OrbitalSpeed());
             this.readoutModules.Add(new OrbitalPeriod());
             this.readoutModules.Add(new LongitudeOfAscendingNode());
             this.readoutModules.Add(new LongitudeOfPeriapsis());

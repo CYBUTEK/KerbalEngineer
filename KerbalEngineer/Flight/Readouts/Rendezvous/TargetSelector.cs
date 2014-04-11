@@ -21,6 +21,7 @@ namespace KerbalEngineer.Flight.Readouts.Rendezvous
         private bool typeIsBody;
         private bool usingSearch;
         private VesselType vesselType = VesselType.Unknown;
+        private ITargetable targetObject;
 
         #endregion
 
@@ -67,6 +68,12 @@ namespace KerbalEngineer.Flight.Readouts.Rendezvous
             {
                 this.DrawTarget();
             }
+
+            if (this.targetObject != FlightGlobals.fetch.VesselTarget)
+            {
+                this.targetObject = FlightGlobals.fetch.VesselTarget;
+                this.ResizeRequested = true;
+            }  
         }
 
         /// <summary>
@@ -164,7 +171,7 @@ namespace KerbalEngineer.Flight.Readouts.Rendezvous
         /// </summary>
         private void DrawTarget()
         {
-            if (GUILayout.Button("Go Back to Target Selection", this.ButtonStyle))
+            if (GUILayout.Button("Go Back to Target Selection", this.ButtonStyle, GUILayout.Width(this.ContentWidth)))
             {
                 FlightGlobals.fetch.SetVesselTarget(null);
                 this.ResizeRequested = true;
@@ -180,7 +187,7 @@ namespace KerbalEngineer.Flight.Readouts.Rendezvous
         /// </summary>
         private void DrawBackToTypes()
         {
-            if (GUILayout.Button("Go Back to Type Selection", this.ButtonStyle))
+            if (GUILayout.Button("Go Back to Type Selection", this.ButtonStyle, GUILayout.Width(this.ContentWidth)))
             {
                 this.typeIsBody = false;
                 this.vesselType = VesselType.Unknown;
@@ -248,7 +255,7 @@ namespace KerbalEngineer.Flight.Readouts.Rendezvous
                 }
 
                 count++;
-                if (GUILayout.Button(body.bodyName, this.ButtonStyle))
+                if (GUILayout.Button(body.bodyName, this.ButtonStyle, GUILayout.Width(this.ContentWidth)))
                 {
                     this.SetTargetAs(body);
                 }
@@ -275,7 +282,7 @@ namespace KerbalEngineer.Flight.Readouts.Rendezvous
                 }
 
                 count++;
-                if (GUILayout.Button(body.GetName(), this.ButtonStyle))
+                if (GUILayout.Button(body.GetName(), this.ButtonStyle, GUILayout.Width(this.ContentWidth)))
                 {
                     this.SetTargetAs(body);
                 }
@@ -300,7 +307,7 @@ namespace KerbalEngineer.Flight.Readouts.Rendezvous
                 {
                     count++;
 
-                    if (GUILayout.Button(vessel.GetName(), this.ButtonStyle))
+                    if (GUILayout.Button(vessel.GetName(), this.ButtonStyle, GUILayout.Width(this.ContentWidth)))
                     {
                         this.SetTargetAs(vessel);
                     }
@@ -308,7 +315,7 @@ namespace KerbalEngineer.Flight.Readouts.Rendezvous
                 else if (vessel.vesselName.ToLower().Contains(this.searchQuery))
                 {
                     count++;
-                    if (GUILayout.Button(vessel.GetName(), this.ButtonStyle))
+                    if (GUILayout.Button(vessel.GetName(), this.ButtonStyle, GUILayout.Width(this.ContentWidth)))
                     {
                         this.SetTargetAs(vessel);
                     }
@@ -332,6 +339,7 @@ namespace KerbalEngineer.Flight.Readouts.Rendezvous
         private void SetTargetAs(ITargetable target)
         {
             FlightGlobals.fetch.SetVesselTarget(target);
+            this.targetObject = target;
             this.ResizeRequested = true;
         }
 

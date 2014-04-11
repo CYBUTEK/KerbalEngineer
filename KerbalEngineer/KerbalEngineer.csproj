@@ -73,6 +73,7 @@
     <Compile Include="Flight\Readouts\Orbital\LongitudeOfAscendingNode.cs" />
     <Compile Include="Flight\Readouts\Orbital\LongitudeOfPeriapsis.cs" />
     <Compile Include="Flight\Readouts\Orbital\OrbitalPeriod.cs" />
+    <Compile Include="Flight\Readouts\Orbital\OrbitalSpeed.cs" />
     <Compile Include="Flight\Readouts\Orbital\PeriapsisHeight.cs" />
     <Compile Include="Flight\Readouts\Orbital\SemiMajorAxis.cs" />
     <Compile Include="Flight\Readouts\Orbital\SemiMinorAxis.cs" />
