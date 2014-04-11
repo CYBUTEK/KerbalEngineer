@@ -97,6 +97,7 @@
     <Compile Include="Flight\Readouts\Vessel\Mass.cs" />
     <Compile Include="Flight\Readouts\Vessel\Thrust.cs" />
     <Compile Include="Flight\Readouts\Vessel\SpecificImpulse.cs" />
+    <Compile Include="Flight\Readouts\Vessel\ThrustToWeight.cs" />
     <Compile Include="Flight\Sections\SectionEditor.cs" />
     <Compile Include="Flight\Sections\SectionLibrary.cs" />
     <Compile Include="Flight\Sections\SectionModule.cs" />

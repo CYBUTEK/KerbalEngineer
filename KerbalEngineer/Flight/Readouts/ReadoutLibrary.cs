@@ -76,6 +76,7 @@ namespace KerbalEngineer.Flight.Readouts
             this.readoutModules.Add(new SpecificImpulse());
             this.readoutModules.Add(new Mass());
             this.readoutModules.Add(new Thrust());
+            this.readoutModules.Add(new ThrustToWeight());
 
             // Rendezvous
             this.readoutModules.Add(new TargetSelector());
