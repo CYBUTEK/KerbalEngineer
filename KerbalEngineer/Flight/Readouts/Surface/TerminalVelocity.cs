@@ -12,6 +12,8 @@ namespace KerbalEngineer.Flight.Readouts.Surface
 {
     public class TerminalVelocity : ReadoutModule
     {
+        private bool showing;
+
         public TerminalVelocity()
         {
             this.Name = "Terminal Velocity";
@@ -26,9 +28,18 @@ namespace KerbalEngineer.Flight.Readouts.Surface
 
         public override void Draw()
         {
+            var tempShowing = this.showing;
+            this.showing = false;
+
             if (FlightGlobals.ActiveVessel.atmDensity > 0)
             {
+                this.showing = true;
                 this.DrawLine(AtmosphericDetails.Instance.TerminalVelocity.ToSpeed());
+            }
+
+            if (this.showing != tempShowing)
+            {
+                this.ResizeRequested = true;
             }
         }
 

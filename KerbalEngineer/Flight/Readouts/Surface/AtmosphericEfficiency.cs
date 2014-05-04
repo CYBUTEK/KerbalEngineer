@@ -6,6 +6,8 @@ namespace KerbalEngineer.Flight.Readouts.Surface
 {
     public class AtmosphericEfficiency : ReadoutModule
     {
+        private bool showing;
+
         public AtmosphericEfficiency()
         {
             this.Name = "Atmos. Efficiency";
@@ -20,9 +22,18 @@ namespace KerbalEngineer.Flight.Readouts.Surface
 
         public override void Draw()
         {
+            var tempShowing = this.showing;
+            this.showing = false;
+
             if (FlightGlobals.ActiveVessel.atmDensity > 0)
             {
+                showing = true;
                 this.DrawLine(AtmosphericDetails.Instance.Efficiency.ToString("F2"));
+            }
+
+            if (this.showing != tempShowing)
+            {
+                this.ResizeRequested = true;
             }
         }
 
