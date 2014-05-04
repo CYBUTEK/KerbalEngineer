@@ -185,7 +185,7 @@ namespace KerbalEngineer
                 this.lights6ShaderOff = this.lights6Transform.renderer.material.shader;
             }
 
-            this.lightsShaderOn = Shader.Find("Self-Illumin/Diffuse");
+            this.lightsShaderOn = Shader.Find("Unlit/Texture");
         }
 
         #endregion
