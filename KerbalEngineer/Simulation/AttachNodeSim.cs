@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Text;
 
 namespace KerbalEngineer.Simulation
 {
@@ -15,23 +16,23 @@ namespace KerbalEngineer.Simulation
             this.id = newId;
         }
 
-#if LOG
+#if LOG || true
         public void DumpToBuffer(StringBuilder buffer)
         {
-            if (attachedPartSim == null)
+            if (this.attachedPartSim == null)
             {
                 buffer.Append("<staged>:<n>");
             }
             else
             {
-                buffer.Append(attachedPartSim.name);
+                buffer.Append(this.attachedPartSim.name);
                 buffer.Append(":");
-                buffer.Append(attachedPartSim.partId);
+                buffer.Append(this.attachedPartSim.partId);
             }
             buffer.Append("#");
-            buffer.Append(nodeType);
+            buffer.Append(this.nodeType);
             buffer.Append(":");
-            buffer.Append(id);
+            buffer.Append(this.id);
         }
 #endif
     }

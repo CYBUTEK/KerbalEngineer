@@ -29,8 +29,8 @@ namespace KerbalEngineer.Flight.Readouts.Vessel
 
         public override void Draw()
         {
-            this.actual = (SimulationManager.Instance.LastStage.ActualThrust / (SimulationManager.Instance.LastStage.TotalMass * FlightGlobals.getGeeForceAtPosition(FlightGlobals.ship_position).magnitude)).ToString("F2");
-            this.total = (SimulationManager.Instance.LastStage.Thrust / (SimulationManager.Instance.LastStage.TotalMass * FlightGlobals.getGeeForceAtPosition(FlightGlobals.ship_position).magnitude)).ToString("F2");
+            this.actual = (SimulationManager.Instance.LastStage.actualThrust / (SimulationManager.Instance.LastStage.totalMass * FlightGlobals.getGeeForceAtPosition(FlightGlobals.ship_position).magnitude)).ToString("F2");
+            this.total = (SimulationManager.Instance.LastStage.thrust / (SimulationManager.Instance.LastStage.totalMass * FlightGlobals.getGeeForceAtPosition(FlightGlobals.ship_position).magnitude)).ToString("F2");
             this.DrawLine("TWR", this.actual + " / " + this.total);
         }
 

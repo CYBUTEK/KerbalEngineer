@@ -244,9 +244,9 @@ namespace KerbalEngineer.Editor
 
             // Details
             GUILayout.BeginVertical(GUILayout.Width(100.0f));
-            GUILayout.Label(SimulationManager.Instance.LastStage.PartCount.ToString("N0"), this.infoStyle);
-            GUILayout.Label(SimulationManager.Instance.LastStage.TotalDeltaV.ToString("N0") + " m/s", this.infoStyle);
-            GUILayout.Label(SimulationManager.Instance.LastStage.ThrustToWeight.ToString("F2"), this.infoStyle);
+            //GUILayout.Label(SimulationManager.Instance.LastStage.partCount.ToString("N0"), this.infoStyle);
+            GUILayout.Label(SimulationManager.Instance.LastStage.totalDeltaV.ToString("N0") + " m/s", this.infoStyle);
+            GUILayout.Label(SimulationManager.Instance.LastStage.thrustToWeight.ToString("F2"), this.infoStyle);
             GUILayout.EndVertical();
 
             GUILayout.EndHorizontal();

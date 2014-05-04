@@ -26,7 +26,7 @@ namespace KerbalEngineer.Flight.Readouts.Vessel
 
         public override void Draw()
         {
-            this.DrawLine(SimulationManager.Instance.LastStage.ActualThrust.ToForce(false) + " / " + SimulationManager.Instance.LastStage.Thrust.ToForce());
+            this.DrawLine(SimulationManager.Instance.LastStage.actualThrust.ToForce(false) + " / " + SimulationManager.Instance.LastStage.thrust.ToForce());
         }
 
         public override void Reset()

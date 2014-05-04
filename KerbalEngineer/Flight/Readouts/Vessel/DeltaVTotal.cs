@@ -26,7 +26,7 @@ namespace KerbalEngineer.Flight.Readouts.Vessel
 
         public override void Draw()
         {
-            this.DrawLine(SimulationManager.Instance.LastStage.TotalDeltaV.ToString("N0") + "m/s");
+            this.DrawLine(SimulationManager.Instance.LastStage.totalDeltaV.ToString("N0") + "m/s");
         }
 
         public override void Reset()

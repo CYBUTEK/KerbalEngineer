@@ -22,13 +22,14 @@ namespace KerbalEngineer.Simulation
         private HashSet<PartSim> drainingParts;
         private List<EngineSim> allEngines;
         private List<EngineSim> activeEngines;
+        private HashSet<int> drainingResources;
 
         private int lastStage = 0;
         private int currentStage = 0;
 
         private double gravity = 0;
         private double atmosphere = 0;
-#if LOG
+#if LOG || TIMERS
         private Stopwatch _timer = new Stopwatch();
 #endif
         private const double STD_GRAVITY = 9.81d;
@@ -49,6 +50,8 @@ namespace KerbalEngineer.Simulation
         {
 #if LOG
             MonoBehaviour.print("PrepareSimulation started");
+#endif
+#if LOG || TIMERS
             _timer.Start();
 #endif
             // Store the parameters in members for ease of access in other functions
@@ -64,6 +67,7 @@ namespace KerbalEngineer.Simulation
             this.drainingParts = new HashSet<PartSim>();
             this.allEngines = new List<EngineSim>();
             this.activeEngines = new List<EngineSim>();
+            this.drainingResources = new HashSet<int>();
 
             // A dictionary for fast lookup of Part->PartSim during the preparation phase
             Dictionary<Part, PartSim> partSimLookup = new Dictionary<Part, PartSim>();
@@ -109,9 +113,12 @@ namespace KerbalEngineer.Simulation
 
             // And dereference the core's part list
             this.partList = null;
-#if LOG
+
+#if LOG || TIMERS
             _timer.Stop();
-            MonoBehaviour.print("PrepareSimulation took " + _timer.ElapsedMilliseconds + "ms");
+            MonoBehaviour.print("PrepareSimulation: " + _timer.ElapsedMilliseconds + "ms");
+#endif
+#if LOG
             Dump();
 #endif
             return true;
@@ -123,6 +130,9 @@ namespace KerbalEngineer.Simulation
         {
 #if LOG
             MonoBehaviour.print("RunSimulation started");
+#endif
+#if LOG || TIMERS
+            _timer.Start();
 #endif
             // Start with the last stage to simulate
             // (this is in a member variable so it can be accessed by AllowedToStage and ActiveStage)
@@ -175,18 +185,22 @@ namespace KerbalEngineer.Simulation
                     currentisp = 0;
 
                 // Store various things in the Stage object
-                stage.Thrust = totalStageThrust;
-                stage.ThrustToWeight = (double)(totalStageThrust / (stageStartMass * this.gravity));
-                stage.ActualThrust = totalStageActualThrust;
-                stage.ActualThrustToWeight = (double)(totalStageActualThrust / (stageStartMass * this.gravity));
+                stage.thrust = totalStageThrust;
+                //MonoBehaviour.print("stage.thrust = " + stage.thrust);
+                stage.thrustToWeight = totalStageThrust / (stageStartMass * this.gravity);
+                stage.maxThrustToWeight = stage.thrustToWeight;
+                //MonoBehaviour.print("StageMass = " + stageStartMass);
+                //MonoBehaviour.print("Initial maxTWR = " + stage.maxThrustToWeight);
+                stage.actualThrust = totalStageActualThrust;
+                stage.actualThrustToWeight = totalStageActualThrust / (stageStartMass * this.gravity);
 
                 // Calculate the cost and mass of this stage
                 foreach (PartSim partSim in this.allParts)
                 {
                     if (partSim.decoupledInStage == this.currentStage - 1)
                     {
-                        stage.Cost += partSim.cost;
-                        stage.Mass += partSim.GetStartMass();
+                        stage.cost += partSim.cost;
+                        stage.mass += partSim.GetStartMass();
                     }
                 }
 #if LOG
@@ -201,14 +215,18 @@ namespace KerbalEngineer.Simulation
 
                     // Calculate how long each draining tank will take to drain and run for the minimum time
                     double resourceDrainTime = double.MaxValue;
+                    PartSim partMinDrain = null;
                     foreach (PartSim partSim in this.drainingParts)
                     {
                         double time = partSim.TimeToDrainResource();
                         if (time < resourceDrainTime)
+                        {
                             resourceDrainTime = time;
+                            partMinDrain = partSim;
+                        }
                     }
 #if LOG
-                    MonoBehaviour.print("Drain time = " + resourceDrainTime);
+                    MonoBehaviour.print("Drain time = " + resourceDrainTime + " (" + partMinDrain.name + ":" + partMinDrain.partId + ")");
 #endif
                     foreach (PartSim partSim in this.drainingParts)
                         partSim.DrainResources(resourceDrainTime);
@@ -217,6 +235,15 @@ namespace KerbalEngineer.Simulation
                     stepEndMass = this.ShipMass;
                     stageTime += resourceDrainTime;
 
+                    double stepEndTWR = totalStageThrust / (stepEndMass * this.gravity);
+                    //MonoBehaviour.print("After drain mass = " + stepEndMass);
+                    //MonoBehaviour.print("currentThrust = " + totalStageThrust);
+                    //MonoBehaviour.print("currentTWR = " + stepEndTWR);
+                    if (stepEndTWR > stage.maxThrustToWeight)
+                        stage.maxThrustToWeight = stepEndTWR;
+
+                    //MonoBehaviour.print("newMaxTWR = " + stage.maxThrustToWeight);
+
                     // If we have drained anything and the masses make sense then add this step's deltaV to the stage total
                     if (resourceDrainTime > 0d && stepStartMass > stepEndMass && stepStartMass > 0d && stepEndMass > 0d)
                         stageDeltaV += (currentisp * STD_GRAVITY) * Math.Log(stepStartMass / stepEndMass);
@@ -224,14 +251,21 @@ namespace KerbalEngineer.Simulation
                     // Update the active engines and resource drains for the next step
                     this.UpdateResourceDrains();
 
-                    // Recalculate the current isp for the next step
+                    // Recalculate the current thrust and isp for the next step
+                    totalStageThrust = 0d;
+                    totalStageActualThrust = 0d;
                     totalStageFlowRate = 0d;
                     totalStageIspFlowRate = 0d;
                     foreach (EngineSim engine in this.activeEngines)
                     {
+                        totalStageActualThrust += engine.actualThrust;
+                        totalStageThrust += engine.thrust;
+
                         totalStageFlowRate += engine.ResourceConsumptions.Mass;
                         totalStageIspFlowRate += engine.ResourceConsumptions.Mass * engine.isp;
                     }
+
+                    //MonoBehaviour.print("next step thrust = " + totalStageThrust);
 
                     if (totalStageFlowRate > 0d && totalStageIspFlowRate > 0d)
                         currentisp = totalStageIspFlowRate / totalStageFlowRate;
@@ -261,16 +295,15 @@ namespace KerbalEngineer.Simulation
 
                 // Store more values in the Stage object and stick it in the array
                 // Recalculate effective stage isp from the stageDeltaV (flip the standard deltaV calculation around)
-                stage.Isp = stageDeltaV / (STD_GRAVITY * Math.Log(stageStartMass / this.ShipMass));
-                if (double.IsNaN(stage.Isp))
-                {
-                    stage.Isp = 0;
-                }
-                stage.DeltaV = stageDeltaV;
+                // Note: If the mass doesn't change then this is a divide by zero
+                if (stageStartMass != stepStartMass)
+                    stage.isp = stageDeltaV / (STD_GRAVITY * Math.Log(stageStartMass / stepStartMass));
+                else
+                    stage.isp = 0;
+                stage.deltaV = stageDeltaV;
                 // Zero stage time if more than a day (this should be moved into the window code)
-                stage.Time = (stageTime < SECONDS_PER_DAY) ? stageTime : 0d;
-                stage.Number = this.currentStage;
-                stage.PartCount = this.allParts.Count;
+                stage.time = (stageTime < SECONDS_PER_DAY) ? stageTime : 0d;
+                stage.number = this.currentStage;
                 stages[this.currentStage] = stage;
 
                 // Now activate the next stage
@@ -298,23 +331,26 @@ namespace KerbalEngineer.Simulation
                 // For each stage we total up the cost, mass, deltaV and time for this stage and all the stages above
                 for (int j = i; j >= 0; j--)
                 {
-                    stages[i].TotalCost += stages[j].Cost;
-                    stages[i].TotalMass += stages[j].Mass;
-                    stages[i].TotalDeltaV += stages[j].DeltaV;
-                    stages[i].TotalTime += stages[j].Time;
+                    stages[i].totalCost += stages[j].cost;
+                    stages[i].totalMass += stages[j].mass;
+                    stages[i].totalDeltaV += stages[j].deltaV;
+                    stages[i].totalTime += stages[j].time;
                 }
                 // We also total up the deltaV for stage and all stages below
                 for (int j = i; j < stages.Length; j++)
                 {
-                    stages[i].InverseTotalDeltaV += stages[j].DeltaV;
+                    stages[i].inverseTotalDeltaV += stages[j].deltaV;
                 }
 
                 // Zero the total time if the value will be huge (24 hours?) to avoid the display going weird
                 // (this should be moved into the window code)
-                if (stages[i].TotalTime > SECONDS_PER_DAY)
-                    stages[i].TotalTime = 0d;
+                if (stages[i].totalTime > SECONDS_PER_DAY)
+                    stages[i].totalTime = 0d;
             }
-
+#if LOG || TIMERS
+            _timer.Stop();
+            MonoBehaviour.print("RunSimulation: " + _timer.ElapsedMilliseconds + "ms");
+#endif
             return stages;
         }
 
@@ -323,8 +359,9 @@ namespace KerbalEngineer.Simulation
         // and setting the drain rates
         private void UpdateResourceDrains()
         {
-            // Empty the active engines list
+            // Empty the active engines list and the draining resources set
             this.activeEngines.Clear();
+            this.drainingResources.Clear();
 
             // Reset the resource drains of all draining parts
             foreach (PartSim partSim in this.drainingParts)
@@ -341,7 +378,11 @@ namespace KerbalEngineer.Simulation
                 {
                     // Set the resource drains for this engine and add it to the active list if it is active
                     if (engine.SetResourceDrains(this.allParts, this.allFuelLines, this.drainingParts))
+                    {
                         this.activeEngines.Add(engine);
+                        foreach (int type in engine.ResourceConsumptions.Types)
+                            this.drainingResources.Add(type);
+                    }
                 }
             }
 #if LOG
@@ -357,35 +398,42 @@ namespace KerbalEngineer.Simulation
         // This function works out if it is time to stage
         private bool AllowedToStage()
         {
-            //StringBuilder buffer = new StringBuilder(1024);
-            //buffer.Append("AllowedToStage\n");
-            //buffer.AppendFormat("currentStage = {0:d}\n", currentStage);
-
+#if LOG
+            StringBuilder buffer = new StringBuilder(1024);
+            buffer.AppendLine("AllowedToStage");
+            buffer.AppendFormat("currentStage = {0:d}\n", currentStage);
+#endif
             if (this.activeEngines.Count == 0)
             {
-                //buffer.Append("No active engines => true\n");
-                //MonoBehaviour.print(buffer);
+#if LOG
+                buffer.AppendLine("No active engines => true");
+                MonoBehaviour.print(buffer);
+#endif
                 return true;
             }
 
             foreach (PartSim partSim in this.allParts)
             {
-                //partSim.DumpPartToBuffer(buffer, "Testing: ");
+                //partSim.DumpPartToBuffer(buffer, "Testing: ", allParts);
                 //buffer.AppendFormat("isSepratron = {0}\n", partSim.isSepratron ? "true" : "false");
                 if (partSim.decoupledInStage == (this.currentStage - 1) && (!partSim.isSepratron || partSim.decoupledInStage < partSim.inverseStage))
                 {
-                    if (!partSim.Resources.Empty)
+                    if (!partSim.Resources.EmptyOf(this.drainingResources))
                     {
-                        //buffer.Append("Decoupled part not empty => false\n");
-                        //MonoBehaviour.print(buffer);
+#if LOG
+                        partSim.DumpPartToBuffer(buffer, "Decoupled part not empty => false: ");
+                        MonoBehaviour.print(buffer);
+#endif
                         return false;
                     }
                     foreach (EngineSim engine in this.activeEngines)
                     {
                         if (engine.partSim == partSim)
                         {
-                            //buffer.Append("Decoupled part is active engine => false\n");
-                            //MonoBehaviour.print(buffer);
+#if LOG
+                            partSim.DumpPartToBuffer(buffer, "Decoupled part is active engine => false: ");
+                            MonoBehaviour.print(buffer);
+#endif
                             return false;
                         }
                     }
@@ -394,13 +442,17 @@ namespace KerbalEngineer.Simulation
 
             if (this.currentStage > 0)
             {
-                //buffer.Append("Current stage > 0 => true\n");
-                //MonoBehaviour.print(buffer);
+#if LOG
+                buffer.AppendLine("Current stage > 0 => true");
+                MonoBehaviour.print(buffer);
+#endif
                 return true;
             }
 
-            //buffer.Append("Returning false\n");
-            //MonoBehaviour.print(buffer);
+#if LOG
+            buffer.AppendLine("Returning false");
+            MonoBehaviour.print(buffer);
+#endif
             return false;
         }
 
@@ -439,21 +491,6 @@ namespace KerbalEngineer.Simulation
             {
                 // Ask the part to remove all the parts that are decoupled
                 partSim.RemoveAttachedParts(decoupledParts);
-            }
-        }
-
-
-        private bool StageHasSolids
-        {
-            get
-            {
-                foreach (EngineSim engine in this.activeEngines)
-                {
-                    if (engine.partSim.isSolidMotor)
-                        return true;
-                }
-
-                return false;
             }
         }
 

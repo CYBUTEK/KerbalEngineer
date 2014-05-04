@@ -223,7 +223,7 @@ namespace KerbalEngineer.Editor
                 }
 
                 // Reset the window size when the staging or something else has changed.
-                int stageCount = SimulationManager.Instance.Stages.Count(stage => this.showAllStages || stage.DeltaV > 0);
+                int stageCount = SimulationManager.Instance.Stages.Count(stage => this.showAllStages || stage.deltaV > 0);
                 if (this.hasChanged || stageCount != this.numberOfStages)
                 {
                     this.hasChanged = false;
@@ -297,7 +297,7 @@ namespace KerbalEngineer.Editor
             {
                 GUILayout.BeginHorizontal(this.areaStyle);
                 this.DrawStageNumbers();
-                this.DrawPartCount();
+                //this.DrawPartCount();
                 this.DrawCost();
                 this.DrawMass();
                 this.DrawIsp();
@@ -361,9 +361,9 @@ namespace KerbalEngineer.Editor
             GUILayout.Label(string.Empty, this.titleStyle);
             foreach (var stage in SimulationManager.Instance.Stages)
             {
-                if (this.showAllStages || stage.DeltaV > 0)
+                if (this.showAllStages || stage.deltaV > 0)
                 {
-                    GUILayout.Label("S" + stage.Number, this.titleStyle);
+                    GUILayout.Label("S" + stage.number, this.titleStyle);
                 }
             }
             GUILayout.EndVertical();
@@ -378,9 +378,9 @@ namespace KerbalEngineer.Editor
             GUILayout.Label("PARTS", this.titleStyle);
             foreach (var stage in SimulationManager.Instance.Stages)
             {
-                if (this.showAllStages || stage.DeltaV > 0)
+                if (this.showAllStages || stage.deltaV > 0)
                 {
-                    GUILayout.Label(stage.PartCount.ToString("N0"), this.infoStyle);
+                    //GUILayout.Label(stage.PartCount.ToString("N0"), this.infoStyle);
                 }
             }
             GUILayout.EndVertical();
@@ -395,9 +395,9 @@ namespace KerbalEngineer.Editor
             GUILayout.Label("COST", this.titleStyle);
             foreach (var stage in SimulationManager.Instance.Stages)
             {
-                if (this.showAllStages || stage.DeltaV > 0)
+                if (this.showAllStages || stage.deltaV > 0)
                 {
-                    GUILayout.Label(stage.Cost.ToString("N0") + " / " + stage.TotalCost.ToString("N0"), this.infoStyle);
+                    GUILayout.Label(stage.cost.ToString("N0") + " / " + stage.totalCost.ToString("N0"), this.infoStyle);
                 }
             }
             GUILayout.EndVertical();
@@ -412,9 +412,9 @@ namespace KerbalEngineer.Editor
             GUILayout.Label("MASS", this.titleStyle);
             foreach (var stage in SimulationManager.Instance.Stages)
             {
-                if (this.showAllStages || stage.DeltaV > 0)
+                if (this.showAllStages || stage.deltaV > 0)
                 {
-                    GUILayout.Label(stage.Mass.ToMass(false) + " / " + stage.TotalMass.ToMass(), this.infoStyle);
+                    GUILayout.Label(stage.mass.ToMass(false) + " / " + stage.totalMass.ToMass(), this.infoStyle);
                 }
             }
             GUILayout.EndVertical();
@@ -429,9 +429,9 @@ namespace KerbalEngineer.Editor
             GUILayout.Label("ISP", this.titleStyle);
             foreach (var stage in SimulationManager.Instance.Stages)
             {
-                if (this.showAllStages || stage.DeltaV > 0)
+                if (this.showAllStages || stage.deltaV > 0)
                 {
-                    GUILayout.Label(stage.Isp.ToString("F1") + "s", this.infoStyle);
+                    GUILayout.Label(stage.isp.ToString("F1") + "s", this.infoStyle);
                 }
             }
             GUILayout.EndVertical();
@@ -446,9 +446,9 @@ namespace KerbalEngineer.Editor
             GUILayout.Label("THRUST", this.titleStyle);
             foreach (var stage in SimulationManager.Instance.Stages)
             {
-                if (this.showAllStages || stage.DeltaV > 0)
+                if (this.showAllStages || stage.deltaV > 0)
                 {
-                    GUILayout.Label(stage.Thrust.ToForce(), this.infoStyle);
+                    GUILayout.Label(stage.thrust.ToForce(), this.infoStyle);
                 }
             }
             GUILayout.EndVertical();
@@ -463,9 +463,9 @@ namespace KerbalEngineer.Editor
             GUILayout.Label("TWR", this.titleStyle);
             foreach (var stage in SimulationManager.Instance.Stages)
             {
-                if (this.showAllStages || stage.DeltaV > 0)
+                if (this.showAllStages || stage.deltaV > 0)
                 {
-                    GUILayout.Label(stage.ThrustToWeight.ToString("F2"), this.infoStyle);
+                    GUILayout.Label(stage.thrustToWeight.ToString("F2"), this.infoStyle);
                 }
             }
             GUILayout.EndVertical();
@@ -480,9 +480,9 @@ namespace KerbalEngineer.Editor
             GUILayout.Label("DELTA-V", this.titleStyle);
             foreach (var stage in SimulationManager.Instance.Stages)
             {
-                if (this.showAllStages || stage.DeltaV > 0)
+                if (this.showAllStages || stage.deltaV > 0)
                 {
-                    GUILayout.Label(stage.DeltaV.ToString("N0") + " / " + stage.InverseTotalDeltaV.ToString("N0") + "m/s", this.infoStyle);
+                    GUILayout.Label(stage.deltaV.ToString("N0") + " / " + stage.inverseTotalDeltaV.ToString("N0") + "m/s", this.infoStyle);
                 }
             }
             GUILayout.EndVertical();
@@ -497,9 +497,9 @@ namespace KerbalEngineer.Editor
             GUILayout.Label("BURN", this.titleStyle);
             foreach (var stage in SimulationManager.Instance.Stages)
             {
-                if (this.showAllStages || stage.DeltaV > 0)
+                if (this.showAllStages || stage.deltaV > 0)
                 {
-                    GUILayout.Label(stage.Time.ToTime(), this.infoStyle);
+                    GUILayout.Label(stage.time.ToTime(), this.infoStyle);
                 }
             }
             GUILayout.EndVertical();

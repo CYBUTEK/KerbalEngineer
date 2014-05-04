@@ -16,24 +16,16 @@ namespace KerbalEngineer.Simulation
             get
             {
                 if (this.resources.ContainsKey(type))
-                {
                     return (double)this.resources[type];
-                }
-                else
-                {
-                    return 0d;
-                }
+
+                return 0d;
             }
             set
             {
                 if (this.resources.ContainsKey(type))
-                {
                     this.resources[type] = value;
-                }
                 else
-                {
                     this.resources.Add(type, value);
-                }
             }
         }
 
@@ -49,9 +41,7 @@ namespace KerbalEngineer.Simulation
                 List<int> types = new List<int>();
 
                 foreach (int key in this.resources.Keys)
-                {
                     types.Add(key);
-                }
 
                 return types;
             }
@@ -64,9 +54,7 @@ namespace KerbalEngineer.Simulation
                 double mass = 0d;
 
                 foreach (double resource in this.resources.Values)
-                {
                     mass += resource;
-                }
 
                 return mass;
             }
@@ -78,26 +66,31 @@ namespace KerbalEngineer.Simulation
             {
                 foreach (int type in this.resources.Keys)
                 {
-                    if ((double)this.resources[type] > 1d)
-                    {
+                    if ((double)this.resources[type] > SimManager.RESOURCE_MIN)
                         return false;
-                    }
                 }
 
                 return true;
             }
         }
 
+        public bool EmptyOf(HashSet<int> types)
+        {
+            foreach (int type in types)
+            {
+                if (this.HasType(type) && (double)this.resources[type] > SimManager.RESOURCE_MIN)
+                    return false;
+            }
+
+            return true;
+        }
+
         public void Add(int type, double amount)
         {
             if (this.resources.ContainsKey(type))
-            {
                 this.resources[type] = (double)this.resources[type] + amount;
-            }
             else
-            {
                 this.resources.Add(type, amount);
-            }
         }
 
         public void Reset()
@@ -115,7 +108,8 @@ namespace KerbalEngineer.Simulation
 
         public double GetResourceMass(int type)
         {
-            return (double)this.resources[type] * GetResourceDensity(type);
+            double density = GetResourceDensity(type);
+            return density == 0d ? 0d : (double)this.resources[type] * density;
         }
 
         public static ResourceFlowMode GetResourceFlowMode(int type)

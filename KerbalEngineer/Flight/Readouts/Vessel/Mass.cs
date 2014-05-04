@@ -26,7 +26,7 @@ namespace KerbalEngineer.Flight.Readouts.Vessel
 
         public override void Draw()
         {
-            this.DrawLine(SimulationManager.Instance.LastStage.Mass.ToMass(false) + " / " + SimulationManager.Instance.LastStage.TotalMass.ToMass());
+            this.DrawLine(SimulationManager.Instance.LastStage.mass.ToMass(false) + " / " + SimulationManager.Instance.LastStage.totalMass.ToMass());
         }
 
         public override void Reset()

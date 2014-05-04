@@ -6,7 +6,7 @@
 
 using System.Linq;
 
-using KerbalEngineer.Flight.Readouts;
+using KerbalEngineer.Simulation;
 
 #endregion
 
@@ -17,6 +17,16 @@ namespace KerbalEngineer.Flight
     /// </summary>
     public sealed class FlightEngineerModule : PartModule
     {
+        #region KSP Fields
+
+        /// <summary>
+        ///     The minimum time in ms from the start of one simulation to the start of the next.
+        /// </summary>
+        [KSPField(isPersistant = true, guiActive = true, guiActiveEditor = false, guiName = "Sim time limit"),
+         UI_FloatRange(minValue = 0.0f, maxValue = 1000.0f, stepIncrement = 10.0f, scene = UI_Scene.Flight)] public float minFESimTime = 200.0f;
+
+        #endregion
+
         #region Fields
 
         /// <summary>
@@ -37,6 +47,8 @@ namespace KerbalEngineer.Flight
             {
                 return;
             }
+
+            SimManager.minSimTime = (long)this.minFESimTime;
 
             if (this.vessel == FlightGlobals.ActiveVessel)
             {

@@ -25,7 +25,7 @@ namespace KerbalEngineer.Flight.Readouts.Vessel
 
         public override void Draw()
         {
-            this.DrawLine(SimulationManager.Instance.LastStage.Isp.ToString("F1") + "s");
+            this.DrawLine(SimulationManager.Instance.LastStage.isp.ToString("F1") + "s");
         }
 
         public override void Reset()

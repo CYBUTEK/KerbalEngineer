@@ -34,9 +34,9 @@ namespace KerbalEngineer.Flight.Readouts.Vessel
 
             foreach (var stage in SimulationManager.Instance.Stages)
             {
-                if (stage.DeltaV > 0 || stage.Number == Staging.CurrentStage)
+                if (stage.deltaV > 0 || stage.number == Staging.CurrentStage)
                 {
-                    this.DrawLine("DeltaV (S" + stage.Number + ")", stage.DeltaV.ToString("N0") + "m/s");
+                    this.DrawLine("DeltaV (S" + stage.number + ")", stage.deltaV.ToString("N0") + "m/s");
                     newNumberOfStages++;
                 }
             }
