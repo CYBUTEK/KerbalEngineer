@@ -17,7 +17,7 @@ namespace KerbalEngineer.Flight.Readouts.Surface
 
         public override void Update()
         {
-            AtmosphericDetails.Instance.RequestUpdate();
+            AtmosphericProcessor.RequestUpdate();
         }
 
         public override void Draw()
@@ -27,8 +27,8 @@ namespace KerbalEngineer.Flight.Readouts.Surface
 
             if (FlightGlobals.ActiveVessel.atmDensity > 0)
             {
-                showing = true;
-                this.DrawLine(AtmosphericDetails.Instance.Efficiency.ToString("F2"));
+                this.showing = true;
+                this.DrawLine(AtmosphericProcessor.Efficiency.ToString("F2"));
             }
 
             if (this.showing != tempShowing)
@@ -39,7 +39,7 @@ namespace KerbalEngineer.Flight.Readouts.Surface
 
         public override void Reset()
         {
-            FlightEngineerCore.Instance.AddUpdatable(AtmosphericDetails.Instance);
+            FlightEngineerCore.Instance.AddUpdatable(AtmosphericProcessor.Instance);
         }
     }
 }

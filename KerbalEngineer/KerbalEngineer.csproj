@@ -67,6 +67,7 @@
     <Compile Include="Flight\FlightEngineerCore.cs" />
     <Compile Include="Flight\FlightEngineerModule.cs" />
     <Compile Include="Flight\IUpdatable.cs" />
+    <Compile Include="Flight\IUpdateRequest.cs" />
     <Compile Include="Flight\Readouts\Orbital\ApoapsisHeight.cs" />
     <Compile Include="Flight\Readouts\Orbital\Eccentricity.cs" />
     <Compile Include="Flight\Readouts\Orbital\Inclination.cs" />
@@ -83,10 +84,11 @@
     <Compile Include="Flight\Readouts\ReadoutLibrary.cs" />
     <Compile Include="Flight\Readouts\ReadoutModule.cs" />
     <Compile Include="Flight\Readouts\Rendezvous\RelativeInclination.cs" />
+    <Compile Include="Flight\Readouts\Rendezvous\RendezvousProcessor.cs" />
     <Compile Include="Flight\Readouts\Rendezvous\TargetSelector.cs" />
     <Compile Include="Flight\Readouts\Surface\AltitudeSeaLevel.cs" />
     <Compile Include="Flight\Readouts\Surface\AltitudeTerrain.cs" />
-    <Compile Include="Flight\Readouts\Surface\AtmosphericDetails.cs" />
+    <Compile Include="Flight\Readouts\Surface\AtmosphericProcessor.cs" />
     <Compile Include="Flight\Readouts\Surface\AtmosphericEfficiency.cs" />
     <Compile Include="Flight\Readouts\Surface\GeeForce.cs" />
     <Compile Include="Flight\Readouts\Surface\HorizontalSpeed.cs" />

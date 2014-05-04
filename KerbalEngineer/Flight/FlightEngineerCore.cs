@@ -96,11 +96,26 @@ namespace KerbalEngineer.Flight
             this.UpdateModules();
         }
 
+        /// <summary>
+        ///     Update all updatable modules.
+        /// </summary>
         private void UpdateModules()
         {
             foreach (var updatable in this.UpdatableModules)
             {
-                updatable.Update();
+                if (updatable is IUpdateRequest)
+                {
+                    var request = updatable as IUpdateRequest;
+                    if (request.UpdateRequested)
+                    {
+                        updatable.Update();
+                        request.UpdateRequested = false;
+                    }
+                }
+                else
+                {
+                    updatable.Update();
+                }
             }
         }
 

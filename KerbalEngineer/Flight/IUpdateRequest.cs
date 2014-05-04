@@ -5,10 +5,10 @@
 namespace KerbalEngineer.Flight
 {
     /// <summary>
-    ///     Interface which enables object updating via the flight engineer core.
+    ///     Interface which enables requested updates on an updatable object.
     /// </summary>
-    public interface IUpdatable
+    public interface IUpdateRequest
     {
-        void Update();
+        bool UpdateRequested { get; set; }
     }
 }

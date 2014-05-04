@@ -19,12 +19,24 @@ namespace KerbalEngineer.Flight.Readouts.Rendezvous
             this.HelpString = "Shows the relative inclination between your vessel and the target object.";
         }
 
+        public override void Update()
+        {
+            RendezvousProcessor.RequestUpdate();
+        }
+
         public override void Draw()
         {
-            if (FlightGlobals.fetch.VesselTarget != null)
+            if (!RendezvousProcessor.ShowDetails)
             {
-                this.DrawLine(Vector3d.Angle(FlightGlobals.ship_orbit.GetOrbitNormal(), FlightGlobals.ActiveVessel.targetObject.GetOrbit().GetOrbitNormal()).ToAngle());
+                return;
             }
+
+            this.DrawLine(RendezvousProcessor.RelativeInclination.ToAngle());
+        }
+
+        public override void Reset()
+        {
+            FlightEngineerCore.Instance.AddUpdatable(RendezvousProcessor.Instance);
         }
     }
 }
