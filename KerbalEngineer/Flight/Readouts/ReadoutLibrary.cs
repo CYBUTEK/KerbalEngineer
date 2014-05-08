@@ -13,6 +13,8 @@ using KerbalEngineer.Flight.Readouts.Surface;
 using KerbalEngineer.Flight.Readouts.Vessel;
 using KerbalEngineer.Settings;
 
+using OrbitalPeriod = KerbalEngineer.Flight.Readouts.Orbital.OrbitalPeriod;
+
 #endregion
 
 namespace KerbalEngineer.Flight.Readouts
@@ -81,7 +83,13 @@ namespace KerbalEngineer.Flight.Readouts
 
             // Rendezvous
             this.readoutModules.Add(new TargetSelector());
+            this.readoutModules.Add(new PhaseAngle());
             this.readoutModules.Add(new RelativeInclination());
+            this.readoutModules.Add(new AngleToAscendingNode());
+            this.readoutModules.Add(new AngleToDescendingNode());
+            this.readoutModules.Add(new Altitude());
+            this.readoutModules.Add(new Distance());
+            this.readoutModules.Add(new Rendezvous.OrbitalPeriod());
 
             this.LoadHelpStrings();
         }
@@ -108,7 +116,7 @@ namespace KerbalEngineer.Flight.Readouts
         /// </summary>
         public ReadoutModule GetReadoutModule(string name)
         {
-            return this.readoutModules.FirstOrDefault(r => r.Name == name || r.GetType().Name == name);
+            return this.readoutModules.FirstOrDefault(r => r.Name == name || r.GetType().Name == name || r.Category + "." + r.GetType().Name == name);
         }
 
         /// <summary>
@@ -142,7 +150,7 @@ namespace KerbalEngineer.Flight.Readouts
             var handler = SettingHandler.Load("HelpStrings.xml");
             foreach (var readout in this.readoutModules)
             {
-                readout.HelpString = handler.GetSet(readout.GetType().Name, readout.HelpString);
+                readout.HelpString = handler.GetSet(readout.Category + "." + readout.GetType().Name, readout.HelpString);
             }
             handler.Save("HelpStrings.xml");
         }

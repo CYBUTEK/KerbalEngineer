@@ -130,7 +130,7 @@ namespace KerbalEngineer.Flight.Sections
         /// </summary>
         public string[] ReadoutModuleNames
         {
-            get { return this.ReadoutModules.Select(r => r.GetType().Name).ToArray(); }
+            get { return this.ReadoutModules.Select(r => r.Category + "." + r.GetType().Name).ToArray(); }
             set { this.ReadoutModules = value.Select(n => ReadoutLibrary.Instance.GetReadoutModule(n)).ToList(); }
         }
 
