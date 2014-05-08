@@ -21,17 +21,17 @@ namespace KerbalEngineer.Flight.Readouts.Vessel
 
         public override void Update()
         {
-            SimulationManager.Instance.RequestSimulation();
+            SimManager.RequestUpdate();
         }
 
         public override void Draw()
         {
-            this.DrawLine(SimulationManager.Instance.LastStage.mass.ToMass(false) + " / " + SimulationManager.Instance.LastStage.totalMass.ToMass());
+            this.DrawLine(SimManager.LastStage.mass.ToMass(false) + " / " + SimManager.LastStage.totalMass.ToMass());
         }
 
         public override void Reset()
         {
-            FlightEngineerCore.Instance.AddUpdatable(SimulationManager.Instance);
+            FlightEngineerCore.Instance.AddUpdatable(SimManager.Instance);
         }
     }
 }

@@ -24,19 +24,19 @@ namespace KerbalEngineer.Flight.Readouts.Vessel
 
         public override void Update()
         {
-            SimulationManager.Instance.RequestSimulation();
+            SimManager.RequestUpdate();
         }
 
         public override void Draw()
         {
-            this.actual = (SimulationManager.Instance.LastStage.actualThrust / (SimulationManager.Instance.LastStage.totalMass * FlightGlobals.getGeeForceAtPosition(FlightGlobals.ship_position).magnitude)).ToString("F2");
-            this.total = (SimulationManager.Instance.LastStage.thrust / (SimulationManager.Instance.LastStage.totalMass * FlightGlobals.getGeeForceAtPosition(FlightGlobals.ship_position).magnitude)).ToString("F2");
+            this.actual = (SimManager.LastStage.actualThrust / (SimManager.LastStage.totalMass * FlightGlobals.getGeeForceAtPosition(FlightGlobals.ship_position).magnitude)).ToString("F2");
+            this.total = (SimManager.LastStage.thrust / (SimManager.LastStage.totalMass * FlightGlobals.getGeeForceAtPosition(FlightGlobals.ship_position).magnitude)).ToString("F2");
             this.DrawLine("TWR", this.actual + " / " + this.total);
         }
 
         public override void Reset()
         {
-            FlightEngineerCore.Instance.AddUpdatable(SimulationManager.Instance);
+            FlightEngineerCore.Instance.AddUpdatable(SimManager.Instance);
         }
     }
 }

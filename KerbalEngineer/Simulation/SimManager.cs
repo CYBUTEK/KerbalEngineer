@@ -1,47 +1,86 @@
-﻿using System;
+﻿#region
+
+using System;
 using System.Collections.Generic;
+using System.ComponentModel.Design.Serialization;
 using System.Diagnostics;
 using System.Linq;
+using System.Reflection;
 using System.Threading;
+
+using KerbalEngineer.Flight;
 
 using UnityEngine;
 
+#endregion
+
 namespace KerbalEngineer.Simulation
 {
-    public class SimManager
+    public class SimManager : IUpdatable, IUpdateRequest
     {
-        public const double RESOURCE_MIN = 0.0001;
-        
-        private static bool bRequested = false;
-        private static bool bRunning = false;
-        private static Stopwatch timer = new Stopwatch();
-        private static long delayBetweenSims = 0;
+        #region Instance
 
+        private static readonly SimManager instance = new SimManager();
+
+        public static SimManager Instance
+        {
+            get { return instance; }
+        }
+
+        #endregion
+
+        public const double RESOURCE_MIN = 0.0001;
+
+        private static bool bRequested;
+        private static bool bRunning;
+        private static readonly Stopwatch timer = new Stopwatch();
+        private static long delayBetweenSims;
+
+        public static long minSimTime = 150;
+
+        // Support for RealFuels using reflection to check localCorrectThrust without dependency
+        private static bool hasCheckedForRealFuels;
+        private static bool hasInstalledRealFuels;
+
+        private static Type RF_ModuleEngineConfigs_Type;
+        private static Type RF_ModuleHybridEngine_Type;
+
+        private static FieldInfo RF_ModuleEngineConfigs_locaCorrectThrust;
+        private static FieldInfo RF_ModuleHybridEngine_locaCorrectThrust;
         public static Stage[] Stages { get; private set; }
         public static Stage LastStage { get; private set; }
         public static String failMessage { get; private set; }
-
-        public static long minSimTime = 150;
         public static double Gravity { get; set; }
         public static double Atmosphere { get; set; }
 
-        // Support for RealFuels using reflection to check localCorrectThrust without dependency
-        private static bool hasCheckedForRealFuels = false;
-        private static bool hasInstalledRealFuels = false;
+        #region IUpdatable Members
 
-        private static Type RF_ModuleEngineConfigs_Type = null;
-        private static Type RF_ModuleHybridEngine_Type = null;
+        public void Update()
+        {
+            TryStartSimulation();
+        }
 
-        private static System.Reflection.FieldInfo RF_ModuleEngineConfigs_locaCorrectThrust = null;
-        private static System.Reflection.FieldInfo RF_ModuleHybridEngine_locaCorrectThrust = null;
+        #endregion
+
+        #region IUpdateRequest Members
+
+        public bool UpdateRequested { get; set; }
+
+        #endregion
+
+        public static void RequestUpdate()
+        {
+            instance.UpdateRequested = true;
+            RequestSimulation();
+        }
 
         private static void GetRealFuelsTypes()
         {
-			hasCheckedForRealFuels = true;
+            hasCheckedForRealFuels = true;
 
-			foreach (AssemblyLoader.LoadedAssembly assembly in AssemblyLoader.loadedAssemblies)
+            foreach (AssemblyLoader.LoadedAssembly assembly in AssemblyLoader.loadedAssemblies)
             {
-                MonoBehaviour.print("Assembly:" + assembly.assembly.ToString());
+                MonoBehaviour.print("Assembly:" + assembly.assembly);
 
                 if (assembly.assembly.ToString().Split(',')[0] == "RealFuels")
                 {
@@ -67,26 +106,26 @@ namespace KerbalEngineer.Simulation
                         MonoBehaviour.print("Failed to find ModuleHybridEngine type");
                         break;
                     }
-                    
+
                     RF_ModuleHybridEngine_locaCorrectThrust = RF_ModuleHybridEngine_Type.GetField("localCorrectThrust");
                     if (RF_ModuleHybridEngine_locaCorrectThrust == null)
                     {
                         MonoBehaviour.print("Failed to find ModuleHybridEngine.localCorrectThrust field");
                         break;
                     }
-                    
-					hasInstalledRealFuels = true;
-					break;
-				}
 
-			}
-
-		}
+                    hasInstalledRealFuels = true;
+                    break;
+                }
+            }
+        }
 
         public static bool DoesEngineUseCorrectedThrust(Part theEngine)
         {
             if (!hasInstalledRealFuels /*|| HighLogic.LoadedSceneIsFlight*/)
+            {
                 return false;
+            }
 
             // Look for either of the Real Fuels engine modules and call the relevant method to find out
             PartModule modEngineConfigs = theEngine.Modules["ModuleEngineConfigs"];
@@ -94,7 +133,9 @@ namespace KerbalEngineer.Simulation
             {
                 // Check the localCorrectThrust
                 if ((bool)RF_ModuleEngineConfigs_locaCorrectThrust.GetValue(modEngineConfigs))
+                {
                     return true;
+                }
             }
 
             PartModule modHybridEngine = theEngine.Modules["ModuleHybridEngine"];
@@ -102,21 +143,26 @@ namespace KerbalEngineer.Simulation
             {
                 // Check the localCorrectThrust
                 if ((bool)RF_ModuleHybridEngine_locaCorrectThrust.GetValue(modHybridEngine))
+                {
                     return true;
+                }
             }
 
             return false;
         }
 
-
         public static void RequestSimulation()
         {
             if (!hasCheckedForRealFuels)
+            {
                 GetRealFuelsTypes();
+            }
 
             bRequested = true;
             if (!timer.IsRunning)
+            {
                 timer.Start();
+            }
         }
 
         public static void TryStartSimulation()
@@ -199,7 +245,9 @@ namespace KerbalEngineer.Simulation
             MonoBehaviour.print("Total simulation time: " + timer.ElapsedMilliseconds + "ms");
             delayBetweenSims = minSimTime - timer.ElapsedMilliseconds;
             if (delayBetweenSims < 0)
+            {
                 delayBetweenSims = 0;
+            }
 
             timer.Reset();
             timer.Start();

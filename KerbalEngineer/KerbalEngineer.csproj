@@ -121,7 +121,6 @@
     <Compile Include="Simulation\PartSim.cs" />
     <Compile Include="Simulation\ResourceContainer.cs" />
     <Compile Include="Simulation\SimManager.cs" />
-    <Compile Include="Simulation\SimulationManager.cs" />
     <Compile Include="Simulation\Simulation.cs" />
     <Compile Include="Simulation\Stage.cs" />
     <Compile Include="TapeDriveAnimator.cs" />

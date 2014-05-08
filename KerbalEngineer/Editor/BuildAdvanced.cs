@@ -182,17 +182,17 @@ namespace KerbalEngineer.Editor
                 }
 
                 // Configure the simulation parameters based on the selected reference body.
-                SimulationManager.Instance.Gravity = CelestialBodies.Instance.SelectedBodyInfo.Gravity;
+                SimManager.Gravity = CelestialBodies.Instance.SelectedBodyInfo.Gravity;
                 if (this.useAtmosphericDetails)
                 {
-                    SimulationManager.Instance.Atmosphere = CelestialBodies.Instance.SelectedBodyInfo.Atmosphere * 0.01d;
+                    SimManager.Atmosphere = CelestialBodies.Instance.SelectedBodyInfo.Atmosphere * 0.01d;
                 }
                 else
                 {
-                    SimulationManager.Instance.Atmosphere = 0;
+                    SimManager.Atmosphere = 0;
                 }
 
-                SimulationManager.Instance.TryStartSimulation();
+                SimManager.TryStartSimulation();
             }
             catch
             {
@@ -209,7 +209,7 @@ namespace KerbalEngineer.Editor
                     return;
                 }
 
-                SimulationManager.Instance.RequestSimulation();
+                SimManager.RequestSimulation();
 
                 // Change the window title based on whether in compact mode or not.
                 string title;
@@ -223,7 +223,7 @@ namespace KerbalEngineer.Editor
                 }
 
                 // Reset the window size when the staging or something else has changed.
-                int stageCount = SimulationManager.Instance.Stages.Count(stage => this.showAllStages || stage.deltaV > 0);
+                int stageCount = SimManager.Stages.Count(stage => this.showAllStages || stage.deltaV > 0);
                 if (this.hasChanged || stageCount != this.numberOfStages)
                 {
                     this.hasChanged = false;
@@ -359,7 +359,7 @@ namespace KerbalEngineer.Editor
         {
             GUILayout.BeginVertical(GUILayout.Width(30.0f));
             GUILayout.Label(string.Empty, this.titleStyle);
-            foreach (var stage in SimulationManager.Instance.Stages)
+            foreach (var stage in SimManager.Stages)
             {
                 if (this.showAllStages || stage.deltaV > 0)
                 {
@@ -376,7 +376,7 @@ namespace KerbalEngineer.Editor
         {
             GUILayout.BeginVertical(GUILayout.Width(50.0f));
             GUILayout.Label("PARTS", this.titleStyle);
-            foreach (var stage in SimulationManager.Instance.Stages)
+            foreach (var stage in SimManager.Stages)
             {
                 if (this.showAllStages || stage.deltaV > 0)
                 {
@@ -393,7 +393,7 @@ namespace KerbalEngineer.Editor
         {
             GUILayout.BeginVertical(GUILayout.Width(100.0f));
             GUILayout.Label("COST", this.titleStyle);
-            foreach (var stage in SimulationManager.Instance.Stages)
+            foreach (var stage in SimManager.Stages)
             {
                 if (this.showAllStages || stage.deltaV > 0)
                 {
@@ -410,7 +410,7 @@ namespace KerbalEngineer.Editor
         {
             GUILayout.BeginVertical(GUILayout.Width(100.0f));
             GUILayout.Label("MASS", this.titleStyle);
-            foreach (var stage in SimulationManager.Instance.Stages)
+            foreach (var stage in SimManager.Stages)
             {
                 if (this.showAllStages || stage.deltaV > 0)
                 {
@@ -427,7 +427,7 @@ namespace KerbalEngineer.Editor
         {
             GUILayout.BeginVertical(GUILayout.Width(50.0f));
             GUILayout.Label("ISP", this.titleStyle);
-            foreach (var stage in SimulationManager.Instance.Stages)
+            foreach (var stage in SimManager.Stages)
             {
                 if (this.showAllStages || stage.deltaV > 0)
                 {
@@ -444,7 +444,7 @@ namespace KerbalEngineer.Editor
         {
             GUILayout.BeginVertical(GUILayout.Width(75.0f));
             GUILayout.Label("THRUST", this.titleStyle);
-            foreach (var stage in SimulationManager.Instance.Stages)
+            foreach (var stage in SimManager.Stages)
             {
                 if (this.showAllStages || stage.deltaV > 0)
                 {
@@ -461,7 +461,7 @@ namespace KerbalEngineer.Editor
         {
             GUILayout.BeginVertical(GUILayout.Width(50.0f));
             GUILayout.Label("TWR", this.titleStyle);
-            foreach (var stage in SimulationManager.Instance.Stages)
+            foreach (var stage in SimManager.Stages)
             {
                 if (this.showAllStages || stage.deltaV > 0)
                 {
@@ -478,7 +478,7 @@ namespace KerbalEngineer.Editor
         {
             GUILayout.BeginVertical(GUILayout.Width(100.0f));
             GUILayout.Label("DELTA-V", this.titleStyle);
-            foreach (var stage in SimulationManager.Instance.Stages)
+            foreach (var stage in SimManager.Stages)
             {
                 if (this.showAllStages || stage.deltaV > 0)
                 {
@@ -495,7 +495,7 @@ namespace KerbalEngineer.Editor
         {
             GUILayout.BeginVertical(GUILayout.Width(75.0f));
             GUILayout.Label("BURN", this.titleStyle);
-            foreach (var stage in SimulationManager.Instance.Stages)
+            foreach (var stage in SimManager.Stages)
             {
                 if (this.showAllStages || stage.deltaV > 0)
                 {
