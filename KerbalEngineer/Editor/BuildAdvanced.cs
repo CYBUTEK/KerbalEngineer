@@ -215,11 +215,11 @@ namespace KerbalEngineer.Editor
                 string title;
                 if (!this.compactMode)
                 {
-                    title = "KERBAL ENGINEER REDUX " + EngineerGlobals.AssemblyVersion;
+                    title = "KERBAL ENGINEER REDUX " + EngineerGlobals.PrettyVersion;
                 }
                 else
                 {
-                    title = "K.E.R. " + EngineerGlobals.AssemblyVersion;
+                    title = "K.E.R. " + EngineerGlobals.PrettyVersion;
                 }
 
                 // Reset the window size when the staging or something else has changed.
@@ -459,13 +459,13 @@ namespace KerbalEngineer.Editor
         /// </summary>
         private void DrawTwr()
         {
-            GUILayout.BeginVertical(GUILayout.Width(50.0f));
-            GUILayout.Label("TWR", this.titleStyle);
+            GUILayout.BeginVertical(GUILayout.Width(75.0f));
+            GUILayout.Label("TWR (MAX)", this.titleStyle);
             foreach (var stage in SimManager.Stages)
             {
                 if (this.showAllStages || stage.deltaV > 0)
                 {
-                    GUILayout.Label(stage.thrustToWeight.ToString("F2"), this.infoStyle);
+                    GUILayout.Label(stage.thrustToWeight.ToString("F2") + " (" + stage.maxThrustToWeight.ToString("F2") + ")", this.infoStyle);
                 }
             }
             GUILayout.EndVertical();
