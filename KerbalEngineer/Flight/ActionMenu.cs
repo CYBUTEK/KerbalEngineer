@@ -8,6 +8,7 @@ using System.Collections.Generic;
 
 using KerbalEngineer.Flight.Sections;
 using KerbalEngineer.Settings;
+using KerbalEngineer.Simulation;
 
 using UnityEngine;
 
@@ -155,7 +156,10 @@ namespace KerbalEngineer.Flight
         private void DrawNewButton()
         {
             GUILayout.BeginHorizontal();
-            GUILayout.FlexibleSpace();
+            GUI.skin = HighLogic.Skin;
+            SimManager.minSimTime = (long)GUILayout.HorizontalSlider(SimManager.minSimTime, 0, 1000.0f);
+            GUI.skin = null;
+
             if (GUILayout.Button("NEW", this.buttonStyle, GUILayout.Width(50.0f)))
             {
                 SectionLibrary.Instance.CustomSections.Add(new SectionModule
