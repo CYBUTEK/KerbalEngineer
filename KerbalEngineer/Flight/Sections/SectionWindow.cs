@@ -93,7 +93,7 @@ namespace KerbalEngineer.Flight.Sections
         /// </summary>
         private void Draw()
         {
-            if (this.ParentSection != null && this.ParentSection.IsVisible)
+            if (!DisplayStack.Instance.Hidden && (this.ParentSection != null && this.ParentSection.IsVisible))
             {
                 if (this.resizeRequested)
                 {

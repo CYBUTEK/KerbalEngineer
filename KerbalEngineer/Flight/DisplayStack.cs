@@ -1,4 +1,5 @@
-﻿//     Kerbal Engineer Redux
+﻿// 
+//     Kerbal Engineer Redux
 // 
 //     Copyright (C) 2014 CYBUTEK
 // 
@@ -90,6 +91,8 @@ namespace KerbalEngineer.Flight
             set { this.showControlBar = value; }
         }
 
+        public bool Hidden { get; set; }
+
         #endregion
 
         #region GUIStyles
@@ -137,6 +140,18 @@ namespace KerbalEngineer.Flight
 
         #endregion
 
+        #region Updating
+
+        private void Update()
+        {
+            if (Input.GetKeyDown(KeyCode.Backslash))
+            {
+                this.Hidden = !this.Hidden;
+            }
+        }
+
+        #endregion
+
         #region Drawing
 
         /// <summary>
@@ -151,7 +166,7 @@ namespace KerbalEngineer.Flight
                 this.resizeRequested = false;
             }
 
-            if (SectionLibrary.Instance.NumberOfStackSections > 0 || this.ShowControlBar)
+            if (!this.Hidden && (SectionLibrary.Instance.NumberOfStackSections > 0 || this.ShowControlBar))
             {
                 this.windowPosition = GUILayout.Window(this.windowId, this.windowPosition, this.Window, string.Empty, this.windowStyle).ClampToScreen();
             }
