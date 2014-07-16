@@ -48,8 +48,8 @@ namespace KerbalEngineer.Flight.Readouts
         {
             // Orbital
             this.readoutModules.Add(new Orbital.ApoapsisHeight());
-            this.readoutModules.Add(new Orbital.TimeToApoapsis());
             this.readoutModules.Add(new Orbital.PeriapsisHeight());
+            this.readoutModules.Add(new Orbital.TimeToApoapsis());
             this.readoutModules.Add(new Orbital.TimeToPeriapsis());
             this.readoutModules.Add(new Inclination());
             this.readoutModules.Add(new Eccentricity());
@@ -70,6 +70,10 @@ namespace KerbalEngineer.Flight.Readouts
             this.readoutModules.Add(new GeeForce());
             this.readoutModules.Add(new TerminalVelocity());
             this.readoutModules.Add(new AtmosphericEfficiency());
+            this.readoutModules.Add(new ImpactTime());
+            this.readoutModules.Add(new ImpactLongitude());
+            this.readoutModules.Add(new ImpactLatitude());
+            this.readoutModules.Add(new ImpactAltitude());
 
             // Vessel
             this.readoutModules.Add(new DeltaVStaged());
@@ -88,8 +92,8 @@ namespace KerbalEngineer.Flight.Readouts
             this.readoutModules.Add(new AngleToDescendingNode());
             this.readoutModules.Add(new Rendezvous.AltitudeSeaLevel());
             this.readoutModules.Add(new Rendezvous.ApoapsisHeight());
-            this.readoutModules.Add(new Rendezvous.TimeToApoapsis());
             this.readoutModules.Add(new Rendezvous.PeriapsisHeight());
+            this.readoutModules.Add(new Rendezvous.TimeToApoapsis());
             this.readoutModules.Add(new Rendezvous.TimeToPeriapsis());
             this.readoutModules.Add(new Distance());
             this.readoutModules.Add(new Rendezvous.OrbitalPeriod());

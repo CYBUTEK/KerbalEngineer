@@ -99,10 +99,15 @@
     <Compile Include="Flight\Readouts\Rendezvous\TargetSelector.cs" />
     <Compile Include="Flight\Readouts\Surface\AltitudeSeaLevel.cs" />
     <Compile Include="Flight\Readouts\Surface\AltitudeTerrain.cs" />
+    <Compile Include="Flight\Readouts\Surface\ImpactLatitude.cs" />
+    <Compile Include="Flight\Readouts\Surface\ImpactAltitude.cs" />
+    <Compile Include="Flight\Readouts\Surface\ImpactLongitude.cs" />
+    <Compile Include="Flight\Readouts\Surface\ImpactTime.cs" />
     <Compile Include="Flight\Readouts\Surface\AtmosphericProcessor.cs" />
     <Compile Include="Flight\Readouts\Surface\AtmosphericEfficiency.cs" />
     <Compile Include="Flight\Readouts\Surface\GeeForce.cs" />
     <Compile Include="Flight\Readouts\Surface\HorizontalSpeed.cs" />
+    <Compile Include="Flight\Readouts\Surface\ImpactProcessor.cs" />
     <Compile Include="Flight\Readouts\Surface\Latitude.cs" />
     <Compile Include="Flight\Readouts\Surface\Longitude.cs" />
     <Compile Include="Flight\Readouts\Surface\TerminalVelocity.cs" />
