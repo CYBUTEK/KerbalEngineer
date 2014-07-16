@@ -1,6 +1,20 @@
-﻿// Project:	KerbalEngineer
-// Author:	CYBUTEK
-// License:	Attribution-NonCommercial-ShareAlike 3.0 Unported
+﻿//     Kerbal Engineer Redux
+// 
+//     Copyright (C) 2014 CYBUTEK
+// 
+//     This program is free software: you can redistribute it and/or modify
+//     it under the terms of the GNU General Public License as published by
+//     the Free Software Foundation, either version 3 of the License, or
+//     (at your option) any later version.
+// 
+//     This program is distributed in the hope that it will be useful,
+//     but WITHOUT ANY WARRANTY; without even the implied warranty of
+//     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//     GNU General Public License for more details.
+// 
+//     You should have received a copy of the GNU General Public License
+//     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+// 
 
 #region Using Directives
 
@@ -98,7 +112,7 @@ namespace KerbalEngineer.Flight.Readouts
                     textColor = Color.white
                 },
                 margin = new RectOffset(),
-                padding = new RectOffset(5,0,0,0),
+                padding = new RectOffset(5, 0, 0, 0),
                 alignment = TextAnchor.MiddleLeft,
                 fontSize = 11,
                 fontStyle = FontStyle.Bold,
@@ -109,7 +123,7 @@ namespace KerbalEngineer.Flight.Readouts
             this.ValueStyle = new GUIStyle(HighLogic.Skin.label)
             {
                 margin = new RectOffset(),
-                padding = new RectOffset(0,5,0,0),
+                padding = new RectOffset(0, 5, 0, 0),
                 alignment = TextAnchor.MiddleRight,
                 fontSize = 11,
                 fontStyle = FontStyle.Normal,
@@ -144,7 +158,7 @@ namespace KerbalEngineer.Flight.Readouts
                 {
                     textColor = Color.white
                 },
-                margin = new RectOffset(0,0,1,1),
+                margin = new RectOffset(0, 0, 1, 1),
                 padding = new RectOffset(),
                 alignment = TextAnchor.MiddleCenter,
                 fontSize = 11,
@@ -153,7 +167,7 @@ namespace KerbalEngineer.Flight.Readouts
 
             this.TextFieldStyle = new GUIStyle(HighLogic.Skin.textField)
             {
-                margin = new RectOffset(0,0,1,1),
+                margin = new RectOffset(0, 0, 1, 1),
                 padding = new RectOffset(5, 5, 0, 0),
                 alignment = TextAnchor.MiddleLeft,
                 fontSize = 11,

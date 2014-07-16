@@ -1,6 +1,20 @@
-﻿// Project:	KerbalEngineer
-// Author:	CYBUTEK
-// License:	Attribution-NonCommercial-ShareAlike 3.0 Unported
+﻿//     Kerbal Engineer Redux
+// 
+//     Copyright (C) 2014 CYBUTEK
+// 
+//     This program is free software: you can redistribute it and/or modify
+//     it under the terms of the GNU General Public License as published by
+//     the Free Software Foundation, either version 3 of the License, or
+//     (at your option) any later version.
+// 
+//     This program is distributed in the hope that it will be useful,
+//     but WITHOUT ANY WARRANTY; without even the implied warranty of
+//     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//     GNU General Public License for more details.
+// 
+//     You should have received a copy of the GNU General Public License
+//     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+// 
 
 #region Using Directives
 
@@ -12,6 +26,13 @@ using KerbalEngineer.Flight.Readouts.Rendezvous;
 using KerbalEngineer.Flight.Readouts.Surface;
 using KerbalEngineer.Flight.Readouts.Vessel;
 using KerbalEngineer.Settings;
+
+using AltitudeSeaLevel = KerbalEngineer.Flight.Readouts.Surface.AltitudeSeaLevel;
+using ApoapsisHeight = KerbalEngineer.Flight.Readouts.Orbital.ApoapsisHeight;
+using OrbitalPeriod = KerbalEngineer.Flight.Readouts.Orbital.OrbitalPeriod;
+using PeriapsisHeight = KerbalEngineer.Flight.Readouts.Orbital.PeriapsisHeight;
+using TimeToApoapsis = KerbalEngineer.Flight.Readouts.Orbital.TimeToApoapsis;
+using TimeToPeriapsis = KerbalEngineer.Flight.Readouts.Orbital.TimeToPeriapsis;
 
 #endregion
 
@@ -47,21 +68,21 @@ namespace KerbalEngineer.Flight.Readouts
         private ReadoutLibrary()
         {
             // Orbital
-            this.readoutModules.Add(new Orbital.ApoapsisHeight());
-            this.readoutModules.Add(new Orbital.PeriapsisHeight());
-            this.readoutModules.Add(new Orbital.TimeToApoapsis());
-            this.readoutModules.Add(new Orbital.TimeToPeriapsis());
+            this.readoutModules.Add(new ApoapsisHeight());
+            this.readoutModules.Add(new PeriapsisHeight());
+            this.readoutModules.Add(new TimeToApoapsis());
+            this.readoutModules.Add(new TimeToPeriapsis());
             this.readoutModules.Add(new Inclination());
             this.readoutModules.Add(new Eccentricity());
             this.readoutModules.Add(new OrbitalSpeed());
-            this.readoutModules.Add(new Orbital.OrbitalPeriod());
+            this.readoutModules.Add(new OrbitalPeriod());
             this.readoutModules.Add(new LongitudeOfAscendingNode());
             this.readoutModules.Add(new LongitudeOfPeriapsis());
             this.readoutModules.Add(new SemiMajorAxis());
             this.readoutModules.Add(new SemiMinorAxis());
 
             // Surface
-            this.readoutModules.Add(new Surface.AltitudeSeaLevel());
+            this.readoutModules.Add(new AltitudeSeaLevel());
             this.readoutModules.Add(new AltitudeTerrain());
             this.readoutModules.Add(new VerticalSpeed());
             this.readoutModules.Add(new HorizontalSpeed());

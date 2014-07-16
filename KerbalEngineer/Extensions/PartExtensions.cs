@@ -1,6 +1,20 @@
-﻿// Project:	KerbalEngineer
-// Author:	CYBUTEK
-// License:	Attribution-NonCommercial-ShareAlike 3.0 Unported
+﻿//     Kerbal Engineer Redux
+// 
+//     Copyright (C) 2014 CYBUTEK
+// 
+//     This program is free software: you can redistribute it and/or modify
+//     it under the terms of the GNU General Public License as published by
+//     the Free Software Foundation, either version 3 of the License, or
+//     (at your option) any later version.
+// 
+//     This program is distributed in the hope that it will be useful,
+//     but WITHOUT ANY WARRANTY; without even the implied warranty of
+//     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//     GNU General Public License for more details.
+// 
+//     You should have received a copy of the GNU General Public License
+//     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+// 
 
 #region Using Directives
 
@@ -51,7 +65,7 @@ namespace KerbalEngineer.Extensions
         /// </summary>
         public static T GetModule<T>(this Part part, string className) where T : PartModule
         {
-            return (T)Convert.ChangeType(part.Modules[className], typeof (T));
+            return (T)Convert.ChangeType(part.Modules[className], typeof(T));
         }
 
         /// <summary>
@@ -59,7 +73,7 @@ namespace KerbalEngineer.Extensions
         /// </summary>
         public static T GetModule<T>(this Part part, int classId) where T : PartModule
         {
-            return (T)Convert.ChangeType(part.Modules[classId], typeof (T));
+            return (T)Convert.ChangeType(part.Modules[classId], typeof(T));
         }
 
         public static List<T> GetModules<T>(this Part part) where T : PartModule
