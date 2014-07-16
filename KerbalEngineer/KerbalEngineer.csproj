@@ -83,9 +83,14 @@
     <Compile Include="Flight\Readouts\ReadoutCategory.cs" />
     <Compile Include="Flight\Readouts\ReadoutLibrary.cs" />
     <Compile Include="Flight\Readouts\ReadoutModule.cs" />
+    <Compile Include="Flight\Readouts\Rendezvous\TimeToPeriapsis.cs" />
+    <Compile Include="Flight\Readouts\Rendezvous\TimeToApoapsis.cs" />
+    <Compile Include="Flight\Readouts\Rendezvous\PeriapsisHeight.cs" />
+    <Compile Include="Flight\Readouts\Rendezvous\ApoapsisHeight.cs" />
+    <Compile Include="Flight\Readouts\Rendezvous\InterceptAngle.cs" />
     <Compile Include="Flight\Readouts\Rendezvous\OrbitalPeriod.cs" />
     <Compile Include="Flight\Readouts\Rendezvous\Distance.cs" />
-    <Compile Include="Flight\Readouts\Rendezvous\Altitude.cs" />
+    <Compile Include="Flight\Readouts\Rendezvous\AltitudeSeaLevel.cs" />
     <Compile Include="Flight\Readouts\Rendezvous\AngleToDescendingNode.cs" />
     <Compile Include="Flight\Readouts\Rendezvous\AngleToAscendingNode.cs" />
     <Compile Include="Flight\Readouts\Rendezvous\PhaseAngle.cs" />

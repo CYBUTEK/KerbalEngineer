@@ -6,6 +6,8 @@
 
 using System;
 
+using KerbalEngineer.Flight.Readouts.Orbital;
+
 using UnityEngine;
 
 #endregion
@@ -72,7 +74,27 @@ namespace KerbalEngineer.Flight.Readouts.Rendezvous
         /// <summary>
         ///     Gets the target's altitude above its reference body.
         /// </summary>
-        public static double Altitude { get; private set; }
+        public static double AltitudeSeaLevel { get; private set; }
+
+        /// <summary>
+        ///     Gets the target's apoapsis above its reference body.
+        /// </summary>
+        public static double ApoapsisHeight { get; private set; }
+
+        /// <summary>
+        ///     Gets the target's periapsis above its reference body.
+        /// </summary>
+        public static double PeriapsisHeight { get; private set; }
+
+        /// <summary>
+        ///     Gets the target's time to apoapsis.
+        /// </summary>
+        public static double TimeToApoapsis { get; private set; }
+
+        /// <summary>
+        ///     Gets the target's time to periapsis.
+        /// </summary>
+        public static double TimeToPeriapsis { get; private set; }
 
         /// <summary>
         ///     Gets the distance from the origin position to the target position.
@@ -114,7 +136,12 @@ namespace KerbalEngineer.Flight.Readouts.Rendezvous
             RelativeInclination = Vector3d.Angle(this.originOrbit.GetOrbitNormal(), this.targetOrbit.GetOrbitNormal());
             AngleToAscendingNode = this.CalcAngleToAscendingNode();
             AngleToDescendingNode = this.CalcAngleToDescendingNode();
-            Altitude = this.targetOrbit.altitude;
+            AltitudeSeaLevel = this.targetOrbit.altitude;
+            ApoapsisHeight = this.targetOrbit.ApA;
+            PeriapsisHeight = this.targetOrbit.PeA;
+            TimeToApoapsis = this.targetOrbit.timeToAp;
+            TimeToPeriapsis = this.targetOrbit.timeToPe;
+
             Distance = Vector3d.Distance(this.targetPosition, this.originPosition);
             OrbitalPeriod = this.targetOrbit.period;
         }

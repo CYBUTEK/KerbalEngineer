@@ -10,11 +10,11 @@ using KerbalEngineer.Extensions;
 
 namespace KerbalEngineer.Flight.Readouts.Rendezvous
 {
-    public class Altitude : ReadoutModule
+    public class PeriapsisHeight : ReadoutModule
     {
-        public Altitude()
+        public PeriapsisHeight()
         {
-            this.Name = "Altitude";
+            this.Name = "Periapsis Height";
             this.Category = ReadoutCategory.Rendezvous;
             //this.HelpString = "";
         }
@@ -31,7 +31,7 @@ namespace KerbalEngineer.Flight.Readouts.Rendezvous
                 return;
             }
 
-            this.DrawLine(RendezvousProcessor.Altitude.ToDistance());
+            this.DrawLine(RendezvousProcessor.PeriapsisHeight.ToAngle());
         }
 
         public override void Reset()

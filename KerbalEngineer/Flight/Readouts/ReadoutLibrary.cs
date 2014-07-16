@@ -13,8 +13,6 @@ using KerbalEngineer.Flight.Readouts.Surface;
 using KerbalEngineer.Flight.Readouts.Vessel;
 using KerbalEngineer.Settings;
 
-using OrbitalPeriod = KerbalEngineer.Flight.Readouts.Orbital.OrbitalPeriod;
-
 #endregion
 
 namespace KerbalEngineer.Flight.Readouts
@@ -49,21 +47,21 @@ namespace KerbalEngineer.Flight.Readouts
         private ReadoutLibrary()
         {
             // Orbital
-            this.readoutModules.Add(new ApoapsisHeight());
-            this.readoutModules.Add(new PeriapsisHeight());
-            this.readoutModules.Add(new TimeToApoapsis());
-            this.readoutModules.Add(new TimeToPeriapsis());
+            this.readoutModules.Add(new Orbital.ApoapsisHeight());
+            this.readoutModules.Add(new Orbital.TimeToApoapsis());
+            this.readoutModules.Add(new Orbital.PeriapsisHeight());
+            this.readoutModules.Add(new Orbital.TimeToPeriapsis());
             this.readoutModules.Add(new Inclination());
             this.readoutModules.Add(new Eccentricity());
             this.readoutModules.Add(new OrbitalSpeed());
-            this.readoutModules.Add(new OrbitalPeriod());
+            this.readoutModules.Add(new Orbital.OrbitalPeriod());
             this.readoutModules.Add(new LongitudeOfAscendingNode());
             this.readoutModules.Add(new LongitudeOfPeriapsis());
             this.readoutModules.Add(new SemiMajorAxis());
             this.readoutModules.Add(new SemiMinorAxis());
 
             // Surface
-            this.readoutModules.Add(new AltitudeSeaLevel());
+            this.readoutModules.Add(new Surface.AltitudeSeaLevel());
             this.readoutModules.Add(new AltitudeTerrain());
             this.readoutModules.Add(new VerticalSpeed());
             this.readoutModules.Add(new HorizontalSpeed());
@@ -84,10 +82,15 @@ namespace KerbalEngineer.Flight.Readouts
             // Rendezvous
             this.readoutModules.Add(new TargetSelector());
             this.readoutModules.Add(new PhaseAngle());
+            this.readoutModules.Add(new InterceptAngle());
             this.readoutModules.Add(new RelativeInclination());
             this.readoutModules.Add(new AngleToAscendingNode());
             this.readoutModules.Add(new AngleToDescendingNode());
-            this.readoutModules.Add(new Altitude());
+            this.readoutModules.Add(new Rendezvous.AltitudeSeaLevel());
+            this.readoutModules.Add(new Rendezvous.ApoapsisHeight());
+            this.readoutModules.Add(new Rendezvous.TimeToApoapsis());
+            this.readoutModules.Add(new Rendezvous.PeriapsisHeight());
+            this.readoutModules.Add(new Rendezvous.TimeToPeriapsis());
             this.readoutModules.Add(new Distance());
             this.readoutModules.Add(new Rendezvous.OrbitalPeriod());
 
