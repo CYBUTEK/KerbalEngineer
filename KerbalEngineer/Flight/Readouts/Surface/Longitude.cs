@@ -17,6 +17,7 @@ namespace KerbalEngineer.Flight.Readouts.Surface
             this.Name = "Longitude";
             this.Category = ReadoutCategory.Surface;
             this.HelpString = "Shows the vessel's longitude around a celestial body.  Longitude is the angle from the bodies prime meridian.";
+            this.IsDefault = true;
         }
 
         public override void Draw()

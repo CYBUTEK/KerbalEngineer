@@ -17,6 +17,7 @@ namespace KerbalEngineer.Flight.Readouts.Orbital
             this.Name = "Time to Apoapsis";
             this.Category = ReadoutCategory.Orbital;
             this.HelpString = "Shows the time until the vessel reaches apoapsis, the highest point of the orbit.";
+            this.IsDefault = true;
         }
 
         public override void Draw()

@@ -17,6 +17,8 @@ namespace KerbalEngineer.Flight.Readouts.Vessel
         {
             this.Name = "Mass";
             this.Category = ReadoutCategory.Vessel;
+            this.HelpString = string.Empty;
+            this.IsDefault = true;
         }
 
         public override void Update()

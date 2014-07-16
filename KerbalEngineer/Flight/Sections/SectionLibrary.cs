@@ -2,7 +2,7 @@
 // Author:	CYBUTEK
 // License:	Attribution-NonCommercial-ShareAlike 3.0 Unported
 
-#region Using Directives
+#region
 
 using System.Collections.Generic;
 using System.Linq;
@@ -44,28 +44,28 @@ namespace KerbalEngineer.Flight.Sections
             {
                 Name = "ORBITAL",
                 Abbreviation = "ORBT",
-                ReadoutModules = ReadoutLibrary.Instance.GetCategory(ReadoutCategory.Orbital)
+                ReadoutModules = ReadoutLibrary.Instance.GetCategory(ReadoutCategory.Orbital).Where(r => r.IsDefault).ToList()
             });
 
             this.StockSections.Add(new SectionModule
             {
                 Name = "SURFACE",
                 Abbreviation = "SURF",
-                ReadoutModules = ReadoutLibrary.Instance.GetCategory(ReadoutCategory.Surface)
+                ReadoutModules = ReadoutLibrary.Instance.GetCategory(ReadoutCategory.Surface).Where(r => r.IsDefault).ToList()
             });
 
             this.StockSections.Add(new SectionModule
             {
                 Name = "VESSEL",
                 Abbreviation = "VESL",
-                ReadoutModules = ReadoutLibrary.Instance.GetCategory(ReadoutCategory.Vessel)
+                ReadoutModules = ReadoutLibrary.Instance.GetCategory(ReadoutCategory.Vessel).Where(r => r.IsDefault).ToList()
             });
 
             this.StockSections.Add(new SectionModule
             {
                 Name = "RENDEZVOUS",
                 Abbreviation = "RDZV",
-                ReadoutModules = ReadoutLibrary.Instance.GetCategory(ReadoutCategory.Rendezvous)
+                ReadoutModules = ReadoutLibrary.Instance.GetCategory(ReadoutCategory.Rendezvous).Where(r => r.IsDefault).ToList()
             });
         }
 
@@ -141,7 +141,6 @@ namespace KerbalEngineer.Flight.Sections
                                 readout.ResizeRequested = false;
                             }
                         }
-                        
                     }
                     section.Update();
                 }

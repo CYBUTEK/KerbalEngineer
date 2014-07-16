@@ -37,6 +37,8 @@ namespace KerbalEngineer.Flight.Readouts
 
         public bool ResizeRequested { get; set; }
 
+        public bool IsDefault { get; set; }
+
         /// <summary>
         ///     Gets ans sets the readout category.
         /// </summary>

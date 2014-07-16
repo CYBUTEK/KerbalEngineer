@@ -21,6 +21,7 @@ namespace KerbalEngineer.Flight.Readouts.Vessel
             this.Name = "DeltaV Staged";
             this.Category = ReadoutCategory.Vessel;
             this.HelpString = "Shows the vessel's delta velocity for each stage.";
+            this.IsDefault = true;
         }
 
         public override void Update()

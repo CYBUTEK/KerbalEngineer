@@ -32,6 +32,7 @@ namespace KerbalEngineer.Flight.Readouts.Rendezvous
             this.Name = "Target Selector";
             this.Category = ReadoutCategory.Rendezvous;
             this.HelpString = "A tool to allow easy browsing, searching and selection of targets.";
+            this.IsDefault = true;
             this.typeButtonWidth = Mathf.Round(this.ContentWidth * 0.5f);
         }
 

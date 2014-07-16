@@ -16,7 +16,8 @@ namespace KerbalEngineer.Flight.Readouts.Rendezvous
         {
             this.Name = "Altitude (Sea Level)";
             this.Category = ReadoutCategory.Rendezvous;
-            //this.HelpString = "";
+            this.HelpString = string.Empty;
+            this.IsDefault = true;
         }
 
         public override void Update()

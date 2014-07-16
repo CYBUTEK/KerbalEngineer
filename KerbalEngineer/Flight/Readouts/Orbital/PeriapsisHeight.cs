@@ -11,6 +11,7 @@ namespace KerbalEngineer.Flight.Readouts.Orbital
             this.Name = "Periapsis Height";
             this.Category = ReadoutCategory.Orbital;
             this.HelpString = "Shows the vessel's periapsis height relative to sea level. (Periapsis is the lowest point of an orbit.";
+            this.IsDefault = true;
         }
 
         public override void Draw()

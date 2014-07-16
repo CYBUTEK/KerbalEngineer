@@ -19,6 +19,7 @@ namespace KerbalEngineer.Flight.Readouts.Surface
             this.Name = "Terminal Velocity";
             this.Category = ReadoutCategory.Surface;
             this.HelpString = "Shows the velocity where the efforts of thrust and drag are equalled out.";
+            this.IsDefault = true;
         }
 
         public override void Update()

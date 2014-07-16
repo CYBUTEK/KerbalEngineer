@@ -14,7 +14,8 @@ namespace KerbalEngineer.Flight.Readouts.Surface
         {
             this.Name = "Impact Time";
             this.Category = ReadoutCategory.Surface;
-            //this.HelpString = "";
+            this.HelpString = string.Empty;
+            this.IsDefault = true;
         }
 
         public override void Update()

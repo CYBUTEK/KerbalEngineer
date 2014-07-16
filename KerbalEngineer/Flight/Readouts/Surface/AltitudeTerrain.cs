@@ -17,6 +17,7 @@ namespace KerbalEngineer.Flight.Readouts.Surface
             this.Name = "Altitude (Terrain)";
             this.Category = ReadoutCategory.Surface;
             this.HelpString = "Shows the vessel's altitude above the terrain.";
+            this.IsDefault = true;
         }
 
         public override void Draw()
