@@ -298,7 +298,7 @@ namespace KerbalEngineer.Flight.Readouts.Rendezvous
             var count = 0;
             foreach (var vessel in FlightGlobals.Vessels)
             {
-                if (vessel == FlightGlobals.ActiveVessel || vessel.vesselType != this.vesselType)
+                if (vessel == FlightGlobals.ActiveVessel || (this.searchQuery.Length == 0 && vessel.vesselType != this.vesselType))
                 {
                     continue;
                 }
