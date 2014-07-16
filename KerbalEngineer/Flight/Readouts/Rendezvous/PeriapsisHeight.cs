@@ -46,7 +46,7 @@ namespace KerbalEngineer.Flight.Readouts.Rendezvous
                 return;
             }
 
-            this.DrawLine(RendezvousProcessor.PeriapsisHeight.ToAngle());
+            this.DrawLine(RendezvousProcessor.PeriapsisHeight.ToDistance());
         }
 
         public override void Reset()
