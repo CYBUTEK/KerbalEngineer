@@ -39,10 +39,10 @@ namespace KerbalEngineer.Editor
         private void Start()
         {
             // Load the button textures directly from the PNG files. (Would of used GameDatabase but it compresses them so it looks shit!)
-            this.normal.LoadImage(File.ReadAllBytes(EngineerGlobals.AssemblyPath + "GUI/BuildButton/Normal.png"));
-            this.hover.LoadImage(File.ReadAllBytes(EngineerGlobals.AssemblyPath + "GUI/BuildButton/Hover.png"));
-            this.down.LoadImage(File.ReadAllBytes(EngineerGlobals.AssemblyPath + "GUI/BuildButton/Down.png"));
-            this.locked.LoadImage(File.ReadAllBytes(EngineerGlobals.AssemblyPath + "GUI/BuildButton/Locked.png"));
+            this.normal.LoadImage(File.ReadAllBytes(EngineerGlobals.AssemblyPath + "PluginData/BuildButton/Normal.png"));
+            this.hover.LoadImage(File.ReadAllBytes(EngineerGlobals.AssemblyPath + "PluginData/BuildButton/Hover.png"));
+            this.down.LoadImage(File.ReadAllBytes(EngineerGlobals.AssemblyPath + "PluginData/BuildButton/Down.png"));
+            this.locked.LoadImage(File.ReadAllBytes(EngineerGlobals.AssemblyPath + "PluginData/BuildButton/Locked.png"));
 
             this.InitialiseStyles();
             RenderingManager.AddToPostDrawQueue(0, this.OnDraw);
