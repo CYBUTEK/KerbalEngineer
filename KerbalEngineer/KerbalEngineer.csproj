@@ -35,7 +35,11 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Assembly-CSharp">
-      <HintPath>..\Game\KSP_Data\Managed\Assembly-CSharp.dll</HintPath>
+      <HintPath>..\Game\KSP_x64_Data\Managed\Assembly-CSharp.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Assembly-CSharp-firstpass">
+      <HintPath>..\Game\KSP_x64_Data\Managed\Assembly-CSharp-firstpass.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="System">
@@ -47,15 +51,16 @@
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine">
-      <HintPath>..\Game\KSP_Data\Managed\UnityEngine.dll</HintPath>
+      <HintPath>..\Game\KSP_x64_Data\Managed\UnityEngine.dll</HintPath>
       <Private>False</Private>
     </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Editor\BuildAdvanced.cs" />
-    <Compile Include="Editor\BuildButton.cs" />
     <Compile Include="Editor\BuildOverlay.cs" />
     <Compile Include="CelestialBodies.cs" />
+    <Compile Include="Editor\BuildToolbar.cs" />
+    <Compile Include="Logger.cs" />
     <Compile Include="EngineerGlobals.cs" />
     <Compile Include="Extensions\DoubleExtensions.cs" />
     <Compile Include="Extensions\FloatExtensions.cs" />

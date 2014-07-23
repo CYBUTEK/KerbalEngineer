@@ -71,7 +71,7 @@ namespace KerbalEngineer.Simulation
             this.inverseStage = this.part.inverseStage;
             //MonoBehaviour.print("inverseStage = " + inverseStage);
 
-            this.cost = this.part.partInfo.cost;
+            //this.cost = this.part.partInfo.cost;
 
             // Work out if the part should have no physical significance
             this.isNoPhysics = this.part.HasModule<ModuleLandingGear>() ||

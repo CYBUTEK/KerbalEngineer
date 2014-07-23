@@ -1,4 +1,5 @@
-﻿//     Kerbal Engineer Redux
+﻿// 
+//     Kerbal Engineer Redux
 // 
 //     Copyright (C) 2014 CYBUTEK
 // 
@@ -18,6 +19,7 @@
 
 #region Using Directives
 
+using System;
 using System.Diagnostics;
 
 using KerbalEngineer.Extensions;
@@ -47,7 +49,7 @@ namespace KerbalEngineer.Editor
         private readonly Stopwatch tooltipInfoTimer = new Stopwatch();
         private readonly int windowId = EngineerGlobals.GetNextWindowId();
         private Part selectedPart;
-        private Rect windowPosition = new Rect(265.0f, 0, 0, 0);
+        private Rect windowPosition = new Rect(300.0f, 0, 0, 0);
 
         #endregion
 
@@ -154,7 +156,7 @@ namespace KerbalEngineer.Editor
         {
             try
             {
-                if (EditorLogic.fetch == null || EditorLogic.SortedShipList.Count <= 0)
+                if (EditorLogic.fetch == null || EditorLogic.fetch.ship.parts.Count == 0)
                 {
                     return;
                 }
@@ -173,9 +175,10 @@ namespace KerbalEngineer.Editor
 
                 SimManager.TryStartSimulation();
             }
-            catch
+            catch (Exception ex)
             {
-                /* A null reference exception is thrown when checking if EditorLogic.fetch != null??? */
+                Logger.Log("BuildOverlay->Update");
+                Logger.Exception(ex);
             }
         }
 
@@ -183,7 +186,7 @@ namespace KerbalEngineer.Editor
         {
             try
             {
-                if (!this.visible || EditorLogic.fetch == null || EditorLogic.SortedShipList.Count <= 0 || EditorLogic.fetch.editorScreen != EditorLogic.EditorScreen.Parts)
+                if (!this.visible || EditorLogic.fetch == null || EditorLogic.fetch.ship.parts.Count == 0 || EditorLogic.fetch.editorScreen != EditorLogic.EditorScreen.Parts)
                 {
                     return;
                 }
@@ -239,9 +242,10 @@ namespace KerbalEngineer.Editor
                     }
                 }
             }
-            catch
+            catch (Exception ex)
             {
-                /* A null reference exception is thrown when checking if EditorLogic.fetch != null??? */
+                Logger.Log("BuildOverlay->OnDraw");
+                Logger.Exception(ex);
             }
         }
 
@@ -425,9 +429,10 @@ namespace KerbalEngineer.Editor
                 handler.Set("visible", this.visible);
                 handler.Save("BuildOverlay.xml");
             }
-            catch
+            catch (Exception ex)
             {
-                print("[KerbalEngineer]: Failed to save BuildOverlay settings.");
+                Logger.Log("BuildOverlay->OnDestroy");
+                Logger.Exception(ex);
             }
         }
 
@@ -441,9 +446,10 @@ namespace KerbalEngineer.Editor
                 var handler = SettingHandler.Load("BuildOverlay.xml");
                 handler.Get("visible", ref this.visible);
             }
-            catch
+            catch (Exception ex)
             {
-                print("[KerbalEngineer]: Failed to load BuildOverlay settings.");
+                Logger.Log("BuildOverlay->Load");
+                Logger.Exception(ex);
             }
         }
 

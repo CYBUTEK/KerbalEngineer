@@ -1,4 +1,5 @@
-﻿//     Kerbal Engineer Redux
+﻿// 
+//     Kerbal Engineer Redux
 // 
 //     Copyright (C) 2014 CYBUTEK
 // 
@@ -18,6 +19,7 @@
 
 #region Using Directives
 
+using System;
 using System.Linq;
 
 using KerbalEngineer.Extensions;
@@ -70,7 +72,7 @@ namespace KerbalEngineer.Editor
         private bool showAllStages;
         private bool showReferenceBodies;
         private bool useAtmosphericDetails;
-        private bool visible;
+        private bool visible = true;
 
         /// <summary>
         ///     Gets and sets whether the display is enabled.
@@ -190,7 +192,7 @@ namespace KerbalEngineer.Editor
         {
             try
             {
-                if (!this.visible || EditorLogic.fetch == null || EditorLogic.fetch.ship.Count <= 0)
+                if (!this.visible || EditorLogic.fetch == null || EditorLogic.fetch.ship.parts.Count == 0)
                 {
                     return;
                 }
@@ -208,9 +210,10 @@ namespace KerbalEngineer.Editor
 
                 SimManager.TryStartSimulation();
             }
-            catch
+            catch (Exception ex)
             {
-                /* A null reference exception is thrown when checking if EditorLogic.fetch != null??? */
+                Logger.Log("BuildAdvanced->Update");
+                Logger.Exception(ex);
             }
         }
 
@@ -218,7 +221,7 @@ namespace KerbalEngineer.Editor
         {
             try
             {
-                if (!this.visible || EditorLogic.fetch == null || EditorLogic.fetch.ship.Count <= 0)
+                if (!this.visible || EditorLogic.fetch == null || EditorLogic.fetch.ship.parts.Count == 0)
                 {
                     return;
                 }
@@ -226,18 +229,10 @@ namespace KerbalEngineer.Editor
                 SimManager.RequestSimulation();
 
                 // Change the window title based on whether in compact mode or not.
-                string title;
-                if (!this.compactMode)
-                {
-                    title = "KERBAL ENGINEER REDUX " + EngineerGlobals.PrettyVersion;
-                }
-                else
-                {
-                    title = "K.E.R. " + EngineerGlobals.PrettyVersion;
-                }
+                var title = !this.compactMode ? "KERBAL ENGINEER REDUX " + EngineerGlobals.PrettyVersion : "K.E.R. " + EngineerGlobals.PrettyVersion;
 
                 // Reset the window size when the staging or something else has changed.
-                int stageCount = SimManager.Stages.Count(stage => this.showAllStages || stage.deltaV > 0);
+                var stageCount = SimManager.Stages != null ? SimManager.Stages.Count(stage => this.showAllStages || stage.deltaV > 0) : 0;
                 if (this.hasChanged || stageCount != this.numberOfStages)
                 {
                     this.hasChanged = false;
@@ -252,9 +247,10 @@ namespace KerbalEngineer.Editor
                 // Check editor lock to manage click-through.
                 this.CheckEditorLock();
             }
-            catch
+            catch (Exception ex)
             {
-                /* A null reference exception is thrown when checking if EditorLogic.fetch != null??? */
+                Logger.Log("BuildAdvanced->OnDraw");
+                Logger.Exception(ex);
             }
         }
 
@@ -541,9 +537,10 @@ namespace KerbalEngineer.Editor
                 handler.Set("selectedBodyName", CelestialBodies.Instance.SelectedBodyName);
                 handler.Save("BuildAdvanced.xml");
             }
-            catch
+            catch (Exception ex)
             {
-                print("[KerbalEngineer]: Failed to save BuildAdvanced settings.");
+                Logger.Log("BuildAdvanced->OnDestroy");
+                Logger.Exception(ex);
             }
         }
 
@@ -563,9 +560,10 @@ namespace KerbalEngineer.Editor
                 handler.Get("useAtmosphericDetails", ref this.useAtmosphericDetails);
                 CelestialBodies.Instance.SelectedBodyName = handler.Get("selectedBodyName", CelestialBodies.Instance.SelectedBodyName);
             }
-            catch
+            catch (Exception ex)
             {
-                print("[KerbalEngineer/BuildAdvanced]: Failed to load BuildAdvanced settings.");
+                Logger.Log("BuildAdvanced->Load");
+                Logger.Exception(ex);
             }
         }
 
