@@ -17,7 +17,7 @@
 //     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // 
 
-#region Using Directives
+#region
 
 using System;
 using System.Diagnostics;
@@ -47,9 +47,9 @@ namespace KerbalEngineer.Editor
         #region Fields
 
         private readonly Stopwatch tooltipInfoTimer = new Stopwatch();
-        private readonly int windowId = new Guid().GetHashCode();
 
         private Part selectedPart;
+        private int windowId;
         private Rect windowPosition = new Rect(300.0f, 0, 0, 0);
 
         #endregion
@@ -63,6 +63,7 @@ namespace KerbalEngineer.Editor
 
         private void Start()
         {
+            this.windowId = this.GetHashCode();
             this.InitialiseStyles();
             this.Load();
             RenderingManager.AddToPostDrawQueue(0, this.OnDraw);
@@ -73,7 +74,7 @@ namespace KerbalEngineer.Editor
         #region Properties
 
         private float tooltipInfoDelay = 0.5f;
-        private bool visible;
+        private bool visible = true;
 
         public float TooltipInfoDelay
         {
@@ -87,7 +88,11 @@ namespace KerbalEngineer.Editor
         public bool Visible
         {
             get { return this.visible; }
-            set { this.visible = value; }
+            set
+            {
+                this.visible = value;
+                Logger.Log("BuildOverlay->Visible = " + value);
+            }
         }
 
         #endregion
@@ -157,7 +162,7 @@ namespace KerbalEngineer.Editor
         {
             try
             {
-                if (EditorLogic.fetch == null || EditorLogic.fetch.ship.parts.Count == 0)
+                if (!this.visible || BuildAdvanced.Instance == null || EditorLogic.fetch == null || EditorLogic.fetch.ship.parts.Count == 0 || EditorLogic.fetch.editorScreen != EditorLogic.EditorScreen.Parts)
                 {
                     return;
                 }

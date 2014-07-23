@@ -17,9 +17,8 @@
 //     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // 
 
-#region Using Directives
+#region
 
-using System;
 using System.Collections.Generic;
 
 using KerbalEngineer.Extensions;
@@ -48,10 +47,9 @@ namespace KerbalEngineer.Flight
 
         #region Fields
 
-        private readonly int windowId = new Guid().GetHashCode();
-
         private int numberOfStackSections;
         private bool resizeRequested;
+        private int windowId;
         private Rect windowPosition = new Rect(Screen.width - 275.0f, 50.0f, 250.0f, 0);
 
         #endregion
@@ -78,6 +76,7 @@ namespace KerbalEngineer.Flight
         /// </summary>
         private void Start()
         {
+            this.windowId = this.GetHashCode();
             this.InitialiseStyles();
             this.Load();
 

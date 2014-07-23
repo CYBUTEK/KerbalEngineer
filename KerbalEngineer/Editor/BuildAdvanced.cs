@@ -17,7 +17,7 @@
 //     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // 
 
-#region Using Directives
+#region
 
 using System;
 using System.Linq;
@@ -46,11 +46,10 @@ namespace KerbalEngineer.Editor
 
         #region Fields
 
-        private readonly int windowId = new Guid().GetHashCode();
-
         private bool hasChanged;
         private bool isEditorLocked;
         private int numberOfStages;
+        private int windowId;
         private Rect windowPosition = new Rect(265.0f, 45.0f, 0, 0);
 
         #region Styles
@@ -80,7 +79,11 @@ namespace KerbalEngineer.Editor
         public bool Visible
         {
             get { return this.visible; }
-            set { this.visible = value; }
+            set
+            {
+                this.visible = value;
+                Logger.Log("BuildAdvanced->Visible = " + value);
+            }
         }
 
         /// <summary>
@@ -131,6 +134,7 @@ namespace KerbalEngineer.Editor
 
         private void Start()
         {
+            this.windowId = this.GetHashCode();
             this.InitialiseStyles();
             RenderingManager.AddToPostDrawQueue(0, this.OnDraw);
         }
@@ -199,6 +203,7 @@ namespace KerbalEngineer.Editor
 
                 // Configure the simulation parameters based on the selected reference body.
                 SimManager.Gravity = CelestialBodies.Instance.SelectedBodyInfo.Gravity;
+
                 if (this.useAtmosphericDetails)
                 {
                     SimManager.Atmosphere = CelestialBodies.Instance.SelectedBodyInfo.Atmosphere * 0.01d;

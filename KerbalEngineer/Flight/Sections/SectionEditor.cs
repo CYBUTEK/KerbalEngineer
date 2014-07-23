@@ -41,8 +41,7 @@ namespace KerbalEngineer.Flight.Sections
 
         #region Fields
 
-        private readonly int windowId = new Guid().GetHashCode();
-
+        private int windowId;
         private Vector2 scrollPositionAvailable;
         private Vector2 scrollPositionInstalled;
         private ReadoutCategory selectedCategory = ReadoutCategory.Orbital;
@@ -57,6 +56,7 @@ namespace KerbalEngineer.Flight.Sections
         /// </summary>
         private void Start()
         {
+            this.windowId = this.GetHashCode();
             this.InitialiseStyles();
             RenderingManager.AddToPostDrawQueue(0, this.Draw);
         }
