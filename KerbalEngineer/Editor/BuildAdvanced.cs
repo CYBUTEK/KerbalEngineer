@@ -229,7 +229,7 @@ namespace KerbalEngineer.Editor
                 SimManager.RequestSimulation();
 
                 // Change the window title based on whether in compact mode or not.
-                var title = !this.compactMode ? "KERBAL ENGINEER REDUX " + EngineerGlobals.PrettyVersion : "K.E.R. " + EngineerGlobals.PrettyVersion;
+                var title = !this.compactMode ? "KERBAL ENGINEER REDUX " + EngineerGlobals.AssemblyVersion : "K.E.R. " + EngineerGlobals.AssemblyVersion;
 
                 // Reset the window size when the staging or something else has changed.
                 var stageCount = SimManager.Stages != null ? SimManager.Stages.Count(stage => this.showAllStages || stage.deltaV > 0) : 0;

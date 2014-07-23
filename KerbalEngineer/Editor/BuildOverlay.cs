@@ -47,7 +47,8 @@ namespace KerbalEngineer.Editor
         #region Fields
 
         private readonly Stopwatch tooltipInfoTimer = new Stopwatch();
-        private readonly int windowId = EngineerGlobals.GetNextWindowId();
+        private readonly int windowId = new Guid().GetHashCode();
+
         private Part selectedPart;
         private Rect windowPosition = new Rect(300.0f, 0, 0, 0);
 
