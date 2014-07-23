@@ -17,13 +17,12 @@
 //     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // 
 
-#region
+#region Using Directives
 
 using System.Collections.Generic;
 
 using KerbalEngineer.Flight.Sections;
 using KerbalEngineer.Settings;
-using KerbalEngineer.VesselSimulator;
 
 using UnityEngine;
 
@@ -171,11 +170,8 @@ namespace KerbalEngineer.Flight
         private void DrawNewButton()
         {
             GUILayout.BeginHorizontal();
-            GUI.skin = HighLogic.Skin;
-            SimManager.minSimTime = (long)GUILayout.HorizontalSlider(SimManager.minSimTime, 0, 1000.0f);
-            GUI.skin = null;
 
-            if (GUILayout.Button("NEW", this.buttonStyle, GUILayout.Width(50.0f)))
+            if (GUILayout.Button("NEW CUSTOM SECTION", this.buttonStyle))
             {
                 SectionLibrary.Instance.CustomSections.Add(new SectionModule
                 {

@@ -262,6 +262,7 @@ namespace KerbalEngineer.VesselSimulator
 
         public static void RequestUpdate()
         {
+            RequestSimulation();
             Instance.UpdateRequested = true;
         }
     }

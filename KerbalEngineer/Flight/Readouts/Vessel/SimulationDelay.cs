@@ -17,27 +17,24 @@
 //     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // 
 
-#region
+#region Using Directives
 
 using KerbalEngineer.VesselSimulator;
+
+using UnityEngine;
 
 #endregion
 
 namespace KerbalEngineer.Flight.Readouts.Vessel
 {
-    public class SpecificImpulse : ReadoutModule
+    public class SimulationDelay : ReadoutModule
     {
-        public SpecificImpulse()
+        public SimulationDelay()
         {
-            this.Name = "Specific Impulse";
+            this.Name = "Minimum Simulation Delay";
             this.Category = ReadoutCategory.Vessel;
-            this.HelpString = string.Empty;
+            this.HelpString = "Controls the minimum delay between processing vessel simulations.";
             this.IsDefault = true;
-        }
-
-        public override void Update()
-        {
-            SimManager.RequestUpdate();
         }
 
         public override void Draw()
@@ -47,12 +44,12 @@ namespace KerbalEngineer.Flight.Readouts.Vessel
                 return;
             }
 
-            this.DrawLine(SimManager.LastStage.isp.ToString("F1") + "s");
-        }
-
-        public override void Reset()
-        {
-            FlightEngineerCore.Instance.AddUpdatable(SimManager.Instance);
+            GUILayout.BeginHorizontal();
+            GUILayout.Label("Sim Delay", this.NameStyle);
+            GUI.skin = HighLogic.Skin;
+            SimManager.minSimTime = (long)GUILayout.HorizontalSlider(SimManager.minSimTime, 0, 1000.0f);
+            GUI.skin = null;
+            GUILayout.EndHorizontal();
         }
     }
 }

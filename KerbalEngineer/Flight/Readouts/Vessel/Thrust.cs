@@ -43,6 +43,11 @@ namespace KerbalEngineer.Flight.Readouts.Vessel
 
         public override void Draw()
         {
+            if (SimManager.LastStage == null)
+            {
+                return;
+            }
+
             this.DrawLine(SimManager.LastStage.actualThrust.ToForce(false) + " / " + SimManager.LastStage.thrust.ToForce());
         }
 

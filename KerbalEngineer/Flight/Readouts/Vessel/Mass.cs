@@ -43,6 +43,11 @@ namespace KerbalEngineer.Flight.Readouts.Vessel
 
         public override void Draw()
         {
+            if (SimManager.LastStage == null)
+            {
+                return;
+            }
+
             this.DrawLine(SimManager.LastStage.mass.ToMass(false) + " / " + SimManager.LastStage.totalMass.ToMass());
         }
 

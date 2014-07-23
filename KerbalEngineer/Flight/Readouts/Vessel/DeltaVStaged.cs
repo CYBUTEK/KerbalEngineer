@@ -44,6 +44,11 @@ namespace KerbalEngineer.Flight.Readouts.Vessel
 
         public override void Draw()
         {
+            if (SimManager.Stages == null)
+            {
+                return;
+            }
+
             var newNumberOfStages = 0;
 
             foreach (var stage in SimManager.Stages)
