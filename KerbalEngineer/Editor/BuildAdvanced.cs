@@ -49,6 +49,8 @@ namespace KerbalEngineer.Editor
         private bool hasChanged;
         private bool isEditorLocked;
         private int numberOfStages;
+        private float atmosphericPercentage = 1.0f;
+        private float atmosphericVelocity;
         private int windowId;
         private Rect windowPosition = new Rect(265.0f, 45.0f, 0, 0);
 
@@ -58,6 +60,7 @@ namespace KerbalEngineer.Editor
         private GUIStyle areaStyle;
         private GUIStyle buttonStyle;
         private GUIStyle infoStyle;
+        private GUIStyle settingStyle;
         private GUIStyle titleStyle;
         private GUIStyle windowStyle;
 
@@ -69,8 +72,8 @@ namespace KerbalEngineer.Editor
 
         private bool compactMode;
         private bool showAllStages;
+        private bool showAtmosphericDetails;
         private bool showReferenceBodies;
-        private bool useAtmosphericDetails;
         private bool visible = true;
 
         /// <summary>
@@ -107,10 +110,10 @@ namespace KerbalEngineer.Editor
         /// <summary>
         ///     Gets and sets whether to use atmospheric details.
         /// </summary>
-        public bool UseAtmosphericDetails
+        public bool ShowAtmosphericDetails
         {
-            get { return this.useAtmosphericDetails; }
-            set { this.useAtmosphericDetails = value; }
+            get { return this.showAtmosphericDetails; }
+            set { this.showAtmosphericDetails = value; }
         }
 
         /// <summary>
@@ -186,6 +189,18 @@ namespace KerbalEngineer.Editor
                 alignment = TextAnchor.MiddleCenter,
                 stretchWidth = true
             };
+
+            this.settingStyle = new GUIStyle(HighLogic.Skin.label)
+            {
+                normal =
+                {
+                    textColor = Color.white
+                },
+                fontSize = 11,
+                fontStyle = FontStyle.Bold,
+                alignment = TextAnchor.MiddleLeft,
+                stretchWidth = true
+            };
         }
 
         #endregion
@@ -204,15 +219,16 @@ namespace KerbalEngineer.Editor
                 // Configure the simulation parameters based on the selected reference body.
                 SimManager.Gravity = CelestialBodies.Instance.SelectedBodyInfo.Gravity;
 
-                if (this.useAtmosphericDetails)
+                if (this.showAtmosphericDetails)
                 {
-                    SimManager.Atmosphere = CelestialBodies.Instance.SelectedBodyInfo.Atmosphere * 0.01d;
+                    SimManager.Atmosphere = CelestialBodies.Instance.SelectedBodyInfo.Atmosphere * 0.01d * this.atmosphericPercentage;
                 }
                 else
                 {
                     SimManager.Atmosphere = 0;
                 }
 
+                SimManager.Velocity = this.atmosphericVelocity;
                 SimManager.TryStartSimulation();
             }
             catch (Exception ex)
@@ -297,7 +313,11 @@ namespace KerbalEngineer.Editor
                     this.showAllStages = !this.showAllStages;
                 }
 
-                this.useAtmosphericDetails = GUI.Toggle(new Rect(this.windowPosition.width - 251.0f, 5.0f, 95.0f, 20.0f), this.useAtmosphericDetails, "ATMOSPHERIC", this.buttonStyle);
+                if (GUI.Toggle(new Rect(this.windowPosition.width - 251.0f, 5.0f, 95.0f, 20.0f), this.showAtmosphericDetails, "ATMOSPHERIC", this.buttonStyle) != this.showAtmosphericDetails)
+                {
+                    this.hasChanged = true;
+                    this.showAtmosphericDetails = !this.showAtmosphericDetails;
+                }
 
                 if (GUI.Toggle(new Rect(this.windowPosition.width - 379.0f, 5.0f, 125.0f, 20.0f), this.showReferenceBodies, "REFERENCE BODIES", this.buttonStyle) != this.showReferenceBodies)
                 {
@@ -322,6 +342,13 @@ namespace KerbalEngineer.Editor
                 this.DrawBurnTime();
                 GUILayout.EndHorizontal();
 
+                if (this.showAtmosphericDetails)
+                {
+                    GUILayout.BeginVertical(this.areaStyle);
+                    this.DrawAtmosphericDetails();
+                    GUILayout.EndVertical();
+                }
+
                 if (this.showReferenceBodies)
                 {
                     GUILayout.BeginVertical(this.areaBodiesStyle);
@@ -339,6 +366,25 @@ namespace KerbalEngineer.Editor
             }
 
             GUI.DragWindow();
+        }
+
+        /// <summary>
+        ///     Draws the atmospheric settings.
+        /// </summary>
+        private void DrawAtmosphericDetails()
+        {
+            GUILayout.BeginHorizontal();
+            GUILayout.Label("Pressure " + (this.atmosphericPercentage * 100.0f).ToString("F1") + "%", this.titleStyle, GUILayout.Width(125.0f));
+            GUI.skin = HighLogic.Skin;
+            this.atmosphericPercentage = GUILayout.HorizontalSlider(this.atmosphericPercentage, 0, 1.0f);
+            GUI.skin = null;
+            GUILayout.EndHorizontal();
+            GUILayout.BeginHorizontal();
+            GUILayout.Label("Velocity " + this.atmosphericVelocity.ToString("F1") + "m/s", this.titleStyle, GUILayout.Width(125.0f));
+            GUI.skin = HighLogic.Skin;
+            this.atmosphericVelocity = GUILayout.HorizontalSlider(this.atmosphericVelocity, 0, 2500f);
+            GUI.skin = null;
+            GUILayout.EndHorizontal();
         }
 
         /// <summary>
@@ -406,7 +452,7 @@ namespace KerbalEngineer.Editor
         /// </summary>
         private void DrawCost()
         {
-            GUILayout.BeginVertical(GUILayout.Width(100.0f));
+            GUILayout.BeginVertical(GUILayout.Width(110.0f));
             GUILayout.Label("COST", this.titleStyle);
             foreach (var stage in SimManager.Stages)
             {
@@ -423,7 +469,7 @@ namespace KerbalEngineer.Editor
         /// </summary>
         private void DrawMass()
         {
-            GUILayout.BeginVertical(GUILayout.Width(100.0f));
+            GUILayout.BeginVertical(GUILayout.Width(110.0f));
             GUILayout.Label("MASS", this.titleStyle);
             foreach (var stage in SimManager.Stages)
             {
@@ -440,7 +486,7 @@ namespace KerbalEngineer.Editor
         /// </summary>
         private void DrawIsp()
         {
-            GUILayout.BeginVertical(GUILayout.Width(50.0f));
+            GUILayout.BeginVertical(GUILayout.Width(75.0f));
             GUILayout.Label("ISP", this.titleStyle);
             foreach (var stage in SimManager.Stages)
             {
@@ -474,7 +520,7 @@ namespace KerbalEngineer.Editor
         /// </summary>
         private void DrawTwr()
         {
-            GUILayout.BeginVertical(GUILayout.Width(75.0f));
+            GUILayout.BeginVertical(GUILayout.Width(100.0f));
             GUILayout.Label("TWR (MAX)", this.titleStyle);
             foreach (var stage in SimManager.Stages)
             {
@@ -537,7 +583,7 @@ namespace KerbalEngineer.Editor
                 handler.Set("windowPositionY", this.windowPosition.y);
                 handler.Set("compactMode", this.compactMode);
                 handler.Set("showAllStages", this.showAllStages);
-                handler.Set("useAtmosphericDetails", this.useAtmosphericDetails);
+                handler.Set("showAtmosphericDetails", this.showAtmosphericDetails);
                 handler.Set("showReferenceBodies", this.showReferenceBodies);
                 handler.Set("selectedBodyName", CelestialBodies.Instance.SelectedBodyName);
                 handler.Save("BuildAdvanced.xml");
@@ -562,7 +608,7 @@ namespace KerbalEngineer.Editor
                 this.windowPosition.y = handler.Get("windowPositionY", this.windowPosition.y);
                 handler.Get("compactMode", ref this.compactMode);
                 handler.Get("showAllStages", ref this.showAllStages);
-                handler.Get("useAtmosphericDetails", ref this.useAtmosphericDetails);
+                handler.Get("showAtmosphericDetails", ref this.showAtmosphericDetails);
                 CelestialBodies.Instance.SelectedBodyName = handler.Get("selectedBodyName", CelestialBodies.Instance.SelectedBodyName);
             }
             catch (Exception ex)
