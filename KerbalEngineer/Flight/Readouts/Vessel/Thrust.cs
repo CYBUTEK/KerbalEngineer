@@ -20,7 +20,7 @@
 #region Using Directives
 
 using KerbalEngineer.Extensions;
-using KerbalEngineer.Simulation;
+using KerbalEngineer.VesselSimulator;
 
 #endregion
 

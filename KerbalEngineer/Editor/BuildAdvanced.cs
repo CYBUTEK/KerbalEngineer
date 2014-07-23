@@ -24,7 +24,7 @@ using System.Linq;
 
 using KerbalEngineer.Extensions;
 using KerbalEngineer.Settings;
-using KerbalEngineer.Simulation;
+using KerbalEngineer.VesselSimulator;
 
 using UnityEngine;
 

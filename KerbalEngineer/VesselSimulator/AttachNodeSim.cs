@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Text;
 
-namespace KerbalEngineer.Simulation
+namespace KerbalEngineer.VesselSimulator
 {
     class AttachNodeSim
     {
@@ -16,7 +16,6 @@ namespace KerbalEngineer.Simulation
             this.id = newId;
         }
 
-#if LOG || true
         public void DumpToBuffer(StringBuilder buffer)
         {
             if (this.attachedPartSim == null)
@@ -34,6 +33,5 @@ namespace KerbalEngineer.Simulation
             buffer.Append(":");
             buffer.Append(this.id);
         }
-#endif
     }
 }

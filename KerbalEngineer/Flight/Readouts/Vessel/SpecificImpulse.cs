@@ -17,9 +17,9 @@
 //     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // 
 
-#region Using Directives
+#region
 
-using KerbalEngineer.Simulation;
+using KerbalEngineer.VesselSimulator;
 
 #endregion
 

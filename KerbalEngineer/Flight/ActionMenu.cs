@@ -24,7 +24,7 @@ using System.Collections.Generic;
 
 using KerbalEngineer.Flight.Sections;
 using KerbalEngineer.Settings;
-using KerbalEngineer.Simulation;
+using KerbalEngineer.VesselSimulator;
 
 using UnityEngine;
 

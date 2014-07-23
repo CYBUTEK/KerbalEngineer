@@ -131,14 +131,14 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Settings\SettingHandler.cs" />
     <Compile Include="Settings\SettingItem.cs" />
-    <Compile Include="Simulation\AttachNodeSim.cs" />
-    <Compile Include="Simulation\EngineSim.cs" />
-    <Compile Include="Simulation\PartSim.cs" />
-    <Compile Include="Simulation\ResourceContainer.cs" />
-    <Compile Include="Simulation\SimManager.cs" />
-    <Compile Include="Simulation\Simulation.cs" />
-    <Compile Include="Simulation\Stage.cs" />
     <Compile Include="TapeDriveAnimator.cs" />
+    <Compile Include="VesselSimulator\AttachNodeSim.cs" />
+    <Compile Include="VesselSimulator\EngineSim.cs" />
+    <Compile Include="VesselSimulator\PartSim.cs" />
+    <Compile Include="VesselSimulator\ResourceContainer.cs" />
+    <Compile Include="VesselSimulator\SimManager.cs" />
+    <Compile Include="VesselSimulator\Simulation.cs" />
+    <Compile Include="VesselSimulator\Stage.cs" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
