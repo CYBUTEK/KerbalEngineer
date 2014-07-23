@@ -1,4 +1,5 @@
-﻿//     Kerbal Engineer Redux
+﻿// 
+//     Kerbal Engineer Redux
 // 
 //     Copyright (C) 2014 CYBUTEK
 // 
@@ -37,17 +38,14 @@ namespace KerbalEngineer.Flight.Readouts.Surface
 
         public override void Draw()
         {
-            var tempShowing = this.showing;
-            this.showing = false;
-
-            if (FlightGlobals.ActiveVessel.atmDensity > 0)
+            if (AtmosphericProcessor.ShowDetails)
             {
                 this.showing = true;
                 this.DrawLine(AtmosphericProcessor.Efficiency.ToString("F2"));
             }
-
-            if (this.showing != tempShowing)
+            else if (this.showing)
             {
+                this.showing = false;
                 this.ResizeRequested = true;
             }
         }
