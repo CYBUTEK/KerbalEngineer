@@ -19,6 +19,7 @@
 
 #region Using Directives
 
+using System;
 using System.Collections.Generic;
 
 using KerbalEngineer.Flight.Sections;
@@ -44,10 +45,11 @@ namespace KerbalEngineer.Flight
 
         #region Fields
 
+        private readonly int windowId = new Guid().GetHashCode();
+
         private bool isOpen = true;
         private int numberOfSections;
         private float scrollPercent;
-        private int windowId;
         private Rect windowPosition = new Rect((Screen.width * 0.25f) - 100.0f, 0, 200.0f, 0);
 
         #endregion
@@ -59,7 +61,6 @@ namespace KerbalEngineer.Flight
         /// </summary>
         private void Start()
         {
-            this.windowId = this.GetHashCode();
             this.InitialiseStyles();
             this.Load();
             RenderingManager.AddToPostDrawQueue(0, this.Draw);

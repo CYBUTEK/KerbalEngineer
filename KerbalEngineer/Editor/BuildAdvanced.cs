@@ -46,7 +46,7 @@ namespace KerbalEngineer.Editor
 
         #region Fields
 
-        private readonly int windowId = EngineerGlobals.GetNextWindowId();
+        private readonly int windowId = new Guid().GetHashCode();
 
         private bool hasChanged;
         private bool isEditorLocked;

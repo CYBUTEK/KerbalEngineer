@@ -19,6 +19,8 @@
 
 #region Using Directives
 
+using System;
+
 using KerbalEngineer.Extensions;
 using KerbalEngineer.Flight.Readouts;
 
@@ -39,10 +41,11 @@ namespace KerbalEngineer.Flight.Sections
 
         #region Fields
 
+        private readonly int windowId = new Guid().GetHashCode();
+
         private Vector2 scrollPositionAvailable;
         private Vector2 scrollPositionInstalled;
         private ReadoutCategory selectedCategory = ReadoutCategory.Orbital;
-        private int windowId;
         private Rect windowPosition;
 
         #endregion
@@ -54,7 +57,6 @@ namespace KerbalEngineer.Flight.Sections
         /// </summary>
         private void Start()
         {
-            this.windowId = this.GetHashCode();
             this.InitialiseStyles();
             RenderingManager.AddToPostDrawQueue(0, this.Draw);
         }

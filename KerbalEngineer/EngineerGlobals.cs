@@ -42,24 +42,18 @@ namespace KerbalEngineer
 
         #endregion
 
-        #region Fields
-
-        private static int _windowId = int.MaxValue;
-
-        #endregion
-
         #region Properties
 
-        private static string _assemblyFile;
-        private static string _assemblyName;
-        private static string _assemblyPath;
+        private static string assemblyFile;
+        private static string assemblyName;
+        private static string assemblyPath;
 
         /// <summary>
         ///     Gets the Kerbal Engineer assembly's path including the file name.
         /// </summary>
         public static string AssemblyFile
         {
-            get { return _assemblyFile ?? (_assemblyFile = Assembly.GetExecutingAssembly().Location); }
+            get { return assemblyFile ?? (assemblyFile = Assembly.GetExecutingAssembly().Location); }
         }
 
         /// <summary>
@@ -67,7 +61,7 @@ namespace KerbalEngineer
         /// </summary>
         public static string AssemblyName
         {
-            get { return _assemblyName ?? (_assemblyName = new FileInfo(AssemblyFile).Name); }
+            get { return assemblyName ?? (assemblyName = new FileInfo(AssemblyFile).Name); }
         }
 
         /// <summary>
@@ -75,17 +69,7 @@ namespace KerbalEngineer
         /// </summary>
         public static string AssemblyPath
         {
-            get { return _assemblyPath ?? (_assemblyPath = AssemblyFile.Replace(new FileInfo(AssemblyFile).Name, "")); }
-        }
-
-        #endregion
-
-        #region Methods
-
-        public static int GetNextWindowId()
-        {
-            _windowId--;
-            return _windowId;
+            get { return assemblyPath ?? (assemblyPath = AssemblyFile.Replace(new FileInfo(AssemblyFile).Name, "")); }
         }
 
         #endregion
