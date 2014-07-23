@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset='UTF-8'>
+	<title>Kerbal Engineer Redux - ReadMe</title>
+	<link href='http://fonts.googleapis.com/css?family=PT+Sans:400,700' rel='stylesheet' type='text/css'>
+	<style>
+		* {
+			margin: 0; padding: 0;
+			box-sizing: border-box; moz-box-sizing: border-box; webkit-box-sizing: border-box;
+		}
+
+		html, body {
+			height: 100%;
+			font-family: 'PT Sans', Verdana, Geneva, sans-serif;
+		}
+
+		a {
+			text-decoration: none;
+			font-weight: 700;
+			color: inherit;
+		}
+
+		a:hover {
+			text-decoration: underline;
+		}
+
+		h3 {
+			display: block;
+			line-height: 1.5em;
+			font-size: 1.1em;
+			font-weight: 700;
+		}
+
+		p {
+			display: block;
+			margin: 0 0.5em;
+			text-align: justify;
+		}
+
+		ul {
+			display: block;
+			margin-left: 1.5em;
+			list-style-type: square;
+		}
+
+		li {
+			margin-top: 0.5em;
+			text-align: justify;
+		}
+
+		header {
+			display: block;
+			padding: 25px;
+			text-align: center;
+			font-size: 3rem;
+			font-weight: 700;
+			letter-spacing: 0.2em;
+			color: white;
+			background-color: black;
+		}
+
+		section {
+			display: block;
+			margin: 10px;
+			padding: 0.5em 1em;
+			line-height: 1.5em;
+			background-color: #DDD;
+		}
+
+		footer {
+			display: block;
+			text-align: center;
+			line-height: 50px;
+			font-size: 0.8rem;
+			letter-spacing: 0.2em;
+			color: white;
+			background-color: black;
+		}
+
+		#changelog > li {
+			margin-top: 1em;
+		}
+
+		#changelog > li:first-child {
+			margin-top: 0.5em;
+		}
+
+		#root {
+			clear: both;
+			min-height: 100%;
+			height: auto !important;
+			height: 100%;
+			margin-bottom: -50px;
+		}
+
+		#root > #root_footer {
+			height: 50px;
+		}
+
+		#footer {
+			clear: both;
+			position: relative;
+			height: 50px;
+		}
+	</style>
+</head>
+<body>
+	<div id='root'>
+		<header>Kerbal Engineer Redux v1.0</header>
+
+		<section>
+			<h3>Current Version</h3>
+			<p>1.0.0.0</p>
+		</section>
+
+		<section>
+			<h3>Developers</h3>
+			<p>
+				CYBUTEK: Developer<br>
+				Padishar: Simulation Logic<br>
+				Mic_e: Impact Readouts
+			</p>
+		</section>
+
+		<section>
+			<h3>KSP-AVC Ready</h3>
+			<p>
+				KSP Add-on Version Checker is a standardised system for versioning mods. You can get more information on the
+				<a href='http://forum.kerbalspaceprogram.com/threads/79745' target='_blank'>forum thread</a>.
+			</p>
+		</section>
+
+		<section>
+			<h3>Description</h3>
+			<p>
+				This plugin will allow you to view important statistics about your ship on the fly, whilst building it and in flight.
+			</p>
+		</section>
+
+		<section>
+			<h3>Installation</h3>
+			<ul>
+				<li>Copy the 'KerbalEngineer' folder into the 'GameData' folder located within your Kerbal Space Program installation directory.</li>
+				<li>
+					Attach an Engineer part from the science tab to your ship.
+					<ul>
+						<li>ER7500 includes flight engineer.</li>
+					</ul>
+				</li>
+			</ul>
+		</section>
+
+		<section>
+			<h3>Change Log</h3>
+			<ul id='changelog'>
+				<li>
+					1.0.0.0
+					<ul>
+						<li>Initial release.</li>
+					</ul>
+				</li>
+			</ul>
+		</section>
+
+		<section>
+			<h3>Software License</h3>
+			<p>
+				Copyright &copy; 2014 CYBUTEK
+				<br><br>
+				This program is free software: you can redistribute it and/or modify<br>
+				it under the terms of the GNU General Public License as published by<br>
+				the Free Software Foundation, either version 3 of the License, or<br>
+				(at your option) any later version.
+				<br><br>
+				This program is distributed in the hope that it will be useful,<br>
+				but WITHOUT ANY WARRANTY; without even the implied warranty of<br>
+				MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the<br>
+				GNU General Public License for more details.
+				<br><br>
+				Licensed under <a href='http://www.gnu.org/licenses/gpl-3.0.html' target='_blank'>GNU General Public License v3</a>
+			</p>
+		</section>
+
+		<div id='root_footer'></div>
+	</div>
+
+	<footer id='footer'>
+		ReadMe Design by <a href='http://ksp.cybutek.net' target='_blank'><strong>CYBUTEK</strong></a> (GPLv3)
+	</footer>
+</body>
+</html>
