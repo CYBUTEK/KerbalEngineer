@@ -17,6 +17,8 @@
 //     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // 
 
+using System;
+
 namespace KerbalEngineer.Extensions
 {
     public static class FloatExtensions
@@ -26,7 +28,15 @@ namespace KerbalEngineer.Extensions
         /// </summary>
         public static double ToDouble(this float value)
         {
-            return value;
+            try
+            {
+                return value;
+            }
+            catch (Exception ex)
+            {
+                Logger.Exception(ex, "FloatExtentions->ToDouble");
+                return 0;
+            }
         }
 
         /// <summary>
@@ -34,9 +44,16 @@ namespace KerbalEngineer.Extensions
         /// </summary>
         public static string ToMass(this float value, bool showNotation = true)
         {
-            value *= 1000;
-
-            return showNotation ? value.ToString("N0") + "kg" : value.ToString("N0");
+            try
+            {
+                value *= 1000;
+                return showNotation ? value.ToString("N0") + "kg" : value.ToString("N0");
+            }
+            catch (Exception ex)
+            {
+                Logger.Exception(ex, "FloatExtentions->ToMass");
+                return "ERR";
+            }
         }
 
         /// <summary>
@@ -44,7 +61,15 @@ namespace KerbalEngineer.Extensions
         /// </summary>
         public static string ToForce(this float value, bool showNotation = true)
         {
-            return showNotation ? value.ToString("N2") + "kN" : value.ToString("N2");
+            try
+            {
+                return showNotation ? value.ToString("N2") + "kN" : value.ToString("N2");
+            }
+            catch (Exception ex)
+            {
+                Logger.Exception(ex, "FloatExtentions->ToForce");
+                return "ERR";
+            }
         }
 
         /// <summary>
@@ -52,7 +77,15 @@ namespace KerbalEngineer.Extensions
         /// </summary>
         public static string ToSpeed(this float value, bool showNotation = true)
         {
-            return showNotation ? value.ToString("N2") + "m/s" : value.ToString("N2");
+            try
+            {
+                return showNotation ? value.ToString("N2") + "m/s" : value.ToString("N2");
+            }
+            catch (Exception ex)
+            {
+                Logger.Exception(ex, "FloatExtentions->ToSpeed");
+                return "ERR";
+            }
         }
 
         /// <summary>
@@ -60,50 +93,58 @@ namespace KerbalEngineer.Extensions
         /// </summary>
         public static string ToDistance(this float value)
         {
-            var negative = value < 0;
-
-            if (negative)
+            try
             {
-                value = -value;
-            }
+                var negative = value < 0;
 
-            if (value < 1000000.0f)
-            {
-                if (value < 1.0f)
+                if (negative)
                 {
-                    value *= 1000.0f;
+                    value = -value;
+                }
+
+                if (value < 1000000.0f)
+                {
+                    if (value < 1.0f)
+                    {
+                        value *= 1000.0f;
+
+                        if (negative)
+                        {
+                            value = -value;
+                        }
+                        return value.ToString("N0") + "mm";
+                    }
 
                     if (negative)
                     {
                         value = -value;
                     }
-                    return value.ToString("N0") + "mm";
+                    return value.ToString("N0") + "m";
                 }
 
-                if (negative)
-                {
-                    value = -value;
-                }
-                return value.ToString("N0") + "m";
-            }
-
-            value /= 1000.0f;
-            if (value >= 1000000.0f)
-            {
                 value /= 1000.0f;
+                if (value >= 1000000.0f)
+                {
+                    value /= 1000.0f;
+
+                    if (negative)
+                    {
+                        value = -value;
+                    }
+                    return value.ToString("N0") + "Mm";
+                }
 
                 if (negative)
                 {
                     value = -value;
                 }
-                return value.ToString("N0") + "Mm";
+                return value.ToString("N0") + "km";
             }
-
-            if (negative)
+            catch (Exception ex)
             {
-                value = -value;
+                Logger.Exception(ex, "FloatExtentions->ToDistance");
+                return "ERR";
             }
-            return value.ToString("N0") + "km";
         }
 
         /// <summary>
@@ -111,7 +152,15 @@ namespace KerbalEngineer.Extensions
         /// </summary>
         public static string ToRate(this float value)
         {
-            return value > 0 ? value.ToString("F1") + "/sec" : (60.0f * value).ToString("F1") + "/min";
+            try
+            {
+                return value > 0 ? value.ToString("F1") + "/sec" : (60.0f * value).ToString("F1") + "/min";
+            }
+            catch (Exception ex)
+            {
+                Logger.Exception(ex, "FloatExtentions->ToRate");
+                return "ERR";
+            }
         }
 
         /// <summary>
@@ -119,69 +168,85 @@ namespace KerbalEngineer.Extensions
         /// </summary>
         public static string ToAngle(this float value)
         {
-            return value.ToString("F3") + "°";
+            try
+            {
+                return value.ToString("F3") + "°";
+            }
+            catch (Exception ex)
+            {
+                Logger.Exception(ex, "FloatExtentions->ToAngle");
+                return "ERR";
+            }
         }
 
         /// <summary>
         ///     Convert to string formatted as a time.
         /// </summary>
-        public static string ToTime(this float value)
+        public static string ToTime(this float value, string format = "F1")
         {
-            var s = value;
-            var m = 0;
-            var h = 0;
-            var d = 0;
-            var y = 0;
-
-            // Years
-            while (s >= 31536000)
+            try
             {
-                y++;
-                s -= 31536000;
-            }
+                var s = value;
+                var m = 0;
+                var h = 0;
+                var d = 0;
+                var y = 0;
 
-            // Days
-            while (s >= 86400)
+                // Years
+                while (s >= 31536000)
+                {
+                    y++;
+                    s -= 31536000;
+                }
+
+                // Days
+                while (s >= 86400)
+                {
+                    d++;
+                    s -= 86400;
+                }
+
+                // Hours
+                while (s >= 3600)
+                {
+                    h++;
+                    s -= 3600;
+                }
+
+                // Minutes
+                while (s >= 60)
+                {
+                    m++;
+                    s -= 60;
+                }
+
+                if (y > 0)
+                {
+                    return y + "y " + d + "d " + h + "h " + m + "m " + s.ToString(format) + "s";
+                }
+
+                if (d > 0)
+                {
+                    return d + "d " + h + "h " + m + "m " + s.ToString(format) + "s";
+                }
+
+                if (h > 0)
+                {
+                    return h + "h " + m + "m " + s.ToString(format) + "s";
+                }
+
+                if (m > 0)
+                {
+                    return m + "m " + s.ToString(format) + "s";
+                }
+
+                return s.ToString(format) + "s";
+            }
+            catch (Exception ex)
             {
-                d++;
-                s -= 86400;
+                Logger.Exception(ex, "FloatExtensions->ToTime");
+                return "ERR";
             }
-
-            // Hours
-            while (s >= 3600)
-            {
-                h++;
-                s -= 3600;
-            }
-
-            // Minutes
-            while (s >= 60)
-            {
-                m++;
-                s -= 60;
-            }
-
-            if (y > 0)
-            {
-                return y + "y " + d + "d " + h + "h " + m + "m " + s.ToString("F1") + "s";
-            }
-
-            if (d > 0)
-            {
-                return d + "d " + h + "h " + m + "m " + s.ToString("F1") + "s";
-            }
-
-            if (h > 0)
-            {
-                return h + "h " + m + "m " + s.ToString("F1") + "s";
-            }
-
-            if (m > 0)
-            {
-                return m + "m " + s.ToString("F1") + "s";
-            }
-
-            return s.ToString("F1") + "s";
         }
     }
 }

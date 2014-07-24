@@ -112,6 +112,16 @@ namespace KerbalEngineer
             }
         }
 
+        public static void Exception(Exception ex, string location)
+        {
+            lock (messages)
+            {
+                messages.Add("[Exception " + DateTime.Now.TimeOfDay + "]: " + location + " // " + ex.Message);
+                messages.Add(ex.StackTrace);
+                messages.Add(string.Empty);
+            }
+        }
+
         #endregion
 
         #region Flushing

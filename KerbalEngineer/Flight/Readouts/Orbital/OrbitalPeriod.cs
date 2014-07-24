@@ -37,7 +37,7 @@ namespace KerbalEngineer.Flight.Readouts.Orbital
 
         public override void Draw()
         {
-            this.DrawLine(FlightGlobals.ship_orbit.period.ToTime());
+            this.DrawLine(FlightGlobals.ship_orbit.period.ToTime("F3"));
         }
     }
 }
