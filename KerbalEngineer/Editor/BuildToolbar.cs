@@ -30,31 +30,34 @@ namespace KerbalEngineer.Editor
     [KSPAddon(KSPAddon.Startup.EditorAny, false)]
     public class BuildToolbar : MonoBehaviour
     {
-        private static Texture2D texture = new Texture2D(38, 38, TextureFormat.RGBA32, false);
         private ApplicationLauncherButton button;
 
         private void Awake()
         {
-            texture = GameDatabase.Instance.GetTexture("KerbalEngineer/ToolbarIcon", false);
             GameEvents.onGUIApplicationLauncherReady.Add(this.OnGuiAppLauncherReady);
-
             Logger.Log("BuildToolbar->Awake");
         }
 
         private void OnGuiAppLauncherReady()
         {
-            this.button = ApplicationLauncher.Instance.AddModApplication(
-                () => BuildAdvanced.Instance.Visible = true,
-                () => BuildAdvanced.Instance.Visible = false,
-                null,
-                null,
-                null,
-                null,
-                ApplicationLauncher.AppScenes.ALWAYS,
-                texture
-                );
-
-            Logger.Log("BuildToolbar->OnGuiAppLauncherReady");
+            try
+            {
+                this.button = ApplicationLauncher.Instance.AddModApplication(
+                    () => BuildAdvanced.Instance.Visible = true,
+                    () => BuildAdvanced.Instance.Visible = false,
+                    null,
+                    null,
+                    null,
+                    null,
+                    ApplicationLauncher.AppScenes.ALWAYS,
+                    GameDatabase.Instance.GetTexture("KerbalEngineer/ToolbarIcon", false)
+                    );
+                Logger.Log("BuildToolbar->OnGuiAppLauncherReady");
+            }
+            catch (Exception ex)
+            {
+                Logger.Exception(ex, "BuildToolbar->OnGuiAppLauncherReady");
+            }
         }
 
         private void Update()
@@ -84,8 +87,7 @@ namespace KerbalEngineer.Editor
             }
             catch (Exception ex)
             {
-                Logger.Log("BuildToolbar->Update");
-                Logger.Exception(ex);
+                Logger.Exception(ex, "BuildToolbar->Update");
             }
         }
 
@@ -96,7 +98,6 @@ namespace KerbalEngineer.Editor
             {
                 ApplicationLauncher.Instance.RemoveModApplication(this.button);
             }
-
             Logger.Log("BuildToolbar->OnDestroy");
         }
     }
