@@ -92,10 +92,13 @@ namespace KerbalEngineer.Flight.Readouts
             this.readoutModules.Add(new GeeForce());
             this.readoutModules.Add(new TerminalVelocity());
             this.readoutModules.Add(new AtmosphericEfficiency());
+            this.readoutModules.Add(new Biome());
+            this.readoutModules.Add(new Slope());
             this.readoutModules.Add(new ImpactTime());
             this.readoutModules.Add(new ImpactLongitude());
             this.readoutModules.Add(new ImpactLatitude());
             this.readoutModules.Add(new ImpactAltitude());
+            this.readoutModules.Add(new ImpactBiome());
 
             // Vessel
             this.readoutModules.Add(new DeltaVStaged());

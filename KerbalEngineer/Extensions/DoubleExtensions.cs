@@ -170,11 +170,11 @@ namespace KerbalEngineer.Extensions
         /// <summary>
         ///     Convert to string formatted as an angle.
         /// </summary>
-        public static string ToAngle(this double value)
+        public static string ToAngle(this double value, string format = "F3")
         {
             try
             {
-                return value.ToString("F3") + "°";
+                return value.ToString(format) + "°";
             }
             catch (Exception ex)
             {
