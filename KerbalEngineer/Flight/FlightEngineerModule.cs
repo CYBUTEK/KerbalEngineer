@@ -49,7 +49,7 @@ namespace KerbalEngineer.Flight
         {
             try
             {
-                if (!HighLogic.LoadedSceneIsFlight)
+                if (!HighLogic.LoadedSceneIsFlight || FlightEngineerPartless.IsPartless)
                 {
                     return;
                 }
@@ -59,7 +59,7 @@ namespace KerbalEngineer.Flight
                     // Checks for an existing instance of FlightEngineerCore, and if this part is the first part containing FlightEngineerModule within the vessel.
                     if (flightEngineerCore == null && this.part == this.vessel.parts.FirstOrDefault(p => p.Modules.Contains("FlightEngineerModule")))
                     {
-                        flightEngineerCore = this.gameObject.AddComponent<FlightEngineerCore>();
+                        this.flightEngineerCore = this.gameObject.AddComponent<FlightEngineerCore>();
                     }
                 }
                 else if (flightEngineerCore != null)
