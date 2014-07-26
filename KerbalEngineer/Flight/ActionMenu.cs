@@ -34,6 +34,7 @@ namespace KerbalEngineer.Flight
     /// <summary>
     ///     Graphical controller for section interaction in the form of a menu system.
     /// </summary>
+    [KSPAddon(KSPAddon.Startup.Flight, false)]
     public class ActionMenu : MonoBehaviour
     {
         #region Constants
@@ -184,7 +185,7 @@ namespace KerbalEngineer.Flight
         {
             try
             {
-                if (!this.isOpen)
+                if (!this.isOpen || (this.button != null && this.button.State == RUIToggleButton.ButtonState.DISABLED))
                 {
                     return;
                 }

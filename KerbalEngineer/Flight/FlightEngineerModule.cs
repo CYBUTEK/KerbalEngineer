@@ -19,6 +19,7 @@
 
 #region Using Directives
 
+using System;
 using System.Linq;
 
 #endregion
@@ -46,23 +47,30 @@ namespace KerbalEngineer.Flight
         /// </summary>
         private void Update()
         {
-            if (!HighLogic.LoadedSceneIsFlight)
+            try
             {
-                return;
-            }
-
-            if (this.vessel == FlightGlobals.ActiveVessel)
-            {
-                // Checks for an existing instance of FlightEngineerCore, and if this part is the first part containing FlightEngineerModule within the vessel.
-                if (this.flightEngineerCore == null && this.part == this.vessel.parts.FirstOrDefault(p => p.Modules.Contains("FlightEngineerModule")))
+                if (!HighLogic.LoadedSceneIsFlight)
                 {
-                    this.flightEngineerCore = this.gameObject.AddComponent<FlightEngineerCore>();
+                    return;
+                }
+
+                if (this.vessel == FlightGlobals.ActiveVessel)
+                {
+                    // Checks for an existing instance of FlightEngineerCore, and if this part is the first part containing FlightEngineerModule within the vessel.
+                    if (flightEngineerCore == null && this.part == this.vessel.parts.FirstOrDefault(p => p.Modules.Contains("FlightEngineerModule")))
+                    {
+                        flightEngineerCore = this.gameObject.AddComponent<FlightEngineerCore>();
+                    }
+                }
+                else if (flightEngineerCore != null)
+                {
+                    // Using DestroyImmediate to force early destruction and keep saving/loading in synch when switching vessels.
+                    DestroyImmediate(flightEngineerCore);
                 }
             }
-            else if (this.flightEngineerCore != null)
+            catch (Exception ex)
             {
-                // Using DestroyImmediate to force early destruction and keep saving/loading in synch when switching vessels.
-                DestroyImmediate(this.flightEngineerCore);
+                Logger.Exception(ex, "FlightEngineerModule->Update");
             }
         }
 
@@ -75,9 +83,16 @@ namespace KerbalEngineer.Flight
         /// </summary>
         private void OnDestroy()
         {
-            if (this.flightEngineerCore != null)
+            try
             {
-                DestroyImmediate(this.flightEngineerCore);
+                if (flightEngineerCore != null)
+                {
+                    DestroyImmediate(flightEngineerCore);
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.Exception(ex, "FlightEngineerModule->OnDestroy");
             }
         }
 

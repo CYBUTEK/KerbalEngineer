@@ -19,6 +19,7 @@
 
 #region Using Directives
 
+using System;
 using System.Collections.Generic;
 
 using KerbalEngineer.Extensions;
@@ -34,6 +35,7 @@ namespace KerbalEngineer.Flight
     /// <summary>
     ///     Graphical controller for displaying stacked sections.
     /// </summary>
+    [KSPAddon(KSPAddon.Startup.Flight, false)]
     public class DisplayStack : MonoBehaviour
     {
         #region Instance
@@ -61,13 +63,21 @@ namespace KerbalEngineer.Flight
         /// </summary>
         private void Awake()
         {
-            if (Instance == null)
+            try
             {
-                Instance = this;
+                if (Instance == null)
+                {
+                    Instance = this;
+                    Logger.Log("ActionMenu->Awake");
+                }
+                else
+                {
+                    Destroy(this);
+                }
             }
-            else
+            catch (Exception ex)
             {
-                Destroy(this);
+                Logger.Exception(ex, "DisplayStack->Awake");
             }
         }
 
@@ -76,11 +86,18 @@ namespace KerbalEngineer.Flight
         /// </summary>
         private void Start()
         {
-            this.windowId = this.GetHashCode();
-            this.InitialiseStyles();
-            this.Load();
-
-            RenderingManager.AddToPostDrawQueue(0, this.Draw);
+            try
+            {
+                this.windowId = this.GetHashCode();
+                this.InitialiseStyles();
+                this.Load();
+                RenderingManager.AddToPostDrawQueue(0, this.Draw);
+                Logger.Log("ActionMenu->Start");
+            }
+            catch (Exception ex)
+            {
+                Logger.Exception(ex, "DisplayStack->Start");
+            }
         }
 
         #endregion
@@ -113,36 +130,43 @@ namespace KerbalEngineer.Flight
         /// </summary>
         private void InitialiseStyles()
         {
-            this.windowStyle = new GUIStyle(HighLogic.Skin.window)
+            try
             {
-                margin = new RectOffset(),
-                padding = new RectOffset(5, 5, 0, 5)
-            };
-
-            this.titleStyle = new GUIStyle(HighLogic.Skin.label)
-            {
-                margin = new RectOffset(0, 0, 5, 3),
-                padding = new RectOffset(),
-                alignment = TextAnchor.MiddleCenter,
-                fontSize = 13,
-                fontStyle = FontStyle.Bold,
-                stretchWidth = true
-            };
-
-            this.buttonStyle = new GUIStyle(HighLogic.Skin.button)
-            {
-                normal =
+                this.windowStyle = new GUIStyle(HighLogic.Skin.window)
                 {
-                    textColor = Color.white
-                },
-                margin = new RectOffset(),
-                padding = new RectOffset(),
-                alignment = TextAnchor.MiddleCenter,
-                fontSize = 11,
-                fontStyle = FontStyle.Bold,
-                fixedWidth = 60.0f,
-                fixedHeight = 25.0f,
-            };
+                    margin = new RectOffset(),
+                    padding = new RectOffset(5, 5, 0, 5)
+                };
+
+                this.titleStyle = new GUIStyle(HighLogic.Skin.label)
+                {
+                    margin = new RectOffset(0, 0, 5, 3),
+                    padding = new RectOffset(),
+                    alignment = TextAnchor.MiddleCenter,
+                    fontSize = 13,
+                    fontStyle = FontStyle.Bold,
+                    stretchWidth = true
+                };
+
+                this.buttonStyle = new GUIStyle(HighLogic.Skin.button)
+                {
+                    normal =
+                    {
+                        textColor = Color.white
+                    },
+                    margin = new RectOffset(),
+                    padding = new RectOffset(),
+                    alignment = TextAnchor.MiddleCenter,
+                    fontSize = 11,
+                    fontStyle = FontStyle.Bold,
+                    fixedWidth = 60.0f,
+                    fixedHeight = 25.0f,
+                };
+            }
+            catch (Exception ex)
+            {
+                Logger.Exception(ex, "DisplayStack->InitialiseStyles");
+            }
         }
 
         #endregion
@@ -151,9 +175,21 @@ namespace KerbalEngineer.Flight
 
         private void Update()
         {
-            if (Input.GetKeyDown(KeyCode.Backslash))
+            try
             {
-                this.Hidden = !this.Hidden;
+                if (FlightEngineerCore.Instance == null)
+                {
+                    return;
+                }
+
+                if (Input.GetKeyDown(KeyCode.Backslash))
+                {
+                    this.Hidden = !this.Hidden;
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.Exception(ex, "DisplayStack->Update");
             }
         }
 
@@ -166,16 +202,28 @@ namespace KerbalEngineer.Flight
         /// </summary>
         private void Draw()
         {
-            if (this.resizeRequested || this.numberOfStackSections != SectionLibrary.Instance.NumberOfStackSections)
+            try
             {
-                this.numberOfStackSections = SectionLibrary.Instance.NumberOfStackSections;
-                this.windowPosition.height = 0;
-                this.resizeRequested = false;
-            }
+                if (FlightEngineerCore.Instance == null)
+                {
+                    return;
+                }
 
-            if (!this.Hidden && (SectionLibrary.Instance.NumberOfStackSections > 0 || this.ShowControlBar))
+                if (this.resizeRequested || this.numberOfStackSections != SectionLibrary.Instance.NumberOfStackSections)
+                {
+                    this.numberOfStackSections = SectionLibrary.Instance.NumberOfStackSections;
+                    this.windowPosition.height = 0;
+                    this.resizeRequested = false;
+                }
+
+                if (!this.Hidden && (SectionLibrary.Instance.NumberOfStackSections > 0 || this.ShowControlBar))
+                {
+                    this.windowPosition = GUILayout.Window(this.windowId, this.windowPosition, this.Window, string.Empty, this.windowStyle).ClampToScreen();
+                }
+            }
+            catch (Exception ex)
             {
-                this.windowPosition = GUILayout.Window(this.windowId, this.windowPosition, this.Window, string.Empty, this.windowStyle).ClampToScreen();
+                Logger.Exception(ex, "DisplayStack->Draw");
             }
         }
 
@@ -184,18 +232,25 @@ namespace KerbalEngineer.Flight
         /// </summary>
         private void Window(int windowId)
         {
-            if (this.ShowControlBar)
+            try
             {
-                this.DrawControlBar();
-            }
+                if (this.ShowControlBar)
+                {
+                    this.DrawControlBar();
+                }
 
-            if (SectionLibrary.Instance.NumberOfStackSections > 0)
+                if (SectionLibrary.Instance.NumberOfStackSections > 0)
+                {
+                    this.DrawSections(SectionLibrary.Instance.StockSections);
+                    this.DrawSections(SectionLibrary.Instance.CustomSections);
+                }
+
+                GUI.DragWindow();
+            }
+            catch (Exception ex)
             {
-                this.DrawSections(SectionLibrary.Instance.StockSections);
-                this.DrawSections(SectionLibrary.Instance.CustomSections);
+                Logger.Exception(ex, "DisplayStack->Widnow");
             }
-
-            GUI.DragWindow();
         }
 
         /// <summary>
@@ -203,10 +258,17 @@ namespace KerbalEngineer.Flight
         /// </summary>
         private void DrawControlBar()
         {
-            GUILayout.Label("FLIGHT ENGINEER " + EngineerGlobals.AssemblyVersion, this.titleStyle);
+            try
+            {
+                GUILayout.Label("FLIGHT ENGINEER " + EngineerGlobals.AssemblyVersion, this.titleStyle);
 
-            this.DrawControlBarButtons(SectionLibrary.Instance.StockSections);
-            this.DrawControlBarButtons(SectionLibrary.Instance.CustomSections);
+                this.DrawControlBarButtons(SectionLibrary.Instance.StockSections);
+                this.DrawControlBarButtons(SectionLibrary.Instance.CustomSections);
+            }
+            catch (Exception ex)
+            {
+                Logger.Exception(ex, "DisplayStack->DrawControlBar");
+            }
         }
 
         /// <summary>
@@ -214,23 +276,30 @@ namespace KerbalEngineer.Flight
         /// </summary>
         private void DrawControlBarButtons(IEnumerable<SectionModule> sections)
         {
-            var index = 0;
-            foreach (var section in sections)
+            try
             {
-                if (index % 4 == 0)
+                var index = 0;
+                foreach (var section in sections)
                 {
-                    if (index > 0)
+                    if (index % 4 == 0)
                     {
-                        GUILayout.EndHorizontal();
+                        if (index > 0)
+                        {
+                            GUILayout.EndHorizontal();
+                        }
+                        GUILayout.BeginHorizontal();
                     }
-                    GUILayout.BeginHorizontal();
+                    section.IsVisible = GUILayout.Toggle(section.IsVisible, section.Abbreviation.ToUpper(), this.buttonStyle);
+                    index++;
                 }
-                section.IsVisible = GUILayout.Toggle(section.IsVisible, section.Abbreviation.ToUpper(), this.buttonStyle);
-                index++;
+                if (index > 0)
+                {
+                    GUILayout.EndHorizontal();
+                }
             }
-            if (index > 0)
+            catch (Exception ex)
             {
-                GUILayout.EndHorizontal();
+                Logger.Exception(ex, "DisplayStack->DrawControlBarButtons");
             }
         }
 
@@ -239,12 +308,19 @@ namespace KerbalEngineer.Flight
         /// </summary>
         private void DrawSections(IEnumerable<SectionModule> sections)
         {
-            foreach (var section in sections)
+            try
             {
-                if (!section.IsFloating)
+                foreach (var section in sections)
                 {
-                    section.Draw();
+                    if (!section.IsFloating)
+                    {
+                        section.Draw();
+                    }
                 }
+            }
+            catch (Exception ex)
+            {
+                Logger.Exception(ex, "DisplayStack->DrawSections");
             }
         }
 
@@ -257,9 +333,16 @@ namespace KerbalEngineer.Flight
         /// </summary>
         private void OnDestroy()
         {
-            this.Save();
-
-            RenderingManager.RemoveFromPostDrawQueue(0, this.Draw);
+            try
+            {
+                this.Save();
+                RenderingManager.RemoveFromPostDrawQueue(0, this.Draw);
+                Logger.Log("ActionMenu->OnDestroy");
+            }
+            catch (Exception ex)
+            {
+                Logger.Exception(ex, "DisplayStack->OnDestroy");
+            }
         }
 
         #endregion
@@ -271,11 +354,18 @@ namespace KerbalEngineer.Flight
         /// </summary>
         private void Save()
         {
-            var handler = new SettingHandler();
-            handler.Set("showControlBar", this.ShowControlBar);
-            handler.Set("windowPositionX", this.windowPosition.x);
-            handler.Set("windowPositionY", this.windowPosition.y);
-            handler.Save("DisplayStack.xml");
+            try
+            {
+                var handler = new SettingHandler();
+                handler.Set("showControlBar", this.ShowControlBar);
+                handler.Set("windowPositionX", this.windowPosition.x);
+                handler.Set("windowPositionY", this.windowPosition.y);
+                handler.Save("DisplayStack.xml");
+            }
+            catch (Exception ex)
+            {
+                Logger.Exception(ex, "DisplayStack->Save");
+            }
         }
 
         /// <summary>
@@ -283,10 +373,17 @@ namespace KerbalEngineer.Flight
         /// </summary>
         private void Load()
         {
-            var handler = SettingHandler.Load("DisplayStack.xml");
-            this.ShowControlBar = handler.Get("showControlBar", this.ShowControlBar);
-            this.windowPosition.x = handler.Get("windowPositionX", this.windowPosition.x);
-            this.windowPosition.y = handler.Get("windowPositionY", this.windowPosition.y);
+            try
+            {
+                var handler = SettingHandler.Load("DisplayStack.xml");
+                this.ShowControlBar = handler.Get("showControlBar", this.ShowControlBar);
+                this.windowPosition.x = handler.Get("windowPositionX", this.windowPosition.x);
+                this.windowPosition.y = handler.Get("windowPositionY", this.windowPosition.y);
+            }
+            catch (Exception ex)
+            {
+                Logger.Exception(ex, "DisplayStack->Load");
+            }
         }
 
         #endregion

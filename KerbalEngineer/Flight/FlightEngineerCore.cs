@@ -19,6 +19,7 @@
 
 #region Using Directives
 
+using System;
 using System.Collections.Generic;
 
 using KerbalEngineer.Flight.Readouts;
@@ -51,13 +52,19 @@ namespace KerbalEngineer.Flight
         /// </summary>
         private void Awake()
         {
-            Instance = this;
+            try
+            {
+                Instance = this;
 
-            this.ActionMenu = this.gameObject.AddComponent<ActionMenu>();
-            this.DisplayStack = this.gameObject.AddComponent<DisplayStack>();
-            this.SectionWindows = new List<SectionWindow>();
-            this.SectionEditors = new List<SectionEditor>();
-            this.UpdatableModules = new List<IUpdatable>();
+                this.SectionWindows = new List<SectionWindow>();
+                this.SectionEditors = new List<SectionEditor>();
+                this.UpdatableModules = new List<IUpdatable>();
+                Logger.Log("FlightEngineerCore->Awake");
+            }
+            catch (Exception ex)
+            {
+                Logger.Exception(ex, "FlightEngineerCore->Awake");
+            }
         }
 
         /// <summary>
@@ -65,23 +72,21 @@ namespace KerbalEngineer.Flight
         /// </summary>
         private void Start()
         {
-            SectionLibrary.Instance.Load();
-            ReadoutLibrary.Instance.Reset();
+            try
+            {
+                SectionLibrary.Instance.Load();
+                ReadoutLibrary.Instance.Reset();
+                Logger.Log("FlightEngineerCore->Start");
+            }
+            catch (Exception ex)
+            {
+                Logger.Exception(ex, "FlightEngineerCore->Start");
+            }
         }
 
         #endregion
 
         #region Properties
-
-        /// <summary>
-        ///     Gets and sets the ActionMenu object.
-        /// </summary>
-        public ActionMenu ActionMenu { get; set; }
-
-        /// <summary>
-        ///     Gets and sets the DisplayStack object.
-        /// </summary>
-        public DisplayStack DisplayStack { get; set; }
 
         /// <summary>
         ///     Gets the section windows for floating sections.
@@ -107,8 +112,15 @@ namespace KerbalEngineer.Flight
         /// </summary>
         private void Update()
         {
-            SectionLibrary.Instance.Update();
-            this.UpdateModules();
+            try
+            {
+                SectionLibrary.Instance.Update();
+                this.UpdateModules();
+            }
+            catch (Exception ex)
+            {
+                Logger.Exception(ex, "FlightEngineerCore->Update");
+            }
         }
 
         /// <summary>
@@ -116,21 +128,28 @@ namespace KerbalEngineer.Flight
         /// </summary>
         private void UpdateModules()
         {
-            foreach (var updatable in this.UpdatableModules)
+            try
             {
-                if (updatable is IUpdateRequest)
+                foreach (var updatable in this.UpdatableModules)
                 {
-                    var request = updatable as IUpdateRequest;
-                    if (request.UpdateRequested)
+                    if (updatable is IUpdateRequest)
+                    {
+                        var request = updatable as IUpdateRequest;
+                        if (request.UpdateRequested)
+                        {
+                            updatable.Update();
+                            request.UpdateRequested = false;
+                        }
+                    }
+                    else
                     {
                         updatable.Update();
-                        request.UpdateRequested = false;
                     }
                 }
-                else
-                {
-                    updatable.Update();
-                }
+            }
+            catch (Exception ex)
+            {
+                Logger.Exception(ex, "FlightEngineerCore->UpdateModules");
             }
         }
 
@@ -143,30 +162,27 @@ namespace KerbalEngineer.Flight
         /// </summary>
         private void OnDestroy()
         {
-            SectionLibrary.Instance.Save();
-
-            foreach (var window in this.SectionWindows)
+            try
             {
-                print("[FlightEngineer]: Destroying Floating Window for " + window.ParentSection.Name);
-                Destroy(window);
+                SectionLibrary.Instance.Save();
+
+                foreach (var window in this.SectionWindows)
+                {
+                    print("[FlightEngineer]: Destroying Floating Window for " + window.ParentSection.Name);
+                    Destroy(window);
+                }
+
+                foreach (var editor in this.SectionEditors)
+                {
+                    print("[FlightEngineer]: Destroying Editor Window for " + editor.ParentSection.Name);
+                    Destroy(editor);
+                }
+
+                Logger.Log("FlightEngineerCore->OnDestroy");
             }
-
-            foreach (var editor in this.SectionEditors)
+            catch (Exception ex)
             {
-                print("[FlightEngineer]: Destroying Editor Window for " + editor.ParentSection.Name);
-                Destroy(editor);
-            }
-
-            if (this.ActionMenu != null)
-            {
-                print("[FlightEngineer]: Destroying ActionMenu");
-                DestroyImmediate(this.ActionMenu);
-            }
-
-            if (this.DisplayStack != null)
-            {
-                print("[FlightEngineer]: Destroying DisplayStack");
-                DestroyImmediate(this.DisplayStack);
+                Logger.Exception(ex, "FlightEngineerCore->OnDestroy");
             }
         }
 
@@ -179,11 +195,19 @@ namespace KerbalEngineer.Flight
         /// </summary>
         public SectionWindow AddSectionWindow(SectionModule section)
         {
-            var window = this.gameObject.AddComponent<SectionWindow>();
-            window.ParentSection = section;
-            window.WindowPosition = new Rect(section.FloatingPositionX, section.FloatingPositionY, 0, 0);
-            this.SectionWindows.Add(window);
-            return window;
+            try
+            {
+                var window = this.gameObject.AddComponent<SectionWindow>();
+                window.ParentSection = section;
+                window.WindowPosition = new Rect(section.FloatingPositionX, section.FloatingPositionY, 0, 0);
+                this.SectionWindows.Add(window);
+                return window;
+            }
+            catch (Exception ex)
+            {
+                Logger.Exception(ex, "FlightEngineerCore->AddSectionWindow");
+                return null;
+            }
         }
 
         /// <summary>
@@ -191,11 +215,19 @@ namespace KerbalEngineer.Flight
         /// </summary>
         public SectionEditor AddSectionEditor(SectionModule section)
         {
-            var editor = this.gameObject.AddComponent<SectionEditor>();
-            editor.ParentSection = section;
-            editor.WindowPosition = new Rect(section.EditorPositionX, section.EditorPositionY, SectionEditor.Width, SectionEditor.Height);
-            this.SectionEditors.Add(editor);
-            return editor;
+            try
+            {
+                var editor = this.gameObject.AddComponent<SectionEditor>();
+                editor.ParentSection = section;
+                editor.WindowPosition = new Rect(section.EditorPositionX, section.EditorPositionY, SectionEditor.Width, SectionEditor.Height);
+                this.SectionEditors.Add(editor);
+                return editor;
+            }
+            catch (Exception ex)
+            {
+                Logger.Exception(ex, "FlightEngineerCore->AddSectionEditor");
+                return null;
+            }
         }
 
         /// <summary>
@@ -203,9 +235,16 @@ namespace KerbalEngineer.Flight
         /// </summary>
         public void AddUpdatable(IUpdatable updatable)
         {
-            if (!this.UpdatableModules.Contains(updatable))
+            try
             {
-                this.UpdatableModules.Add(updatable);
+                if (!this.UpdatableModules.Contains(updatable))
+                {
+                    this.UpdatableModules.Add(updatable);
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.Exception(ex, "FlightEngineerCore->AddUpdatable");
             }
         }
 
