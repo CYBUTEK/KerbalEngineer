@@ -1,0 +1,4 @@
+EngineerChip, , , 0,0,0, 0,0,0,1, 1,1,1
+node_collider, 0, mesh1.msh, 0,0,0, 0,0,0,1, 1,1,1
+EngineerChip, 0, mesh2.msh, 0,0,0, 0,0,0,1, 1,1,1
+EOF

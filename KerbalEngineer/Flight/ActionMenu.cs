@@ -236,11 +236,15 @@ namespace KerbalEngineer.Flight
         {
             try
             {
+                GUILayout.BeginHorizontal();
+                DisplayStack.Instance.Hidden = !GUILayout.Toggle(!DisplayStack.Instance.Hidden, "SHOW ENGINEER", this.buttonStyle);
+                GUILayout.Space(1.0f);
                 if (GUILayout.Toggle(DisplayStack.Instance.ShowControlBar, "CONTROL BAR", this.buttonStyle) != DisplayStack.Instance.ShowControlBar)
                 {
                     DisplayStack.Instance.ShowControlBar = !DisplayStack.Instance.ShowControlBar;
                     DisplayStack.Instance.RequestResize();
                 }
+                GUILayout.EndHorizontal();
             }
             catch (Exception ex)
             {
