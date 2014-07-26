@@ -33,29 +33,29 @@ namespace KerbalEngineer
     [KSPAddon(KSPAddon.Startup.Instantly, false)]
     public class Logger : MonoBehaviour
     {
-        #region Constants
-
-        private const string FileName = "KerbalEngineer.log";
-
-        #endregion
-
         #region Fields
 
+        private static readonly string fileName;
+        private static readonly AssemblyName assemblyName;
         private static readonly List<string> messages = new List<string>();
 
         #endregion
 
         #region Initialisation
 
+        static Logger()
+        {
+            assemblyName = Assembly.GetExecutingAssembly().GetName();
+            fileName = Path.ChangeExtension(Assembly.GetExecutingAssembly().Location, "log");
+            File.Delete(fileName);
+
+            messages.Add("Version: " + assemblyName.Version);
+            Blank();
+        }
+
         private void Awake()
         {
             DontDestroyOnLoad(this);
-            File.Delete(FileName);
-            using (var file = File.AppendText(FileName))
-            {
-                messages.Add("Version: " + Assembly.GetExecutingAssembly().GetName().Version);
-                Blank();
-            }
         }
 
         #endregion
@@ -132,11 +132,12 @@ namespace KerbalEngineer
             {
                 if (messages.Count > 0)
                 {
-                    using (var file = File.AppendText(FileName))
+                    using (var file = File.AppendText(fileName))
                     {
                         foreach (var message in messages)
                         {
                             file.WriteLine(message);
+                            print(assemblyName.Name + " -> " + message);
                         }
                     }
                     messages.Clear();
