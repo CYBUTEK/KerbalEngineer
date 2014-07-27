@@ -38,7 +38,7 @@ namespace KerbalEngineer
         #region Fields
 
         private static float multiplier = 1.1f;
-        private static int increment = 1;
+        private static int increment;
         private static float offset;
         public static event SizeChanged OnSizeChanged;
 
