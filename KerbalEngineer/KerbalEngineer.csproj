@@ -62,7 +62,7 @@
     <Compile Include="Editor\BuildToolbar.cs" />
     <Compile Include="Flight\FlightEngineerPartless.cs" />
     <Compile Include="Flight\Readouts\Misc\Separator.cs" />
-    <Compile Include="Flight\Readouts\Misc\ChangeGuiSize.cs" />
+    <Compile Include="Flight\Readouts\Misc\GuiSizeAdjustor.cs" />
     <Compile Include="Flight\Readouts\Surface\ImpactBiome.cs" />
     <Compile Include="Flight\Readouts\Surface\Slope.cs" />
     <Compile Include="Flight\Readouts\Surface\Biome.cs" />

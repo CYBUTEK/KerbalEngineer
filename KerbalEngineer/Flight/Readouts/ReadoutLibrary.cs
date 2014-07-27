@@ -127,7 +127,7 @@ namespace KerbalEngineer.Flight.Readouts
 
             // Misc
             this.readoutModules.Add(new Separator());
-            this.readoutModules.Add(new  ChangeGuiSize());
+            this.readoutModules.Add(new  GuiSizeAdjustor());
 
             this.LoadHelpStrings();
         }

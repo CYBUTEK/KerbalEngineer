@@ -21,13 +21,13 @@ using UnityEngine;
 
 namespace KerbalEngineer.Flight.Readouts.Misc
 {
-    public class ChangeGuiSize : ReadoutModule
+    public class GuiSizeAdjustor : ReadoutModule
     {
-        public ChangeGuiSize()
+        public GuiSizeAdjustor()
         {
-            this.Name = "Change GUI Size";
+            this.Name = "GUI Size Adjustor";
             this.Category = ReadoutCategory.Misc;
-            this.HelpString = "Shows a control that will allow you to change the GUI size.";
+            this.HelpString = "Shows a control that will allow you to adjust the GUI size.";
             this.IsDefault = false;
         }
 
