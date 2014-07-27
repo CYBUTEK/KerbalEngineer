@@ -752,6 +752,7 @@ namespace KerbalEngineer.Editor
                 handler.Set("windowPositionX", this.windowPosition.x);
                 handler.Set("windowPositionY", this.windowPosition.y);
                 handler.Set("compactMode", this.compactMode);
+                handler.Set("compactCollapseRight", this.compactCollapseRight);
                 handler.Set("showAllStages", this.showAllStages);
                 handler.Set("showAtmosphericDetails", this.showAtmosphericDetails);
                 handler.Set("showReferenceBodies", this.showReferenceBodies);
@@ -777,6 +778,7 @@ namespace KerbalEngineer.Editor
                 this.windowPosition.x = handler.Get("windowPositionX", this.windowPosition.x);
                 this.windowPosition.y = handler.Get("windowPositionY", this.windowPosition.y);
                 handler.Get("compactMode", ref this.compactMode);
+                handler.Get("compactCollapseRight", ref this.compactCollapseRight);
                 handler.Get("showAllStages", ref this.showAllStages);
                 handler.Get("showAtmosphericDetails", ref this.showAtmosphericDetails);
                 handler.Get("showSettings", ref this.showSettings);
