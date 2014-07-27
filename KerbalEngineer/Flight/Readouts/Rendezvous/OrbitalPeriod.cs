@@ -47,7 +47,7 @@ namespace KerbalEngineer.Flight.Readouts.Rendezvous
                 return;
             }
 
-            this.DrawLine(RendezvousProcessor.OrbitalPeriod.ToTime());
+            this.DrawLine(RendezvousProcessor.OrbitalPeriod.ToTime("F3"));
         }
 
         public override void Reset()

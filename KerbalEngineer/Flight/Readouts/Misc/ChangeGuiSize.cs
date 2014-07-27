@@ -19,14 +19,14 @@
 
 using UnityEngine;
 
-namespace KerbalEngineer.Flight.Readouts.Miscellaneous
+namespace KerbalEngineer.Flight.Readouts.Misc
 {
     public class ChangeGuiSize : ReadoutModule
     {
         public ChangeGuiSize()
         {
             this.Name = "Change GUI Size";
-            this.Category = ReadoutCategory.Miscellaneous;
+            this.Category = ReadoutCategory.Misc;
             this.HelpString = "Shows a control that will allow you to change the GUI size.";
             this.IsDefault = false;
         }

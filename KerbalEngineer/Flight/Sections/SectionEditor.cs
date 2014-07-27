@@ -271,10 +271,10 @@ namespace KerbalEngineer.Flight.Sections
                 this.selectedCategory = ReadoutCategory.Rendezvous;
             }
 
-            isSelected = this.selectedCategory == ReadoutCategory.Miscellaneous;
-            if (GUILayout.Toggle(isSelected, ReadoutCategory.Miscellaneous.ToString().ToUpper(), this.categoryButtonStyle) && !isSelected)
+            isSelected = this.selectedCategory == ReadoutCategory.Misc;
+            if (GUILayout.Toggle(isSelected, ReadoutCategory.Misc.ToString().ToUpper(), this.categoryButtonStyle) && !isSelected)
             {
-                this.selectedCategory = ReadoutCategory.Miscellaneous;
+                this.selectedCategory = ReadoutCategory.Misc;
             }
             GUILayout.EndHorizontal();
         }

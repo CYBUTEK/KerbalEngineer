@@ -22,7 +22,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-using KerbalEngineer.Flight.Readouts.Miscellaneous;
+using KerbalEngineer.Flight.Readouts.Misc;
 using KerbalEngineer.Flight.Readouts.Orbital;
 using KerbalEngineer.Flight.Readouts.Rendezvous;
 using KerbalEngineer.Flight.Readouts.Surface;
@@ -125,7 +125,7 @@ namespace KerbalEngineer.Flight.Readouts
             this.readoutModules.Add(new Distance());
             this.readoutModules.Add(new Rendezvous.OrbitalPeriod());
 
-            // Miscellaneous
+            // Misc
             this.readoutModules.Add(new  ChangeGuiSize());
 
             this.LoadHelpStrings();

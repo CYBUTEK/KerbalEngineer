@@ -29,6 +29,6 @@ namespace KerbalEngineer.Flight.Readouts
         Surface = 2,
         Vessel = 4,
         Rendezvous = 8,
-        Miscellaneous = 16
+        Misc = 16
     }
 }

@@ -20,6 +20,7 @@
 #region Using Directives
 
 using System;
+using System.IO;
 
 using UnityEngine;
 
@@ -50,7 +51,12 @@ namespace KerbalEngineer.Editor
                     null,
                     null,
                     ApplicationLauncher.AppScenes.ALWAYS,
-                    GameDatabase.Instance.GetTexture("KerbalEngineer/ToolbarIcon", false)
+                    GameDatabase.Instance.GetTexture("KerbalEngineer/ToolbarIcon", false) ?? new Func<Texture>(() =>
+                    {
+                        var t = new Texture2D(38, 38, TextureFormat.RGBA32, false);
+                        t.LoadImage(File.ReadAllBytes(Path.Combine(EngineerGlobals.AssemblyPath, "ToolbarIcon.png")));
+                        return t;
+                    })()
                     );
                 Logger.Log("BuildToolbar->OnGuiAppLauncherReady");
             }

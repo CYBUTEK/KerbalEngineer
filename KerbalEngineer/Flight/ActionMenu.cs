@@ -21,6 +21,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.IO;
 
 using KerbalEngineer.Flight.Sections;
 using KerbalEngineer.Settings;
@@ -45,12 +46,12 @@ namespace KerbalEngineer.Flight
 
         #region Fields
 
+        private ApplicationLauncherButton button;
         private bool isOpen;
         private int numberOfSections;
         private float scrollPercent;
         private int windowId;
         private Rect windowPosition = new Rect(Screen.width - 250.0f, 40.0f, 250.0f, 0);
-        private ApplicationLauncherButton button; 
 
         #endregion
 
@@ -86,7 +87,12 @@ namespace KerbalEngineer.Flight
                     null,
                     null,
                     ApplicationLauncher.AppScenes.ALWAYS,
-                    GameDatabase.Instance.GetTexture("KerbalEngineer/ToolbarIcon", false)
+                    GameDatabase.Instance.GetTexture("KerbalEngineer/ToolbarIcon", false) ?? new Func<Texture>(() =>
+                    {
+                        var t = new Texture2D(38, 38, TextureFormat.RGBA32, false);
+                        t.LoadImage(File.ReadAllBytes(Path.Combine(EngineerGlobals.AssemblyPath, "ToolbarIcon.png")));
+                        return t;
+                    })()
                     );
                 Logger.Log("ActionMenu->OnGuiAppLauncherReady");
             }

@@ -29,7 +29,7 @@ namespace KerbalEngineer.Flight.Readouts.Rendezvous
     {
         #region Fields
 
-        private readonly float typeButtonWidth;
+        private float typeButtonWidth;
         private string searchQuery = string.Empty;
         private string searchText = string.Empty;
         private int targetCount;
@@ -48,7 +48,6 @@ namespace KerbalEngineer.Flight.Readouts.Rendezvous
             this.Category = ReadoutCategory.Rendezvous;
             this.HelpString = "A tool to allow easy browsing, searching and selection of targets.";
             this.IsDefault = true;
-            this.typeButtonWidth = Mathf.Round(this.ContentWidth * 0.5f);
         }
 
         #endregion
@@ -98,7 +97,7 @@ namespace KerbalEngineer.Flight.Readouts.Rendezvous
         private void DrawSearch()
         {
             GUILayout.BeginHorizontal();
-            GUILayout.Label("SEARCH:", this.FlexiLabelStyle, GUILayout.Width(60.0f));
+            GUILayout.Label("SEARCH:", this.FlexiLabelStyle, GUILayout.Width(60.0f * GuiDisplaySize.Offset));
 
             this.searchText = GUILayout.TextField(this.searchText, this.TextFieldStyle);
 
@@ -125,6 +124,8 @@ namespace KerbalEngineer.Flight.Readouts.Rendezvous
         /// </summary>
         private void DrawTypes()
         {
+            this.typeButtonWidth = Mathf.Round(this.ContentWidth * 0.5f);
+
             GUILayout.BeginHorizontal();
             if (GUILayout.Button("Celestial Bodies", this.ButtonStyle, GUILayout.Width(this.typeButtonWidth)))
             {
