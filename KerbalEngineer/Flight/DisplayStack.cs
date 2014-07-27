@@ -52,7 +52,7 @@ namespace KerbalEngineer.Flight
         private int numberOfStackSections;
         private bool resizeRequested;
         private int windowId;
-        private Rect windowPosition = new Rect(Screen.width - 275.0f, 50.0f, 250.0f, 0);
+        private Rect windowPosition;
 
         #endregion
 
@@ -68,6 +68,7 @@ namespace KerbalEngineer.Flight
                 if (Instance == null)
                 {
                     Instance = this;
+                    GuiDisplaySize.OnSizeChanged += this.OnSizeChanged;
                     Logger.Log("ActionMenu->Awake");
                 }
                 else
@@ -143,7 +144,7 @@ namespace KerbalEngineer.Flight
                     margin = new RectOffset(0, 0, 5, 3),
                     padding = new RectOffset(),
                     alignment = TextAnchor.MiddleCenter,
-                    fontSize = 13,
+                    fontSize = (int)(13 * GuiDisplaySize.Offset),
                     fontStyle = FontStyle.Bold,
                     stretchWidth = true
                 };
@@ -157,16 +158,22 @@ namespace KerbalEngineer.Flight
                     margin = new RectOffset(),
                     padding = new RectOffset(),
                     alignment = TextAnchor.MiddleCenter,
-                    fontSize = 11,
+                    fontSize = (int)(11 * GuiDisplaySize.Offset),
                     fontStyle = FontStyle.Bold,
-                    fixedWidth = 60.0f,
-                    fixedHeight = 25.0f,
+                    fixedWidth = 60.0f * GuiDisplaySize.Offset,
+                    fixedHeight = 25.0f * GuiDisplaySize.Offset,
                 };
             }
             catch (Exception ex)
             {
                 Logger.Exception(ex, "DisplayStack->InitialiseStyles");
             }
+        }
+
+        private void OnSizeChanged()
+        {
+            this.InitialiseStyles();
+            this.RequestResize();
         }
 
         #endregion
@@ -212,13 +219,19 @@ namespace KerbalEngineer.Flight
                 if (this.resizeRequested || this.numberOfStackSections != SectionLibrary.Instance.NumberOfStackSections)
                 {
                     this.numberOfStackSections = SectionLibrary.Instance.NumberOfStackSections;
+                    this.windowPosition.width = 0;
                     this.windowPosition.height = 0;
                     this.resizeRequested = false;
                 }
 
                 if (!this.Hidden && (SectionLibrary.Instance.NumberOfStackSections > 0 || this.ShowControlBar))
                 {
+                    var shouldCentre = this.windowPosition.min == Vector2.zero && this.windowPosition.max == Vector2.zero;
                     this.windowPosition = GUILayout.Window(this.windowId, this.windowPosition, this.Window, string.Empty, this.windowStyle).ClampToScreen();
+                    if (shouldCentre)
+                    {
+                        this.windowPosition.center = new Vector2(Screen.width * 0.5f, Screen.height * 0.5f);
+                    }
                 }
             }
             catch (Exception ex)

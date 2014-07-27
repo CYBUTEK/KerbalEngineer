@@ -35,6 +35,7 @@ namespace KerbalEngineer.Flight.Readouts
         protected ReadoutModule()
         {
             this.InitialiseStyles();
+            GuiDisplaySize.OnSizeChanged += this.OnSizeChanged;
         }
 
         #endregion
@@ -115,10 +116,10 @@ namespace KerbalEngineer.Flight.Readouts
                 margin = new RectOffset(),
                 padding = new RectOffset(5, 0, 0, 0),
                 alignment = TextAnchor.MiddleLeft,
-                fontSize = 11,
+                fontSize = (int)(11 * GuiDisplaySize.Offset),
                 fontStyle = FontStyle.Bold,
-                fixedWidth = 115.0f,
-                fixedHeight = 20.0f
+                fixedWidth = 115.0f * GuiDisplaySize.Offset,
+                fixedHeight = 20.0f * GuiDisplaySize.Offset
             };
 
             this.ValueStyle = new GUIStyle(HighLogic.Skin.label)
@@ -126,10 +127,10 @@ namespace KerbalEngineer.Flight.Readouts
                 margin = new RectOffset(),
                 padding = new RectOffset(0, 5, 0, 0),
                 alignment = TextAnchor.MiddleRight,
-                fontSize = 11,
+                fontSize = (int)(11 * GuiDisplaySize.Offset),
                 fontStyle = FontStyle.Normal,
-                fixedWidth = 115.0f,
-                fixedHeight = 20.0f
+                fixedWidth = 115.0f * GuiDisplaySize.Offset,
+                fixedHeight = 20.0f * GuiDisplaySize.Offset
             };
 
             this.MessageStyle = new GUIStyle(HighLogic.Skin.label)
@@ -141,10 +142,10 @@ namespace KerbalEngineer.Flight.Readouts
                 margin = new RectOffset(),
                 padding = new RectOffset(),
                 alignment = TextAnchor.MiddleCenter,
-                fontSize = 11,
+                fontSize = (int)(11 * GuiDisplaySize.Offset),
                 fontStyle = FontStyle.Normal,
                 fixedWidth = this.ContentWidth,
-                fixedHeight = 20.0f
+                fixedHeight = 20.0f * GuiDisplaySize.Offset
             };
 
             this.FlexiLabelStyle = new GUIStyle(this.NameStyle)
@@ -162,8 +163,8 @@ namespace KerbalEngineer.Flight.Readouts
                 margin = new RectOffset(0, 0, 1, 1),
                 padding = new RectOffset(),
                 alignment = TextAnchor.MiddleCenter,
-                fontSize = 11,
-                fixedHeight = 18.0f
+                fontSize = (int)(11 * GuiDisplaySize.Offset),
+                fixedHeight = 18.0f * GuiDisplaySize.Offset
             };
 
             this.TextFieldStyle = new GUIStyle(HighLogic.Skin.textField)
@@ -171,9 +172,15 @@ namespace KerbalEngineer.Flight.Readouts
                 margin = new RectOffset(0, 0, 1, 1),
                 padding = new RectOffset(5, 5, 0, 0),
                 alignment = TextAnchor.MiddleLeft,
-                fontSize = 11,
-                fixedHeight = 18.0f
+                fontSize = (int)(11 * GuiDisplaySize.Offset),
+                fixedHeight = 18.0f * GuiDisplaySize.Offset
             };
+        }
+
+        private void OnSizeChanged()
+        {
+            this.InitialiseStyles();
+            this.ResizeRequested = true;
         }
 
         #endregion

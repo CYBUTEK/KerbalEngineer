@@ -47,6 +47,7 @@ namespace KerbalEngineer.Flight.Sections
             this.windowId = this.GetHashCode();
             this.InitialiseStyles();
             RenderingManager.AddToPostDrawQueue(0, this.Draw);
+            GuiDisplaySize.OnSizeChanged += this.OnSizeChanged;
         }
 
         #endregion
@@ -81,8 +82,14 @@ namespace KerbalEngineer.Flight.Sections
             this.windowStyle = new GUIStyle(HighLogic.Skin.window)
             {
                 margin = new RectOffset(),
-                padding = new RectOffset(5, 5, 0, 5)
+                padding = new RectOffset(5, 5, 0, 5),
             };
+        }
+
+        private void OnSizeChanged()
+        {
+            this.InitialiseStyles();
+            this.RequestResize();
         }
 
         #endregion
@@ -98,6 +105,7 @@ namespace KerbalEngineer.Flight.Sections
             {
                 if (this.resizeRequested)
                 {
+                    this.windowPosition.width = 0;
                     this.windowPosition.height = 0;
                     this.resizeRequested = false;
                 }
@@ -127,6 +135,7 @@ namespace KerbalEngineer.Flight.Sections
         private void OnDestroy()
         {
             RenderingManager.RemoveFromPostDrawQueue(0, this.Draw);
+            GuiDisplaySize.OnSizeChanged -= this.OnSizeChanged;
         }
 
         #endregion

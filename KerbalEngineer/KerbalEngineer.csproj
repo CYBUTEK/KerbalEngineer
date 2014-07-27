@@ -61,10 +61,12 @@
     <Compile Include="CelestialBodies.cs" />
     <Compile Include="Editor\BuildToolbar.cs" />
     <Compile Include="Flight\FlightEngineerPartless.cs" />
+    <Compile Include="Flight\Readouts\Miscellaneous\ChangeGuiSize.cs" />
     <Compile Include="Flight\Readouts\Surface\ImpactBiome.cs" />
     <Compile Include="Flight\Readouts\Surface\Slope.cs" />
     <Compile Include="Flight\Readouts\Surface\Biome.cs" />
     <Compile Include="Flight\Readouts\Vessel\SimulationDelay.cs" />
+    <Compile Include="GuiDisplaySize.cs" />
     <Compile Include="Logger.cs" />
     <Compile Include="EngineerGlobals.cs" />
     <Compile Include="Extensions\DoubleExtensions.cs" />

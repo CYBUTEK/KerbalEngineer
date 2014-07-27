@@ -59,6 +59,7 @@ namespace KerbalEngineer.Editor
         private void Awake()
         {
             Instance = this;
+            GuiDisplaySize.OnSizeChanged += this.OnSizeChanged;
         }
 
         private void Start()
@@ -127,7 +128,7 @@ namespace KerbalEngineer.Editor
                     },
                     margin = new RectOffset(),
                     padding = new RectOffset(),
-                    fontSize = 11,
+                    fontSize = (int)(11 * GuiDisplaySize.Offset),
                     fontStyle = FontStyle.Bold,
                     stretchWidth = true
                 };
@@ -136,7 +137,7 @@ namespace KerbalEngineer.Editor
                 {
                     margin = new RectOffset(),
                     padding = new RectOffset(),
-                    fontSize = 11,
+                    fontSize = (int)(11 * GuiDisplaySize.Offset),
                     fontStyle = FontStyle.Bold,
                     stretchWidth = true
                 };
@@ -147,14 +148,14 @@ namespace KerbalEngineer.Editor
                     {
                         textColor = Color.white
                     },
-                    fontSize = 11,
+                    fontSize = (int)(11 * GuiDisplaySize.Offset),
                     fontStyle = FontStyle.Bold,
                     stretchWidth = true
                 };
 
                 this.tooltipInfoStyle = new GUIStyle(HighLogic.Skin.label)
                 {
-                    fontSize = 11,
+                    fontSize = (int)(11 * GuiDisplaySize.Offset),
                     fontStyle = FontStyle.Bold,
                     stretchWidth = true
                 };
@@ -163,6 +164,13 @@ namespace KerbalEngineer.Editor
             {
                 Logger.Exception(ex, "BuildOverlay->InitialiseStyles");
             }
+        }
+
+        private void OnSizeChanged()
+        {
+            this.InitialiseStyles();
+            this.windowPosition.width = 0;
+            this.windowPosition.height = 0;
         }
 
         #endregion
@@ -271,14 +279,14 @@ namespace KerbalEngineer.Editor
                 GUILayout.BeginHorizontal();
 
                 // Titles
-                GUILayout.BeginVertical(GUILayout.Width(75.0f));
+                GUILayout.BeginVertical(GUILayout.Width(75.0f * GuiDisplaySize.Offset));
                 //GUILayout.Label("Parts:", this.titleStyle);
                 GUILayout.Label("Delta-V:", this.titleStyle);
                 GUILayout.Label("TWR:", this.titleStyle);
                 GUILayout.EndVertical();
 
                 // Details
-                GUILayout.BeginVertical(GUILayout.Width(100.0f));
+                GUILayout.BeginVertical(GUILayout.Width(100.0f * GuiDisplaySize.Offset));
                 //GUILayout.Label(SimulationManager.Instance.LastStage.partCount.ToString("N0"), this.infoStyle);
                 GUILayout.Label(SimManager.LastStage.totalDeltaV.ToString("N0") + " m/s", this.infoStyle);
                 GUILayout.Label(SimManager.LastStage.thrustToWeight.ToString("F2"), this.infoStyle);
@@ -439,7 +447,7 @@ namespace KerbalEngineer.Editor
                 var content = new GUIContent(value);
                 var size = this.tooltipInfoStyle.CalcSize(content);
 
-                position.y += 16.0f;
+                position.y += 16.0f * GuiDisplaySize.Offset;
                 position.width = size.x;
                 position.height = size.y;
                 GUI.Label(position, content, this.tooltipInfoStyle);
@@ -464,6 +472,7 @@ namespace KerbalEngineer.Editor
                 var handler = new SettingHandler();
                 handler.Set("visible", this.visible);
                 handler.Save("BuildOverlay.xml");
+                GuiDisplaySize.OnSizeChanged -= this.OnSizeChanged;
             }
             catch (Exception ex)
             {

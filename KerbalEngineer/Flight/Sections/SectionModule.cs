@@ -56,6 +56,7 @@ namespace KerbalEngineer.Flight.Sections
             this.EditorPositionY = Screen.height * 0.5f - SectionEditor.Height * 0.5f;
             this.ReadoutModules = new List<ReadoutModule>();
             this.InitialiseStyles();
+            GuiDisplaySize.OnSizeChanged += this.OnSizeChanged;
         }
 
         #endregion
@@ -187,6 +188,7 @@ namespace KerbalEngineer.Flight.Sections
                 },
                 margin = new RectOffset(),
                 padding = new RectOffset(2, 0, 5, 2),
+                fontSize = (int)(13 * GuiDisplaySize.Offset),
                 fontStyle = FontStyle.Bold,
                 stretchWidth = true
             };
@@ -199,8 +201,9 @@ namespace KerbalEngineer.Flight.Sections
                 },
                 margin = new RectOffset(0, 0, 5, 3),
                 padding = new RectOffset(),
-                fontSize = 10,
-                stretchHeight = true
+                fontSize = (int)(10 * GuiDisplaySize.Offset),
+                stretchHeight = true,
+                fixedWidth = 60.0f * GuiDisplaySize.Offset
             };
 
             this.messageStyle = new GUIStyle(HighLogic.Skin.label)
@@ -212,11 +215,16 @@ namespace KerbalEngineer.Flight.Sections
                 margin = new RectOffset(),
                 padding = new RectOffset(),
                 alignment = TextAnchor.MiddleCenter,
-                fontSize = 12,
+                fontSize = (int)(12 * GuiDisplaySize.Offset),
                 fontStyle = FontStyle.Bold,
-                fixedWidth = 220.0f,
-                fixedHeight = 20.0f
+                fixedWidth = 220.0f * GuiDisplaySize.Offset,
+                fixedHeight = 20.0f * GuiDisplaySize.Offset
             };
+        }
+
+        private void OnSizeChanged()
+        {
+            this.InitialiseStyles();
         }
 
         #endregion
@@ -277,8 +285,8 @@ namespace KerbalEngineer.Flight.Sections
         {
             GUILayout.BeginHorizontal();
             GUILayout.Label(this.Name.ToUpper(), this.titleStyle);
-            this.IsEditorVisible = GUILayout.Toggle(this.IsEditorVisible, "EDIT", this.buttonStyle, GUILayout.Width(60.0f));
-            this.IsFloating = GUILayout.Toggle(this.IsFloating, "FLOAT", this.buttonStyle, GUILayout.Width(60.0f));
+            this.IsEditorVisible = GUILayout.Toggle(this.IsEditorVisible, "EDIT", this.buttonStyle);
+            this.IsFloating = GUILayout.Toggle(this.IsFloating, "FLOAT", this.buttonStyle);
             GUILayout.EndHorizontal();
         }
 
