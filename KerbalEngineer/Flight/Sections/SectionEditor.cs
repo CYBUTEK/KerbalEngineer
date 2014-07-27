@@ -19,8 +19,6 @@
 
 #region Using Directives
 
-using System;
-
 using KerbalEngineer.Extensions;
 using KerbalEngineer.Flight.Readouts;
 
@@ -41,10 +39,10 @@ namespace KerbalEngineer.Flight.Sections
 
         #region Fields
 
-        private int windowId;
         private Vector2 scrollPositionAvailable;
         private Vector2 scrollPositionInstalled;
         private ReadoutCategory selectedCategory = ReadoutCategory.Orbital;
+        private int windowId;
         private Rect windowPosition;
 
         #endregion
@@ -292,7 +290,7 @@ namespace KerbalEngineer.Flight.Sections
 
             foreach (var readout in ReadoutLibrary.Instance.GetCategory(this.selectedCategory))
             {
-                if (!this.ParentSection.ReadoutModules.Contains(readout))
+                if (!this.ParentSection.ReadoutModules.Contains(readout) || readout.Cloneable)
                 {
                     GUILayout.BeginHorizontal(GUILayout.Height(30.0f));
                     GUILayout.Label(readout.Name, this.readoutNameStyle);
@@ -320,33 +318,36 @@ namespace KerbalEngineer.Flight.Sections
             GUI.skin = null;
 
             GUILayout.Label("INSTALLED", this.panelTitleStyle);
-            ReadoutModule removeReadout = null;
-            foreach (var readout in this.ParentSection.ReadoutModules)
+            var removeReadout = false;
+            var removeReadoutIndex = 0;
+
+            for (var i = 0; i < this.ParentSection.ReadoutModules.Count; i++)
             {
+                var readout = this.ParentSection.ReadoutModules[i];
+
                 GUILayout.BeginHorizontal(GUILayout.Height(30.0f));
                 GUILayout.Label(readout.Name, this.readoutNameStyle);
                 if (GUILayout.Button("▲", this.readoutButtonStyle, GUILayout.Width(30.0f)))
                 {
-                    var index = this.ParentSection.ReadoutModules.IndexOf(readout);
-                    if (index > 0)
+                    if (i > 0)
                     {
-                        this.ParentSection.ReadoutModules[index] = this.ParentSection.ReadoutModules[index - 1];
-                        this.ParentSection.ReadoutModules[index - 1] = readout;
+                        this.ParentSection.ReadoutModules[i] = this.ParentSection.ReadoutModules[i - 1];
+                        this.ParentSection.ReadoutModules[i - 1] = readout;
                     }
                 }
                 if (GUILayout.Button("▼", this.readoutButtonStyle, GUILayout.Width(30.0f)))
                 {
-                    var index = this.ParentSection.ReadoutModules.IndexOf(readout);
-                    if (index < this.ParentSection.ReadoutModules.Count - 1)
+                    if (i < this.ParentSection.ReadoutModules.Count - 1)
                     {
-                        this.ParentSection.ReadoutModules[index] = this.ParentSection.ReadoutModules[index + 1];
-                        this.ParentSection.ReadoutModules[index + 1] = readout;
+                        this.ParentSection.ReadoutModules[i] = this.ParentSection.ReadoutModules[i + 1];
+                        this.ParentSection.ReadoutModules[i + 1] = readout;
                     }
                 }
                 readout.ShowHelp = GUILayout.Toggle(readout.ShowHelp, "?", this.readoutButtonStyle, GUILayout.Width(30.0f));
                 if (GUILayout.Button("REMOVE", this.readoutButtonStyle, GUILayout.Width(125.0f)))
                 {
-                    removeReadout = readout;
+                    removeReadout = true;
+                    removeReadoutIndex = i;
                 }
                 GUILayout.EndHorizontal();
 
@@ -355,9 +356,9 @@ namespace KerbalEngineer.Flight.Sections
 
             GUILayout.EndScrollView();
 
-            if (removeReadout != null)
+            if (removeReadout)
             {
-                this.ParentSection.ReadoutModules.Remove(removeReadout);
+                this.ParentSection.ReadoutModules.RemoveAt(removeReadoutIndex);
             }
         }
 

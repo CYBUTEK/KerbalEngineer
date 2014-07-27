@@ -55,6 +55,8 @@ namespace KerbalEngineer.Flight.Readouts
 
         public bool IsDefault { get; set; }
 
+        public bool Cloneable { get; set; }
+
         /// <summary>
         ///     Gets ans sets the readout category.
         /// </summary>

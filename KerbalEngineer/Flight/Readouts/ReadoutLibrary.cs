@@ -126,6 +126,7 @@ namespace KerbalEngineer.Flight.Readouts
             this.readoutModules.Add(new Rendezvous.OrbitalPeriod());
 
             // Misc
+            this.readoutModules.Add(new Separator());
             this.readoutModules.Add(new  ChangeGuiSize());
 
             this.LoadHelpStrings();
