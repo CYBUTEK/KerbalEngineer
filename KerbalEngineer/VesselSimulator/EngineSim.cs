@@ -33,6 +33,7 @@ namespace KerbalEngineer.VesselSimulator
                          double atmosphere,
                          double velocity,
                          float maxThrust,
+                         float minThrust,
                          float thrustPercentage,
                          float requestedThrust,
                          Vector3 vecThrust,
@@ -54,7 +55,7 @@ namespace KerbalEngineer.VesselSimulator
             this.partSim = theEngine;
 
             this.isActive = active;
-            this.thrust = maxThrust * (thrustPercentage / 100f);
+            this.thrust = (maxThrust - minThrust) * (thrustPercentage / 100f) + minThrust;
             //MonoBehaviour.print("thrust = " + thrust);
 
             this.thrustVec = vecThrust;
