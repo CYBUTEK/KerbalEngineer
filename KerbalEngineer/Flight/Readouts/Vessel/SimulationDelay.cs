@@ -39,11 +39,6 @@ namespace KerbalEngineer.Flight.Readouts.Vessel
 
         public override void Draw()
         {
-            if (SimManager.LastStage == null)
-            {
-                return;
-            }
-
             GUILayout.BeginHorizontal();
             GUILayout.Label("Sim Delay", this.NameStyle);
             GUI.skin = HighLogic.Skin;

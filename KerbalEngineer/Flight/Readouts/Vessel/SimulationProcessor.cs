@@ -43,6 +43,8 @@ namespace KerbalEngineer.Flight.Readouts.Vessel
         public void Update()
         {
             SimManager.RequestSimulation();
+            SimManager.TryStartSimulation();
+
             if (!SimManager.ResultsReady())
             {
                 return;

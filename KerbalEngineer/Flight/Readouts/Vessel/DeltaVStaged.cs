@@ -19,9 +19,11 @@
 
 #region Using Directives
 
-
+using KerbalEngineer.VesselSimulator;
 
 #endregion
+
+
 
 namespace KerbalEngineer.Flight.Readouts.Vessel
 {
