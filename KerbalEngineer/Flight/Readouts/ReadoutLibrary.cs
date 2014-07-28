@@ -93,6 +93,8 @@ namespace KerbalEngineer.Flight.Readouts
             this.readoutModules.Add(new GeeForce());
             this.readoutModules.Add(new TerminalVelocity());
             this.readoutModules.Add(new AtmosphericEfficiency());
+            this.readoutModules.Add(new AtmosphericDeceleration());
+            this.readoutModules.Add(new AtmosphericForce());
             this.readoutModules.Add(new Biome());
             this.readoutModules.Add(new Slope());
             this.readoutModules.Add(new ImpactTime());

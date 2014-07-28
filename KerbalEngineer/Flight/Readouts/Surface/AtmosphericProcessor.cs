@@ -61,6 +61,16 @@ namespace KerbalEngineer.Flight.Readouts.Surface
         /// </summary>
         public static double Efficiency { get; private set; }
 
+        /// <summary>
+        ///     Gets the deceleration caused by drag.
+        /// </summary>
+        public static double Deceleration { get; private set; }
+
+        /// <summary>
+        ///     Gets the force caused by drag.
+        /// </summary>
+        public static double Force { get; private set; }
+
         #endregion
 
         #region IUpdatable Members
@@ -86,6 +96,7 @@ namespace KerbalEngineer.Flight.Readouts.Surface
 
             TerminalVelocity = Math.Sqrt((2 * mass * grav) / (atmo * drag * coef));
             Efficiency = FlightGlobals.ship_srfSpeed / TerminalVelocity;
+            Force = atmo * coef * drag * Math.Pow(FlightGlobals.ActiveVessel.srfSpeed, 2) / 2;
         }
 
         #endregion
