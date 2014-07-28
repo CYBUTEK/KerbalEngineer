@@ -17,7 +17,7 @@
 //     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // 
 
-#region
+#region Using Directives
 
 using System;
 using System.Diagnostics;
@@ -47,6 +47,7 @@ namespace KerbalEngineer.Editor
         #region Fields
 
         private readonly Stopwatch tooltipInfoTimer = new Stopwatch();
+        private Stage lastStage;
 
         private Part selectedPart;
         private int windowId;
@@ -210,12 +211,22 @@ namespace KerbalEngineer.Editor
         {
             try
             {
-                if (!this.visible || EditorLogic.fetch == null || EditorLogic.fetch.ship.parts.Count == 0 || EditorLogic.fetch.editorScreen != EditorLogic.EditorScreen.Parts || SimManager.LastStage == null)
+                if (!this.visible || EditorLogic.fetch == null || EditorLogic.fetch.ship.parts.Count == 0 || EditorLogic.fetch.editorScreen != EditorLogic.EditorScreen.Parts)
                 {
                     return;
                 }
 
+                if (SimManager.ResultsReady())
+                {
+                    this.lastStage = SimManager.LastStage;
+                }
+
                 SimManager.RequestSimulation();
+
+                if (this.lastStage == null)
+                {
+                    return;
+                }
 
                 this.windowPosition = GUILayout.Window(this.windowId, this.windowPosition, this.Window, string.Empty, this.windowStyle);
 
@@ -288,8 +299,8 @@ namespace KerbalEngineer.Editor
                 // Details
                 GUILayout.BeginVertical(GUILayout.Width(100.0f * GuiDisplaySize.Offset));
                 //GUILayout.Label(SimulationManager.Instance.LastStage.partCount.ToString("N0"), this.infoStyle);
-                GUILayout.Label(SimManager.LastStage.totalDeltaV.ToString("N0") + " m/s", this.infoStyle);
-                GUILayout.Label(SimManager.LastStage.thrustToWeight.ToString("F2"), this.infoStyle);
+                GUILayout.Label(this.lastStage.totalDeltaV.ToString("N0") + " m/s", this.infoStyle);
+                GUILayout.Label(this.lastStage.thrustToWeight.ToString("F2"), this.infoStyle);
                 GUILayout.EndVertical();
 
                 GUILayout.EndHorizontal();
