@@ -20,7 +20,6 @@
 #region Using Directives
 
 using KerbalEngineer.Extensions;
-using KerbalEngineer.VesselSimulator;
 
 #endregion
 
@@ -28,6 +27,8 @@ namespace KerbalEngineer.Flight.Readouts.Vessel
 {
     public class Thrust : ReadoutModule
     {
+        private bool showing;
+
         public Thrust()
         {
             this.Name = "Thrust";
@@ -38,22 +39,25 @@ namespace KerbalEngineer.Flight.Readouts.Vessel
 
         public override void Update()
         {
-            SimManager.RequestUpdate();
+            SimulationProcessor.RequestUpdate();
         }
 
         public override void Draw()
         {
-            if (SimManager.LastStage == null)
+            if (SimulationProcessor.ShowDetails)
             {
-                return;
+                this.DrawLine(SimulationProcessor.LastStage.actualThrust.ToForce(false) + " / " + SimulationProcessor.LastStage.thrust.ToForce());
             }
-
-            this.DrawLine(SimManager.LastStage.actualThrust.ToForce(false) + " / " + SimManager.LastStage.thrust.ToForce());
+            else if (this.showing)
+            {
+                this.showing = false;
+                this.ResizeRequested = true;
+            }
         }
 
         public override void Reset()
         {
-            FlightEngineerCore.Instance.AddUpdatable(SimManager.Instance);
+            FlightEngineerCore.Instance.AddUpdatable(SimulationProcessor.Instance);
         }
     }
 }

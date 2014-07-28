@@ -19,7 +19,7 @@
 
 #region Using Directives
 
-using KerbalEngineer.VesselSimulator;
+
 
 #endregion
 
@@ -28,6 +28,7 @@ namespace KerbalEngineer.Flight.Readouts.Vessel
     public class ThrustToWeight : ReadoutModule
     {
         private string actual = string.Empty;
+        private bool showing;
         private string total = string.Empty;
 
         public ThrustToWeight()
@@ -40,24 +41,27 @@ namespace KerbalEngineer.Flight.Readouts.Vessel
 
         public override void Update()
         {
-            SimManager.RequestUpdate();
+            SimulationProcessor.RequestUpdate();
         }
 
         public override void Draw()
         {
-            if (SimManager.LastStage == null)
+            if (SimulationProcessor.ShowDetails)
             {
-                return;
+                this.actual = (SimulationProcessor.LastStage.actualThrust / (SimulationProcessor.LastStage.totalMass * FlightGlobals.getGeeForceAtPosition(FlightGlobals.ship_position).magnitude)).ToString("F2");
+                this.total = (SimulationProcessor.LastStage.thrust / (SimulationProcessor.LastStage.totalMass * FlightGlobals.getGeeForceAtPosition(FlightGlobals.ship_position).magnitude)).ToString("F2");
+                this.DrawLine("TWR", this.actual + " / " + this.total);
             }
-
-            this.actual = (SimManager.LastStage.actualThrust / (SimManager.LastStage.totalMass * FlightGlobals.getGeeForceAtPosition(FlightGlobals.ship_position).magnitude)).ToString("F2");
-            this.total = (SimManager.LastStage.thrust / (SimManager.LastStage.totalMass * FlightGlobals.getGeeForceAtPosition(FlightGlobals.ship_position).magnitude)).ToString("F2");
-            this.DrawLine("TWR", this.actual + " / " + this.total);
+            else if (this.showing)
+            {
+                this.showing = false;
+                this.ResizeRequested = true;
+            }
         }
 
         public override void Reset()
         {
-            FlightEngineerCore.Instance.AddUpdatable(SimManager.Instance);
+            FlightEngineerCore.Instance.AddUpdatable(SimulationProcessor.Instance);
         }
     }
 }

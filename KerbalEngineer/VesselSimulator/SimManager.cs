@@ -10,7 +10,7 @@ using UnityEngine;
 
 namespace KerbalEngineer.VesselSimulator
 {
-    public class SimManager: IUpdatable, IUpdateRequest
+    public class SimManager
     {
         public static SimManager Instance = new SimManager();
         public const double RESOURCE_MIN = 0.0001;
@@ -251,19 +251,6 @@ namespace KerbalEngineer.VesselSimulator
                     return "Flag";
             }
             return "Undefined";
-        }
-
-        public void Update()
-        {
-            TryStartSimulation();
-        }
-
-        public bool UpdateRequested { get; set; }
-
-        public static void RequestUpdate()
-        {
-            RequestSimulation();
-            Instance.UpdateRequested = true;
         }
     }
 }

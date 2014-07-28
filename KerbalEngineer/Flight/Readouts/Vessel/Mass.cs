@@ -28,6 +28,8 @@ namespace KerbalEngineer.Flight.Readouts.Vessel
 {
     public class Mass : ReadoutModule
     {
+        private bool showing;
+
         public Mass()
         {
             this.Name = "Mass";
@@ -38,22 +40,25 @@ namespace KerbalEngineer.Flight.Readouts.Vessel
 
         public override void Update()
         {
-            SimManager.RequestUpdate();
+            SimulationProcessor.RequestUpdate();
         }
 
         public override void Draw()
         {
-            if (SimManager.LastStage == null)
+            if (SimulationProcessor.ShowDetails)
             {
-                return;
+                this.DrawLine(SimulationProcessor.LastStage.mass.ToMass(false) + " / " + SimulationProcessor.LastStage.totalMass.ToMass());
             }
-
-            this.DrawLine(SimManager.LastStage.mass.ToMass(false) + " / " + SimManager.LastStage.totalMass.ToMass());
+            else if (this.showing)
+            {
+                this.showing = false;
+                this.ResizeRequested = true;
+            }
         }
 
         public override void Reset()
         {
-            FlightEngineerCore.Instance.AddUpdatable(SimManager.Instance);
+            FlightEngineerCore.Instance.AddUpdatable(SimulationProcessor.Instance);
         }
     }
 }

@@ -68,6 +68,7 @@
     <Compile Include="Flight\Readouts\Surface\Slope.cs" />
     <Compile Include="Flight\Readouts\Surface\Biome.cs" />
     <Compile Include="Flight\Readouts\Vessel\SimulationDelay.cs" />
+    <Compile Include="Flight\Readouts\Vessel\SimulationProcessor.cs" />
     <Compile Include="GuiDisplaySize.cs" />
     <Compile Include="Logger.cs" />
     <Compile Include="EngineerGlobals.cs" />

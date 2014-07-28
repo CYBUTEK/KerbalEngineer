@@ -17,9 +17,9 @@
 //     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // 
 
-#region
+#region Using Directives
 
-using KerbalEngineer.VesselSimulator;
+
 
 #endregion
 
@@ -27,6 +27,8 @@ namespace KerbalEngineer.Flight.Readouts.Vessel
 {
     public class SpecificImpulse : ReadoutModule
     {
+        private bool showing;
+
         public SpecificImpulse()
         {
             this.Name = "Specific Impulse";
@@ -37,22 +39,25 @@ namespace KerbalEngineer.Flight.Readouts.Vessel
 
         public override void Update()
         {
-            SimManager.RequestUpdate();
+            SimulationProcessor.RequestUpdate();
         }
 
         public override void Draw()
         {
-            if (SimManager.LastStage == null)
+            if (SimulationProcessor.ShowDetails)
             {
-                return;
+                this.DrawLine(SimulationProcessor.LastStage.isp.ToString("F1") + "s");
             }
-
-            this.DrawLine(SimManager.LastStage.isp.ToString("F1") + "s");
+            else if (this.showing)
+            {
+                this.showing = false;
+                this.ResizeRequested = true;
+            }
         }
 
         public override void Reset()
         {
-            FlightEngineerCore.Instance.AddUpdatable(SimManager.Instance);
+            FlightEngineerCore.Instance.AddUpdatable(SimulationProcessor.Instance);
         }
     }
 }

@@ -27,6 +27,8 @@ namespace KerbalEngineer.Flight.Readouts.Vessel
 {
     public class DeltaVTotal : ReadoutModule
     {
+        private bool showing;
+
         public DeltaVTotal()
         {
             this.Name = "DeltaV Total";
@@ -37,22 +39,25 @@ namespace KerbalEngineer.Flight.Readouts.Vessel
 
         public override void Update()
         {
-            SimManager.RequestUpdate();
+            SimulationProcessor.RequestUpdate();
         }
 
         public override void Draw()
         {
-            if (SimManager.LastStage == null)
+            if (SimulationProcessor.ShowDetails)
             {
-                return;
-            }
-
-            this.DrawLine(SimManager.LastStage.totalDeltaV.ToString("N0") + "m/s");
+                this.showing = true;
+                this.DrawLine(SimManager.LastStage.totalDeltaV.ToString("N0") + "m/s");
+            } else if (this.showing)
+            {
+                this.showing = false;
+                this.ResizeRequested = true;
+            }   
         }
 
         public override void Reset()
         {
-            FlightEngineerCore.Instance.AddUpdatable(SimManager.Instance);
+            FlightEngineerCore.Instance.AddUpdatable(SimulationProcessor.Instance);
         }
     }
 }

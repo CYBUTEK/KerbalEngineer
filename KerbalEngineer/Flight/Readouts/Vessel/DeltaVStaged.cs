@@ -19,7 +19,7 @@
 
 #region Using Directives
 
-using KerbalEngineer.VesselSimulator;
+
 
 #endregion
 
@@ -28,6 +28,7 @@ namespace KerbalEngineer.Flight.Readouts.Vessel
     public class DeltaVStaged : ReadoutModule
     {
         private int numberOfStages;
+        private bool showing;
 
         public DeltaVStaged()
         {
@@ -39,37 +40,40 @@ namespace KerbalEngineer.Flight.Readouts.Vessel
 
         public override void Update()
         {
-            SimManager.RequestUpdate();
+            SimulationProcessor.RequestUpdate();
         }
 
         public override void Draw()
         {
-            if (SimManager.Stages == null)
+            if (SimulationProcessor.ShowDetails)
             {
-                return;
-            }
-
-            var newNumberOfStages = 0;
-
-            foreach (var stage in SimManager.Stages)
-            {
-                if (stage.deltaV > 0 || stage.number == Staging.CurrentStage)
+                this.showing = true;
+                var newNumberOfStages = 0;
+                foreach (var stage in SimulationProcessor.Stages)
                 {
-                    this.DrawLine("DeltaV (S" + stage.number + ")", stage.deltaV.ToString("N0") + "m/s");
-                    newNumberOfStages++;
+                    if (stage.deltaV > 0 || stage.number == Staging.CurrentStage)
+                    {
+                        this.DrawLine("DeltaV (S" + stage.number + ")", stage.deltaV.ToString("N0") + "m/s");
+                        newNumberOfStages++;
+                    }
+                }
+
+                if (newNumberOfStages != this.numberOfStages)
+                {
+                    this.numberOfStages = newNumberOfStages;
+                    this.ResizeRequested = true;
                 }
             }
-
-            if (newNumberOfStages != this.numberOfStages)
+            else if (this.showing)
             {
-                this.numberOfStages = newNumberOfStages;
+                this.showing = false;
                 this.ResizeRequested = true;
             }
         }
 
         public override void Reset()
         {
-            FlightEngineerCore.Instance.AddUpdatable(SimManager.Instance);
+            FlightEngineerCore.Instance.AddUpdatable(SimulationProcessor.Instance);
         }
     }
 }
