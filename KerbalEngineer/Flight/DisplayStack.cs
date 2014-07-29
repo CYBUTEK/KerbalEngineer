@@ -227,6 +227,7 @@ namespace KerbalEngineer.Flight
                 if (!this.Hidden && (SectionLibrary.Instance.NumberOfStackSections > 0 || this.ShowControlBar))
                 {
                     var shouldCentre = this.windowPosition.min == Vector2.zero;
+                    GUI.skin = null;
                     this.windowPosition = GUILayout.Window(this.windowId, this.windowPosition, this.Window, string.Empty, this.windowStyle).ClampToScreen();
                     if (shouldCentre)
                     {

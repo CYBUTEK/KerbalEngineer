@@ -109,6 +109,7 @@ namespace KerbalEngineer.Flight.Sections
                     this.windowPosition.height = 0;
                     this.resizeRequested = false;
                 }
+                GUI.skin = null;
                 this.windowPosition = GUILayout.Window(this.windowId, this.windowPosition, this.Window, string.Empty, this.windowStyle).ClampToScreen();
                 this.ParentSection.FloatingPositionX = this.windowPosition.x;
                 this.ParentSection.FloatingPositionY = this.windowPosition.y;

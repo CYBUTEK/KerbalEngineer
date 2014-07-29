@@ -19,6 +19,7 @@
 
 #region Using Directives
 
+using KerbalEngineer.Extensions;
 using KerbalEngineer.VesselSimulator;
 
 #endregion
@@ -55,7 +56,7 @@ namespace KerbalEngineer.Flight.Readouts.Vessel
                 {
                     if (stage.deltaV > 0 || stage.number == Staging.CurrentStage)
                     {
-                        this.DrawLine("DeltaV (S" + stage.number + ")", stage.deltaV.ToString("N0") + "m/s");
+                        this.DrawLine("DeltaV (S" + stage.number + ")", stage.deltaV.ToString("N0") + "m/s (" + stage.time.ToTime() + ")");
                         newNumberOfStages++;
                     }
                 }

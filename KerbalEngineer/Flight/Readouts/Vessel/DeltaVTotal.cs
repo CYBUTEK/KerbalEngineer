@@ -19,6 +19,7 @@
 
 #region
 
+using KerbalEngineer.Extensions;
 using KerbalEngineer.VesselSimulator;
 
 #endregion
@@ -47,7 +48,7 @@ namespace KerbalEngineer.Flight.Readouts.Vessel
             if (SimulationProcessor.ShowDetails)
             {
                 this.showing = true;
-                this.DrawLine(SimulationProcessor.LastStage.totalDeltaV.ToString("N0") + "m/s");
+                this.DrawLine(SimulationProcessor.LastStage.totalDeltaV.ToString("N0") + "m/s (" + SimulationProcessor.LastStage.totalTime.ToTime() + ")");
             } else if (this.showing)
             {
                 this.showing = false;

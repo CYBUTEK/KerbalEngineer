@@ -21,6 +21,7 @@
 
 using System;
 using System.Linq;
+using System.Reflection;
 
 using KerbalEngineer.Extensions;
 
@@ -44,12 +45,29 @@ namespace KerbalEngineer.Flight.Readouts.Surface
 
         #endregion
 
+        #region Fields
+
+        private bool hasCheckedAeroMods;
+        private MethodInfo farTerminalVelocity;
+
+        #endregion
+
         #region Properties
 
         /// <summary>
         ///     Gets whether the details are ready to be shown.
         /// </summary>
         public static bool ShowDetails { get; private set; }
+
+        /// <summary>
+        ///     Gets whether FAR is installed.
+        /// </summary>
+        public static bool FarInstalled { get; private set; }
+
+        /// <summary>
+        ///     Gets whether NEAR is installed.
+        /// </summary>
+        public static bool NearInstalled { get; private set; }
 
         /// <summary>
         ///     Gets the terminal velocity of the active vessel.
@@ -66,11 +84,6 @@ namespace KerbalEngineer.Flight.Readouts.Surface
         /// </summary>
         public static double Deceleration { get; private set; }
 
-        /// <summary>
-        ///     Gets the force caused by drag.
-        /// </summary>
-        public static double Force { get; private set; }
-
         #endregion
 
         #region IUpdatable Members
@@ -80,23 +93,42 @@ namespace KerbalEngineer.Flight.Readouts.Surface
         /// </summary>
         public void Update()
         {
-            if (FlightGlobals.ActiveVessel.atmDensity < double.Epsilon)
+            try
             {
-                ShowDetails = false;
-                return;
+                if (!this.hasCheckedAeroMods)
+                {
+                    this.CheckAeroMods();
+                }
+
+                if (FlightGlobals.ActiveVessel.atmDensity < double.Epsilon || NearInstalled)
+                {
+                    ShowDetails = false;
+                    return;
+                }
+
+                ShowDetails = true;
+
+                if (FarInstalled)
+                {
+                    TerminalVelocity = (double)this.farTerminalVelocity.Invoke(null, null);
+                }
+                else
+                {
+                    var mass = FlightGlobals.ActiveVessel.parts.Sum(p => p.GetWetMass());
+                    var drag = FlightGlobals.ActiveVessel.parts.Sum(p => p.GetWetMass() * p.maximum_drag);
+                    var grav = FlightGlobals.getGeeForceAtPosition(FlightGlobals.ship_position).magnitude;
+                    var atmo = FlightGlobals.ActiveVessel.atmDensity;
+                    var coef = FlightGlobals.DragMultiplier;
+
+                    TerminalVelocity = Math.Sqrt((2 * mass * grav) / (atmo * drag * coef));
+                }
+
+                Efficiency = FlightGlobals.ship_srfSpeed / TerminalVelocity;
             }
-
-            ShowDetails = true;
-
-            var mass = FlightGlobals.ActiveVessel.parts.Sum(p => p.GetWetMass());
-            var drag = FlightGlobals.ActiveVessel.parts.Sum(p => p.GetWetMass() * p.maximum_drag);
-            var grav = FlightGlobals.getGeeForceAtPosition(FlightGlobals.ship_position).magnitude;
-            var atmo = FlightGlobals.ActiveVessel.atmDensity;
-            var coef = FlightGlobals.DragMultiplier;
-
-            TerminalVelocity = Math.Sqrt((2 * mass * grav) / (atmo * drag * coef));
-            Efficiency = FlightGlobals.ship_srfSpeed / TerminalVelocity;
-            Force = atmo * coef * drag * Math.Pow(FlightGlobals.ActiveVessel.srfSpeed, 2) / 2;
+            catch (Exception ex)
+            {
+                Logger.Exception(ex, "AtmosphericProcessor->Update");
+            }
         }
 
         #endregion
@@ -117,5 +149,38 @@ namespace KerbalEngineer.Flight.Readouts.Surface
         {
             instance.UpdateRequested = true;
         }
+
+        #region Private Methods
+
+        private void CheckAeroMods()
+        {
+            try
+            {
+                this.hasCheckedAeroMods = true;
+
+                foreach (var loadedAssembly in AssemblyLoader.loadedAssemblies)
+                {
+                    switch (loadedAssembly.name)
+                    {
+                        case "FerramAerospaceResearch":
+                            farTerminalVelocity = loadedAssembly.assembly.GetType("ferram4.FARAPI").GetMethod("GetActiveControlSys_TermVel");
+                            FarInstalled = true;
+                            Logger.Log("FAR detected!");
+                            break;
+
+                        case "NEAR":
+                            NearInstalled = true;
+                            Logger.Log("NEAR detected! Turning off atmospheric details!");
+                            break;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.Exception(ex, "AtmosphericProcessor->CheckAeroMods");
+            }
+        }
+
+        #endregion
     }
 }

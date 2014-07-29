@@ -228,6 +228,7 @@ namespace KerbalEngineer.Editor
                     return;
                 }
 
+                GUI.skin = null;
                 this.windowPosition = GUILayout.Window(this.windowId, this.windowPosition, this.Window, string.Empty, this.windowStyle);
 
                 // Check and set that the window is at the bottom of the screen.

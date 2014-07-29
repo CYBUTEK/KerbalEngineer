@@ -202,6 +202,7 @@ namespace KerbalEngineer.Flight
                     this.windowPosition.height = 0;
                 }
 
+                GUI.skin = null;
                 this.windowPosition = GUILayout.Window(this.windowId, this.windowPosition, this.Window, string.Empty, this.windowStyle);
                 //this.ScrollMechanism();
             }
