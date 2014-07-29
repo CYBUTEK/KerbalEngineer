@@ -63,7 +63,7 @@ namespace KerbalEngineer.Extensions
         {
             try
             {
-                var format = (value < 100000) ? (value < 10000) ? "N2" : "N1" : "N0";
+                var format = (value < 100000) ? (value < 10000) ? (value < 100) ? "N3" : "N2" : "N1" : "N0";
                 return showNotation ? value.ToString(format) + "kN" : value.ToString(format);
             }
             catch (Exception ex)

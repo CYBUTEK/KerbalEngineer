@@ -78,10 +78,10 @@ namespace KerbalEngineer
                         return;
                     }
 
+                    multiplier = value;
                     var handler = SettingHandler.Load("GuiDisplaySize.xml");
                     handler.Set("multiplier", multiplier);
                     handler.Save("GuiDisplaySize.xml");
-                    multiplier = value;
                     offset = 1 + (increment * multiplier) - increment;
                     OnSizeChanged();
                 }
@@ -104,10 +104,10 @@ namespace KerbalEngineer
                         return;
                     }
 
+                    increment = value;
                     var handler = SettingHandler.Load("GuiDisplaySize.xml");
                     handler.Set("increment", increment);
                     handler.Save("GuiDisplaySize.xml");
-                    increment = value;
                     offset = 1 + (increment * multiplier) - increment;
                     OnSizeChanged();
                 }

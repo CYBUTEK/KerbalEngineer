@@ -62,10 +62,12 @@ namespace KerbalEngineer.Editor
         #region Styles
 
         private GUIStyle areaBodiesStyle;
+        private GUIStyle areaSettingStyle;
         private GUIStyle areaStyle;
         private GUIStyle buttonStyle;
         private GUIStyle infoStyle;
         private GUIStyle settingStyle;
+        private GUIStyle settingAtmoStyle;
         private GUIStyle titleStyle;
         private GUIStyle windowStyle;
 
@@ -182,8 +184,6 @@ namespace KerbalEngineer.Editor
         {
             try
             {
-                this.areaBodiesStyle = new GUIStyle(HighLogic.Skin.box);
-
                 this.windowStyle = new GUIStyle(HighLogic.Skin.window)
                 {
                     alignment = TextAnchor.UpperLeft
@@ -192,6 +192,16 @@ namespace KerbalEngineer.Editor
                 this.areaStyle = new GUIStyle(HighLogic.Skin.box)
                 {
                     padding = new RectOffset(0, 0, 9, 0)
+                };
+
+                this.areaBodiesStyle = new GUIStyle(HighLogic.Skin.box)
+                {
+                    padding = new RectOffset()
+                };
+
+                this.areaSettingStyle = new GUIStyle(HighLogic.Skin.box)
+                {
+                    padding = new RectOffset(10, 10, 10, 10)
                 };
 
                 this.buttonStyle = new GUIStyle(HighLogic.Skin.button)
@@ -227,7 +237,16 @@ namespace KerbalEngineer.Editor
 
                 this.settingStyle = new GUIStyle(this.titleStyle)
                 {
+                    alignment = TextAnchor.MiddleLeft,
+                    stretchWidth = true,
                     stretchHeight = true
+                };
+
+                this.settingAtmoStyle = new GUIStyle(this.titleStyle)
+                {
+                    margin = new RectOffset(),
+                    padding = new RectOffset(),
+                    alignment = TextAnchor.UpperLeft
                 };
             }
             catch (Exception ex)
@@ -420,7 +439,7 @@ namespace KerbalEngineer.Editor
 
                     if (this.showAtmosphericDetails)
                     {
-                        GUILayout.BeginVertical(this.areaStyle);
+                        GUILayout.BeginVertical(this.areaSettingStyle);
                         this.DrawAtmosphericDetails();
                         GUILayout.EndVertical();
                     }
@@ -434,7 +453,7 @@ namespace KerbalEngineer.Editor
 
                     if (this.showSettings)
                     {
-                        GUILayout.BeginVertical(this.areaStyle);
+                        GUILayout.BeginVertical(this.areaSettingStyle);
                         this.DrawSettings();
                         GUILayout.EndVertical();
                     }
@@ -464,15 +483,26 @@ namespace KerbalEngineer.Editor
             try
             {
                 GUILayout.BeginHorizontal();
-                GUILayout.Label("Pressure " + (this.atmosphericPercentage * 100.0f).ToString("F1") + "%", this.settingStyle, GUILayout.Width(125.0f * GuiDisplaySize.Offset));
+                GUILayout.Label("Pressure: " + (this.atmosphericPercentage * 100.0f).ToString("F1") + "%", this.settingAtmoStyle, GUILayout.Width(125.0f * GuiDisplaySize.Offset));
                 GUI.skin = HighLogic.Skin;
+                GUILayout.BeginVertical();
+                GUILayout.FlexibleSpace();
                 this.atmosphericPercentage = GUILayout.HorizontalSlider(this.atmosphericPercentage, 0, 1.0f);
+                GUILayout.FlexibleSpace();
+                GUILayout.EndVertical();
                 GUI.skin = null;
                 GUILayout.EndHorizontal();
+
+                GUILayout.Space(5.0f);
+
                 GUILayout.BeginHorizontal();
-                GUILayout.Label("Velocity " + this.atmosphericVelocity.ToString("F1") + "m/s", this.settingStyle, GUILayout.Width(125.0f * GuiDisplaySize.Offset));
+                GUILayout.Label("Velocity: " + this.atmosphericVelocity.ToString("F1") + "m/s", this.settingAtmoStyle, GUILayout.Width(125.0f * GuiDisplaySize.Offset));
                 GUI.skin = HighLogic.Skin;
+                GUILayout.BeginVertical();
+                GUILayout.FlexibleSpace();
                 this.atmosphericVelocity = GUILayout.HorizontalSlider(this.atmosphericVelocity, 0, 2500f);
+                GUILayout.FlexibleSpace();
+                GUILayout.EndVertical();
                 GUI.skin = null;
                 GUILayout.EndHorizontal();
             }
@@ -515,6 +545,9 @@ namespace KerbalEngineer.Editor
             }
         }
 
+        /// <summary>
+        ///     Draws the settings panel.
+        /// </summary>
         private void DrawSettings()
         {
             try
@@ -523,6 +556,12 @@ namespace KerbalEngineer.Editor
                 GUILayout.Label("Compact mode collapses to the:", this.settingStyle);
                 this.compactCollapseRight = !GUILayout.Toggle(!this.compactCollapseRight, "LEFT", this.buttonStyle, GUILayout.Width(100.0f * GuiDisplaySize.Offset));
                 this.compactCollapseRight = GUILayout.Toggle(this.compactCollapseRight, "RIGHT", this.buttonStyle, GUILayout.Width(100.0f * GuiDisplaySize.Offset));
+                GUILayout.EndHorizontal();
+
+                GUILayout.BeginHorizontal();
+                GUILayout.Label("Build Engineer Overlay:", this.settingStyle);
+                BuildOverlay.Instance.Visible = GUILayout.Toggle(BuildOverlay.Instance.Visible, "ENABLED", this.buttonStyle, GUILayout.Width(100.0f * GuiDisplaySize.Offset));
+                BuildOverlay.Instance.Visible = !GUILayout.Toggle(!BuildOverlay.Instance.Visible, "DISABLED", this.buttonStyle, GUILayout.Width(100.0f * GuiDisplaySize.Offset));
                 GUILayout.EndHorizontal();
 
                 GUILayout.BeginHorizontal();
@@ -542,6 +581,11 @@ namespace KerbalEngineer.Editor
                     GuiDisplaySize.Increment++;
                 }
                 GUILayout.EndHorizontal();
+
+                GUILayout.Label("Minimum delay between simulations: " + SimManager.minSimTime + "ms", this.settingStyle);
+                GUI.skin = HighLogic.Skin;
+                SimManager.minSimTime = (long)GUILayout.HorizontalSlider(SimManager.minSimTime, 0, 2000.0f);
+                GUI.skin = null;
             }
             catch (Exception ex)
             {
