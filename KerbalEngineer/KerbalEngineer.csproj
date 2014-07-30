@@ -42,6 +42,9 @@
       <HintPath>..\Game\KSP_x64_Data\Managed\Assembly-CSharp-firstpass.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="LitJson">
+      <HintPath>..\Libraries\LitJson.dll</HintPath>
+    </Reference>
     <Reference Include="System">
       <HintPath>..\Game\KSP_Data\Managed\System.dll</HintPath>
       <Private>False</Private>
@@ -137,6 +140,7 @@
     <Compile Include="Flight\Sections\SectionModule.cs" />
     <Compile Include="Flight\Sections\SectionWindow.cs" />
     <Compile Include="LogMsg.cs" />
+    <Compile Include="MiniAVC.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Settings\SettingHandler.cs" />
     <Compile Include="Settings\SettingItem.cs" />
