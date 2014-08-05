@@ -80,48 +80,45 @@ namespace KerbalEngineer
 
         #region Initialisation
 
-        private CelestialBodies()
-        {
-            this.BodyList = new Dictionary<string, BodyInfo>();
+	private CelestialBodies()
+	{
+		this.BodyList = new Dictionary<string, BodyInfo>();
 
-			//
-			// Change by Nathaniel R. Lewis (aka. Teknoman117) (linux.robotdude@gmail.com)
-			// 
-			// Generate the bodies list by crawling the core's local body list.  This allows
-			// Kerbal Engineer to automatically support any future worlds Squad may add 
-			// and provide compatibility with world adding mods such as Kopernicus and Planet
-			// Factory.
-			//
-			foreach (CelestialBody cb in PSystemManager.Instance.localBodies) 
+		//
+		// Change by Nathaniel R. Lewis (aka. Teknoman117) (linux.robotdude@gmail.com)
+		// 
+		// Generate the bodies list by crawling the core's local body list.  This allows
+		// Kerbal Engineer to automatically support any future worlds Squad may add 
+		// and provide compatibility with world adding mods such as Kopernicus and Planet
+		// Factory.
+		//
+		foreach (CelestialBody cb in PSystemManager.Instance.localBodies) 
+		{
+			// Generate a list of the names of the bodies orbiting this one (if it has orbiting bodies)
+			List<string> orbitingBodies = null;
+			if (cb.orbitingBodies != null && cb.orbitingBodies.Count > 0) 
 			{
-				// Generate a list of the names of the bodies orbiting this one (if it has orbiting bodies)
-				List<string> orbitingBodies = null;
-				if (cb.orbitingBodies != null && cb.orbitingBodies.Count > 0) 
+				orbitingBodies = new List<string> ();
+				foreach (CelestialBody ob in cb.orbitingBodies)
 				{
-					orbitingBodies = new List<string> ();
-					foreach (CelestialBody ob in cb.orbitingBodies)
-					{
-						orbitingBodies.Add (ob.bodyName);
-					}
+					orbitingBodies.Add (ob.bodyName);
 				}
-				
-				// Find the parent body (cb.referenceBody != cb prevents the circular reference of Kerbol)
-				string parentBody = null;
-				if (cb.referenceBody != null && cb.referenceBody != cb) 
-				{
-					parentBody = cb.referenceBody.bodyName;
-				}
+			}
 
+			// Only add if not the root body in the system (Sun in stock, black hole in Star Systems) (cb.referenceBody != cb detects the circular reference of Kerbol)
+			if (cb.referenceBody != null && cb.referenceBody != cb) 
+			{
 				// Compute atmospheric (in kPa) and gravitational properties (m/s^2)
 				double gravitationalAccelerationASL = 9.81d * cb.GeeASL; 
 				double atmosphericPressureASL = cb.atmosphere ? (101.325d * cb.atmosphereMultiplier) : 0d;
 
 				// Add this body info
-				this.AddBody (new BodyInfo (cb.bodyName, gravitationalAccelerationASL, atmosphericPressureASL, parentBody, (orbitingBodies != null) ? orbitingBodies.ToArray () : null));
+				this.AddBody (new BodyInfo (cb.bodyName, gravitationalAccelerationASL, atmosphericPressureASL, cb.referenceBody.bodyName, (orbitingBodies != null) ? orbitingBodies.ToArray () : null));
 			}
+		}
 
-            this.SelectedBodyName = "Kerbin";
-        }
+		this.SelectedBodyName = "Kerbin";
+	}
 
         #endregion
 
