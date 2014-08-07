@@ -20,6 +20,7 @@
 #region Using Directives
 
 using System.Collections.Generic;
+using UnityEngine;
 
 #endregion
 
@@ -79,28 +80,45 @@ namespace KerbalEngineer
 
         #region Initialisation
 
-        private CelestialBodies()
-        {
-            this.BodyList = new Dictionary<string, BodyInfo>();
-            this.AddBody(new BodyInfo("Moho", 2.7d, 0, null, null));
-            this.AddBody(new BodyInfo("Eve", 16.7d, 506.625d, null, new[] {"Gilly"}));
-            this.AddBody(new BodyInfo("Gilly", 0.049d, 0, "Eve", null));
-            this.AddBody(new BodyInfo("Kerbin", 9.81d, 101.325d, null, new[] {"Mun", "Minmus"}));
-            this.AddBody(new BodyInfo("Mun", 1.63d, 0, "Kerbin", null));
-            this.AddBody(new BodyInfo("Minmus", 0.491d, 0, "Kerbin", null));
-            this.AddBody(new BodyInfo("Duna", 2.94d, 20.2650d, null, new[] {"Ike"}));
-            this.AddBody(new BodyInfo("Ike", 1.1d, 0, "Duna", null));
-            this.AddBody(new BodyInfo("Dres", 1.13d, 0, null, null));
-            this.AddBody(new BodyInfo("Jool", 7.85d, 1519.88d, null, new[] {"Laythe", "Vall", "Tylo", "Bop", "Pol"}));
-            this.AddBody(new BodyInfo("Laythe", 7.85d, 81.06d, "Jool", null));
-            this.AddBody(new BodyInfo("Vall", 2.31d, 0, "Jool", null));
-            this.AddBody(new BodyInfo("Tylo", 7.85d, 0, "Jool", null));
-            this.AddBody(new BodyInfo("Bop", 0.589d, 0, "Jool", null));
-            this.AddBody(new BodyInfo("Pol", 0.373d, 0, "Jool", null));
-            this.AddBody(new BodyInfo("Eeloo", 1.69d, 0, null, null));
+	private CelestialBodies()
+	{
+		this.BodyList = new Dictionary<string, BodyInfo>();
 
-            this.SelectedBodyName = "Kerbin";
-        }
+		//
+		// Change by Nathaniel R. Lewis (aka. Teknoman117) (linux.robotdude@gmail.com)
+		// 
+		// Generate the bodies list by crawling the core's local body list.  This allows
+		// Kerbal Engineer to automatically support any future worlds Squad may add 
+		// and provide compatibility with world adding mods such as Kopernicus and Planet
+		// Factory.
+		//
+		foreach (CelestialBody cb in PSystemManager.Instance.localBodies) 
+		{
+			// Generate a list of the names of the bodies orbiting this one (if it has orbiting bodies)
+			List<string> orbitingBodies = null;
+			if (cb.orbitingBodies != null && cb.orbitingBodies.Count > 0) 
+			{
+				orbitingBodies = new List<string> ();
+				foreach (CelestialBody ob in cb.orbitingBodies)
+				{
+					orbitingBodies.Add (ob.bodyName);
+				}
+			}
+
+			// Only add if not the root body in the system (Sun in stock, black hole in Star Systems) (cb.referenceBody != cb detects the circular reference of Kerbol)
+			if (cb.referenceBody != null && cb.referenceBody != cb) 
+			{
+				// Compute atmospheric (in kPa) and gravitational properties (m/s^2)
+				double gravitationalAccelerationASL = 9.81d * cb.GeeASL; 
+				double atmosphericPressureASL = cb.atmosphere ? (101.325d * cb.atmosphereMultiplier) : 0d;
+
+				// Add this body info
+				this.AddBody (new BodyInfo (cb.bodyName, gravitationalAccelerationASL, atmosphericPressureASL, cb.referenceBody.bodyName, (orbitingBodies != null) ? orbitingBodies.ToArray () : null));
+			}
+		}
+
+		this.SelectedBodyName = "Kerbin";
+	}
 
         #endregion
 
