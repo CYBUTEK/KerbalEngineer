@@ -27,6 +27,13 @@ using System.Linq;
 
 namespace KerbalEngineer
 {
+    /*
+     * 
+     * With thanks to Nathaniel R. Lewis (aka. Teknoman117) (linux.robotdude@gmail.com) for working out
+     * the best way of getting the celestial body information dynamically using PSystemManager.
+     *
+     */
+
     public static class CelestialBodies
     {
         #region Constructors
