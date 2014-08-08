@@ -20,6 +20,7 @@
 #region Using Directives
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
@@ -33,11 +34,16 @@ namespace KerbalEngineer
     [KSPAddon(KSPAddon.Startup.Instantly, false)]
     public class Logger : MonoBehaviour
     {
-        #region Fields
+        #region Constants
 
         private static readonly string fileName;
         private static readonly AssemblyName assemblyName;
-        private static readonly List<string> messages = new List<string>();
+
+        #endregion
+
+        #region Fields
+
+        private static readonly List<string[]> messages = new List<string[]>();
 
         #endregion
 
@@ -49,7 +55,11 @@ namespace KerbalEngineer
             fileName = Path.ChangeExtension(Assembly.GetExecutingAssembly().Location, "log");
             File.Delete(fileName);
 
-            messages.Add("Version: " + assemblyName.Version);
+            lock (messages)
+            {
+                messages.Add(new[] { "Executing: " + assemblyName.Name + " - " + assemblyName.Version });
+                messages.Add(new[] { "Assembly: " + Assembly.GetExecutingAssembly().Location });
+            }
             Blank();
         }
 
@@ -66,7 +76,7 @@ namespace KerbalEngineer
         {
             lock (messages)
             {
-                messages.Add(string.Empty);
+                messages.Add(new string[] { });
             }
         }
 
@@ -74,7 +84,51 @@ namespace KerbalEngineer
         {
             lock (messages)
             {
-                messages.Add("[Log " + DateTime.Now.TimeOfDay + "]: " + obj);
+                try
+                {
+                    if (obj is IEnumerable)
+                    {
+                        messages.Add(new[] { "Log " + DateTime.Now.TimeOfDay, obj.ToString() });
+                        foreach (var o in obj as IEnumerable)
+                        {
+                            messages.Add(new[] { "\t", o.ToString() });
+                        }
+                    }
+                    else
+                    {
+                        messages.Add(new[] { "Log " + DateTime.Now.TimeOfDay, obj.ToString() });
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Exception(ex);
+                }
+            }
+        }
+
+        public static void Log(string name, object obj)
+        {
+            lock (messages)
+            {
+                try
+                {
+                    if (obj is IEnumerable)
+                    {
+                        messages.Add(new[] { "Log " + DateTime.Now.TimeOfDay, name });
+                        foreach (var o in obj as IEnumerable)
+                        {
+                            messages.Add(new[] { "\t", o.ToString() });
+                        }
+                    }
+                    else
+                    {
+                        messages.Add(new[] { "Log " + DateTime.Now.TimeOfDay, obj.ToString() });
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Exception(ex);
+                }
             }
         }
 
@@ -82,7 +136,7 @@ namespace KerbalEngineer
         {
             lock (messages)
             {
-                messages.Add("[Log " + DateTime.Now.TimeOfDay + "]: " + message);
+                messages.Add(new[] { "Log " + DateTime.Now.TimeOfDay, message });
             }
         }
 
@@ -90,7 +144,7 @@ namespace KerbalEngineer
         {
             lock (messages)
             {
-                messages.Add("[Warning " + DateTime.Now.TimeOfDay + "]: " + message);
+                messages.Add(new[] { "Warning " + DateTime.Now.TimeOfDay, message });
             }
         }
 
@@ -98,7 +152,7 @@ namespace KerbalEngineer
         {
             lock (messages)
             {
-                messages.Add("[Error " + DateTime.Now.TimeOfDay + "]: " + message);
+                messages.Add(new[] { "Error " + DateTime.Now.TimeOfDay, message });
             }
         }
 
@@ -106,9 +160,9 @@ namespace KerbalEngineer
         {
             lock (messages)
             {
-                messages.Add("[Exception " + DateTime.Now.TimeOfDay + "]: " + ex.Message);
-                messages.Add(ex.StackTrace);
-                messages.Add(string.Empty);
+                messages.Add(new[] { "Exception " + DateTime.Now.TimeOfDay, ex.Message });
+                messages.Add(new[] { string.Empty, ex.StackTrace });
+                Blank();
             }
         }
 
@@ -116,9 +170,9 @@ namespace KerbalEngineer
         {
             lock (messages)
             {
-                messages.Add("[Exception " + DateTime.Now.TimeOfDay + "]: " + location + " // " + ex.Message);
-                messages.Add(ex.StackTrace);
-                messages.Add(string.Empty);
+                messages.Add(new[] { "Exception " + DateTime.Now.TimeOfDay, location + " // " + ex.Message });
+                messages.Add(new[] { string.Empty, ex.StackTrace });
+                Blank();
             }
         }
 
@@ -136,8 +190,11 @@ namespace KerbalEngineer
                     {
                         foreach (var message in messages)
                         {
-                            file.WriteLine(message);
-                            print(assemblyName.Name + " -> " + message);
+                            file.WriteLine(message.Length > 0 ? message.Length > 1 ? "[" + message[0] + "]: " + message[1] : message[0] : string.Empty);
+                            if (message.Length > 0)
+                            {
+                                print(message.Length > 1 ? assemblyName.Name + " -> " + message[1] : assemblyName.Name + " -> " + message[0]);
+                            }
                         }
                     }
                     messages.Clear();
@@ -146,6 +203,20 @@ namespace KerbalEngineer
         }
 
         private void LateUpdate()
+        {
+            Flush();
+        }
+
+        #endregion
+
+        #region Destruction
+
+        private void OnDestroy()
+        {
+            Flush();
+        }
+
+        ~Logger()
         {
             Flush();
         }

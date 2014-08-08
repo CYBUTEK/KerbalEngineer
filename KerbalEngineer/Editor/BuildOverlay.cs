@@ -188,11 +188,11 @@ namespace KerbalEngineer.Editor
                 }
 
                 // Configure the simulation parameters based on the selected reference body.
-                SimManager.Gravity = CelestialBodies.Instance.SelectedBodyInfo.Gravity;
+                SimManager.Gravity = CelestialBodies.SelectedBody.Gravity;
 
                 if (BuildAdvanced.Instance.ShowAtmosphericDetails)
                 {
-                    SimManager.Atmosphere = CelestialBodies.Instance.SelectedBodyInfo.Atmosphere * 0.01d;
+                    SimManager.Atmosphere = CelestialBodies.SelectedBody.Atmosphere * 0.01d;
                 }
                 else
                 {

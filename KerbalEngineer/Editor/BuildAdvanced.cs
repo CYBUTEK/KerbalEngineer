@@ -49,15 +49,17 @@ namespace KerbalEngineer.Editor
 
         private float atmosphericPercentage = 1.0f;
         private float atmosphericVelocity;
+        private BuildBodiesList bodiesList;
         private int compactCheck;
         private bool compactCollapseRight;
         private float compactRight;
         private bool hasChanged;
         private bool isEditorLocked;
         private int numberOfStages;
+        private Rect referenceBodiesButtonRect;
+        private Stage[] stages;
         private int windowId;
         private Rect windowPosition = new Rect(265.0f, 45.0f, 0, 0);
-        private Stage[] stages;
 
         #region Styles
 
@@ -66,8 +68,8 @@ namespace KerbalEngineer.Editor
         private GUIStyle areaStyle;
         private GUIStyle buttonStyle;
         private GUIStyle infoStyle;
-        private GUIStyle settingStyle;
         private GUIStyle settingAtmoStyle;
+        private GUIStyle settingStyle;
         private GUIStyle titleStyle;
         private GUIStyle windowStyle;
 
@@ -166,6 +168,7 @@ namespace KerbalEngineer.Editor
         private void Awake()
         {
             Instance = this;
+            this.bodiesList = this.gameObject.AddComponent<BuildBodiesList>();
             this.Load();
         }
 
@@ -173,7 +176,6 @@ namespace KerbalEngineer.Editor
         {
             this.windowId = this.GetHashCode();
             this.InitialiseStyles();
-            RenderingManager.AddToPostDrawQueue(0, this.OnDraw);
             GuiDisplaySize.OnSizeChanged += this.OnSizeChanged;
         }
 
@@ -271,15 +273,19 @@ namespace KerbalEngineer.Editor
             {
                 if (!this.visible || EditorLogic.fetch == null || EditorLogic.fetch.ship.parts.Count == 0)
                 {
+                    this.bodiesList.enabled = false;
                     return;
                 }
 
+                this.bodiesList.enabled = this.showReferenceBodies;
+                this.bodiesList.SetPosition(this.referenceBodiesButtonRect.x + this.windowPosition.x, this.referenceBodiesButtonRect.y + this.referenceBodiesButtonRect.height + this.windowPosition.y, this.referenceBodiesButtonRect.width);
+
                 // Configure the simulation parameters based on the selected reference body.
-                SimManager.Gravity = CelestialBodies.Instance.SelectedBodyInfo.Gravity;
+                SimManager.Gravity = CelestialBodies.SelectedBody.Gravity;
 
                 if (this.showAtmosphericDetails)
                 {
-                    SimManager.Atmosphere = CelestialBodies.Instance.SelectedBodyInfo.Atmosphere * 0.01d * this.atmosphericPercentage;
+                    SimManager.Atmosphere = CelestialBodies.SelectedBody.Atmosphere * 0.01d * this.atmosphericPercentage;
                 }
                 else
                 {
@@ -295,7 +301,7 @@ namespace KerbalEngineer.Editor
             }
         }
 
-        private void OnDraw()
+        private void OnGUI()
         {
             try
             {
@@ -345,7 +351,6 @@ namespace KerbalEngineer.Editor
 
                 // Check editor lock to manage click-through.
                 this.CheckEditorLock();
-                
             }
             catch (Exception ex)
             {
@@ -360,12 +365,12 @@ namespace KerbalEngineer.Editor
         {
             try
             {
-                if (this.windowPosition.MouseIsOver())
+                if ((this.windowPosition.MouseIsOver() || this.bodiesList.Position.MouseIsOver()) && this.isEditorLocked == false)
                 {
                     EditorLogic.fetch.State = EditorLogic.EditorState.GUI_SELECTED;
                     this.isEditorLocked = true;
                 }
-                else if (!this.windowPosition.MouseIsOver() && this.isEditorLocked)
+                else if (!this.windowPosition.MouseIsOver() && !this.bodiesList.Position.MouseIsOver() && this.isEditorLocked)
                 {
                     EditorLogic.fetch.State = EditorLogic.EditorState.PAD_UNSELECTED;
                     this.isEditorLocked = false;
@@ -414,7 +419,8 @@ namespace KerbalEngineer.Editor
                         this.showAtmosphericDetails = !this.showAtmosphericDetails;
                     }
 
-                    if (GUI.Toggle(new Rect(this.windowPosition.width - 452.0f * GuiDisplaySize.Offset, 5.0f, 125.0f * GuiDisplaySize.Offset, 20.0f), this.showReferenceBodies, "REFERENCE BODIES", this.buttonStyle) != this.showReferenceBodies)
+                    this.referenceBodiesButtonRect = new Rect(this.windowPosition.width - 452.0f * GuiDisplaySize.Offset, 5.0f, 125.0f * GuiDisplaySize.Offset, 20.0f);
+                    if (GUI.Toggle(this.referenceBodiesButtonRect, this.showReferenceBodies, "REFERENCE BODIES", this.buttonStyle) != this.showReferenceBodies)
                     {
                         this.hasChanged = true;
                         this.showReferenceBodies = !this.showReferenceBodies;
@@ -422,7 +428,6 @@ namespace KerbalEngineer.Editor
                 }
 
                 // Draw the main informational display box.
-
                 if (!this.compactMode)
                 {
                     GUILayout.BeginHorizontal(this.areaStyle);
@@ -441,13 +446,6 @@ namespace KerbalEngineer.Editor
                     {
                         GUILayout.BeginVertical(this.areaSettingStyle);
                         this.DrawAtmosphericDetails();
-                        GUILayout.EndVertical();
-                    }
-
-                    if (this.showReferenceBodies)
-                    {
-                        GUILayout.BeginVertical(this.areaBodiesStyle);
-                        this.DrawReferenceBodies();
                         GUILayout.EndVertical();
                     }
 
@@ -509,39 +507,6 @@ namespace KerbalEngineer.Editor
             catch (Exception ex)
             {
                 Logger.Exception(ex, "BuildAdvanced->DrawAtmosphericDetails");
-            }
-        }
-
-        /// <summary>
-        ///     Draws all the reference bodies.
-        /// </summary>
-        private void DrawReferenceBodies()
-        {
-            try
-            {
-                var index = 0;
-
-                foreach (var bodyName in CelestialBodies.Instance.BodyList.Keys)
-                {
-                    if (index % 8 == 0)
-                    {
-                        if (index > 0)
-                        {
-                            GUILayout.EndHorizontal();
-                        }
-                        GUILayout.BeginHorizontal();
-                    }
-                    if (GUILayout.Toggle(CelestialBodies.Instance.SelectedBodyName == bodyName, bodyName, this.buttonStyle))
-                    {
-                        CelestialBodies.Instance.SelectedBodyName = bodyName;
-                    }
-                    index++;
-                }
-                GUILayout.EndHorizontal();
-            }
-            catch (Exception ex)
-            {
-                Logger.Exception(ex, "BuildAdvanced->DrawReferenceBodies");
             }
         }
 
@@ -830,7 +795,7 @@ namespace KerbalEngineer.Editor
                 handler.Set("showAtmosphericDetails", this.showAtmosphericDetails);
                 handler.Set("showReferenceBodies", this.showReferenceBodies);
                 handler.Set("showSettings", this.showSettings);
-                handler.Set("selectedBodyName", CelestialBodies.Instance.SelectedBodyName);
+                handler.Set("selectedBodyName", CelestialBodies.SelectedBody.Name);
                 handler.Save("BuildAdvanced.xml");
                 GuiDisplaySize.OnSizeChanged -= this.OnSizeChanged;
             }
@@ -856,7 +821,7 @@ namespace KerbalEngineer.Editor
                 handler.Get("showAllStages", ref this.showAllStages);
                 handler.Get("showAtmosphericDetails", ref this.showAtmosphericDetails);
                 handler.Get("showSettings", ref this.showSettings);
-                CelestialBodies.Instance.SelectedBodyName = handler.Get("selectedBodyName", CelestialBodies.Instance.SelectedBodyName);
+                CelestialBodies.SetSelectedBody(handler.Get("selectedBodyName", CelestialBodies.SelectedBody.Name));
             }
             catch (Exception ex)
             {
