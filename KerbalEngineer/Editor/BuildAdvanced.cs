@@ -420,7 +420,7 @@ namespace KerbalEngineer.Editor
                     }
 
                     this.referenceBodiesButtonRect = new Rect(this.windowPosition.width - 452.0f * GuiDisplaySize.Offset, 5.0f, 125.0f * GuiDisplaySize.Offset, 20.0f);
-                    if (GUI.Toggle(this.referenceBodiesButtonRect, this.showReferenceBodies, "REFERENCE BODIES", this.buttonStyle) != this.showReferenceBodies)
+                    if (GUI.Toggle(this.referenceBodiesButtonRect, this.showReferenceBodies, "BODY: " + CelestialBodies.SelectedBody.Name.ToUpper(), this.buttonStyle) != this.showReferenceBodies)
                     {
                         this.hasChanged = true;
                         this.showReferenceBodies = !this.showReferenceBodies;
