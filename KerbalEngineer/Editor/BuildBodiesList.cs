@@ -21,6 +21,8 @@
 
 using System;
 
+using KerbalEngineer.Extensions;
+
 using UnityEngine;
 
 #endregion
@@ -114,6 +116,18 @@ namespace KerbalEngineer.Editor
             catch (Exception ex)
             {
                 Logger.Exception(ex);
+            }
+        }
+
+        #endregion
+
+        #region Updating
+
+        private void Update()
+        {
+            if ((Input.GetMouseButtonDown(0) || Input.GetMouseButtonDown(1) || Input.GetMouseButtonDown(2)) && !this.position.MouseIsOver())
+            {
+                this.enabled = false;
             }
         }
 

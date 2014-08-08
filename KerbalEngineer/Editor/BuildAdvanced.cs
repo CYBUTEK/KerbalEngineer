@@ -63,7 +63,6 @@ namespace KerbalEngineer.Editor
 
         #region Styles
 
-        private GUIStyle areaBodiesStyle;
         private GUIStyle areaSettingStyle;
         private GUIStyle areaStyle;
         private GUIStyle buttonStyle;
@@ -139,18 +138,8 @@ namespace KerbalEngineer.Editor
         }
 
         /// <summary>
-        ///     Gets and sets whether to show the reference body selection.
+        ///     Gets and sets whether to show the settings display.
         /// </summary>
-        public bool ShowReferenceBodies
-        {
-            get { return this.showReferenceBodies; }
-            set
-            {
-                this.showReferenceBodies = value;
-                Logger.Log("BuildAdvanced->ShowReferenceBodies = " + value);
-            }
-        }
-
         public bool ShowSettings
         {
             get { return this.showSettings; }
@@ -194,11 +183,6 @@ namespace KerbalEngineer.Editor
                 this.areaStyle = new GUIStyle(HighLogic.Skin.box)
                 {
                     padding = new RectOffset(0, 0, 9, 0)
-                };
-
-                this.areaBodiesStyle = new GUIStyle(HighLogic.Skin.box)
-                {
-                    padding = new RectOffset()
                 };
 
                 this.areaSettingStyle = new GUIStyle(HighLogic.Skin.box)
@@ -277,7 +261,6 @@ namespace KerbalEngineer.Editor
                     return;
                 }
 
-                this.bodiesList.enabled = this.showReferenceBodies;
                 this.bodiesList.SetPosition(this.referenceBodiesButtonRect.x + this.windowPosition.x, this.referenceBodiesButtonRect.y + this.referenceBodiesButtonRect.height + this.windowPosition.y, this.referenceBodiesButtonRect.width);
 
                 // Configure the simulation parameters based on the selected reference body.
@@ -420,11 +403,7 @@ namespace KerbalEngineer.Editor
                     }
 
                     this.referenceBodiesButtonRect = new Rect(this.windowPosition.width - 452.0f * GuiDisplaySize.Offset, 5.0f, 125.0f * GuiDisplaySize.Offset, 20.0f);
-                    if (GUI.Toggle(this.referenceBodiesButtonRect, this.showReferenceBodies, "BODY: " + CelestialBodies.SelectedBody.Name.ToUpper(), this.buttonStyle) != this.showReferenceBodies)
-                    {
-                        this.hasChanged = true;
-                        this.showReferenceBodies = !this.showReferenceBodies;
-                    }
+                    this.bodiesList.enabled = GUI.Toggle(this.referenceBodiesButtonRect, this.bodiesList.enabled, "BODY: " + CelestialBodies.SelectedBody.Name.ToUpper(), this.buttonStyle);
                 }
 
                 // Draw the main informational display box.
