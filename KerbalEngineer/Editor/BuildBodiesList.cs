@@ -85,16 +85,21 @@ namespace KerbalEngineer.Editor
         {
             try
             {
-                this.windowStyle = new GUIStyle(HighLogic.Skin.window)
+                this.windowStyle = new GUIStyle
                 {
+                    normal =
+                    {
+                        background = GameDatabase.Instance.GetTexture("KerbalEngineer/Textures/BodyListBackground", false)
+                    },
+                    border = new RectOffset(8, 8, 0, 8),
                     margin = new RectOffset(),
-                    padding = new RectOffset(3,3,3,3)
+                    padding = new RectOffset(5, 5, 5, 5)
                 };
 
                 this.buttonStyle = new GUIStyle(HighLogic.Skin.button)
                 {
-                    margin = new RectOffset(0,0,2,0),
-                    padding = new RectOffset(5,5,5,5),
+                    margin = new RectOffset(0, 0, 2, 0),
+                    padding = new RectOffset(5, 5, 5, 5),
                     normal =
                     {
                         textColor = Color.white
@@ -105,7 +110,8 @@ namespace KerbalEngineer.Editor
                     },
                     fontSize = (int)(11 * GuiDisplaySize.Offset),
                     fontStyle = FontStyle.Bold,
-                    alignment = TextAnchor.MiddleCenter
+                    alignment = TextAnchor.MiddleCenter,
+                    fixedHeight = 20.0f
                 };
 
                 this.buttonActiveStyle = new GUIStyle(this.buttonStyle)
