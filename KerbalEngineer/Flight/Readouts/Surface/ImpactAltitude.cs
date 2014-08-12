@@ -47,7 +47,7 @@ namespace KerbalEngineer.Flight.Readouts.Surface
             if (ImpactProcessor.ShowDetails)
             {
                 this.showing = true;
-                this.DrawLine(ImpactProcessor.Altitude.ToAngle());
+                this.DrawLine(ImpactProcessor.Altitude.ToDistance());
             }
             else if (this.showing)
             {

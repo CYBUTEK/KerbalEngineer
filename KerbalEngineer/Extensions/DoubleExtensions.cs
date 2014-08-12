@@ -96,7 +96,7 @@ namespace KerbalEngineer.Extensions
         /// <summary>
         ///     Convert to string formatted as a distance.
         /// </summary>
-        public static string ToDistance(this double value)
+        public static string ToDistance(this double value, string format = "N1")
         {
             try
             {
@@ -117,14 +117,14 @@ namespace KerbalEngineer.Extensions
                         {
                             value = -value;
                         }
-                        return value.ToString("N0") + "mm";
+                        return value.ToString(format) + "mm";
                     }
 
                     if (negative)
                     {
                         value = -value;
                     }
-                    return value.ToString("N0") + "m";
+                    return value.ToString(format) + "m";
                 }
 
                 value /= 1000.0f;
@@ -136,14 +136,14 @@ namespace KerbalEngineer.Extensions
                     {
                         value = -value;
                     }
-                    return value.ToString("N0") + "Mm";
+                    return value.ToString(format) + "Mm";
                 }
 
                 if (negative)
                 {
                     value = -value;
                 }
-                return value.ToString("N0") + "km";
+                return value.ToString(format) + "km";
             }
             catch (Exception ex)
             {

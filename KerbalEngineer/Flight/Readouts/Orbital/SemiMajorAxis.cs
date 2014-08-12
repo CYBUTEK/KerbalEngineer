@@ -37,7 +37,7 @@ namespace KerbalEngineer.Flight.Readouts.Orbital
 
         public override void Draw()
         {
-            this.DrawLine(FlightGlobals.ship_orbit.semiMajorAxis.ToDistance());
+            this.DrawLine(FlightGlobals.ship_orbit.semiMajorAxis.ToDistance("N3"));
         }
     }
 }

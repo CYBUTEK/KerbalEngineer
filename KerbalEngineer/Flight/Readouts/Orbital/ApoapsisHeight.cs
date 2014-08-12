@@ -17,6 +17,8 @@
 //     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // 
 
+using KerbalEngineer.Extensions;
+
 namespace KerbalEngineer.Flight.Readouts.Orbital
 {
     public class ApoapsisHeight : ReadoutModule
@@ -31,7 +33,7 @@ namespace KerbalEngineer.Flight.Readouts.Orbital
 
         public override void Draw()
         {
-            this.DrawLine(FlightGlobals.ship_orbit.ApA.ToString("N0") + "m");
+            this.DrawLine(FlightGlobals.ship_orbit.ApA.ToDistance());
         }
     }
 }
