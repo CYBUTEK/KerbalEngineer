@@ -61,6 +61,7 @@
     <Compile Include="Editor\BuildOverlay.cs" />
     <Compile Include="CelestialBodies.cs" />
     <Compile Include="Editor\BuildToolbar.cs" />
+    <Compile Include="Flight\ActionMenuGui.cs" />
     <Compile Include="Flight\FlightEngineerPartless.cs" />
     <Compile Include="Flight\Readouts\Misc\Separator.cs" />
     <Compile Include="Flight\Readouts\Misc\GuiSizeAdjustor.cs" />
