@@ -58,6 +58,29 @@ namespace KerbalEngineer.Flight
 
         #endregion
 
+        #region Updating
+
+        private void Update()
+        {
+            try
+            {
+                if (FlightEngineerCore.Instance != null && this.button.State == RUIToggleButton.ButtonState.DISABLED)
+                {
+                    this.button.Enable();
+                }
+                else if (FlightEngineerCore.Instance == null && this.button.State != RUIToggleButton.ButtonState.DISABLED)
+                {
+                    this.button.Disable();
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.Exception(ex);
+            }
+        }
+
+        #endregion
+
         #region Callbacks
 
         private void OnGuiAppLauncherReady()
@@ -76,6 +99,8 @@ namespace KerbalEngineer.Flight
                 this.actionMenuGui = this.button.gameObject.AddComponent<ActionMenuGui>();
                 this.actionMenuGui.transform.parent = this.button.transform;
                 ApplicationLauncher.Instance.EnableMutuallyExclusive(this.button);
+                GameEvents.onHideUI.Add(this.OnHide);
+                GameEvents.onShowUI.Add(this.OnShow);
             }
             catch (Exception ex)
             {
@@ -134,6 +159,30 @@ namespace KerbalEngineer.Flight
             }
         }
 
+        private void OnHide()
+        {
+            try
+            {
+                this.actionMenuGui.Hidden = true;
+            }
+            catch (Exception ex)
+            {
+                Logger.Exception(ex);
+            }
+        }
+
+        private void OnShow()
+        {
+            try
+            {
+                this.actionMenuGui.Hidden = false;
+            }
+            catch (Exception ex)
+            {
+                Logger.Exception(ex);
+            }
+        }
+
         #endregion
 
         #region Destruction
@@ -143,6 +192,8 @@ namespace KerbalEngineer.Flight
             try
             {
                 GameEvents.onGUIApplicationLauncherReady.Remove(this.OnGuiAppLauncherReady);
+                GameEvents.onHideUI.Remove(this.OnHide);
+                GameEvents.onShowUI.Remove(this.OnShow);
                 ApplicationLauncher.Instance.RemoveModApplication(this.button);
                 Logger.Log("ActionMenu was destroyed.");
             }

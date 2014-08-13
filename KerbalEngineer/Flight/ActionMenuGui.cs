@@ -44,6 +44,8 @@ namespace KerbalEngineer.Flight
         public bool StayOpen { get; set; }
         public bool Hovering { get; set; }
 
+        public bool Hidden { get; set; }
+
         #endregion
 
         #region Initialisation
@@ -129,6 +131,11 @@ namespace KerbalEngineer.Flight
         {
             try
             {
+                if (this.Hidden)
+                {
+                    return;
+                }
+
                 if (!this.position.Contains(Event.current.mousePosition) && !this.StayOpen && !this.Hovering)
                 {
                     this.enabled = false;
