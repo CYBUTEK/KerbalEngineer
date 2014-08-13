@@ -108,6 +108,7 @@ namespace KerbalEngineer.Flight.Readouts
             this.readoutModules.Add(new Mass());
             this.readoutModules.Add(new Thrust());
             this.readoutModules.Add(new ThrustToWeight());
+            this.readoutModules.Add(new Acceleration());
             this.readoutModules.Add(new SimulationDelay());
 
             // Rendezvous

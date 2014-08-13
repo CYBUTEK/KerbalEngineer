@@ -223,6 +223,11 @@ namespace KerbalEngineer.Flight.Readouts
         #region Virtual Methods
 
         /// <summary>
+        ///     Called on each fixed update frame where the readout is visible.
+        /// </summary>
+        public virtual void FixedUpdate() { }
+
+        /// <summary>
         ///     Called on each update frame where the readout is visible.
         /// </summary>
         public virtual void Update() { }

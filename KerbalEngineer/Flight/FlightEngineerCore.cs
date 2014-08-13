@@ -108,6 +108,21 @@ namespace KerbalEngineer.Flight
         #region Updating
 
         /// <summary>
+        ///     Fixed update all required Flight Engineer objects.
+        /// </summary>
+        private void FixedUpdate()
+        {
+            try
+            {
+                SectionLibrary.Instance.FixedUpdate();
+            }
+            catch (Exception ex)
+            {
+                Logger.Exception(ex);
+            }
+        }
+
+        /// <summary>
         ///     Update all required Flight Engineer objects.
         /// </summary>
         private void Update()

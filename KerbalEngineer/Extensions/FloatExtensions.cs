@@ -90,6 +90,22 @@ namespace KerbalEngineer.Extensions
         }
 
         /// <summary>
+        ///     Convert to string formatted as acceleration.
+        /// </summary>
+        public static string ToAcceleration(this float value, bool showNotation = true)
+        {
+            try
+            {
+                return showNotation ? value.ToString("N2") + "m/s²" : value.ToString("N2");
+            }
+            catch (Exception ex)
+            {
+                Logger.Exception(ex);
+                return "ERR";
+            }
+        }
+
+        /// <summary>
         ///     Convert to string formatted as a distance.
         /// </summary>
         public static string ToDistance(this float value, string format = "N1")

@@ -232,6 +232,22 @@ namespace KerbalEngineer.Flight.Sections
         #region Updating
 
         /// <summary>
+        ///     Updates all of the internal readout modules at fixed time intervals.
+        /// </summary>
+        public void FixedUpdate()
+        {
+            if (!this.IsVisible)
+            {
+                return;
+            }
+
+            foreach (var readout in this.ReadoutModules)
+            {
+                readout.FixedUpdate();
+            }
+        }
+
+        /// <summary>
         ///     Updates all of the internal readout modules.
         /// </summary>
         public void Update()

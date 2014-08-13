@@ -113,6 +113,29 @@ namespace KerbalEngineer.Flight.Sections
         #region Updating
 
         /// <summary>
+        ///     Fixed update all of the sections.
+        /// </summary>
+        public void FixedUpdate()
+        {
+            this.FixedUpdateSections(this.StockSections);
+            this.FixedUpdateSections(this.CustomSections);
+        }
+
+        /// <summary>
+        ///     Fixed updates a list of sections.
+        /// </summary>
+        private void FixedUpdateSections(IEnumerable<SectionModule> sections)
+        {
+            foreach (var section in sections)
+            {
+                if (section.IsVisible)
+                {
+                    section.FixedUpdate();
+                }
+            }
+        }
+
+        /// <summary>
         ///     Update all of the sections and process section counts.
         /// </summary>
         public void Update()
