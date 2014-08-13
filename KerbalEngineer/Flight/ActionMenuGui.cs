@@ -135,13 +135,13 @@ namespace KerbalEngineer.Flight
                     return;
                 }
 
-                if (this.numberOfSections < SectionLibrary.Instance.NumberOfSections)
+                if (this.numberOfSections < SectionLibrary.NumberOfSections)
                 {
-                    this.numberOfSections = SectionLibrary.Instance.NumberOfSections;
+                    this.numberOfSections = SectionLibrary.NumberOfSections;
                 }
-                else if (this.numberOfSections > SectionLibrary.Instance.NumberOfSections)
+                else if (this.numberOfSections > SectionLibrary.NumberOfSections)
                 {
-                    this.numberOfSections = SectionLibrary.Instance.NumberOfSections;
+                    this.numberOfSections = SectionLibrary.NumberOfSections;
                     this.position.height = 0;
                 }
 
@@ -166,8 +166,8 @@ namespace KerbalEngineer.Flight
 
                 this.DrawControlBarButton();
                 GUILayout.Space(5.0f);
-                this.DrawSections(SectionLibrary.Instance.StockSections);
-                this.DrawSections(SectionLibrary.Instance.CustomSections);
+                this.DrawSections(SectionLibrary.StockSections);
+                this.DrawSections(SectionLibrary.CustomSections);
                 GUILayout.Space(5.0f);
                 this.DrawNewButton();
 
@@ -233,10 +233,10 @@ namespace KerbalEngineer.Flight
 
                 if (GUILayout.Button("NEW CUSTOM SECTION", this.buttonStyle))
                 {
-                    SectionLibrary.Instance.CustomSections.Add(new SectionModule
+                    SectionLibrary.CustomSections.Add(new SectionModule
                     {
-                        Name = "Custom " + (SectionLibrary.Instance.CustomSections.Count + 1),
-                        Abbreviation = "CUST " + (SectionLibrary.Instance.CustomSections.Count + 1),
+                        Name = "Custom " + (SectionLibrary.CustomSections.Count + 1),
+                        Abbreviation = "CUST " + (SectionLibrary.CustomSections.Count + 1),
                         IsVisible = true,
                         IsCustom = true,
                         IsEditorVisible = true

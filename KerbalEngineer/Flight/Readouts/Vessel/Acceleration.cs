@@ -36,7 +36,7 @@ namespace KerbalEngineer.Flight.Readouts.Vessel
         public Acceleration()
         {
             this.Name = "Acceleration";
-            this.Category = ReadoutCategory.Vessel;
+            this.Category = ReadoutCategory.GetCategory("Vessel");
             this.HelpString = string.Empty;
             this.IsDefault = true;
         }

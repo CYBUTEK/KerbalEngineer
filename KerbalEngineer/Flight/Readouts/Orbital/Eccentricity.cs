@@ -30,7 +30,7 @@ namespace KerbalEngineer.Flight.Readouts.Orbital
         public Eccentricity()
         {
             this.Name = "Eccentricity";
-            this.Category = ReadoutCategory.Orbital;
+            this.Category = ReadoutCategory.GetCategory("Orbital");
             this.HelpString = "Shows the vessel's orbital eccentricity.";
             this.IsDefault = true;
         }

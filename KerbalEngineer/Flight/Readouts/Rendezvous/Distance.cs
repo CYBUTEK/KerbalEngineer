@@ -30,7 +30,7 @@ namespace KerbalEngineer.Flight.Readouts.Rendezvous
         public Distance()
         {
             this.Name = "Distance";
-            this.Category = ReadoutCategory.Rendezvous;
+            this.Category = ReadoutCategory.GetCategory("Rendezvous");
             this.HelpString = string.Empty;
             this.IsDefault = true;
         }

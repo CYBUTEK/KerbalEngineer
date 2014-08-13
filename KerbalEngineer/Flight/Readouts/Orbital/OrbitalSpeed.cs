@@ -30,7 +30,7 @@ namespace KerbalEngineer.Flight.Readouts.Orbital
         public OrbitalSpeed()
         {
             this.Name = "Orbital Speed";
-            this.Category = ReadoutCategory.Orbital;
+            this.Category = ReadoutCategory.GetCategory("Orbital");
             this.HelpString = "Shows the vessel's orbital speed.";
             this.IsDefault = true;
         }

@@ -216,15 +216,15 @@ namespace KerbalEngineer.Flight
                     return;
                 }
 
-                if (this.resizeRequested || this.numberOfStackSections != SectionLibrary.Instance.NumberOfStackSections)
+                if (this.resizeRequested || this.numberOfStackSections != SectionLibrary.NumberOfStackSections)
                 {
-                    this.numberOfStackSections = SectionLibrary.Instance.NumberOfStackSections;
+                    this.numberOfStackSections = SectionLibrary.NumberOfStackSections;
                     this.windowPosition.width = 0;
                     this.windowPosition.height = 0;
                     this.resizeRequested = false;
                 }
 
-                if (!this.Hidden && (SectionLibrary.Instance.NumberOfStackSections > 0 || this.ShowControlBar))
+                if (!this.Hidden && (SectionLibrary.NumberOfStackSections > 0 || this.ShowControlBar))
                 {
                     var shouldCentre = this.windowPosition.min == Vector2.zero;
                     GUI.skin = null;
@@ -253,10 +253,10 @@ namespace KerbalEngineer.Flight
                     this.DrawControlBar();
                 }
 
-                if (SectionLibrary.Instance.NumberOfStackSections > 0)
+                if (SectionLibrary.NumberOfStackSections > 0)
                 {
-                    this.DrawSections(SectionLibrary.Instance.StockSections);
-                    this.DrawSections(SectionLibrary.Instance.CustomSections);
+                    this.DrawSections(SectionLibrary.StockSections);
+                    this.DrawSections(SectionLibrary.CustomSections);
                 }
 
                 GUI.DragWindow();
@@ -276,8 +276,8 @@ namespace KerbalEngineer.Flight
             {
                 GUILayout.Label("FLIGHT ENGINEER " + EngineerGlobals.AssemblyVersion, this.titleStyle);
 
-                this.DrawControlBarButtons(SectionLibrary.Instance.StockSections);
-                this.DrawControlBarButtons(SectionLibrary.Instance.CustomSections);
+                this.DrawControlBarButtons(SectionLibrary.StockSections);
+                this.DrawControlBarButtons(SectionLibrary.CustomSections);
             }
             catch (Exception ex)
             {

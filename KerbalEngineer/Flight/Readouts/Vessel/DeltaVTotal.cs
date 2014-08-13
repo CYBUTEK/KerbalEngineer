@@ -33,7 +33,7 @@ namespace KerbalEngineer.Flight.Readouts.Vessel
         public DeltaVTotal()
         {
             this.Name = "DeltaV Total";
-            this.Category = ReadoutCategory.Vessel;
+            this.Category = ReadoutCategory.GetCategory("Vessel");
             this.HelpString = "Shows the vessel's total delta velocity.";
             this.IsDefault = true;
         }

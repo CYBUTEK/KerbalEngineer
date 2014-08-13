@@ -34,7 +34,7 @@ namespace KerbalEngineer.Flight.Readouts.Surface
         public Slope()
         {
             this.Name = "Slope";
-            this.Category = ReadoutCategory.Surface;
+            this.Category = ReadoutCategory.GetCategory("Surface");
             this.HelpString = "Shows the slope of the terrain below your vessel.";
             this.IsDefault = true;
         }

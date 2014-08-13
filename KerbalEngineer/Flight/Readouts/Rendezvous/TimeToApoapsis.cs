@@ -30,7 +30,7 @@ namespace KerbalEngineer.Flight.Readouts.Rendezvous
         public TimeToApoapsis()
         {
             this.Name = "Time to Apoapsis";
-            this.Category = ReadoutCategory.Rendezvous;
+            this.Category = ReadoutCategory.GetCategory("Rendezvous");
             this.HelpString = string.Empty;
             this.IsDefault = true;
         }

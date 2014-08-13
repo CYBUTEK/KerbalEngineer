@@ -32,7 +32,7 @@ namespace KerbalEngineer.Flight.Readouts.Vessel
         public Thrust()
         {
             this.Name = "Thrust";
-            this.Category = ReadoutCategory.Vessel;
+            this.Category = ReadoutCategory.GetCategory("Vessel");
             this.HelpString = string.Empty;
             this.IsDefault = true;
         }

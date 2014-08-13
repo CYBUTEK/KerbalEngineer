@@ -57,8 +57,8 @@ namespace KerbalEngineer
 
             lock (messages)
             {
-                messages.Add(new[] { "Executing: " + assemblyName.Name + " - " + assemblyName.Version });
-                messages.Add(new[] { "Assembly: " + Assembly.GetExecutingAssembly().Location });
+                messages.Add(new[] {"Executing: " + assemblyName.Name + " - " + assemblyName.Version});
+                messages.Add(new[] {"Assembly: " + Assembly.GetExecutingAssembly().Location});
             }
             Blank();
         }
@@ -76,7 +76,7 @@ namespace KerbalEngineer
         {
             lock (messages)
             {
-                messages.Add(new string[] { });
+                messages.Add(new string[] {});
             }
         }
 
@@ -88,15 +88,15 @@ namespace KerbalEngineer
                 {
                     if (obj is IEnumerable)
                     {
-                        messages.Add(new[] { "Log " + DateTime.Now.TimeOfDay, obj.ToString() });
+                        messages.Add(new[] {"Log " + DateTime.Now.TimeOfDay, obj.ToString()});
                         foreach (var o in obj as IEnumerable)
                         {
-                            messages.Add(new[] { "\t", o.ToString() });
+                            messages.Add(new[] {"\t", o.ToString()});
                         }
                     }
                     else
                     {
-                        messages.Add(new[] { "Log " + DateTime.Now.TimeOfDay, obj.ToString() });
+                        messages.Add(new[] {"Log " + DateTime.Now.TimeOfDay, obj.ToString()});
                     }
                 }
                 catch (Exception ex)
@@ -114,15 +114,15 @@ namespace KerbalEngineer
                 {
                     if (obj is IEnumerable)
                     {
-                        messages.Add(new[] { "Log " + DateTime.Now.TimeOfDay, name });
+                        messages.Add(new[] {"Log " + DateTime.Now.TimeOfDay, name});
                         foreach (var o in obj as IEnumerable)
                         {
-                            messages.Add(new[] { "\t", o.ToString() });
+                            messages.Add(new[] {"\t", o.ToString()});
                         }
                     }
                     else
                     {
-                        messages.Add(new[] { "Log " + DateTime.Now.TimeOfDay, obj.ToString() });
+                        messages.Add(new[] {"Log " + DateTime.Now.TimeOfDay, obj.ToString()});
                     }
                 }
                 catch (Exception ex)
@@ -136,7 +136,7 @@ namespace KerbalEngineer
         {
             lock (messages)
             {
-                messages.Add(new[] { "Log " + DateTime.Now.TimeOfDay, message });
+                messages.Add(new[] {"Log " + DateTime.Now.TimeOfDay, message});
             }
         }
 
@@ -144,7 +144,7 @@ namespace KerbalEngineer
         {
             lock (messages)
             {
-                messages.Add(new[] { "Warning " + DateTime.Now.TimeOfDay, message });
+                messages.Add(new[] {"Warning " + DateTime.Now.TimeOfDay, message});
             }
         }
 
@@ -152,7 +152,7 @@ namespace KerbalEngineer
         {
             lock (messages)
             {
-                messages.Add(new[] { "Error " + DateTime.Now.TimeOfDay, message });
+                messages.Add(new[] {"Error " + DateTime.Now.TimeOfDay, message});
             }
         }
 
@@ -160,8 +160,8 @@ namespace KerbalEngineer
         {
             lock (messages)
             {
-                messages.Add(new[] { "Exception " + DateTime.Now.TimeOfDay, ex.Message });
-                messages.Add(new[] { string.Empty, ex.StackTrace });
+                messages.Add(new[] {"Exception " + DateTime.Now.TimeOfDay, ex.Message});
+                messages.Add(new[] {string.Empty, ex.StackTrace});
                 Blank();
             }
         }
@@ -170,8 +170,8 @@ namespace KerbalEngineer
         {
             lock (messages)
             {
-                messages.Add(new[] { "Exception " + DateTime.Now.TimeOfDay, location + " // " + ex.Message });
-                messages.Add(new[] { string.Empty, ex.StackTrace });
+                messages.Add(new[] {"Exception " + DateTime.Now.TimeOfDay, location + " // " + ex.Message});
+                messages.Add(new[] {string.Empty, ex.StackTrace});
                 Blank();
             }
         }

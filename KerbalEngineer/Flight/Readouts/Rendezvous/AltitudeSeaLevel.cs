@@ -30,7 +30,7 @@ namespace KerbalEngineer.Flight.Readouts.Rendezvous
         public AltitudeSeaLevel()
         {
             this.Name = "Altitude (Sea Level)";
-            this.Category = ReadoutCategory.Rendezvous;
+            this.Category = ReadoutCategory.GetCategory("Rendezvous");
             this.HelpString = string.Empty;
             this.IsDefault = true;
         }

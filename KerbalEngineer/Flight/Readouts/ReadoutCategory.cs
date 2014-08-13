@@ -17,18 +17,77 @@
 //     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // 
 
+#region Using Directives
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+
+#endregion
+
 namespace KerbalEngineer.Flight.Readouts
 {
-    /// <summary>
-    ///     Enumeration of categories that a readout module can associate with.
-    /// </summary>
-    public enum ReadoutCategory
+    public class ReadoutCategory
     {
-        None = 0,
-        Orbital = 1,
-        Surface = 2,
-        Vessel = 4,
-        Rendezvous = 8,
-        Misc = 16
+        #region Constructors
+
+        static ReadoutCategory()
+        {
+            Categories = new List<ReadoutCategory>();
+        }
+
+        public ReadoutCategory(string name)
+        {
+            this.Name = name;
+        }
+
+        public ReadoutCategory(string name, string description)
+        {
+            this.Name = name;
+            this.Description = description;
+        }
+
+        #endregion
+
+        #region Properties
+
+        public static List<ReadoutCategory> Categories { get; private set; }
+
+        public string Name { get; set; }
+
+        public string Description { get; set; }
+
+        #endregion
+
+        #region Public Methods
+
+        /// <summary>
+        ///     Gets a category with the specified non-case sensitive name or creates it if required.
+        /// </summary>
+        public static ReadoutCategory GetCategory(string name)
+        {
+            if (Categories.Any(c => c.Name.Equals(name, StringComparison.CurrentCultureIgnoreCase)))
+            {
+                return Categories.Find(c => c.Name.Equals(name, StringComparison.CurrentCultureIgnoreCase));
+            }
+
+            var category = new ReadoutCategory(name);
+            Categories.Add(category);
+            return category;
+        }
+
+        public static void SetCategory(string name, string description)
+        {
+            var category = GetCategory(name);
+            category.Name = name;
+            category.Description = description;
+        }
+
+        public override string ToString()
+        {
+            return this.Name;
+        }
+
+        #endregion
     }
 }

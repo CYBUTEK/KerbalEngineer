@@ -17,42 +17,33 @@
 //     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // 
 
-#region Using Directives
+using UnityEngine;
 
-using KerbalEngineer.Extensions;
-
-#endregion
-
-namespace KerbalEngineer.Flight.Readouts.Rendezvous
+namespace KerbalEngineer.Flight.Readouts.Miscellaneous
 {
-    public class AngleToDescendingNode : ReadoutModule
+    public class GuiSizeAdjustor : ReadoutModule
     {
-        public AngleToDescendingNode()
+        public GuiSizeAdjustor()
         {
-            this.Name = "Angle to DN";
-            this.Category = ReadoutCategory.GetCategory("Rendezvous");
-            this.HelpString = string.Empty;
-            this.IsDefault = true;
-        }
-
-        public override void Update()
-        {
-            RendezvousProcessor.RequestUpdate();
+            this.Name = "GUI Size Adjustor";
+            this.Category = ReadoutCategory.GetCategory("Miscellaneous");
+            this.HelpString = "Shows a control that will allow you to adjust the GUI size.";
+            this.IsDefault = false;
         }
 
         public override void Draw()
         {
-            if (!RendezvousProcessor.ShowDetails)
+            GUILayout.BeginHorizontal();
+            GUILayout.Label("GUI Size: " + GuiDisplaySize.Increment, this.NameStyle);
+            if (GUILayout.Button("<", this.ButtonStyle))
             {
-                return;
+                GuiDisplaySize.Increment--;
             }
-
-            this.DrawLine(RendezvousProcessor.AngleToDescendingNode.ToAngle());
-        }
-
-        public override void Reset()
-        {
-            FlightEngineerCore.Instance.AddUpdatable(RendezvousProcessor.Instance);
+            if (GUILayout.Button(">", this.ButtonStyle))
+            {
+                GuiDisplaySize.Increment++;
+            }
+            GUILayout.EndHorizontal();
         }
     }
 }

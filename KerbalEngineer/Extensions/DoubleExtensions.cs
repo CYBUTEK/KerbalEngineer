@@ -44,7 +44,7 @@ namespace KerbalEngineer.Extensions
         }
 
         /// <summary>
-        ///     Convert to a string formatted as a mass.
+        ///     Convert to a ReadoutCategory formatted as a mass.
         /// </summary>
         public static string ToMass(this double value, bool showNotation = true)
         {
@@ -61,7 +61,7 @@ namespace KerbalEngineer.Extensions
         }
 
         /// <summary>
-        ///     Convert to string formatted as a force.
+        ///     Convert to ReadoutCategory formatted as a force.
         /// </summary>
         public static string ToForce(this double value, bool showNotation = true)
         {
@@ -78,7 +78,7 @@ namespace KerbalEngineer.Extensions
         }
 
         /// <summary>
-        ///     Convert to string formatted as a speed.
+        ///     Convert to ReadoutCategory formatted as a speed.
         /// </summary>
         public static string ToSpeed(this double value, bool showNotation = true)
         {
@@ -94,7 +94,7 @@ namespace KerbalEngineer.Extensions
         }
 
         /// <summary>
-        ///     Convert to string formatted as acceleration.
+        ///     Convert to ReadoutCategory formatted as acceleration.
         /// </summary>
         public static string ToAcceleration(this double value, bool showNotation = true)
         {
@@ -110,7 +110,7 @@ namespace KerbalEngineer.Extensions
         }
 
         /// <summary>
-        ///     Convert to string formatted as a distance.
+        ///     Convert to ReadoutCategory formatted as a distance.
         /// </summary>
         public static string ToDistance(this double value, string format = "N1")
         {
@@ -169,7 +169,7 @@ namespace KerbalEngineer.Extensions
         }
 
         /// <summary>
-        ///     Convert to string formatted as a rate.
+        ///     Convert to ReadoutCategory formatted as a rate.
         /// </summary>
         public static string ToRate(this double value)
         {
@@ -185,7 +185,7 @@ namespace KerbalEngineer.Extensions
         }
 
         /// <summary>
-        ///     Convert to string formatted as an angle.
+        ///     Convert to ReadoutCategory formatted as an angle.
         /// </summary>
         public static string ToAngle(this double value, string format = "F3")
         {
@@ -201,7 +201,7 @@ namespace KerbalEngineer.Extensions
         }
 
         /// <summary>
-        ///     Convert to string formatted as a time.
+        ///     Convert to ReadoutCategory formatted as a time.
         /// </summary>
         public static string ToTime(this double value, string format = "F1")
         {

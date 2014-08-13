@@ -32,7 +32,7 @@ namespace KerbalEngineer.Flight.Readouts.Surface
         public ImpactLatitude()
         {
             this.Name = "Impact Latitude";
-            this.Category = ReadoutCategory.Surface;
+            this.Category = ReadoutCategory.GetCategory("Surface");
             this.HelpString = string.Empty;
             this.IsDefault = true;
         }

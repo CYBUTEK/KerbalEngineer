@@ -30,7 +30,7 @@ namespace KerbalEngineer.Flight.Readouts.Surface
         public Latitude()
         {
             this.Name = "Latitude";
-            this.Category = ReadoutCategory.Surface;
+            this.Category = ReadoutCategory.GetCategory("Surface");
             this.HelpString = "Shows the vessel's latitude position around the celestial body.  Latitude is the angle from the equator to poles.";
             this.IsDefault = true;
         }

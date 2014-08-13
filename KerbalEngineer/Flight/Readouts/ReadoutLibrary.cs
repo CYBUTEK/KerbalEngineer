@@ -19,10 +19,11 @@
 
 #region Using Directives
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
-using KerbalEngineer.Flight.Readouts.Misc;
+using KerbalEngineer.Flight.Readouts.Miscellaneous;
 using KerbalEngineer.Flight.Readouts.Orbital;
 using KerbalEngineer.Flight.Readouts.Rendezvous;
 using KerbalEngineer.Flight.Readouts.Surface;
@@ -40,25 +41,11 @@ using TimeToPeriapsis = KerbalEngineer.Flight.Readouts.Orbital.TimeToPeriapsis;
 
 namespace KerbalEngineer.Flight.Readouts
 {
-    public class ReadoutLibrary
+    public static class ReadoutLibrary
     {
-        #region Instance
-
-        private static readonly ReadoutLibrary instance = new ReadoutLibrary();
-
-        /// <summary>
-        ///     Gets the current instance of the readout library.
-        /// </summary>
-        public static ReadoutLibrary Instance
-        {
-            get { return instance; }
-        }
-
-        #endregion
-
         #region Fields
 
-        private List<ReadoutModule> readoutModules = new List<ReadoutModule>();
+        private static List<ReadoutModule> readouts = new List<ReadoutModule>();
 
         #endregion
 
@@ -67,70 +54,83 @@ namespace KerbalEngineer.Flight.Readouts
         /// <summary>
         ///     Sets up and populates the readout library with the stock readouts.
         /// </summary>
-        private ReadoutLibrary()
+        static ReadoutLibrary()
         {
-            // Orbital
-            this.readoutModules.Add(new ApoapsisHeight());
-            this.readoutModules.Add(new PeriapsisHeight());
-            this.readoutModules.Add(new TimeToApoapsis());
-            this.readoutModules.Add(new TimeToPeriapsis());
-            this.readoutModules.Add(new Inclination());
-            this.readoutModules.Add(new Eccentricity());
-            this.readoutModules.Add(new OrbitalSpeed());
-            this.readoutModules.Add(new OrbitalPeriod());
-            this.readoutModules.Add(new LongitudeOfAscendingNode());
-            this.readoutModules.Add(new LongitudeOfPeriapsis());
-            this.readoutModules.Add(new SemiMajorAxis());
-            this.readoutModules.Add(new SemiMinorAxis());
+            try
+            {
+                ReadoutCategory.SetCategory("Orbital", "Readouts that help with orbital manouevers.");
+                ReadoutCategory.SetCategory("Surface", "Readouts that help with surface manouevers.");
+                ReadoutCategory.SetCategory("Vessel", "Readouts that display information about the vessel.");
+                ReadoutCategory.SetCategory("Rendezvous", "Readouts that help with orbital rendezvous.");
+                ReadoutCategory.SetCategory("Miscellaneous", "Readouts that do not fit into other categories.");
 
-            // Surface
-            this.readoutModules.Add(new AltitudeSeaLevel());
-            this.readoutModules.Add(new AltitudeTerrain());
-            this.readoutModules.Add(new VerticalSpeed());
-            this.readoutModules.Add(new HorizontalSpeed());
-            this.readoutModules.Add(new Longitude());
-            this.readoutModules.Add(new Latitude());
-            this.readoutModules.Add(new GeeForce());
-            this.readoutModules.Add(new TerminalVelocity());
-            this.readoutModules.Add(new AtmosphericEfficiency());
-            this.readoutModules.Add(new Biome());
-            this.readoutModules.Add(new Slope());
-            this.readoutModules.Add(new ImpactTime());
-            this.readoutModules.Add(new ImpactLongitude());
-            this.readoutModules.Add(new ImpactLatitude());
-            this.readoutModules.Add(new ImpactAltitude());
-            this.readoutModules.Add(new ImpactBiome());
+                // Orbital
+                readouts.Add(new ApoapsisHeight());
+                readouts.Add(new PeriapsisHeight());
+                readouts.Add(new TimeToApoapsis());
+                readouts.Add(new TimeToPeriapsis());
+                readouts.Add(new Inclination());
+                readouts.Add(new Eccentricity());
+                readouts.Add(new OrbitalSpeed());
+                readouts.Add(new OrbitalPeriod());
+                readouts.Add(new LongitudeOfAscendingNode());
+                readouts.Add(new LongitudeOfPeriapsis());
+                readouts.Add(new SemiMajorAxis());
+                readouts.Add(new SemiMinorAxis());
 
-            // Vessel
-            this.readoutModules.Add(new DeltaVStaged());
-            this.readoutModules.Add(new DeltaVTotal());
-            this.readoutModules.Add(new SpecificImpulse());
-            this.readoutModules.Add(new Mass());
-            this.readoutModules.Add(new Thrust());
-            this.readoutModules.Add(new ThrustToWeight());
-            this.readoutModules.Add(new Acceleration());
-            this.readoutModules.Add(new SimulationDelay());
+                // Surface
+                readouts.Add(new AltitudeSeaLevel());
+                readouts.Add(new AltitudeTerrain());
+                readouts.Add(new VerticalSpeed());
+                readouts.Add(new HorizontalSpeed());
+                readouts.Add(new Longitude());
+                readouts.Add(new Latitude());
+                readouts.Add(new GeeForce());
+                readouts.Add(new TerminalVelocity());
+                readouts.Add(new AtmosphericEfficiency());
+                readouts.Add(new Biome());
+                readouts.Add(new Slope());
+                readouts.Add(new ImpactTime());
+                readouts.Add(new ImpactLongitude());
+                readouts.Add(new ImpactLatitude());
+                readouts.Add(new ImpactAltitude());
+                readouts.Add(new ImpactBiome());
 
-            // Rendezvous
-            this.readoutModules.Add(new TargetSelector());
-            this.readoutModules.Add(new PhaseAngle());
-            this.readoutModules.Add(new InterceptAngle());
-            this.readoutModules.Add(new RelativeInclination());
-            this.readoutModules.Add(new AngleToAscendingNode());
-            this.readoutModules.Add(new AngleToDescendingNode());
-            this.readoutModules.Add(new Rendezvous.AltitudeSeaLevel());
-            this.readoutModules.Add(new Rendezvous.ApoapsisHeight());
-            this.readoutModules.Add(new Rendezvous.PeriapsisHeight());
-            this.readoutModules.Add(new Rendezvous.TimeToApoapsis());
-            this.readoutModules.Add(new Rendezvous.TimeToPeriapsis());
-            this.readoutModules.Add(new Distance());
-            this.readoutModules.Add(new Rendezvous.OrbitalPeriod());
+                // Vessel
+                readouts.Add(new DeltaVStaged());
+                readouts.Add(new DeltaVTotal());
+                readouts.Add(new SpecificImpulse());
+                readouts.Add(new Mass());
+                readouts.Add(new Thrust());
+                readouts.Add(new ThrustToWeight());
+                readouts.Add(new Acceleration());
+                readouts.Add(new SimulationDelay());
 
-            // Misc
-            this.readoutModules.Add(new Separator());
-            this.readoutModules.Add(new GuiSizeAdjustor());
+                // Rendezvous
+                readouts.Add(new TargetSelector());
+                readouts.Add(new PhaseAngle());
+                readouts.Add(new InterceptAngle());
+                readouts.Add(new RelativeInclination());
+                readouts.Add(new AngleToAscendingNode());
+                readouts.Add(new AngleToDescendingNode());
+                readouts.Add(new Rendezvous.AltitudeSeaLevel());
+                readouts.Add(new Rendezvous.ApoapsisHeight());
+                readouts.Add(new Rendezvous.PeriapsisHeight());
+                readouts.Add(new Rendezvous.TimeToApoapsis());
+                readouts.Add(new Rendezvous.TimeToPeriapsis());
+                readouts.Add(new Distance());
+                readouts.Add(new Rendezvous.OrbitalPeriod());
 
-            this.LoadHelpStrings();
+                // Misc
+                readouts.Add(new Separator());
+                readouts.Add(new GuiSizeAdjustor());
+
+                LoadHelpStrings();
+            }
+            catch (Exception ex)
+            {
+                Logger.Exception(ex);
+            }
         }
 
         #endregion
@@ -140,10 +140,10 @@ namespace KerbalEngineer.Flight.Readouts
         /// <summary>
         ///     Gets and sets the available readout modules.
         /// </summary>
-        public List<ReadoutModule> ReadoutModules
+        public static List<ReadoutModule> Readouts
         {
-            get { return this.readoutModules; }
-            set { this.readoutModules = value; }
+            get { return readouts; }
+            set { readouts = value; }
         }
 
         #endregion
@@ -153,25 +153,25 @@ namespace KerbalEngineer.Flight.Readouts
         /// <summary>
         ///     Gets a readout module with the specified name or class name. (Returns null if not found.)
         /// </summary>
-        public ReadoutModule GetReadoutModule(string name)
+        public static ReadoutModule GetReadout(string name)
         {
-            return this.readoutModules.FirstOrDefault(r => r.Name == name || r.GetType().Name == name || r.Category + "." + r.GetType().Name == name);
+            return readouts.FirstOrDefault(r => r.Name == name || r.GetType().Name == name || r.Category + "." + r.GetType().Name == name);
         }
 
         /// <summary>
         ///     Gets a list of readout modules which are associated with the specified category.
         /// </summary>
-        public List<ReadoutModule> GetCategory(ReadoutCategory category)
+        public static List<ReadoutModule> GetCategory(ReadoutCategory category)
         {
-            return this.readoutModules.Where(r => r.Category == category).ToList();
+            return readouts.Where(r => r.Category == category).ToList();
         }
 
         /// <summary>
         ///     Resets all the readout modules.
         /// </summary>
-        public void Reset()
+        public static void Reset()
         {
-            foreach (var readout in this.readoutModules)
+            foreach (var readout in readouts)
             {
                 readout.Reset();
             }
@@ -184,16 +184,37 @@ namespace KerbalEngineer.Flight.Readouts
         /// <summary>
         ///     Loads the help strings from file.
         /// </summary>
-        private void LoadHelpStrings()
+        private static void LoadHelpStrings()
         {
-            var handler = SettingHandler.Load("HelpStrings.xml");
-            foreach (var readout in this.readoutModules)
+            try
             {
-                readout.HelpString = handler.GetSet(readout.Category + "." + readout.GetType().Name, readout.HelpString);
+                var handler = SettingHandler.Load("HelpStrings.xml");
+                foreach (var readout in readouts)
+                {
+                    readout.HelpString = handler.GetSet(readout.Category + "." + readout.GetType().Name, readout.HelpString);
+                }
+                handler.Save("HelpStrings.xml");
             }
-            handler.Save("HelpStrings.xml");
+            catch (Exception ex)
+            {
+                Logger.Exception(ex);
+            }
         }
 
         #endregion
+
+        //#region Instance
+
+        //private static readonly ReadoutLibrary instance = new ReadoutLibrary();
+
+        ///// <summary>
+        /////     Gets the current instance of the readout library.
+        ///// </summary>
+        //public static ReadoutLibrary Instance
+        //{
+        //    get { return instance; }
+        //}
+
+        //#endregion
     }
 }

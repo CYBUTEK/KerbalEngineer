@@ -30,7 +30,7 @@ namespace KerbalEngineer.Flight.Readouts.Orbital
         public Inclination()
         {
             this.Name = "Inclination";
-            this.Category = ReadoutCategory.Orbital;
+            this.Category = ReadoutCategory.GetCategory("Orbital");
             this.HelpString = "Shows the vessel's orbital inclination.";
             this.IsDefault = true;
         }

@@ -30,7 +30,7 @@ namespace KerbalEngineer.Flight.Readouts.Orbital
         public LongitudeOfAscendingNode()
         {
             this.Name = "Longitude of AN";
-            this.Category = ReadoutCategory.Orbital;
+            this.Category = ReadoutCategory.GetCategory("Orbital");
             this.HelpString = "Shows the vessel's longitude of the ascending node.";
             this.IsDefault = true;
         }

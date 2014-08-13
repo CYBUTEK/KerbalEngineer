@@ -41,7 +41,7 @@ namespace KerbalEngineer.Flight.Sections
 
         private Vector2 scrollPositionAvailable;
         private Vector2 scrollPositionInstalled;
-        private ReadoutCategory selectedCategory = ReadoutCategory.Orbital;
+        private ReadoutCategory selectedReadoutCategory = ReadoutCategory.GetCategory("Orbital");
         private int windowId;
         private Rect windowPosition;
 
@@ -233,46 +233,26 @@ namespace KerbalEngineer.Flight.Sections
             {
                 this.ParentSection.IsFloating = false;
                 this.ParentSection.IsEditorVisible = false;
-                SectionLibrary.Instance.CustomSections.Remove(this.ParentSection);
+                SectionLibrary.CustomSections.Remove(this.ParentSection);
                 DisplayStack.Instance.RequestResize();
             }
             GUILayout.EndHorizontal();
         }
 
         /// <summary>
-        ///     Draws the category selection list.
+        ///     Draws the readoutCategories selection list.
         /// </summary>
         private void DrawCategorySelector()
         {
             GUILayout.BeginHorizontal();
-            var isSelected = this.selectedCategory == ReadoutCategory.Orbital;
-            if (GUILayout.Toggle(isSelected, ReadoutCategory.Orbital.ToString().ToUpper(), this.categoryButtonStyle, GUILayout.Width(100.0f)) && !isSelected)
-            {
-                this.selectedCategory = ReadoutCategory.Orbital;
-            }
 
-            isSelected = this.selectedCategory == ReadoutCategory.Surface;
-            if (GUILayout.Toggle(isSelected, ReadoutCategory.Surface.ToString().ToUpper(), this.categoryButtonStyle, GUILayout.Width(100.0f)) && !isSelected)
+            foreach (var category in ReadoutCategory.Categories)
             {
-                this.selectedCategory = ReadoutCategory.Surface;
-            }
-
-            isSelected = this.selectedCategory == ReadoutCategory.Vessel;
-            if (GUILayout.Toggle(isSelected, ReadoutCategory.Vessel.ToString().ToUpper(), this.categoryButtonStyle, GUILayout.Width(100.0f)) && !isSelected)
-            {
-                this.selectedCategory = ReadoutCategory.Vessel;
-            }
-
-            isSelected = this.selectedCategory == ReadoutCategory.Rendezvous;
-            if (GUILayout.Toggle(isSelected, ReadoutCategory.Rendezvous.ToString().ToUpper(), this.categoryButtonStyle, GUILayout.Width(100.0f)) && !isSelected)
-            {
-                this.selectedCategory = ReadoutCategory.Rendezvous;
-            }
-
-            isSelected = this.selectedCategory == ReadoutCategory.Misc;
-            if (GUILayout.Toggle(isSelected, ReadoutCategory.Misc.ToString().ToUpper(), this.categoryButtonStyle) && !isSelected)
-            {
-                this.selectedCategory = ReadoutCategory.Misc;
+                var isSelected = this.selectedReadoutCategory == category;
+                if (GUILayout.Toggle(isSelected, category.ToString().ToUpper(), this.categoryButtonStyle, GUILayout.Width(100.0f)) && !isSelected)
+                {
+                    this.selectedReadoutCategory = category;
+                }
             }
             GUILayout.EndHorizontal();
         }
@@ -288,7 +268,7 @@ namespace KerbalEngineer.Flight.Sections
 
             GUILayout.Label("AVAILABLE", this.panelTitleStyle);
 
-            foreach (var readout in ReadoutLibrary.Instance.GetCategory(this.selectedCategory))
+            foreach (var readout in ReadoutLibrary.GetCategory(this.selectedReadoutCategory))
             {
                 if (!this.ParentSection.ReadoutModules.Contains(readout) || readout.Cloneable)
                 {

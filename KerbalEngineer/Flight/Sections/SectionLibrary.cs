@@ -29,58 +29,44 @@ using KerbalEngineer.Settings;
 
 namespace KerbalEngineer.Flight.Sections
 {
-    public class SectionLibrary
+    public static class SectionLibrary
     {
-        #region Instance
-
-        private static readonly SectionLibrary instance = new SectionLibrary();
-
-        /// <summary>
-        ///     Gets the current instance of the section library.
-        /// </summary>
-        public static SectionLibrary Instance
-        {
-            get { return instance; }
-        }
-
-        #endregion
-
         #region Constructors
 
         /// <summary>
         ///     Sets up and populates the library with the stock sections on creation.
         /// </summary>
-        private SectionLibrary()
+        static SectionLibrary()
         {
-            this.StockSections = new List<SectionModule>();
-            this.CustomSections = new List<SectionModule>();
+            StockSections = new List<SectionModule>();
+            CustomSections = new List<SectionModule>();
 
-            this.StockSections.Add(new SectionModule
+            StockSections.Add(new SectionModule
             {
                 Name = "ORBITAL",
                 Abbreviation = "ORBT",
-                ReadoutModules = ReadoutLibrary.Instance.GetCategory(ReadoutCategory.Orbital).Where(r => r.IsDefault).ToList()
+                ReadoutModules = ReadoutLibrary.GetCategory(ReadoutCategory.GetCategory("Orbital")).Where(r => r.IsDefault).ToList()
             });
 
-            this.StockSections.Add(new SectionModule
+            StockSections.Add(new SectionModule
             {
                 Name = "SURFACE",
                 Abbreviation = "SURF",
-                ReadoutModules = ReadoutLibrary.Instance.GetCategory(ReadoutCategory.Surface).Where(r => r.IsDefault).ToList()
+                ReadoutModules = ReadoutLibrary.GetCategory(ReadoutCategory.GetCategory("Surface")).Where(r => r.IsDefault).ToList()
             });
 
-            this.StockSections.Add(new SectionModule
+            StockSections.Add(new SectionModule
             {
                 Name = "VESSEL",
                 Abbreviation = "VESL",
-                ReadoutModules = ReadoutLibrary.Instance.GetCategory(ReadoutCategory.Vessel).Where(r => r.IsDefault).ToList()
+                ReadoutModules = ReadoutLibrary.GetCategory(ReadoutCategory.GetCategory("Vessel")).Where(r => r.IsDefault).ToList()
             });
 
-            this.StockSections.Add(new SectionModule
+            StockSections.Add(new SectionModule
             {
                 Name = "RENDEZVOUS",
                 Abbreviation = "RDZV",
-                ReadoutModules = ReadoutLibrary.Instance.GetCategory(ReadoutCategory.Rendezvous).Where(r => r.IsDefault).ToList()
+                ReadoutModules = ReadoutLibrary.GetCategory(ReadoutCategory.GetCategory("Rendezvous")).Where(r => r.IsDefault).ToList()
             });
         }
 
@@ -91,22 +77,22 @@ namespace KerbalEngineer.Flight.Sections
         /// <summary>
         ///     Gets and sets a list of stock sections
         /// </summary>
-        public List<SectionModule> StockSections { get; set; }
+        public static List<SectionModule> StockSections { get; set; }
 
         /// <summary>
         ///     Gets and sets a list of custom sections.
         /// </summary>
-        public List<SectionModule> CustomSections { get; set; }
+        public static List<SectionModule> CustomSections { get; set; }
 
         /// <summary>
         ///     Gets the number of sections that are being drawn on the display stack.
         /// </summary>
-        public int NumberOfStackSections { get; private set; }
+        public static int NumberOfStackSections { get; private set; }
 
         /// <summary>
         ///     Gets the number of total sections that are stored in the library.
         /// </summary>
-        public int NumberOfSections { get; private set; }
+        public static int NumberOfSections { get; private set; }
 
         #endregion
 
@@ -115,16 +101,16 @@ namespace KerbalEngineer.Flight.Sections
         /// <summary>
         ///     Fixed update all of the sections.
         /// </summary>
-        public void FixedUpdate()
+        public static void FixedUpdate()
         {
-            this.FixedUpdateSections(this.StockSections);
-            this.FixedUpdateSections(this.CustomSections);
+            FixedUpdateSections(StockSections);
+            FixedUpdateSections(CustomSections);
         }
 
         /// <summary>
         ///     Fixed updates a list of sections.
         /// </summary>
-        private void FixedUpdateSections(IEnumerable<SectionModule> sections)
+        private static void FixedUpdateSections(IEnumerable<SectionModule> sections)
         {
             foreach (var section in sections)
             {
@@ -138,19 +124,19 @@ namespace KerbalEngineer.Flight.Sections
         /// <summary>
         ///     Update all of the sections and process section counts.
         /// </summary>
-        public void Update()
+        public static void Update()
         {
-            this.NumberOfStackSections = 0;
-            this.NumberOfSections = 0;
+            NumberOfStackSections = 0;
+            NumberOfSections = 0;
 
-            this.UpdateSections(this.StockSections);
-            this.UpdateSections(this.CustomSections);
+            UpdateSections(StockSections);
+            UpdateSections(CustomSections);
         }
 
         /// <summary>
         ///     Updates a list of sections and increments the section counts.
         /// </summary>
-        private void UpdateSections(IEnumerable<SectionModule> sections)
+        private static void UpdateSections(IEnumerable<SectionModule> sections)
         {
             foreach (var section in sections)
             {
@@ -167,7 +153,7 @@ namespace KerbalEngineer.Flight.Sections
                             }
                         }
 
-                        this.NumberOfStackSections++;
+                        NumberOfStackSections++;
                     }
                     else
                     {
@@ -183,7 +169,7 @@ namespace KerbalEngineer.Flight.Sections
                     section.Update();
                 }
 
-                this.NumberOfSections++;
+                NumberOfSections++;
             }
         }
 
@@ -194,22 +180,22 @@ namespace KerbalEngineer.Flight.Sections
         /// <summary>
         ///     Saves the state of all the stored sections.
         /// </summary>
-        public void Save()
+        public static void Save()
         {
             var handler = new SettingHandler();
-            handler.Set("StockSections", this.StockSections);
-            handler.Set("CustomSections", this.CustomSections);
+            handler.Set("StockSections", StockSections);
+            handler.Set("CustomSections", CustomSections);
             handler.Save("SectionLibrary.xml");
         }
 
         /// <summary>
         ///     Loads the state of all stored sections.
         /// </summary>
-        public void Load()
+        public static void Load()
         {
             var handler = SettingHandler.Load("SectionLibrary.xml", new[] {typeof(List<SectionModule>)});
-            this.StockSections = handler.Get("StockSections", this.StockSections);
-            this.CustomSections = handler.Get("CustomSections", this.CustomSections);
+            StockSections = handler.Get("StockSections", StockSections);
+            CustomSections = handler.Get("CustomSections", CustomSections);
         }
 
         #endregion
@@ -219,51 +205,65 @@ namespace KerbalEngineer.Flight.Sections
         /// <summary>
         ///     Gets a section that has the specified name.
         /// </summary>
-        public SectionModule GetSection(string name)
+        public static SectionModule GetSection(string name)
         {
-            return this.GetStockSection(name) ?? this.GetCustomSection(name);
+            return GetStockSection(name) ?? GetCustomSection(name);
         }
 
         /// <summary>
         ///     Gets a stock section that has the specified name.
         /// </summary>
-        public SectionModule GetStockSection(string name)
+        public static SectionModule GetStockSection(string name)
         {
-            return this.StockSections.FirstOrDefault(s => s.Name == name);
+            return StockSections.FirstOrDefault(s => s.Name == name);
         }
 
         /// <summary>
         ///     Gets a custom section that has the specified name.
         /// </summary>
-        public SectionModule GetCustomSection(string name)
+        public static SectionModule GetCustomSection(string name)
         {
-            return this.CustomSections.FirstOrDefault(s => s.Name == name);
+            return CustomSections.FirstOrDefault(s => s.Name == name);
         }
 
         /// <summary>
         ///     Removes a section with the specified name.
         /// </summary>
-        public bool RemoveSection(string name)
+        public static bool RemoveSection(string name)
         {
-            return this.RemoveStockSection(name) || this.RemoveCustomSection(name);
+            return RemoveStockSection(name) || RemoveCustomSection(name);
         }
 
         /// <summary>
         ///     Removes as stock section with the specified name.
         /// </summary>
-        public bool RemoveStockSection(string name)
+        public static bool RemoveStockSection(string name)
         {
-            return this.StockSections.Remove(this.GetStockSection(name));
+            return StockSections.Remove(GetStockSection(name));
         }
 
         /// <summary>
         ///     Removes a custom section witht he specified name.
         /// </summary>
-        public bool RemoveCustomSection(string name)
+        public static bool RemoveCustomSection(string name)
         {
-            return this.CustomSections.Remove(this.GetCustomSection(name));
+            return CustomSections.Remove(GetCustomSection(name));
         }
 
         #endregion
+
+        //#region Instance
+
+        //private static readonly SectionLibrary instance = new SectionLibrary();
+
+        ///// <summary>
+        /////     Gets the current instance of the section library.
+        ///// </summary>
+        //public static SectionLibrary Instance
+        //{
+        //    get { return instance; }
+        //}
+
+        //#endregion
     }
 }

@@ -30,7 +30,7 @@ namespace KerbalEngineer.Flight.Readouts.Rendezvous
         public ApoapsisHeight()
         {
             this.Name = "Apoapsis Height";
-            this.Category = ReadoutCategory.Rendezvous;
+            this.Category = ReadoutCategory.GetCategory("Rendezvous");
             this.HelpString = string.Empty;
             this.IsDefault = true;
         }

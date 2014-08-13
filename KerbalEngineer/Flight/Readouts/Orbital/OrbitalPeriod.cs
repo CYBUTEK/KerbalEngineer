@@ -30,7 +30,7 @@ namespace KerbalEngineer.Flight.Readouts.Orbital
         public OrbitalPeriod()
         {
             this.Name = "Orbital Period";
-            this.Category = ReadoutCategory.Orbital;
+            this.Category = ReadoutCategory.GetCategory("Orbital");
             this.HelpString = "Shows the amount of time it will take to complete a full orbit.";
             this.IsDefault = true;
         }

@@ -19,40 +19,33 @@
 
 #region Using Directives
 
-using KerbalEngineer.Extensions;
+using UnityEngine;
 
 #endregion
 
-namespace KerbalEngineer.Flight.Readouts.Rendezvous
+namespace KerbalEngineer.Flight.Readouts.Miscellaneous
 {
-    public class AngleToDescendingNode : ReadoutModule
+    public class Separator : ReadoutModule
     {
-        public AngleToDescendingNode()
-        {
-            this.Name = "Angle to DN";
-            this.Category = ReadoutCategory.GetCategory("Rendezvous");
-            this.HelpString = string.Empty;
-            this.IsDefault = true;
-        }
+        private readonly Texture2D texture;
 
-        public override void Update()
+        public Separator()
         {
-            RendezvousProcessor.RequestUpdate();
+            this.Name = "Separator";
+            this.Category = ReadoutCategory.GetCategory("Miscellaneous");
+            this.HelpString = string.Empty;
+            this.IsDefault = false;
+            this.Cloneable = true;
+
+            this.texture = new Texture2D(1, 1, TextureFormat.RGBA32, false);
+            this.texture.SetPixel(0, 0, new Color(1.0f, 1.0f, 1.0f, 0.5f));
+            this.texture.Apply();
         }
 
         public override void Draw()
         {
-            if (!RendezvousProcessor.ShowDetails)
-            {
-                return;
-            }
-
-            this.DrawLine(RendezvousProcessor.AngleToDescendingNode.ToAngle());
-        }
-
-        public override void Reset()
-        {
-            FlightEngineerCore.Instance.AddUpdatable(RendezvousProcessor.Instance);
+            GUILayout.Box(string.Empty, GUIStyle.none, new[] {GUILayout.Width(this.ContentWidth), GUILayout.Height(1.0f)});
+            GUI.DrawTexture(GUILayoutUtility.GetLastRect(), this.texture, ScaleMode.StretchToFill);
         }
     }
 }

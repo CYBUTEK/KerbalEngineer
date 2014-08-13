@@ -30,7 +30,7 @@ namespace KerbalEngineer.Flight.Readouts.Orbital
         public LongitudeOfPeriapsis()
         {
             this.Name = "Longitude of Pe";
-            this.Category = ReadoutCategory.Orbital;
+            this.Category = ReadoutCategory.GetCategory("Orbital");
             this.HelpString = "Shows the vessel's longitude of periapsis.";
             this.IsDefault = true;
         }

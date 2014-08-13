@@ -30,7 +30,7 @@ namespace KerbalEngineer.Flight.Readouts.Orbital
         public SemiMajorAxis()
         {
             this.Name = "Semi-Major Axis";
-            this.Category = ReadoutCategory.Orbital;
+            this.Category = ReadoutCategory.GetCategory("Orbital");
             this.HelpString = "Shows the distance from the centre of an orbit to the farthest edge.";
             this.IsDefault = true;
         }

@@ -74,8 +74,8 @@ namespace KerbalEngineer.Flight
         {
             try
             {
-                SectionLibrary.Instance.Load();
-                ReadoutLibrary.Instance.Reset();
+                SectionLibrary.Load();
+                ReadoutLibrary.Reset();
                 Logger.Log("FlightEngineerCore->Start");
             }
             catch (Exception ex)
@@ -114,7 +114,7 @@ namespace KerbalEngineer.Flight
         {
             try
             {
-                SectionLibrary.Instance.FixedUpdate();
+                SectionLibrary.FixedUpdate();
             }
             catch (Exception ex)
             {
@@ -129,7 +129,7 @@ namespace KerbalEngineer.Flight
         {
             try
             {
-                SectionLibrary.Instance.Update();
+                SectionLibrary.Update();
                 this.UpdateModules();
             }
             catch (Exception ex)
@@ -179,7 +179,7 @@ namespace KerbalEngineer.Flight
         {
             try
             {
-                SectionLibrary.Instance.Save();
+                SectionLibrary.Save();
 
                 foreach (var window in this.SectionWindows)
                 {

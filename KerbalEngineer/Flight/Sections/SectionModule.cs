@@ -147,7 +147,7 @@ namespace KerbalEngineer.Flight.Sections
         public string[] ReadoutModuleNames
         {
             get { return this.ReadoutModules.Select(r => r.Category + "." + r.GetType().Name).ToArray(); }
-            set { this.ReadoutModules = value.Select(n => ReadoutLibrary.Instance.GetReadoutModule(n)).ToList(); }
+            set { this.ReadoutModules = value.Select(ReadoutLibrary.GetReadout).ToList(); }
         }
 
         /// <summary>

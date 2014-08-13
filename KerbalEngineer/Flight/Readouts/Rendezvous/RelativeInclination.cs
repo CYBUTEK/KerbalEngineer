@@ -30,7 +30,7 @@ namespace KerbalEngineer.Flight.Readouts.Rendezvous
         public RelativeInclination()
         {
             this.Name = "Relative Inclination";
-            this.Category = ReadoutCategory.Rendezvous;
+            this.Category = ReadoutCategory.GetCategory("Rendezvous");
             this.HelpString = "Shows the relative inclination between your vessel and the target object.";
             this.IsDefault = true;
         }

@@ -34,7 +34,7 @@ namespace KerbalEngineer.Flight.Readouts.Vessel
         public ThrustToWeight()
         {
             this.Name = "Thrust to Weight Ratio";
-            this.Category = ReadoutCategory.Vessel;
+            this.Category = ReadoutCategory.GetCategory("Vessel");
             this.HelpString = "Shows the vessel's actual and total thrust to weight ratio.";
             this.IsDefault = true;
         }

@@ -32,7 +32,7 @@ namespace KerbalEngineer.Flight.Readouts.Vessel
         public SpecificImpulse()
         {
             this.Name = "Specific Impulse";
-            this.Category = ReadoutCategory.Vessel;
+            this.Category = ReadoutCategory.GetCategory("Vessel");
             this.HelpString = string.Empty;
             this.IsDefault = true;
         }

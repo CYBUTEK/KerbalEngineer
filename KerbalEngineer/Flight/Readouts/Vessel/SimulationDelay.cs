@@ -32,7 +32,7 @@ namespace KerbalEngineer.Flight.Readouts.Vessel
         public SimulationDelay()
         {
             this.Name = "Minimum Simulation Delay";
-            this.Category = ReadoutCategory.Vessel;
+            this.Category = ReadoutCategory.GetCategory("Vessel");
             this.HelpString = "Controls the minimum delay between processing vessel simulations.";
             this.IsDefault = true;
         }

@@ -45,7 +45,7 @@ namespace KerbalEngineer.Flight.Readouts.Rendezvous
         public TargetSelector()
         {
             this.Name = "Target Selector";
-            this.Category = ReadoutCategory.Rendezvous;
+            this.Category = ReadoutCategory.GetCategory("Rendezvous");
             this.HelpString = "A tool to allow easy browsing, searching and selection of targets.";
             this.IsDefault = true;
         }
