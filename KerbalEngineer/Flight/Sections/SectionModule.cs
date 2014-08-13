@@ -327,5 +327,14 @@ namespace KerbalEngineer.Flight.Sections
         }
 
         #endregion
+
+        #region Public Methods
+
+        public void ClearNullReadouts()
+        {
+            this.ReadoutModules.RemoveAll(r => r == null);
+        }
+
+        #endregion
     }
 }

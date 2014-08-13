@@ -53,6 +53,8 @@ namespace KerbalEngineer.Flight.Readouts
 
         public static List<ReadoutCategory> Categories { get; private set; }
 
+        public static ReadoutCategory Selected { get; set; }
+
         public string Name { get; set; }
 
         public string Description { get; set; }
@@ -74,6 +76,12 @@ namespace KerbalEngineer.Flight.Readouts
             var category = new ReadoutCategory(name);
             Categories.Add(category);
             return category;
+        }
+
+        public static void SetCategory(string name)
+        {
+            var category = GetCategory(name);
+            category.Name = name;
         }
 
         public static void SetCategory(string name, string description)

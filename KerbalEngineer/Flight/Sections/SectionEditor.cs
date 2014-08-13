@@ -19,8 +19,11 @@
 
 #region Using Directives
 
+using System;
+
 using KerbalEngineer.Extensions;
 using KerbalEngineer.Flight.Readouts;
+using KerbalEngineer.UIControls;
 
 using UnityEngine;
 
@@ -41,21 +44,33 @@ namespace KerbalEngineer.Flight.Sections
 
         private Vector2 scrollPositionAvailable;
         private Vector2 scrollPositionInstalled;
-        private ReadoutCategory selectedReadoutCategory = ReadoutCategory.GetCategory("Orbital");
-        private int windowId;
-        private Rect windowPosition;
+        private Rect position;
+        private DropDown categoryList;
 
         #endregion
 
         #region Constructors
+
+        private void Awake()
+        {
+            try
+            {
+                this.categoryList = this.gameObject.AddComponent<DropDown>();
+                this.categoryList.DrawCallback = this.DrawCategories;
+            }
+            catch (Exception ex)
+            {
+                Logger.Exception(ex);
+            }
+        }
 
         /// <summary>
         ///     Initialises the object's state on creation.
         /// </summary>
         private void Start()
         {
-            this.windowId = this.GetHashCode();
             this.InitialiseStyles();
+            ReadoutCategory.Selected = ReadoutCategory.GetCategory("Orbital");
             RenderingManager.AddToPostDrawQueue(0, this.Draw);
         }
 
@@ -71,17 +86,19 @@ namespace KerbalEngineer.Flight.Sections
         /// <summary>
         ///     Gets and sets the window position.
         /// </summary>
-        public Rect WindowPosition
+        public Rect Position
         {
-            get { return this.windowPosition; }
-            set { this.windowPosition = value; }
+            get { return this.position; }
+            set { this.position = value; }
         }
 
         #endregion
 
         #region GUIStyles
 
+        private GUIStyle categoryTitleButtonStyle;
         private GUIStyle categoryButtonStyle;
+        private GUIStyle categoryButtonActiveStyle;
         private GUIStyle helpBoxStyle;
         private GUIStyle helpTextStyle;
         private GUIStyle panelTitleStyle;
@@ -103,10 +120,18 @@ namespace KerbalEngineer.Flight.Sections
                 {
                     textColor = Color.white
                 },
+                margin = new RectOffset(0,0,2,0),
+                padding = new RectOffset(5,5,5,5),
                 alignment = TextAnchor.MiddleCenter,
                 fontSize = 12,
-                fontStyle = FontStyle.Bold,
-                fixedHeight = 30.0f,
+                fontStyle = FontStyle.Normal,
+                richText = true
+            };
+
+            this.categoryButtonActiveStyle = new GUIStyle(this.categoryButtonStyle)
+            {
+                normal = this.categoryButtonStyle.onNormal,
+                hover = this.categoryButtonStyle.onHover
             };
 
             this.panelTitleStyle = new GUIStyle(HighLogic.Skin.label)
@@ -181,6 +206,12 @@ namespace KerbalEngineer.Flight.Sections
                 stretchWidth = true,
                 richText = true
             };
+
+            this.categoryTitleButtonStyle = new GUIStyle(this.readoutButtonStyle)
+            {
+                fixedHeight = 30.0f,
+                stretchHeight = false
+            };
         }
 
         #endregion
@@ -192,9 +223,9 @@ namespace KerbalEngineer.Flight.Sections
         /// </summary>
         private void Draw()
         {
-            this.windowPosition = GUILayout.Window(this.windowId, this.windowPosition, this.Window, "EDIT SECTION - " + this.ParentSection.Name.ToUpper(), this.windowStyle).ClampToScreen();
-            this.ParentSection.EditorPositionX = this.windowPosition.x;
-            this.ParentSection.EditorPositionY = this.windowPosition.y;
+            this.position = GUILayout.Window(this.GetInstanceID(), this.position, this.Window, "EDIT SECTION - " + this.ParentSection.Name.ToUpper(), this.windowStyle).ClampToScreen();
+            this.ParentSection.EditorPositionX = this.position.x;
+            this.ParentSection.EditorPositionY = this.position.y;
         }
 
         /// <summary>
@@ -208,7 +239,7 @@ namespace KerbalEngineer.Flight.Sections
             GUILayout.Space(5.0f);
             this.DrawInstalledReadouts();
 
-            if (GUILayout.Button("CLOSE EDITOR", this.categoryButtonStyle))
+            if (GUILayout.Button("CLOSE EDITOR", this.categoryTitleButtonStyle))
             {
                 this.ParentSection.IsEditorVisible = false;
             }
@@ -244,17 +275,23 @@ namespace KerbalEngineer.Flight.Sections
         /// </summary>
         private void DrawCategorySelector()
         {
-            GUILayout.BeginHorizontal();
+            this.categoryList.enabled = GUILayout.Toggle(this.categoryList.enabled, "▼ SELECTED CATEGORY: " + ReadoutCategory.Selected.ToString().ToUpper() + " ▼", this.categoryTitleButtonStyle);
+            if (Event.current.type == EventType.repaint)
+            {
+                this.categoryList.SetPosition(GUILayoutUtility.GetLastRect().Translate(this.position));
+            }
+        }
 
+        private void DrawCategories()
+        {
             foreach (var category in ReadoutCategory.Categories)
             {
-                var isSelected = this.selectedReadoutCategory == category;
-                if (GUILayout.Toggle(isSelected, category.ToString().ToUpper(), this.categoryButtonStyle, GUILayout.Width(100.0f)) && !isSelected)
+                if (GUILayout.Button("<b>" + category.Name.ToUpper() + "</b>" + (string.IsNullOrEmpty(category.Description) ? string.Empty : "\n<i>" + category.Description + "</i>"), category == ReadoutCategory.Selected ? this.categoryButtonActiveStyle : this.categoryButtonStyle))
                 {
-                    this.selectedReadoutCategory = category;
+                    ReadoutCategory.Selected = category;
+                    this.categoryList.enabled = false;
                 }
             }
-            GUILayout.EndHorizontal();
         }
 
         /// <summary>
@@ -268,7 +305,7 @@ namespace KerbalEngineer.Flight.Sections
 
             GUILayout.Label("AVAILABLE", this.panelTitleStyle);
 
-            foreach (var readout in ReadoutLibrary.GetCategory(this.selectedReadoutCategory))
+            foreach (var readout in ReadoutLibrary.GetCategory(ReadoutCategory.Selected))
             {
                 if (!this.ParentSection.ReadoutModules.Contains(readout) || readout.Cloneable)
                 {

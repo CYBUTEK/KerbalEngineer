@@ -57,7 +57,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Editor\BuildAdvanced.cs" />
-    <Compile Include="Editor\BuildBodiesList.cs" />
     <Compile Include="Editor\BuildOverlay.cs" />
     <Compile Include="CelestialBodies.cs" />
     <Compile Include="Editor\BuildToolbar.cs" />
@@ -71,7 +70,9 @@
     <Compile Include="Flight\Readouts\Vessel\SimulationDelay.cs" />
     <Compile Include="Flight\Readouts\Vessel\SimulationProcessor.cs" />
     <Compile Include="Flight\Readouts\Vessel\Acceleration.cs" />
+    <Compile Include="Flight\Sections\SectionEditorCategoryList.cs" />
     <Compile Include="GuiDisplaySize.cs" />
+    <Compile Include="UIControls\DropDown.cs" />
     <Compile Include="Logger.cs" />
     <Compile Include="EngineerGlobals.cs" />
     <Compile Include="Extensions\DoubleExtensions.cs" />

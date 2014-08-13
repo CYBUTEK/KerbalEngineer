@@ -58,10 +58,10 @@ namespace KerbalEngineer.Flight.Readouts
         {
             try
             {
-                ReadoutCategory.SetCategory("Orbital", "Readouts that help with orbital manouevers.");
-                ReadoutCategory.SetCategory("Surface", "Readouts that help with surface manouevers.");
-                ReadoutCategory.SetCategory("Vessel", "Readouts that display information about the vessel.");
-                ReadoutCategory.SetCategory("Rendezvous", "Readouts that help with orbital rendezvous.");
+                ReadoutCategory.SetCategory("Orbital", "Readouts for orbital manovoeures.");
+                ReadoutCategory.SetCategory("Surface", "Readouts showing surface and atmospheric information.");
+                ReadoutCategory.SetCategory("Vessel", "Readouts showing vessel performance statistics.");
+                ReadoutCategory.SetCategory("Rendezvous", "Readouts for rendezvous manovoeures.");
                 ReadoutCategory.SetCategory("Miscellaneous", "Readouts that do not fit into other categories.");
 
                 // Orbital

@@ -21,6 +21,7 @@
 
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 
 using KerbalEngineer.Flight.Readouts;
 using KerbalEngineer.Settings;
@@ -196,6 +197,11 @@ namespace KerbalEngineer.Flight.Sections
             var handler = SettingHandler.Load("SectionLibrary.xml", new[] {typeof(List<SectionModule>)});
             StockSections = handler.Get("StockSections", StockSections);
             CustomSections = handler.Get("CustomSections", CustomSections);
+
+            foreach (var section in StockSections)
+            {
+                section.ClearNullReadouts();
+            }
         }
 
         #endregion
@@ -251,19 +257,5 @@ namespace KerbalEngineer.Flight.Sections
         }
 
         #endregion
-
-        //#region Instance
-
-        //private static readonly SectionLibrary instance = new SectionLibrary();
-
-        ///// <summary>
-        /////     Gets the current instance of the section library.
-        ///// </summary>
-        //public static SectionLibrary Instance
-        //{
-        //    get { return instance; }
-        //}
-
-        //#endregion
     }
 }

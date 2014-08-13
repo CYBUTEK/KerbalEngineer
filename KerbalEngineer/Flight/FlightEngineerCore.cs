@@ -234,7 +234,7 @@ namespace KerbalEngineer.Flight
             {
                 var editor = this.gameObject.AddComponent<SectionEditor>();
                 editor.ParentSection = section;
-                editor.WindowPosition = new Rect(section.EditorPositionX, section.EditorPositionY, SectionEditor.Width, SectionEditor.Height);
+                editor.Position = new Rect(section.EditorPositionX, section.EditorPositionY, SectionEditor.Width, SectionEditor.Height);
                 this.SectionEditors.Add(editor);
                 return editor;
             }

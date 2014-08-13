@@ -56,5 +56,13 @@ namespace KerbalEngineer.Extensions
         {
             return value.Contains(new Vector2(Input.mousePosition.x, Screen.height - Input.mousePosition.y));
         }
+
+        public static Rect Translate(this Rect value, Rect rectangle)
+        {
+            value.x += rectangle.x;
+            value.y += rectangle.y;
+
+            return value;
+        }
     }
 }

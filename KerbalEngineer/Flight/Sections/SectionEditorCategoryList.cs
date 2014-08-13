@@ -22,14 +22,15 @@
 using System;
 
 using KerbalEngineer.Extensions;
+using KerbalEngineer.Flight.Readouts;
 
 using UnityEngine;
 
 #endregion
 
-namespace KerbalEngineer.Editor
+namespace KerbalEngineer.Flight.Sections
 {
-    public class BuildBodiesList : MonoBehaviour
+    public class SectionEditorCategoryList : MonoBehaviour
     {
         #region Fields
 
@@ -38,7 +39,7 @@ namespace KerbalEngineer.Editor
 
         #endregion
 
-        #region Properties
+        #region properties
 
         public Rect Position
         {
@@ -91,27 +92,21 @@ namespace KerbalEngineer.Editor
                     {
                         background = GameDatabase.Instance.GetTexture("KerbalEngineer/Textures/BodyListBackground", false)
                     },
-                    border = new RectOffset(8, 8, 0, 8),
+                    border = new RectOffset(8, 8, 1, 8),
                     margin = new RectOffset(),
                     padding = new RectOffset(5, 5, 5, 5)
                 };
 
                 this.buttonStyle = new GUIStyle(HighLogic.Skin.button)
                 {
-                    margin = new RectOffset(0, 0, 2, 0),
-                    padding = new RectOffset(5, 5, 5, 5),
                     normal =
                     {
                         textColor = Color.white
                     },
-                    active =
-                    {
-                        textColor = Color.white
-                    },
-                    fontSize = (int)(11 * GuiDisplaySize.Offset),
-                    fontStyle = FontStyle.Bold,
                     alignment = TextAnchor.MiddleCenter,
-                    fixedHeight = 20.0f
+                    fontSize = 12,
+                    fontStyle = FontStyle.Bold,
+                    fixedHeight = 30.0f,
                 };
 
                 this.buttonActiveStyle = new GUIStyle(this.buttonStyle)
@@ -131,9 +126,16 @@ namespace KerbalEngineer.Editor
 
         private void Update()
         {
-            if ((Input.GetMouseButtonDown(0) || Input.GetMouseButtonDown(1) || Input.GetMouseButtonDown(2)) && !this.position.MouseIsOver())
+            try
             {
-                this.enabled = false;
+                if ((Input.GetMouseButtonDown(0) || Input.GetMouseButtonDown(1) || Input.GetMouseButtonDown(2)) && !this.position.MouseIsOver())
+                {
+                    this.enabled = false;
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.Exception(ex);
             }
         }
 
@@ -150,6 +152,7 @@ namespace KerbalEngineer.Editor
                     this.position.height = 0;
                     this.resize = false;
                 }
+
                 GUI.skin = null;
                 this.position = GUILayout.Window(this.GetInstanceID(), this.position, this.Window, string.Empty, this.windowStyle);
             }
@@ -164,15 +167,12 @@ namespace KerbalEngineer.Editor
             try
             {
                 GUI.BringWindowToFront(windowId);
-                if (CelestialBodies.SystemBody == CelestialBodies.SelectedBody)
+                foreach (var category in ReadoutCategory.Categories)
                 {
-                    this.DrawBodies(CelestialBodies.SystemBody);
-                }
-                else
-                {
-                    foreach (var body in CelestialBodies.SystemBody.Children)
+                    if (GUILayout.Button(category.Name, category == ReadoutCategory.Selected ? this.buttonActiveStyle : this.buttonStyle))
                     {
-                        this.DrawBodies(body);
+                        ReadoutCategory.Selected = category;
+                        this.enabled = false;
                     }
                 }
             }
@@ -182,37 +182,17 @@ namespace KerbalEngineer.Editor
             }
         }
 
-        private void DrawBodies(CelestialBodies.BodyInfo bodyInfo, int depth = 0)
-        {
-            GUILayout.BeginHorizontal();
-            GUILayout.Space(20.0f * depth);
-            if (GUILayout.Button(bodyInfo.Children.Count > 0 ? bodyInfo.Name + " [" + bodyInfo.Children.Count + "]" : bodyInfo.Name, bodyInfo.Selected && bodyInfo.SelectedDepth == 0 ? this.buttonActiveStyle : this.buttonStyle))
-            {
-                CelestialBodies.SetSelectedBody(bodyInfo.Name);
-                this.resize = true;
-            }
-            GUILayout.EndHorizontal();
-
-            if (bodyInfo.Selected)
-            {
-                foreach (var body in bodyInfo.Children)
-                {
-                    this.DrawBodies(body, depth + 1);
-                }
-            }
-        }
-
         #endregion
 
         #region Public Methods
 
-        public void SetPosition(float x, float y, float width)
+        public void SetPosition(Rect position)
         {
             try
             {
-                this.position.x = x;
-                this.position.y = y;
-                this.position.width = width;
+                this.position.x = position.x;
+                this.position.y = position.y + position.height;
+                this.position.width = position.width;
             }
             catch (Exception ex)
             {

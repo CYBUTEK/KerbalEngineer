@@ -25,6 +25,7 @@ using System.Linq;
 using KerbalEngineer.Extensions;
 using KerbalEngineer.Flight;
 using KerbalEngineer.Settings;
+using KerbalEngineer.UIControls;
 using KerbalEngineer.VesselSimulator;
 
 using UnityEngine;
@@ -49,17 +50,16 @@ namespace KerbalEngineer.Editor
 
         private float atmosphericPercentage = 1.0f;
         private float atmosphericVelocity;
-        private BuildBodiesList bodiesList;
+        private DropDown bodiesList;
         private int compactCheck;
         private bool compactCollapseRight;
         private float compactRight;
         private bool hasChanged;
         private bool isEditorLocked;
         private int numberOfStages;
-        private Rect referenceBodiesButtonRect;
         private Stage[] stages;
-        private int windowId;
-        private Rect windowPosition = new Rect(265.0f, 45.0f, 0, 0);
+        private Rect position = new Rect(265.0f, 45.0f, 0, 0);
+        private Rect bodiesListPosition;
 
         #region Styles
 
@@ -71,6 +71,8 @@ namespace KerbalEngineer.Editor
         private GUIStyle settingStyle;
         private GUIStyle titleStyle;
         private GUIStyle windowStyle;
+        private GUIStyle bodiesButtonStyle;
+        private GUIStyle bodiesButtonActiveStyle;
 
         #endregion
 
@@ -81,7 +83,6 @@ namespace KerbalEngineer.Editor
         private bool compactMode;
         private bool showAllStages;
         private bool showAtmosphericDetails;
-        private bool showReferenceBodies;
         private bool showSettings;
         private bool visible = true;
 
@@ -91,11 +92,7 @@ namespace KerbalEngineer.Editor
         public bool Visible
         {
             get { return this.visible; }
-            set
-            {
-                this.visible = value;
-                Logger.Log("BuildAdvanced->Visible = " + value);
-            }
+            set { this.visible = value; }
         }
 
         /// <summary>
@@ -104,11 +101,7 @@ namespace KerbalEngineer.Editor
         public bool CompactMode
         {
             get { return this.compactMode; }
-            set
-            {
-                this.compactMode = value;
-                Logger.Log("BuildAdvanced->CompactMode = " + value);
-            }
+            set { this.compactMode = value; }
         }
 
         /// <summary>
@@ -117,11 +110,7 @@ namespace KerbalEngineer.Editor
         public bool ShowAllStages
         {
             get { return this.showAllStages; }
-            set
-            {
-                this.showAllStages = value;
-                Logger.Log("BuildAdvanced->ShowAllStages = " + value);
-            }
+            set { this.showAllStages = value; }
         }
 
         /// <summary>
@@ -130,11 +119,7 @@ namespace KerbalEngineer.Editor
         public bool ShowAtmosphericDetails
         {
             get { return this.showAtmosphericDetails; }
-            set
-            {
-                this.showAtmosphericDetails = value;
-                Logger.Log("BuildAdvanced->ShowAtmosphericDetails = " + value);
-            }
+            set { this.showAtmosphericDetails = value; }
         }
 
         /// <summary>
@@ -143,11 +128,7 @@ namespace KerbalEngineer.Editor
         public bool ShowSettings
         {
             get { return this.showSettings; }
-            set
-            {
-                this.showSettings = value;
-                Logger.Log("BuildAdvanced->ShowSettings = " + value);
-            }
+            set { this.showSettings = value; }
         }
 
         #endregion
@@ -157,13 +138,13 @@ namespace KerbalEngineer.Editor
         private void Awake()
         {
             Instance = this;
-            this.bodiesList = this.gameObject.AddComponent<BuildBodiesList>();
+            this.bodiesList = this.gameObject.AddComponent<DropDown>();
+            this.bodiesList.DrawCallback = this.DrawBodiesList;
             this.Load();
         }
 
         private void Start()
         {
-            this.windowId = this.GetHashCode();
             this.InitialiseStyles();
             GuiDisplaySize.OnSizeChanged += this.OnSizeChanged;
         }
@@ -234,6 +215,30 @@ namespace KerbalEngineer.Editor
                     padding = new RectOffset(),
                     alignment = TextAnchor.UpperLeft
                 };
+
+                this.bodiesButtonStyle = new GUIStyle(HighLogic.Skin.button)
+                {
+                    margin = new RectOffset(0, 0, 2, 0),
+                    padding = new RectOffset(5, 5, 5, 5),
+                    normal =
+                    {
+                        textColor = Color.white
+                    },
+                    active =
+                    {
+                        textColor = Color.white
+                    },
+                    fontSize = (int)(11 * GuiDisplaySize.Offset),
+                    fontStyle = FontStyle.Bold,
+                    alignment = TextAnchor.MiddleCenter,
+                    fixedHeight = 20.0f
+                };
+
+                this.bodiesButtonActiveStyle = new GUIStyle(this.bodiesButtonStyle)
+                {
+                    normal = this.bodiesButtonStyle.onNormal,
+                    hover = this.bodiesButtonStyle.onHover
+                };
             }
             catch (Exception ex)
             {
@@ -260,8 +265,6 @@ namespace KerbalEngineer.Editor
                     this.bodiesList.enabled = false;
                     return;
                 }
-
-                this.bodiesList.SetPosition(this.referenceBodiesButtonRect.x + this.windowPosition.x, this.referenceBodiesButtonRect.y + this.referenceBodiesButtonRect.height + this.windowPosition.y, this.referenceBodiesButtonRect.width);
 
                 // Configure the simulation parameters based on the selected reference body.
                 SimManager.Gravity = CelestialBodies.SelectedBody.Gravity;
@@ -315,16 +318,16 @@ namespace KerbalEngineer.Editor
                     this.hasChanged = false;
                     this.numberOfStages = stageCount;
 
-                    this.windowPosition.width = 0;
-                    this.windowPosition.height = 0;
+                    this.position.width = 0;
+                    this.position.height = 0;
                 }
 
                 GUI.skin = null;
-                this.windowPosition = GUILayout.Window(this.windowId, this.windowPosition, this.Window, title, this.windowStyle).ClampToScreen();
+                this.position = GUILayout.Window(this.GetInstanceID(), this.position, this.Window, title, this.windowStyle).ClampToScreen();
 
                 if (this.compactCheck > 0 && this.compactCollapseRight)
                 {
-                    this.windowPosition.x = this.compactRight - this.windowPosition.width;
+                    this.position.x = this.compactRight - this.position.width;
                     this.compactCheck--;
                 }
                 else if (this.compactCheck > 0)
@@ -348,12 +351,12 @@ namespace KerbalEngineer.Editor
         {
             try
             {
-                if ((this.windowPosition.MouseIsOver() || this.bodiesList.Position.MouseIsOver()) && this.isEditorLocked == false)
+                if ((this.position.MouseIsOver() || this.bodiesList.Position.MouseIsOver()) && this.isEditorLocked == false)
                 {
                     EditorLogic.fetch.State = EditorLogic.EditorState.GUI_SELECTED;
                     this.isEditorLocked = true;
                 }
-                else if (!this.windowPosition.MouseIsOver() && !this.bodiesList.Position.MouseIsOver() && this.isEditorLocked)
+                else if (!this.position.MouseIsOver() && !this.bodiesList.Position.MouseIsOver() && this.isEditorLocked)
                 {
                     EditorLogic.fetch.State = EditorLogic.EditorState.PAD_UNSELECTED;
                     this.isEditorLocked = false;
@@ -373,37 +376,38 @@ namespace KerbalEngineer.Editor
             try
             {
                 // Draw the compact mode toggle.
-                if (GUI.Toggle(new Rect(this.windowPosition.width - 70.0f * GuiDisplaySize.Offset, 5.0f, 65.0f * GuiDisplaySize.Offset, 20.0f), this.compactMode, "COMPACT", this.buttonStyle) != this.compactMode)
+                if (GUI.Toggle(new Rect(this.position.width - 70.0f * GuiDisplaySize.Offset, 5.0f, 65.0f * GuiDisplaySize.Offset, 20.0f), this.compactMode, "COMPACT", this.buttonStyle) != this.compactMode)
                 {
                     this.hasChanged = true;
                     this.compactCheck = 2;
-                    this.compactRight = this.windowPosition.xMax;
+                    this.compactRight = this.position.xMax;
                     this.compactMode = !this.compactMode;
                 }
 
                 // When not in compact mode draw the 'All Stages' and 'Atmospheric' toggles.
                 if (!this.compactMode)
                 {
-                    if (GUI.Toggle(new Rect(this.windowPosition.width - 143.0f * GuiDisplaySize.Offset, 5.0f, 70.0f * GuiDisplaySize.Offset, 20.0f), this.showSettings, "SETTINGS", this.buttonStyle) != this.showSettings)
+                    if (GUI.Toggle(new Rect(this.position.width - 143.0f * GuiDisplaySize.Offset, 5.0f, 70.0f * GuiDisplaySize.Offset, 20.0f), this.showSettings, "SETTINGS", this.buttonStyle) != this.showSettings)
                     {
                         this.hasChanged = true;
                         this.showSettings = !this.showSettings;
                     }
 
-                    if (GUI.Toggle(new Rect(this.windowPosition.width - 226.0f * GuiDisplaySize.Offset, 5.0f, 80.0f * GuiDisplaySize.Offset, 20.0f), this.showAllStages, "ALL STAGES", this.buttonStyle) != this.showAllStages)
+                    if (GUI.Toggle(new Rect(this.position.width - 226.0f * GuiDisplaySize.Offset, 5.0f, 80.0f * GuiDisplaySize.Offset, 20.0f), this.showAllStages, "ALL STAGES", this.buttonStyle) != this.showAllStages)
                     {
                         this.hasChanged = true;
                         this.showAllStages = !this.showAllStages;
                     }
 
-                    if (GUI.Toggle(new Rect(this.windowPosition.width - 324.0f * GuiDisplaySize.Offset, 5.0f, 95.0f * GuiDisplaySize.Offset, 20.0f), this.showAtmosphericDetails, "ATMOSPHERIC", this.buttonStyle) != this.showAtmosphericDetails)
+                    if (GUI.Toggle(new Rect(this.position.width - 324.0f * GuiDisplaySize.Offset, 5.0f, 95.0f * GuiDisplaySize.Offset, 20.0f), this.showAtmosphericDetails, "ATMOSPHERIC", this.buttonStyle) != this.showAtmosphericDetails)
                     {
                         this.hasChanged = true;
                         this.showAtmosphericDetails = !this.showAtmosphericDetails;
                     }
 
-                    this.referenceBodiesButtonRect = new Rect(this.windowPosition.width - 452.0f * GuiDisplaySize.Offset, 5.0f, 125.0f * GuiDisplaySize.Offset, 20.0f);
-                    this.bodiesList.enabled = GUI.Toggle(this.referenceBodiesButtonRect, this.bodiesList.enabled, "BODY: " + CelestialBodies.SelectedBody.Name.ToUpper(), this.buttonStyle);
+                    this.bodiesListPosition = new Rect(this.position.width - 452.0f * GuiDisplaySize.Offset, 5.0f, 125.0f * GuiDisplaySize.Offset, 20.0f);
+                    this.bodiesList.enabled = GUI.Toggle(this.bodiesListPosition, this.bodiesList.enabled, "BODY: " + CelestialBodies.SelectedBody.Name.ToUpper(), this.buttonStyle);
+                    this.bodiesList.SetPosition(this.bodiesListPosition.Translate(this.position));
                 }
 
                 // Draw the main informational display box.
@@ -753,6 +757,55 @@ namespace KerbalEngineer.Editor
             }
         }
 
+        private void DrawBodiesList()
+        {
+            try
+            {
+                if (CelestialBodies.SystemBody == CelestialBodies.SelectedBody)
+                {
+                    this.DrawBody(CelestialBodies.SystemBody);
+                }
+                else
+                {
+                    foreach (var body in CelestialBodies.SystemBody.Children)
+                    {
+                        this.DrawBody(body);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.Exception(ex);
+            }
+        }
+
+        private void DrawBody(CelestialBodies.BodyInfo bodyInfo, int depth = 0)
+        {
+            try
+            {
+                GUILayout.BeginHorizontal();
+                GUILayout.Space(20.0f * depth);
+                if (GUILayout.Button(bodyInfo.Children.Count > 0 ? bodyInfo.Name + " [" + bodyInfo.Children.Count + "]" : bodyInfo.Name, bodyInfo.Selected && bodyInfo.SelectedDepth == 0 ? this.bodiesButtonActiveStyle : this.bodiesButtonStyle))
+                {
+                    CelestialBodies.SetSelectedBody(bodyInfo.Name);
+                    this.bodiesList.Resize = true;
+                }
+                GUILayout.EndHorizontal();
+
+                if (bodyInfo.Selected)
+                {
+                    foreach (var body in bodyInfo.Children)
+                    {
+                        this.DrawBody(body, depth + 1);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.Exception(ex);
+            }
+        }
+
         #endregion
 
         #region Save and Load
@@ -766,13 +819,12 @@ namespace KerbalEngineer.Editor
             {
                 var handler = new SettingHandler();
                 handler.Set("visible", this.visible);
-                handler.Set("windowPositionX", this.windowPosition.x);
-                handler.Set("windowPositionY", this.windowPosition.y);
+                handler.Set("windowPositionX", this.position.x);
+                handler.Set("windowPositionY", this.position.y);
                 handler.Set("compactMode", this.compactMode);
                 handler.Set("compactCollapseRight", this.compactCollapseRight);
                 handler.Set("showAllStages", this.showAllStages);
                 handler.Set("showAtmosphericDetails", this.showAtmosphericDetails);
-                handler.Set("showReferenceBodies", this.showReferenceBodies);
                 handler.Set("showSettings", this.showSettings);
                 handler.Set("selectedBodyName", CelestialBodies.SelectedBody.Name);
                 handler.Save("BuildAdvanced.xml");
@@ -793,8 +845,8 @@ namespace KerbalEngineer.Editor
             {
                 var handler = SettingHandler.Load("BuildAdvanced.xml");
                 handler.Get("visible", ref this.visible);
-                this.windowPosition.x = handler.Get("windowPositionX", this.windowPosition.x);
-                this.windowPosition.y = handler.Get("windowPositionY", this.windowPosition.y);
+                this.position.x = handler.Get("windowPositionX", this.position.x);
+                this.position.y = handler.Get("windowPositionY", this.position.y);
                 handler.Get("compactMode", ref this.compactMode);
                 handler.Get("compactCollapseRight", ref this.compactCollapseRight);
                 handler.Get("showAllStages", ref this.showAllStages);
