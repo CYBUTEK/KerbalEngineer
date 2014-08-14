@@ -23,21 +23,36 @@ using KerbalEngineer.Extensions;
 
 #endregion
 
-namespace KerbalEngineer.Flight.Readouts.Orbital
+namespace KerbalEngineer.Flight.Readouts.Rendezvous
 {
-    public class Eccentricity : ReadoutModule
+    public class TimeToAscendingNode : ReadoutModule
     {
-        public Eccentricity()
+        public TimeToAscendingNode()
         {
-            this.Name = "Eccentricity";
-            this.Category = ReadoutCategory.GetCategory("Orbital");
-            this.HelpString = "Shows the vessel's orbital eccentricity.";
+            this.Name = "Time to AN";
+            this.Category = ReadoutCategory.GetCategory("Rendezvous");
+            this.HelpString = string.Empty;
             this.IsDefault = true;
+        }
+
+        public override void Update()
+        {
+            RendezvousProcessor.RequestUpdate();
         }
 
         public override void Draw()
         {
-            this.DrawLine(FlightGlobals.ship_orbit.eccentricity.ToString("F3"));
+            if (!RendezvousProcessor.ShowDetails)
+            {
+                return;
+            }
+
+            this.DrawLine(RendezvousProcessor.TimeToAscendingNode.ToTime());
+        }
+
+        public override void Reset()
+        {
+            FlightEngineerCore.Instance.AddUpdatable(RendezvousProcessor.Instance);
         }
     }
 }

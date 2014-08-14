@@ -21,6 +21,8 @@
 
 using System;
 
+using KerbalEngineer.Extensions;
+
 using UnityEngine;
 
 #endregion
@@ -73,6 +75,11 @@ namespace KerbalEngineer.Flight.Readouts.Rendezvous
         ///     Gets the angular difference between the origin and target orbits.
         /// </summary>
         public static double RelativeInclination { get; private set; }
+
+        /// <summary>
+        ///     Gets the time it will take to reach the ascending node.
+        /// </summary>
+        public static double TimeToAscendingNode { get; private set; }
 
         /// <summary>
         ///     Gets the angle from the origin position to the ascending node.
@@ -147,6 +154,7 @@ namespace KerbalEngineer.Flight.Readouts.Rendezvous
             PhaseAngle = this.CalcCurrentPhaseAngle();
             InterceptAngle = this.CalcInterceptAngle();
             RelativeInclination = Vector3d.Angle(this.originOrbit.GetOrbitNormal(), this.targetOrbit.GetOrbitNormal());
+            TimeToAscendingNode = this.originOrbit.GetTimeToTrueAnomaly(this.GetAngle(this.originOrbit.GetOrbitNormal(), this.GetAscendingNode()) + this.originOrbit.trueAnomaly);
             AngleToAscendingNode = this.CalcAngleToAscendingNode();
             AngleToDescendingNode = this.CalcAngleToDescendingNode();
             AltitudeSeaLevel = this.targetOrbit.altitude;
@@ -250,6 +258,19 @@ namespace KerbalEngineer.Flight.Readouts.Rendezvous
         private Vector3d GetDescendingNode()
         {
             return Vector3d.Cross(this.originOrbit.GetOrbitNormal(), this.targetOrbit.GetOrbitNormal());
+        }
+
+        private double GetAngle(Vector3d from, Vector3d to)
+        {
+            var angle = Vector3d.Angle(from, to);
+            var direction = Vector3d.Dot(from, to);
+
+            if (direction < 0.0)
+            {
+                angle += 180.0;
+            }
+
+            return angle;
         }
 
         #endregion

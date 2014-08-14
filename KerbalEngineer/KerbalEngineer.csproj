@@ -60,10 +60,14 @@
     <Compile Include="Editor\BuildOverlay.cs" />
     <Compile Include="CelestialBodies.cs" />
     <Compile Include="Editor\BuildToolbar.cs" />
+    <Compile Include="Extensions\OrbitExtensions.cs" />
     <Compile Include="Flight\ActionMenuGui.cs" />
     <Compile Include="Flight\FlightEngineerPartless.cs" />
     <Compile Include="Flight\Readouts\Miscellaneous\Separator.cs" />
     <Compile Include="Flight\Readouts\Miscellaneous\GuiSizeAdjustor.cs" />
+    <Compile Include="Flight\Readouts\Orbital\TimeToAscendingNode.cs" />
+    <Compile Include="Flight\Readouts\Orbital\TimeToDescendingNode.cs" />
+    <Compile Include="Flight\Readouts\Rendezvous\TimeToAscendingNode.cs" />
     <Compile Include="Flight\Readouts\Surface\ImpactBiome.cs" />
     <Compile Include="Flight\Readouts\Surface\Slope.cs" />
     <Compile Include="Flight\Readouts\Surface\Biome.cs" />

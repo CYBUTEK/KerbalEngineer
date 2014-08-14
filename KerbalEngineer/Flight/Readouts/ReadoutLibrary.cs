@@ -35,6 +35,7 @@ using ApoapsisHeight = KerbalEngineer.Flight.Readouts.Orbital.ApoapsisHeight;
 using OrbitalPeriod = KerbalEngineer.Flight.Readouts.Orbital.OrbitalPeriod;
 using PeriapsisHeight = KerbalEngineer.Flight.Readouts.Orbital.PeriapsisHeight;
 using TimeToApoapsis = KerbalEngineer.Flight.Readouts.Orbital.TimeToApoapsis;
+using TimeToAscendingNode = KerbalEngineer.Flight.Readouts.Orbital.TimeToAscendingNode;
 using TimeToPeriapsis = KerbalEngineer.Flight.Readouts.Orbital.TimeToPeriapsis;
 
 #endregion
@@ -70,6 +71,8 @@ namespace KerbalEngineer.Flight.Readouts
                 readouts.Add(new TimeToApoapsis());
                 readouts.Add(new TimeToPeriapsis());
                 readouts.Add(new Inclination());
+                readouts.Add(new TimeToAscendingNode());
+                readouts.Add(new TimeToDescendingNode());
                 readouts.Add(new Eccentricity());
                 readouts.Add(new OrbitalSpeed());
                 readouts.Add(new OrbitalPeriod());
@@ -111,6 +114,7 @@ namespace KerbalEngineer.Flight.Readouts
                 readouts.Add(new PhaseAngle());
                 readouts.Add(new InterceptAngle());
                 readouts.Add(new RelativeInclination());
+                readouts.Add(new Rendezvous.TimeToAscendingNode());
                 readouts.Add(new AngleToAscendingNode());
                 readouts.Add(new AngleToDescendingNode());
                 readouts.Add(new Rendezvous.AltitudeSeaLevel());
@@ -202,19 +206,5 @@ namespace KerbalEngineer.Flight.Readouts
         }
 
         #endregion
-
-        //#region Instance
-
-        //private static readonly ReadoutLibrary instance = new ReadoutLibrary();
-
-        ///// <summary>
-        /////     Gets the current instance of the readout library.
-        ///// </summary>
-        //public static ReadoutLibrary Instance
-        //{
-        //    get { return instance; }
-        //}
-
-        //#endregion
     }
 }

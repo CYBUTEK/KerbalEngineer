@@ -25,19 +25,19 @@ using KerbalEngineer.Extensions;
 
 namespace KerbalEngineer.Flight.Readouts.Orbital
 {
-    public class Eccentricity : ReadoutModule
+    public class TimeToAscendingNode : ReadoutModule
     {
-        public Eccentricity()
+        public TimeToAscendingNode()
         {
-            this.Name = "Eccentricity";
+            this.Name = "Time to AN";
             this.Category = ReadoutCategory.GetCategory("Orbital");
-            this.HelpString = "Shows the vessel's orbital eccentricity.";
+            this.HelpString = string.Empty;
             this.IsDefault = true;
         }
 
         public override void Draw()
         {
-            this.DrawLine(FlightGlobals.ship_orbit.eccentricity.ToString("F3"));
+            this.DrawLine(FlightGlobals.ActiveVessel.orbit.GetTimeToAscendingNode().ToTime());
         }
     }
 }

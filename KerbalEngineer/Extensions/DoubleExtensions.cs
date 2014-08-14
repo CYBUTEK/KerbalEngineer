@@ -269,5 +269,20 @@ namespace KerbalEngineer.Extensions
                 return "ERR";
             }
         }
+
+        public static double ClampTo(this double value, double min, double max)
+        {
+            while (value < min)
+            {
+                value += max;
+            }
+
+            while (value > max)
+            {
+                value -= max;
+            }
+
+            return value;
+        }
     }
 }
