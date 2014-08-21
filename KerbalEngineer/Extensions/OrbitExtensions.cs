@@ -52,5 +52,28 @@ namespace KerbalEngineer.Extensions
         {
             return GetTimeToTrueAnomaly(orbit, GetTrueAnomalyOfDescendingNode(orbit));
         }
+
+        public static double GetTrueAnomalyFromVector(this Orbit orbit, Vector3d vector)
+        {
+            var normal = SwappedOrbitNormal(orbit);
+            var projected = Vector3d.Exclude(normal, vector);
+
+            var vectorToAn = QuaternionD.AngleAxis(-orbit.LAN, Planetarium.up) * Planetarium.right;
+            var vectorToPe = orbit.PeR * (QuaternionD.AngleAxis(orbit.argumentOfPeriapsis, normal) * vectorToAn);
+            var angleFromPe = Vector3d.Angle(vectorToPe, projected);
+
+            if (Math.Abs(Vector3d.Angle(projected, Vector3d.Cross(normal, vectorToPe))) < 90.0)
+            {
+                return angleFromPe;
+            }
+
+            return GetTimeToTrueAnomaly(orbit, 360.0 - angleFromPe);
+        }
+
+        public static Vector3d SwappedOrbitNormal(this Orbit orbit)
+        {
+            var normal = orbit.GetOrbitNormal();
+            return -new Vector3d(normal.x, normal.z, normal.y).normalized;
+        }
     }
 }

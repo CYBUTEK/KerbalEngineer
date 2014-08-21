@@ -154,7 +154,7 @@ namespace KerbalEngineer.Flight.Readouts.Rendezvous
             PhaseAngle = this.CalcCurrentPhaseAngle();
             InterceptAngle = this.CalcInterceptAngle();
             RelativeInclination = Vector3d.Angle(this.originOrbit.GetOrbitNormal(), this.targetOrbit.GetOrbitNormal());
-            TimeToAscendingNode = this.originOrbit.GetTimeToTrueAnomaly(this.GetAngle(this.originOrbit.GetOrbitNormal(), this.GetAscendingNode()) + this.originOrbit.trueAnomaly);
+            TimeToAscendingNode = this.originOrbit.GetTrueAnomalyFromVector(this.GetAscendingNode());
             AngleToAscendingNode = this.CalcAngleToAscendingNode();
             AngleToDescendingNode = this.CalcAngleToDescendingNode();
             AltitudeSeaLevel = this.targetOrbit.altitude;

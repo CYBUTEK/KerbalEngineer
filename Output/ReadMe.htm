@@ -78,11 +78,11 @@
 			background-color: black;
 		}
 
-		#changelog > li {
+		.nested_list > li {
 			margin-top: 1em;
 		}
 
-		#changelog > li:first-child {
+		.nested_list > li:first-child {
 			margin-top: 0.5em;
 		}
 
@@ -153,7 +153,14 @@
 
 		<section>
 			<h3>Change Log</h3>
-			<ul id='changelog'>
+			<ul class='nested_list'>
+				<li>1.0.6.0
+					<ul>
+						<li>Added: Time to equatorial ascending &amp; descending nodes in the orbital display.</li>
+						<li>Fixed: Updated MiniAVC to v1.0.2.1 (fixes remote check as well as other minor bugs).</li>
+					</ul>
+				</li>
+				</li>
 				<li>1.0.5.0
 					<ul>
 						<li>Added: Acceleration readout to the Vessel category (current / maximum).</li>

@@ -78,6 +78,7 @@ namespace KerbalEngineer.Flight.Readouts
                 readouts.Add(new OrbitalPeriod());
                 readouts.Add(new LongitudeOfAscendingNode());
                 readouts.Add(new LongitudeOfPeriapsis());
+                readouts.Add(new TrueAnomaly());
                 readouts.Add(new SemiMajorAxis());
                 readouts.Add(new SemiMinorAxis());
 
