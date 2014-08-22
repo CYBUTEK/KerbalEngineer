@@ -2,8 +2,13 @@
 <html>
 <head>
 	<meta charset='UTF-8'>
-	<title>Kerbal Engineer Redux - ReadMe</title>
+	<title>Kerbal Engineer Redux - README</title>
 	<link href='http://fonts.googleapis.com/css?family=PT+Sans:400,700' rel='stylesheet' type='text/css'>
+	<script>
+		function resizeIframe(obj) {
+			obj.style.height = obj.contentWindow.document.body.scrollHeight + 'px';
+		}
+	</script>
 	<style>
 		* {
 			margin: 0; padding: 0;
@@ -47,6 +52,11 @@
 		li {
 			margin-top: 0.5em;
 			text-align: justify;
+		}
+
+		iframe {
+			width: 100%;
+			border: none;
 		}
 
 		header {
@@ -110,21 +120,29 @@
 		<header>Kerbal Engineer Redux v1.0</header>
 
 		<section>
-			<h3>Current Version</h3>
-			<p>1.0.5.0</p>
-		</section>
-
-		<section>
 			<h3>Developers</h3>
 			<p>
-				CYBUTEK: Developer<br>
-				Padishar: Simulation Logic<br>
-				Mic_e: Impact Readouts
+				CYBUTEK: Primary Development<br>
+				Padishar: Simulation Logic
 			</p>
 		</section>
 
 		<section>
-			<h3>KSP-AVC Ready &amp; Includes MiniAVC</h3>
+			<h3>Honourable Mentions</h3>
+			<p>
+				Mic_E: Impact Readouts
+			</p>
+		</section>
+
+		<section>
+			<h3>Goto the Forum Thread</h3>
+			<p>
+				<a href="http://forum.kerbalspaceprogram.com/threads/18230" target='_blank'>http://forum.kerbalspaceprogram.com/threads/18230</a>
+			</p>
+		</section>
+
+		<section>
+			<h3>KSP-AVC Ready</h3>
 			<p>
 				KSP Add-on Version Checker is a standardised system for versioning mods. You can get more information on this
 				<a href='http://forum.kerbalspaceprogram.com/threads/79745' target='_blank'>forum thread</a>.
@@ -132,9 +150,17 @@
 		</section>
 
 		<section>
+			<h3>Contains MiniAVC</h3>
+			<p>
+				This mod contains MiniAVC, which is a variant of KSP-AVC meant for bundling.<br>
+				It is opt-in and works by retrieving a version file over the internet and doing a comparison.
+			</p>
+		</section>
+
+		<section>
 			<h3>Description</h3>
 			<p>
-				This plugin will allow you to view important statistics about your ship on the fly, whilst building it and in flight.
+				This plugin will allow you to view important statistics about your ship on the fly, whilst constructing and in flight.
 			</p>
 		</section>
 
@@ -142,120 +168,19 @@
 			<h3>Installation</h3>
 			<ul>
 				<li>Copy the 'KerbalEngineer' folder into the 'GameData' folder located within your Kerbal Space Program installation directory.</li>
-				<li>
-					Attach an Engineer part from the science tab to your ship.
-					<ul>
-						<li>ER7500 includes flight engineer.</li>
-					</ul>
-				</li>
+				<li>The 'Parts' folder including the 'ER7500' and 'EngineerChip' is optional and are only required if running in module mode.</li>
 			</ul>
 		</section>
 
 		<section>
 			<h3>Change Log</h3>
-			<ul class='nested_list'>
-				<li>1.0.6.0
-					<ul>
-						<li>Added: Time to equatorial ascending &amp; descending nodes in the orbital display.</li>
-						<li>Fixed: Updated MiniAVC to v1.0.2.1 (fixes remote check as well as other minor bugs).</li>
-					</ul>
-				</li>
-				</li>
-				<li>1.0.5.0
-					<ul>
-						<li>Added: Acceleration readout to the Vessel category (current / maximum).</li>
-						<li>Added: Category library system for the Flight Engineer readouts.</li>
-						<li>Added: Drop-down category selection to better support the new system.</li>
-						<li>Changed: Misc category now called Miscellaneous (this will cause previously added readouts from this category to vanish).</li>
-						<li>Fixed: Bug with the Build Engineer toolbar button.</li>
-						<li>Fixed: Some buggyness when trying to close the bodies drop-down in the Build Engineer via the button.</li>
-						<li>Fixed: Flight Engineer toolbar menu now hides when hiding the GUI with F2.</li>
-						<li>Fixed: Flight Engineer toolbar button now disables when in module mode and no engineer is running.</li>
-					</ul>
-				</li>
-				<li>1.0.4.0
-					<ul>
-						<li>Added: Better stock toolbar support in the flight engineer.</li>
-						<li>Added: Dynamically generated celestial body library for supporting add-ons that modify the star system.</li>
-						<li>Changed: Reference bodies are now listed with a nestable menu system.</li>
-						<li>Changed: Extended logging system has been improved.</li>
-						<li>Changed: Swapped out integrated MiniAVC in place of the official bundle version.</li>
-						<li>Changed: Increased general distance precision to 1 decimal place.</li>
-						<li>Changed: Increased Semi-major/minor axis precision to 3 decimal places.</li>
-						<li>Fixed: Impact altitude was mistakenly formatted as an angle, it is now formatted correctly as a distance.</li>
-					</ul>
-				</li>
-				<li>1.0.3.0
-					<ul>
-						<li>Added: Integrated KSP-AVC support with MiniAVC.</li>
-						<li>Added: Setting to change the simulation delay in the Build Engineer.</li>
-						<li>Added: Setting to enable and disable the build overlay system.</li>
-						<li>Added: Burn time to Delta-V readouts.</li>
-						<li>Added: Atmospheric readouts fully support FAR.</li>
-						<li>Added: Atmospheric readouts are disabled with NEAR.</li>
-						<li>Changed: Force formatting inversely scales decimal precision with value.</li>
-						<li>Fixed: Flickering in VAB and Vessel display.</li>
-						<li>Fixed: Bug saving the GUI display size.</li>
-					</ul>
-				</li>
-				<li>1.0.2.0
-					<ul>
-						<li>Added: Separator readout module under Misc in the Flight Engineer.</li>
-						<li>Added: Adjustable GUI display size.</li>
-						<li>Added: Display size can be adjusted in the Build Engineer settings.</li>
-						<li>Added: Misc readout for adjusting display size in the Flight Engineer.</li>
-						<li>Changed: The rendezvous readout for the target's Orbital Period has higher precision.</li>
-						<li>Fixed: White toolbar icon by manually importing the texture if it cannot be found in the game database.</li>
-						<li>Fixed: Engines that have a minimum thrust are now calculated properly. (Thanks to nosscire.)</li>
-						<li>Fixed: Compact collapse mode is now saved in the Build Engineer.</li>
-					</ul>
-				</li>
-				<li>1.0.1.0
-					<ul>
-						<li>Added: Part-less Flight Engineer.</li>
-						<li>Added: Ability to collapse the Build Engineer into compact mode from left or right.</li>
-						<li>Added: Settings in Build Engineer for compact collapse mode and partless/module Flight Engineer.</li>
-						<li>Added: Biome, Impact Biome and Slope readouts.</li>
-						<li>Added: Extra logging and exception handling.</li>
-						<li>Added: The original Engineer Chip part.</li>
-						<li>Added: "Show Engineer" toggle on the Flight Engineer toolbar.</li>
-						<li>Changed: Extended logging system now also writes to the standard KSP logs.</li>
-						<li>Changed: Extended logging saves next to the .dll file.</li>
-						<li>Changed: ER7500 part has no physical significance.</li>
-						<li>Fixed: ActionMenu and DisplayStack destruction bug.</li>
-					</ul>
-				</li>
-				<li>1.0.0.1
-					<ul>
-						<li>Added: Stock toolbar support in the Flight Engineer.</li>
-						<li>Changed: Orbital Period has higher precision.</li>
-						<li>Fixed: Various NullRefs in editor window and overlay.</li>
-					</ul>
-				</li>
-				<li>1.0.0.0
-					<ul>
-						<li>Initial release for public testing.</li>
-					</ul>
-				</li>
-			</ul>
+			<iframe src='CHANGES.txt' onload="this.style.height = this.contentWindow.document.body.scrollHeight + 'px'"></iframe>
 		</section>
 
 		<section>
 			<h3>Software License</h3>
 			<p>
-				Copyright &copy; 2014 CYBUTEK
-				<br><br>
-				This program is free software: you can redistribute it and/or modify<br>
-				it under the terms of the GNU General Public License as published by<br>
-				the Free Software Foundation, either version 3 of the License, or<br>
-				(at your option) any later version.
-				<br><br>
-				This program is distributed in the hope that it will be useful,<br>
-				but WITHOUT ANY WARRANTY; without even the implied warranty of<br>
-				MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the<br>
-				GNU General Public License for more details.
-				<br><br>
-				Licensed under <a href='http://www.gnu.org/licenses/gpl-3.0.html' target='_blank'>GNU General Public License v3</a>
+				Licensed under the <a href='LICENSE.txt'>GNU General Public License v3</a>.
 			</p>
 		</section>
 
@@ -263,7 +188,7 @@
 	</div>
 
 	<footer id='footer'>
-		ReadMe Design by <a href='http://ksp.cybutek.net' target='_blank'><strong>CYBUTEK</strong></a> (GPLv3)
+		README design by <a href='http://ksp.cybutek.net' target='_blank'><strong>CYBUTEK</strong></a> (GPLv3)
 	</footer>
 </body>
 </html>
