@@ -1,7 +1,9 @@
 1.0.6.0
     Added: Time and Angle to equatorial ascending/descending nodes in the orbital display.
     Added: Time and Angle to relative ascending/descending nodes in the rendezvous display.
-    Fixed: Updated MiniAVC to v1.0.2.1 (fixes remote check as well as other minor bugs).
+    Added: Overlay tooltip information delay adjustment slider to the Build Engineer settings.
+    Changed: Build Engineer is now hidden when not in parts view.
+    Fixed: Updated MiniAVC to v1.0.2.1 (fixes remote check bug as well as other minor bugs).
 
 1.0.5.0
     Added: Acceleration readout to the Vessel category (current / maximum).

@@ -291,7 +291,7 @@ namespace KerbalEngineer.Editor
         {
             try
             {
-                if (!this.visible || EditorLogic.fetch == null || EditorLogic.fetch.ship.parts.Count == 0)
+                if (!this.visible || EditorLogic.fetch == null || EditorLogic.fetch.ship.parts.Count == 0 || EditorLogic.fetch.editorScreen != EditorLogic.EditorScreen.Parts)
                 {
                     return;
                 }
@@ -529,6 +529,11 @@ namespace KerbalEngineer.Editor
                     GuiDisplaySize.Increment++;
                 }
                 GUILayout.EndHorizontal();
+
+                GUILayout.Label("Tooltip information delay: " + (BuildOverlay.Instance.TooltipInfoDelay * 1000.0f) + "ms", this.settingStyle);
+                GUI.skin = HighLogic.Skin;
+                BuildOverlay.Instance.TooltipInfoDelay = (float)Math.Round(GUILayout.HorizontalSlider(BuildOverlay.Instance.TooltipInfoDelay, 0, 2.0f), 2);
+                GUI.skin = null;
 
                 GUILayout.Label("Minimum delay between simulations: " + SimManager.minSimTime + "ms", this.settingStyle);
                 GUI.skin = HighLogic.Skin;

@@ -81,11 +81,7 @@ namespace KerbalEngineer.Editor
         public float TooltipInfoDelay
         {
             get { return this.tooltipInfoDelay; }
-            set
-            {
-                this.tooltipInfoDelay = value;
-                Logger.Log("BuildOverlay->TooltipInfoDelay = " + value);
-            }
+            set { this.tooltipInfoDelay = value; }
         }
 
         /// <summary>
@@ -483,6 +479,7 @@ namespace KerbalEngineer.Editor
             {
                 var handler = new SettingHandler();
                 handler.Set("visible", this.visible);
+                handler.Set("tooltipInfoDelay", this.tooltipInfoDelay);
                 handler.Save("BuildOverlay.xml");
                 GuiDisplaySize.OnSizeChanged -= this.OnSizeChanged;
             }
@@ -501,6 +498,7 @@ namespace KerbalEngineer.Editor
             {
                 var handler = SettingHandler.Load("BuildOverlay.xml");
                 handler.Get("visible", ref this.visible);
+                handler.Get("tooltipInfoDelay", ref this.tooltipInfoDelay);
             }
             catch (Exception ex)
             {
