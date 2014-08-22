@@ -17,9 +17,13 @@
 //     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // 
 
+#region Using Directives
+
 using System;
 
 using UnityEngine;
+
+#endregion
 
 namespace KerbalEngineer.Extensions
 {
@@ -43,6 +47,16 @@ namespace KerbalEngineer.Extensions
             return 180.0 - orbit.argumentOfPeriapsis;
         }
 
+        public static double GetAngleToAscendingNode(this Orbit orbit)
+        {
+            return GetAngleToTrueAnomaly(orbit, GetTrueAnomalyOfAscendingNode(orbit));
+        }
+
+        public static double GetAngleToDescendingNode(this Orbit orbit)
+        {
+            return GetAngleToTrueAnomaly(orbit, GetTrueAnomalyOfDescendingNode(orbit));
+        }
+
         public static double GetTimeToAscendingNode(this Orbit orbit)
         {
             return GetTimeToTrueAnomaly(orbit, GetTrueAnomalyOfAscendingNode(orbit));
@@ -55,25 +69,22 @@ namespace KerbalEngineer.Extensions
 
         public static double GetTrueAnomalyFromVector(this Orbit orbit, Vector3d vector)
         {
-            var normal = SwappedOrbitNormal(orbit);
-            var projected = Vector3d.Exclude(normal, vector);
-
-            var vectorToAn = QuaternionD.AngleAxis(-orbit.LAN, Planetarium.up) * Planetarium.right;
-            var vectorToPe = orbit.PeR * (QuaternionD.AngleAxis(orbit.argumentOfPeriapsis, normal) * vectorToAn);
-            var angleFromPe = Vector3d.Angle(vectorToPe, projected);
-
-            if (Math.Abs(Vector3d.Angle(projected, Vector3d.Cross(normal, vectorToPe))) < 90.0)
-            {
-                return angleFromPe;
-            }
-
-            return GetTimeToTrueAnomaly(orbit, 360.0 - angleFromPe);
+            return orbit.GetTrueAnomalyOfZupVector(vector) * Mathf.Rad2Deg;
         }
 
-        public static Vector3d SwappedOrbitNormal(this Orbit orbit)
+        public static double GetAngleToTrueAnomaly(this Orbit orbit, double tA)
         {
-            var normal = orbit.GetOrbitNormal();
-            return -new Vector3d(normal.x, normal.z, normal.y).normalized;
+            return (tA - orbit.trueAnomaly).ClampTo(0.0, 360.0);
+        }
+
+        public static double GetTimeToVector(this Orbit orbit, Vector3d vector)
+        {
+            return GetTimeToTrueAnomaly(orbit, GetTrueAnomalyFromVector(orbit, vector));
+        }
+
+        public static double GetAngleToVector(this Orbit orbit, Vector3d vector)
+        {
+            return GetAngleToTrueAnomaly(orbit, GetTrueAnomalyFromVector(orbit, vector));
         }
     }
 }

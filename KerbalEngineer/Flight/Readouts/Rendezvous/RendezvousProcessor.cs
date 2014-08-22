@@ -82,6 +82,11 @@ namespace KerbalEngineer.Flight.Readouts.Rendezvous
         public static double TimeToAscendingNode { get; private set; }
 
         /// <summary>
+        ///     Gets the time it will take to reach the descending node.
+        /// </summary>
+        public static double TimeToDescendingNode { get; private set; }
+
+        /// <summary>
         ///     Gets the angle from the origin position to the ascending node.
         /// </summary>
         public static double AngleToAscendingNode { get; private set; }
@@ -148,15 +153,13 @@ namespace KerbalEngineer.Flight.Readouts.Rendezvous
                 ? FlightGlobals.ship_orbit
                 : FlightGlobals.ship_orbit.referenceBody.orbit;
 
-            this.targetPosition = this.targetOrbit.getRelativePositionAtUT(Planetarium.GetUniversalTime());
-            this.originPosition = this.originOrbit.getRelativePositionAtUT(Planetarium.GetUniversalTime());
-
             PhaseAngle = this.CalcCurrentPhaseAngle();
             InterceptAngle = this.CalcInterceptAngle();
             RelativeInclination = Vector3d.Angle(this.originOrbit.GetOrbitNormal(), this.targetOrbit.GetOrbitNormal());
-            TimeToAscendingNode = this.originOrbit.GetTrueAnomalyFromVector(this.GetAscendingNode());
-            AngleToAscendingNode = this.CalcAngleToAscendingNode();
-            AngleToDescendingNode = this.CalcAngleToDescendingNode();
+            TimeToAscendingNode = this.originOrbit.GetTimeToVector(this.GetAscendingNode());
+            TimeToDescendingNode = this.originOrbit.GetTimeToVector(this.GetDescendingNode());
+            AngleToAscendingNode = this.originOrbit.GetAngleToVector(this.GetAscendingNode());
+            AngleToDescendingNode =this.originOrbit.GetAngleToVector(this.GetDescendingNode());
             AltitudeSeaLevel = this.targetOrbit.altitude;
             ApoapsisHeight = this.targetOrbit.ApA;
             PeriapsisHeight = this.targetOrbit.PeA;
@@ -190,17 +193,7 @@ namespace KerbalEngineer.Flight.Readouts.Rendezvous
 
         private double CalcCurrentPhaseAngle()
         {
-            return this.CalcPhaseAngle(this.originPosition, this.targetPosition);
-        }
-
-        private double CalcPhaseAngle(Vector3d originPos, Vector3d targetPos)
-        {
-            var phaseAngle = Vector3d.Angle(targetPos, originPos);
-            if (Vector3d.Angle(Quaternion.AngleAxis(90.0f, Vector3d.forward) * originPos, targetPos) > 90.0)
-            {
-                phaseAngle = 360 - phaseAngle;
-            }
-            return (phaseAngle + 360) % 360;
+            return this.originOrbit.GetAngleToTrueAnomaly(this.targetOrbit.trueAnomaly);
         }
 
         private double CalcInterceptAngle()
@@ -222,34 +215,6 @@ namespace KerbalEngineer.Flight.Readouts.Rendezvous
             return angle;
         }
 
-        private double CalcAngleToAscendingNode()
-        {
-            var angleToNode = 0.0;
-            if (this.originOrbit.inclination < 90.0)
-            {
-                angleToNode = this.CalcPhaseAngle(this.originPosition, this.GetAscendingNode());
-            }
-            else
-            {
-                angleToNode = 360 - this.CalcPhaseAngle(this.originPosition, this.GetAscendingNode());
-            }
-            return angleToNode;
-        }
-
-        private double CalcAngleToDescendingNode()
-        {
-            var angleToNode = 0.0;
-            if (this.originOrbit.inclination < 90.0)
-            {
-                angleToNode = this.CalcPhaseAngle(this.originPosition, this.GetDescendingNode());
-            }
-            else
-            {
-                angleToNode = 360 - this.CalcPhaseAngle(this.originPosition, this.GetDescendingNode());
-            }
-            return angleToNode;
-        }
-
         private Vector3d GetAscendingNode()
         {
             return Vector3d.Cross(this.targetOrbit.GetOrbitNormal(), this.originOrbit.GetOrbitNormal());
@@ -258,19 +223,6 @@ namespace KerbalEngineer.Flight.Readouts.Rendezvous
         private Vector3d GetDescendingNode()
         {
             return Vector3d.Cross(this.originOrbit.GetOrbitNormal(), this.targetOrbit.GetOrbitNormal());
-        }
-
-        private double GetAngle(Vector3d from, Vector3d to)
-        {
-            var angle = Vector3d.Angle(from, to);
-            var direction = Vector3d.Dot(from, to);
-
-            if (direction < 0.0)
-            {
-                angle += 180.0;
-            }
-
-            return angle;
         }
 
         #endregion

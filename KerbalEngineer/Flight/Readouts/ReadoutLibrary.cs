@@ -31,11 +31,14 @@ using KerbalEngineer.Flight.Readouts.Vessel;
 using KerbalEngineer.Settings;
 
 using AltitudeSeaLevel = KerbalEngineer.Flight.Readouts.Surface.AltitudeSeaLevel;
+using AngleToAscendingNode = KerbalEngineer.Flight.Readouts.Orbital.AngleToAscendingNode;
+using AngleToDescendingNode = KerbalEngineer.Flight.Readouts.Orbital.AngleToDescendingNode;
 using ApoapsisHeight = KerbalEngineer.Flight.Readouts.Orbital.ApoapsisHeight;
 using OrbitalPeriod = KerbalEngineer.Flight.Readouts.Orbital.OrbitalPeriod;
 using PeriapsisHeight = KerbalEngineer.Flight.Readouts.Orbital.PeriapsisHeight;
 using TimeToApoapsis = KerbalEngineer.Flight.Readouts.Orbital.TimeToApoapsis;
 using TimeToAscendingNode = KerbalEngineer.Flight.Readouts.Orbital.TimeToAscendingNode;
+using TimeToDescendingNode = KerbalEngineer.Flight.Readouts.Orbital.TimeToDescendingNode;
 using TimeToPeriapsis = KerbalEngineer.Flight.Readouts.Orbital.TimeToPeriapsis;
 
 #endregion
@@ -73,6 +76,8 @@ namespace KerbalEngineer.Flight.Readouts
                 readouts.Add(new Inclination());
                 readouts.Add(new TimeToAscendingNode());
                 readouts.Add(new TimeToDescendingNode());
+                readouts.Add(new AngleToAscendingNode());
+                readouts.Add(new AngleToDescendingNode());
                 readouts.Add(new Eccentricity());
                 readouts.Add(new OrbitalSpeed());
                 readouts.Add(new OrbitalPeriod());
@@ -116,8 +121,9 @@ namespace KerbalEngineer.Flight.Readouts
                 readouts.Add(new InterceptAngle());
                 readouts.Add(new RelativeInclination());
                 readouts.Add(new Rendezvous.TimeToAscendingNode());
-                readouts.Add(new AngleToAscendingNode());
-                readouts.Add(new AngleToDescendingNode());
+                readouts.Add(new Rendezvous.TimeToDescendingNode());
+                readouts.Add(new Rendezvous.AngleToAscendingNode());
+                readouts.Add(new Rendezvous.AngleToDescendingNode());
                 readouts.Add(new Rendezvous.AltitudeSeaLevel());
                 readouts.Add(new Rendezvous.ApoapsisHeight());
                 readouts.Add(new Rendezvous.PeriapsisHeight());
