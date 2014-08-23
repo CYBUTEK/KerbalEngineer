@@ -252,20 +252,24 @@ namespace KerbalEngineer.Flight.Sections
         /// </summary>
         private void DrawCustomOptions()
         {
-            if (!this.ParentSection.IsCustom)
-            {
-                return;
-            }
-
             GUILayout.BeginHorizontal(GUILayout.Height(25.0f));
             this.ParentSection.Name = GUILayout.TextField(this.ParentSection.Name, this.textStyle);
+            var isShowingInControlBar = !string.IsNullOrEmpty(this.ParentSection.Abbreviation);
             this.ParentSection.Abbreviation = GUILayout.TextField(this.ParentSection.Abbreviation, this.textStyle, GUILayout.Width(75.0f));
-            if (GUILayout.Button("DELETE SECTION", this.readoutButtonStyle, GUILayout.Width(125.0f)))
+            if (this.ParentSection.IsCustom)
             {
-                this.ParentSection.IsFloating = false;
-                this.ParentSection.IsEditorVisible = false;
-                SectionLibrary.CustomSections.Remove(this.ParentSection);
-                DisplayStack.Instance.RequestResize();
+                if (isShowingInControlBar && string.IsNullOrEmpty(this.ParentSection.Abbreviation))
+                {
+                    DisplayStack.Instance.RequestResize();
+                }
+                if (GUILayout.Button("DELETE SECTION", this.readoutButtonStyle, GUILayout.Width(125.0f)))
+                {
+
+                    this.ParentSection.IsFloating = false;
+                    this.ParentSection.IsEditorVisible = false;
+                    SectionLibrary.CustomSections.Remove(this.ParentSection);
+                    DisplayStack.Instance.RequestResize();
+                }
             }
             GUILayout.EndHorizontal();
         }

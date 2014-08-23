@@ -21,6 +21,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 using KerbalEngineer.Extensions;
 using KerbalEngineer.Flight.Sections;
@@ -293,7 +294,7 @@ namespace KerbalEngineer.Flight
             try
             {
                 var index = 0;
-                foreach (var section in sections)
+                foreach (var section in sections.Where(s => !string.IsNullOrEmpty(s.Abbreviation) || !s.IsCustom))
                 {
                     if (index % 4 == 0)
                     {
