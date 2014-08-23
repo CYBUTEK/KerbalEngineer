@@ -1,3 +1,6 @@
+1.0.7.0
+	Fixed: Issues with large value wrap around in the Flight Engineer.
+
 1.0.6.0
     Added: Time and Angle to equatorial ascending/descending nodes in the orbital display.
     Added: Time and Angle to relative ascending/descending nodes in the rendezvous display.

@@ -67,7 +67,7 @@ namespace KerbalEngineer.Flight.Readouts
         /// </summary>
         public float ContentWidth
         {
-            get { return this.NameStyle.fixedWidth + this.ValueStyle.fixedWidth; }
+            get { return 230.0f * GuiDisplaySize.Offset; }
         }
 
         #endregion
@@ -120,7 +120,6 @@ namespace KerbalEngineer.Flight.Readouts
                 alignment = TextAnchor.MiddleLeft,
                 fontSize = (int)(11 * GuiDisplaySize.Offset),
                 fontStyle = FontStyle.Bold,
-                fixedWidth = 115.0f * GuiDisplaySize.Offset,
                 fixedHeight = 20.0f * GuiDisplaySize.Offset
             };
 
@@ -131,7 +130,6 @@ namespace KerbalEngineer.Flight.Readouts
                 alignment = TextAnchor.MiddleRight,
                 fontSize = (int)(11 * GuiDisplaySize.Offset),
                 fontStyle = FontStyle.Normal,
-                fixedWidth = 115.0f * GuiDisplaySize.Offset,
                 fixedHeight = 20.0f * GuiDisplaySize.Offset
             };
 
@@ -146,8 +144,8 @@ namespace KerbalEngineer.Flight.Readouts
                 alignment = TextAnchor.MiddleCenter,
                 fontSize = (int)(11 * GuiDisplaySize.Offset),
                 fontStyle = FontStyle.Normal,
-                fixedWidth = this.ContentWidth,
-                fixedHeight = 20.0f * GuiDisplaySize.Offset
+                fixedHeight = 20.0f * GuiDisplaySize.Offset,
+                stretchWidth = true
             };
 
             this.FlexiLabelStyle = new GUIStyle(this.NameStyle)
@@ -194,8 +192,9 @@ namespace KerbalEngineer.Flight.Readouts
         /// </summary>
         protected void DrawLine(string name, string value)
         {
-            GUILayout.BeginHorizontal();
+            GUILayout.BeginHorizontal(GUILayout.Width(this.ContentWidth));
             GUILayout.Label(name, this.NameStyle);
+            GUILayout.FlexibleSpace();
             GUILayout.Label(value, this.ValueStyle);
             GUILayout.EndHorizontal();
         }
@@ -205,15 +204,16 @@ namespace KerbalEngineer.Flight.Readouts
         /// </summary>
         protected void DrawLine(string value)
         {
-            GUILayout.BeginHorizontal();
+            GUILayout.BeginHorizontal(GUILayout.Width(this.ContentWidth));
             GUILayout.Label(this.Name, this.NameStyle);
+            GUILayout.FlexibleSpace();
             GUILayout.Label(value, this.ValueStyle);
             GUILayout.EndHorizontal();
         }
 
         protected void DrawMessageLine(string value)
         {
-            GUILayout.BeginHorizontal();
+            GUILayout.BeginHorizontal(GUILayout.Width(this.ContentWidth));
             GUILayout.Label(value, this.MessageStyle);
             GUILayout.EndHorizontal();
         }
