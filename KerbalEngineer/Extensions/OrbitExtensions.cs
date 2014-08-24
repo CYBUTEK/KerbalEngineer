@@ -84,7 +84,22 @@ namespace KerbalEngineer.Extensions
 
         public static double GetAngleToVector(this Orbit orbit, Vector3d vector)
         {
-            return GetAngleToTrueAnomaly(orbit, GetTrueAnomalyFromVector(orbit, vector));
+            return GetAngleToTrueAnomaly(orbit, GetTrueAnomalyFromVector(orbit, Vector3d.Exclude(orbit.GetOrbitNormal(), vector)));
+        }
+
+        public static double GetPhaseAngle(this Orbit orbit, Orbit target)
+        {
+            var originPosition = orbit.pos;
+            var targetPosition = Vector3d.Exclude(orbit.GetOrbitNormal(), target.pos);
+            var phase = Vector3d.Angle(originPosition, targetPosition);
+            var rotated = QuaternionD.AngleAxis(90.0, Vector3d.forward) * originPosition;
+
+            if (Vector3d.Angle(rotated, targetPosition) > 90.0)
+            {
+                phase = 360.0 - phase;
+            }
+
+            return phase;
         }
     }
 }

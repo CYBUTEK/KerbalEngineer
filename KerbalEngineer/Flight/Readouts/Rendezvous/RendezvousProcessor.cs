@@ -48,9 +48,7 @@ namespace KerbalEngineer.Flight.Readouts.Rendezvous
         #region Fields
 
         private Orbit originOrbit;
-        private Vector3d originPosition;
         private Orbit targetOrbit;
-        private Vector3d targetPosition;
 
         #endregion
 
@@ -153,9 +151,9 @@ namespace KerbalEngineer.Flight.Readouts.Rendezvous
                 ? FlightGlobals.ship_orbit
                 : FlightGlobals.ship_orbit.referenceBody.orbit;
 
-            PhaseAngle = this.CalcCurrentPhaseAngle();
-            InterceptAngle = this.CalcInterceptAngle();
             RelativeInclination = Vector3d.Angle(this.originOrbit.GetOrbitNormal(), this.targetOrbit.GetOrbitNormal());
+            PhaseAngle = RelativeInclination < 90.0 ? this.originOrbit.GetPhaseAngle(this.targetOrbit) : 360.0 - this.originOrbit.GetPhaseAngle(this.targetOrbit);
+            InterceptAngle = this.CalcInterceptAngle();
             TimeToAscendingNode = this.originOrbit.GetTimeToVector(this.GetAscendingNode());
             TimeToDescendingNode = this.originOrbit.GetTimeToVector(this.GetDescendingNode());
             AngleToAscendingNode = this.originOrbit.GetAngleToVector(this.GetAscendingNode());
@@ -166,7 +164,7 @@ namespace KerbalEngineer.Flight.Readouts.Rendezvous
             TimeToApoapsis = this.targetOrbit.timeToAp;
             TimeToPeriapsis = this.targetOrbit.timeToPe;
 
-            Distance = Vector3d.Distance(this.targetPosition, this.originPosition);
+            Distance = Vector3d.Distance(this.targetOrbit.pos, this.originOrbit.pos);
             OrbitalPeriod = this.targetOrbit.period;
         }
 
@@ -191,28 +189,12 @@ namespace KerbalEngineer.Flight.Readouts.Rendezvous
 
         #region Calculations
 
-        private double CalcCurrentPhaseAngle()
-        {
-            return this.originOrbit.GetAngleToTrueAnomaly(this.targetOrbit.trueAnomaly);
-        }
-
         private double CalcInterceptAngle()
         {
+            // Only works when going into higher orbits.  Need to figure out a way for it to work with lower orbits.
             var angle = 180.0 * (1.0 - Math.Pow((this.originOrbit.radius + this.targetOrbit.radius) / (2.0 * this.targetOrbit.radius), 1.5));
-            if (angle < 0)
-            {
-                PhaseAngle -= 360;
-                angle = (PhaseAngle - angle) + 360;
-            }
-            else
-            {
-                angle = PhaseAngle - angle;
-            }
-            if (angle < 0)
-            {
-                angle += 360;
-            }
-            return angle;
+            angle = PhaseAngle - angle;
+            return RelativeInclination < 90.0 ? angle.ClampTo(0.0, 360.0) : (360.0 - (180.0 - angle)).ClampTo(0.0, 360.0);
         }
 
         private Vector3d GetAscendingNode()
