@@ -1,37 +1,59 @@
-﻿// Kerbal Engineer Redux
-// Author:  CYBUTEK
-// License: Attribution-NonCommercial-ShareAlike 3.0 Unported
+﻿// 
+//     Kerbal Engineer Redux
+// 
+//     Copyright (C) 2014 CYBUTEK
+// 
+//     This program is free software: you can redistribute it and/or modify
+//     it under the terms of the GNU General Public License as published by
+//     the Free Software Foundation, either version 3 of the License, or
+//     (at your option) any later version.
+// 
+//     This program is distributed in the hope that it will be useful,
+//     but WITHOUT ANY WARRANTY; without even the implied warranty of
+//     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//     GNU General Public License for more details.
+// 
+//     You should have received a copy of the GNU General Public License
+//     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+// 
+
+#region Using Directives
 
 using System.Collections;
 using System.Collections.Generic;
+
+using UnityEngine;
+
+#endregion
 
 namespace KerbalEngineer.VesselSimulator
 {
     public class ResourceContainer
     {
-        Hashtable resources = new Hashtable();
+        private Hashtable resources = new Hashtable();
 
         public double this[int type]
         {
             get
             {
                 if (this.resources.ContainsKey(type))
+                {
                     return (double)this.resources[type];
+                }
 
                 return 0d;
             }
             set
             {
                 if (this.resources.ContainsKey(type))
+                {
                     this.resources[type] = value;
+                }
                 else
+                {
                     this.resources.Add(type, value);
+                }
             }
-        }
-
-        public bool HasType(int type)
-        {
-            return this.resources.ContainsKey(type);
         }
 
         public List<int> Types
@@ -41,7 +63,9 @@ namespace KerbalEngineer.VesselSimulator
                 List<int> types = new List<int>();
 
                 foreach (int key in this.resources.Keys)
+                {
                     types.Add(key);
+                }
 
                 return types;
             }
@@ -54,7 +78,9 @@ namespace KerbalEngineer.VesselSimulator
                 double mass = 0d;
 
                 foreach (double resource in this.resources.Values)
+                {
                     mass += resource;
+                }
 
                 return mass;
             }
@@ -67,11 +93,18 @@ namespace KerbalEngineer.VesselSimulator
                 foreach (int type in this.resources.Keys)
                 {
                     if ((double)this.resources[type] > SimManager.RESOURCE_MIN)
+                    {
                         return false;
+                    }
                 }
 
                 return true;
             }
+        }
+
+        public bool HasType(int type)
+        {
+            return this.resources.ContainsKey(type);
         }
 
         public bool EmptyOf(HashSet<int> types)
@@ -79,7 +112,9 @@ namespace KerbalEngineer.VesselSimulator
             foreach (int type in types)
             {
                 if (this.HasType(type) && (double)this.resources[type] > SimManager.RESOURCE_MIN)
+                {
                     return false;
+                }
             }
 
             return true;
@@ -88,9 +123,13 @@ namespace KerbalEngineer.VesselSimulator
         public void Add(int type, double amount)
         {
             if (this.resources.ContainsKey(type))
+            {
                 this.resources[type] = (double)this.resources[type] + amount;
+            }
             else
+            {
                 this.resources.Add(type, amount);
+            }
         }
 
         public void Reset()
@@ -102,7 +141,7 @@ namespace KerbalEngineer.VesselSimulator
         {
             foreach (int key in this.resources.Keys)
             {
-                UnityEngine.MonoBehaviour.print(" -> " + GetResourceName(key) + " = " + this.resources[key]);
+                MonoBehaviour.print(" -> " + GetResourceName(key) + " = " + this.resources[key]);
             }
         }
 

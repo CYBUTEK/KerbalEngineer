@@ -288,14 +288,14 @@ namespace KerbalEngineer.Editor
 
                 // Titles
                 GUILayout.BeginVertical(GUILayout.Width(75.0f * GuiDisplaySize.Offset));
-                //GUILayout.Label("Parts:", this.titleStyle);
+                GUILayout.Label("Parts:", this.titleStyle);
                 GUILayout.Label("Delta-V:", this.titleStyle);
                 GUILayout.Label("TWR:", this.titleStyle);
                 GUILayout.EndVertical();
 
                 // Details
                 GUILayout.BeginVertical(GUILayout.Width(100.0f * GuiDisplaySize.Offset));
-                //GUILayout.Label(SimulationManager.Instance.LastStage.partCount.ToString("N0"), this.infoStyle);
+                GUILayout.Label(this.lastStage.partCount.ToString("N0"), this.infoStyle);
                 GUILayout.Label(this.lastStage.totalDeltaV.ToString("N0") + " m/s", this.infoStyle);
                 GUILayout.Label(this.lastStage.thrustToWeight.ToString("F2"), this.infoStyle);
                 GUILayout.EndVertical();

@@ -1,52 +1,72 @@
-﻿using System;
+﻿// 
+//     Kerbal Engineer Redux
+// 
+//     Copyright (C) 2014 CYBUTEK
+// 
+//     This program is free software: you can redistribute it and/or modify
+//     it under the terms of the GNU General Public License as published by
+//     the Free Software Foundation, either version 3 of the License, or
+//     (at your option) any later version.
+// 
+//     This program is distributed in the hope that it will be useful,
+//     but WITHOUT ANY WARRANTY; without even the implied warranty of
+//     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//     GNU General Public License for more details.
+// 
+//     You should have received a copy of the GNU General Public License
+//     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+// 
+
+#region Using Directives
+
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Reflection;
 using System.Threading;
 
-using KerbalEngineer.Flight;
-
 using UnityEngine;
+
+#endregion
 
 namespace KerbalEngineer.VesselSimulator
 {
     public class SimManager
     {
-        public static SimManager Instance = new SimManager();
         public const double RESOURCE_MIN = 0.0001;
-        
-        private static bool bRequested = false;
-        private static bool bRunning = false;
-        private static Stopwatch timer = new Stopwatch();
-        private static long delayBetweenSims = 0;
 
-        public static Stage[] Stages { get; private set; }
-        public static Stage LastStage { get; private set; }
-        public static String failMessage { get; private set; }
+        private static bool bRequested;
+        private static bool bRunning;
+        private static readonly Stopwatch timer = new Stopwatch();
+        private static long delayBetweenSims;
 
         public static bool dumpTree = false;
         public static bool logOutput = false;
         public static bool vectoredThrust = false;
         public static long minSimTime = 150;
+
+        // Support for RealFuels using reflection to check localCorrectThrust without dependency
+        private static bool hasCheckedForRealFuels;
+        private static bool hasInstalledRealFuels;
+
+        private static FieldInfo RF_ModuleEngineConfigs_locaCorrectThrust;
+        private static FieldInfo RF_ModuleHybridEngine_locaCorrectThrust;
+        private static FieldInfo RF_ModuleHybridEngines_locaCorrectThrust;
+        public static Stage[] Stages { get; private set; }
+        public static Stage LastStage { get; private set; }
+        public static String failMessage { get; private set; }
         public static double Gravity { get; set; }
         public static double Atmosphere { get; set; }
         public static double Velocity { get; set; }
 
-        // Support for RealFuels using reflection to check localCorrectThrust without dependency
-        private static bool hasCheckedForRealFuels = false;
-        private static bool hasInstalledRealFuels = false;
-
-        private static System.Reflection.FieldInfo RF_ModuleEngineConfigs_locaCorrectThrust = null;
-        private static System.Reflection.FieldInfo RF_ModuleHybridEngine_locaCorrectThrust = null;
-        private static System.Reflection.FieldInfo RF_ModuleHybridEngines_locaCorrectThrust = null;
-
         private static void GetRealFuelsTypes()
         {
-			hasCheckedForRealFuels = true;
+            hasCheckedForRealFuels = true;
 
-			foreach (AssemblyLoader.LoadedAssembly assembly in AssemblyLoader.loadedAssemblies)
+            foreach (AssemblyLoader.LoadedAssembly assembly in AssemblyLoader.loadedAssemblies)
             {
-                MonoBehaviour.print("Assembly:" + assembly.assembly.ToString());
+                MonoBehaviour.print("Assembly:" + assembly.assembly);
 
                 if (assembly.assembly.ToString().Split(',')[0] == "RealFuels")
                 {
@@ -54,28 +74,34 @@ namespace KerbalEngineer.VesselSimulator
 
                     Type RF_ModuleEngineConfigs_Type = assembly.assembly.GetType("RealFuels.ModuleEngineConfigs");
                     if (RF_ModuleEngineConfigs_Type != null)
+                    {
                         RF_ModuleEngineConfigs_locaCorrectThrust = RF_ModuleEngineConfigs_Type.GetField("localCorrectThrust");
+                    }
 
                     Type RF_ModuleHybridEngine_Type = assembly.assembly.GetType("RealFuels.ModuleHybridEngine");
                     if (RF_ModuleHybridEngine_Type != null)
+                    {
                         RF_ModuleHybridEngine_locaCorrectThrust = RF_ModuleHybridEngine_Type.GetField("localCorrectThrust");
+                    }
 
                     Type RF_ModuleHybridEngines_Type = assembly.assembly.GetType("RealFuels.ModuleHybridEngines");
                     if (RF_ModuleHybridEngines_Type != null)
+                    {
                         RF_ModuleHybridEngines_locaCorrectThrust = RF_ModuleHybridEngines_Type.GetField("localCorrectThrust");
+                    }
 
-					hasInstalledRealFuels = true;
-					break;
-				}
-
-			}
-
-		}
+                    hasInstalledRealFuels = true;
+                    break;
+                }
+            }
+        }
 
         public static bool DoesEngineUseCorrectedThrust(Part theEngine)
         {
             if (!hasInstalledRealFuels /*|| HighLogic.LoadedSceneIsFlight*/)
+            {
                 return false;
+            }
 
             // Look for any of the Real Fuels engine modules and call the relevant method to find out
             if (RF_ModuleEngineConfigs_locaCorrectThrust != null && theEngine.Modules.Contains("ModuleEngineConfigs"))
@@ -85,7 +111,9 @@ namespace KerbalEngineer.VesselSimulator
                 {
                     // Check the localCorrectThrust
                     if ((bool)RF_ModuleEngineConfigs_locaCorrectThrust.GetValue(modEngineConfigs))
+                    {
                         return true;
+                    }
                 }
             }
 
@@ -96,7 +124,9 @@ namespace KerbalEngineer.VesselSimulator
                 {
                     // Check the localCorrectThrust
                     if ((bool)RF_ModuleHybridEngine_locaCorrectThrust.GetValue(modHybridEngine))
+                    {
                         return true;
+                    }
                 }
             }
 
@@ -107,22 +137,27 @@ namespace KerbalEngineer.VesselSimulator
                 {
                     // Check the localCorrectThrust
                     if ((bool)RF_ModuleHybridEngines_locaCorrectThrust.GetValue(modHybridEngines))
+                    {
                         return true;
+                    }
                 }
             }
 
             return false;
         }
 
-
         public static void RequestSimulation()
         {
             if (!hasCheckedForRealFuels)
+            {
                 GetRealFuelsTypes();
+            }
 
             bRequested = true;
             if (!timer.IsRunning)
+            {
                 timer.Start();
+            }
         }
 
         public static void TryStartSimulation()
@@ -163,7 +198,7 @@ namespace KerbalEngineer.VesselSimulator
                 // This call doesn't ever fail at the moment but we'll check and return a sensible error for display
                 if (sim.PrepareSimulation(parts, Gravity, Atmosphere, Velocity, dumpTree, vectoredThrust))
                 {
-                    ThreadPool.QueueUserWorkItem(new WaitCallback(RunSimulation), sim);
+                    ThreadPool.QueueUserWorkItem(RunSimulation, sim);
                 }
                 else
                 {
@@ -192,7 +227,9 @@ namespace KerbalEngineer.VesselSimulator
                     if (logOutput)
                     {
                         foreach (Stage stage in Stages)
+                        {
                             stage.Dump();
+                        }
                     }
                     LastStage = Stages.Last();
                 }
@@ -210,11 +247,15 @@ namespace KerbalEngineer.VesselSimulator
             MonoBehaviour.print("Total simulation time: " + timer.ElapsedMilliseconds + "ms");
 #else
             if (logOutput)
+            {
                 MonoBehaviour.print("Total simulation time: " + timer.ElapsedMilliseconds + "ms");
+            }
 #endif
             delayBetweenSims = minSimTime - timer.ElapsedMilliseconds;
             if (delayBetweenSims < 0)
+            {
                 delayBetweenSims = 0;
+            }
 
             timer.Reset();
             timer.Start();
