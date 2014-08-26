@@ -1,4 +1,6 @@
 1.0.7.0
+    Added: Part count information to the Build Engineer.
+    Added: IntakeAir Supply & Demand readouts to the vessel category.
 	Fixed: Issues with large value wrap around in the Flight Engineer.
 
 1.0.6.0
