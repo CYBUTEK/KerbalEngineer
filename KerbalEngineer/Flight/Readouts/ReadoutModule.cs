@@ -19,6 +19,8 @@
 
 #region Using Directives
 
+using System;
+
 using UnityEngine;
 
 #endregion
@@ -27,6 +29,13 @@ namespace KerbalEngineer.Flight.Readouts
 {
     public abstract class ReadoutModule
     {
+        #region Fields
+
+        private int lineCountEnd;
+        private int lineCountStart;
+
+        #endregion
+
         #region Constructors
 
         protected ReadoutModule()
@@ -126,6 +135,20 @@ namespace KerbalEngineer.Flight.Readouts
         /// </summary>
         public virtual void FixedUpdate() { }
 
+        public void LineCountEnd()
+        {
+            if (this.lineCountEnd.CompareTo(this.lineCountStart) < 0)
+            {
+                this.ResizeRequested = true;
+            }
+        }
+
+        public void LineCountStart()
+        {
+            this.lineCountStart = this.lineCountEnd;
+            this.lineCountEnd = 0;
+        }
+
         /// <summary>
         ///     Called when FlightEngineerCore is started.
         /// </summary>
@@ -136,27 +159,9 @@ namespace KerbalEngineer.Flight.Readouts
         /// </summary>
         public virtual void Update() { }
 
-
-        public void LineCountStart()
-        {
-            this.lineCountStart = this.lineCountEnd;
-            this.lineCountEnd = 0;
-        }
-
-        public void LineCountEnd()
-        {
-            if (this.lineCountEnd.CompareTo(this.lineCountStart) < 0)
-            {
-                this.ResizeRequested = true;
-            }
-        }
-
         #endregion
 
         #region Methods: protected
-
-        private int lineCountEnd;
-        private int lineCountStart;
 
         protected void DrawLine(string name, string value)
         {
@@ -174,6 +179,19 @@ namespace KerbalEngineer.Flight.Readouts
             GUILayout.Label(this.Name, this.NameStyle);
             GUILayout.FlexibleSpace();
             GUILayout.Label(value, this.ValueStyle);
+            GUILayout.EndHorizontal();
+            this.lineCountEnd++;
+        }
+
+        protected void DrawLine(Action drawAction, bool showName = true)
+        {
+            GUILayout.BeginHorizontal(GUILayout.Width(this.ContentWidth));
+            if (showName)
+            {
+                GUILayout.Label(this.Name, this.NameStyle);
+                GUILayout.FlexibleSpace();
+            }
+            drawAction();
             GUILayout.EndHorizontal();
             this.lineCountEnd++;
         }

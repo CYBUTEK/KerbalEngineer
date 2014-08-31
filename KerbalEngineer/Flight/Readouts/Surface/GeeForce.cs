@@ -17,6 +17,8 @@
 //     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // 
 
+using UnityEngine;
+
 namespace KerbalEngineer.Flight.Readouts.Surface
 {
     public class GeeForce : ReadoutModule
@@ -37,7 +39,14 @@ namespace KerbalEngineer.Flight.Readouts.Surface
             {
                 this.maxGeeForce = FlightGlobals.ship_geeForce;
             }
-            this.DrawLine(FlightGlobals.ship_geeForce.ToString("F3") + " / " + this.maxGeeForce.ToString("F3"));
+            this.DrawLine(() =>
+            {
+                GUILayout.Label(FlightGlobals.ship_geeForce.ToString("F3") + " / " + this.maxGeeForce.ToString("F3"), this.ValueStyle);
+                if (GUILayout.Button("R", this.ButtonStyle, GUILayout.Width(this.ButtonStyle.fixedHeight)))
+                {
+                    this.maxGeeForce = 0.0;
+                }
+            });
         }
 
         public override void Reset()
