@@ -29,9 +29,6 @@ namespace KerbalEngineer.Flight.Readouts
     {
         #region Constructors
 
-        /// <summary>
-        ///     Creates a new readout module.
-        /// </summary>
         protected ReadoutModule()
         {
             this.InitialiseStyles();
@@ -43,24 +40,19 @@ namespace KerbalEngineer.Flight.Readouts
         #region Properties
 
         /// <summary>
-        ///     Gets and sets the readout name.
+        ///     Gets and sets the button style.
         /// </summary>
-        public string Name { get; set; }
-
-        public string HelpString { get; set; }
-
-        public bool ShowHelp { get; set; }
-
-        public bool ResizeRequested { get; set; }
-
-        public bool IsDefault { get; set; }
-
-        public bool Cloneable { get; set; }
+        public GUIStyle ButtonStyle { get; set; }
 
         /// <summary>
         ///     Gets ans sets the readout category.
         /// </summary>
         public ReadoutCategory Category { get; set; }
+
+        /// <summary>
+        ///     Gets and sets whether the readout can be added to a section multiple times.
+        /// </summary>
+        public bool Cloneable { get; set; }
 
         /// <summary>
         ///     Gets the width of the content. (Sum of NameStyle + ValueStyle widths.)
@@ -70,19 +62,20 @@ namespace KerbalEngineer.Flight.Readouts
             get { return 230.0f * GuiDisplaySize.Offset; }
         }
 
-        #endregion
-
-        #region GUIStyles
+        /// <summary>
+        ///     Gets and sets the flexible label style.
+        /// </summary>
+        public GUIStyle FlexiLabelStyle { get; set; }
 
         /// <summary>
-        ///     Gets and sets the name style.
+        ///     Gets and sets the help string which is shown in the editor.
         /// </summary>
-        public GUIStyle NameStyle { get; set; }
+        public string HelpString { get; set; }
 
         /// <summary>
-        ///     Gets and sets the value style.
+        ///     Gets and sets whether the readout should be shown on new installs.
         /// </summary>
-        public GUIStyle ValueStyle { get; set; }
+        public bool IsDefault { get; set; }
 
         /// <summary>
         ///     Gets and sets the message style.
@@ -90,19 +83,112 @@ namespace KerbalEngineer.Flight.Readouts
         public GUIStyle MessageStyle { get; set; }
 
         /// <summary>
-        ///     Gets and sets the flexible label style.
+        ///     Gets and sets the readout name.
         /// </summary>
-        public GUIStyle FlexiLabelStyle { get; set; }
+        public string Name { get; set; }
 
         /// <summary>
-        ///     Gets and sets the button style.
+        ///     Gets and sets the name style.
         /// </summary>
-        public GUIStyle ButtonStyle { get; set; }
+        public GUIStyle NameStyle { get; set; }
+
+        /// <summary>
+        ///     Gets and sets whether the readout has requested a section resize.
+        /// </summary>
+        public bool ResizeRequested { get; set; }
+
+        /// <summary>
+        ///     Gets and sets whether the help string is being shown in the editor.
+        /// </summary>
+        public bool ShowHelp { get; set; }
 
         /// <summary>
         ///     Gets and sets the text field style.
         /// </summary>
         public GUIStyle TextFieldStyle { get; set; }
+
+        /// <summary>
+        ///     Gets and sets the value style.
+        /// </summary>
+        public GUIStyle ValueStyle { get; set; }
+
+        #endregion
+
+        #region Methods: public
+
+        /// <summary>
+        ///     Called when a readout is asked to draw its self.
+        /// </summary>
+        public virtual void Draw() { }
+
+        /// <summary>
+        ///     Called on each fixed update frame where the readout is visible.
+        /// </summary>
+        public virtual void FixedUpdate() { }
+
+        /// <summary>
+        ///     Called when FlightEngineerCore is started.
+        /// </summary>
+        public virtual void Reset() { }
+
+        /// <summary>
+        ///     Called on each update frame when the readout is visible.
+        /// </summary>
+        public virtual void Update() { }
+
+
+        public void LineCountStart()
+        {
+            this.lineCountStart = this.lineCountEnd;
+            this.lineCountEnd = 0;
+        }
+
+        public void LineCountEnd()
+        {
+            if (this.lineCountEnd.CompareTo(this.lineCountStart) < 0)
+            {
+                this.ResizeRequested = true;
+            }
+        }
+
+        #endregion
+
+        #region Methods: protected
+
+        private int lineCountEnd;
+        private int lineCountStart;
+
+        protected void DrawLine(string name, string value)
+        {
+            GUILayout.BeginHorizontal(GUILayout.Width(this.ContentWidth));
+            GUILayout.Label(name, this.NameStyle);
+            GUILayout.FlexibleSpace();
+            GUILayout.Label(value, this.ValueStyle);
+            GUILayout.EndHorizontal();
+            this.lineCountEnd++;
+        }
+
+        protected void DrawLine(string value)
+        {
+            GUILayout.BeginHorizontal(GUILayout.Width(this.ContentWidth));
+            GUILayout.Label(this.Name, this.NameStyle);
+            GUILayout.FlexibleSpace();
+            GUILayout.Label(value, this.ValueStyle);
+            GUILayout.EndHorizontal();
+            this.lineCountEnd++;
+        }
+
+        protected void DrawMessageLine(string value)
+        {
+            GUILayout.BeginHorizontal(GUILayout.Width(this.ContentWidth));
+            GUILayout.Label(value, this.MessageStyle);
+            GUILayout.EndHorizontal();
+            this.lineCountEnd++;
+        }
+
+        #endregion
+
+        #region Methods: private
 
         /// <summary>
         ///     Initialises all the styles required for this object.
@@ -182,65 +268,6 @@ namespace KerbalEngineer.Flight.Readouts
             this.InitialiseStyles();
             this.ResizeRequested = true;
         }
-
-        #endregion
-
-        #region Protected Methods
-
-        /// <summary>
-        ///     Draws a single data line.
-        /// </summary>
-        protected void DrawLine(string name, string value)
-        {
-            GUILayout.BeginHorizontal(GUILayout.Width(this.ContentWidth));
-            GUILayout.Label(name, this.NameStyle);
-            GUILayout.FlexibleSpace();
-            GUILayout.Label(value, this.ValueStyle);
-            GUILayout.EndHorizontal();
-        }
-
-        /// <summary>
-        ///     Draws a single data line.
-        /// </summary>
-        protected void DrawLine(string value)
-        {
-            GUILayout.BeginHorizontal(GUILayout.Width(this.ContentWidth));
-            GUILayout.Label(this.Name, this.NameStyle);
-            GUILayout.FlexibleSpace();
-            GUILayout.Label(value, this.ValueStyle);
-            GUILayout.EndHorizontal();
-        }
-
-        protected void DrawMessageLine(string value)
-        {
-            GUILayout.BeginHorizontal(GUILayout.Width(this.ContentWidth));
-            GUILayout.Label(value, this.MessageStyle);
-            GUILayout.EndHorizontal();
-        }
-
-        #endregion
-
-        #region Virtual Methods
-
-        /// <summary>
-        ///     Called on each fixed update frame where the readout is visible.
-        /// </summary>
-        public virtual void FixedUpdate() { }
-
-        /// <summary>
-        ///     Called on each update frame where the readout is visible.
-        /// </summary>
-        public virtual void Update() { }
-
-        /// <summary>
-        ///     Called when a readout is asked to draw its self.
-        /// </summary>
-        public virtual void Draw() { }
-
-        /// <summary>
-        ///     Called when the active vessel changes.
-        /// </summary>
-        public virtual void Reset() { }
 
         #endregion
     }

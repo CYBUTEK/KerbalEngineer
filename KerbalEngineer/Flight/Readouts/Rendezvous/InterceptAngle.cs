@@ -27,6 +27,8 @@ namespace KerbalEngineer.Flight.Readouts.Rendezvous
 {
     public class InterceptAngle : ReadoutModule
     {
+        #region Constructors
+
         public InterceptAngle()
         {
             this.Name = "Intercept Angle";
@@ -35,24 +37,28 @@ namespace KerbalEngineer.Flight.Readouts.Rendezvous
             this.IsDefault = true;
         }
 
-        public override void Update()
-        {
-            RendezvousProcessor.RequestUpdate();
-        }
+        #endregion
+
+        #region Methods: public
 
         public override void Draw()
         {
-            if (!RendezvousProcessor.ShowDetails)
+            if (RendezvousProcessor.ShowDetails)
             {
-                return;
+                this.DrawLine(RendezvousProcessor.InterceptAngle.ToAngle());
             }
-
-            this.DrawLine(RendezvousProcessor.InterceptAngle.ToAngle());
         }
 
         public override void Reset()
         {
             FlightEngineerCore.Instance.AddUpdatable(RendezvousProcessor.Instance);
         }
+
+        public override void Update()
+        {
+            RendezvousProcessor.RequestUpdate();
+        }
+
+        #endregion
     }
 }

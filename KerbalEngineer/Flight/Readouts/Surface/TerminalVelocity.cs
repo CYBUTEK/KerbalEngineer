@@ -27,7 +27,7 @@ namespace KerbalEngineer.Flight.Readouts.Surface
 {
     public class TerminalVelocity : ReadoutModule
     {
-        private bool showing;
+        #region Constructors
 
         public TerminalVelocity()
         {
@@ -37,25 +37,15 @@ namespace KerbalEngineer.Flight.Readouts.Surface
             this.IsDefault = true;
         }
 
-        public override void Update()
-        {
-            AtmosphericProcessor.RequestUpdate();
-        }
+        #endregion
+
+        #region Methods: public
 
         public override void Draw()
         {
-            var tempShowing = this.showing;
-            this.showing = false;
-
-            if (FlightGlobals.ActiveVessel.atmDensity > 0)
+            if (AtmosphericProcessor.ShowDetails)
             {
-                this.showing = true;
                 this.DrawLine(AtmosphericProcessor.TerminalVelocity.ToSpeed());
-            }
-
-            if (this.showing != tempShowing)
-            {
-                this.ResizeRequested = true;
             }
         }
 
@@ -63,5 +53,12 @@ namespace KerbalEngineer.Flight.Readouts.Surface
         {
             FlightEngineerCore.Instance.AddUpdatable(AtmosphericProcessor.Instance);
         }
+
+        public override void Update()
+        {
+            AtmosphericProcessor.RequestUpdate();
+        }
+
+        #endregion
     }
 }

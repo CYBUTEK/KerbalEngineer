@@ -27,6 +27,8 @@ namespace KerbalEngineer.Flight.Readouts.Rendezvous
 {
     public class TimeToRelativeDescendingNode : ReadoutModule
     {
+        #region Constructors
+
         public TimeToRelativeDescendingNode()
         {
             this.Name = "Time to Rel. DN";
@@ -35,24 +37,28 @@ namespace KerbalEngineer.Flight.Readouts.Rendezvous
             this.IsDefault = true;
         }
 
-        public override void Update()
-        {
-            RendezvousProcessor.RequestUpdate();
-        }
+        #endregion
+
+        #region Methods: public
 
         public override void Draw()
         {
-            if (!RendezvousProcessor.ShowDetails)
+            if (RendezvousProcessor.ShowDetails)
             {
-                return;
+                this.DrawLine(RendezvousProcessor.TimeToDescendingNode.ToTime());
             }
-
-            this.DrawLine(RendezvousProcessor.TimeToDescendingNode.ToTime());
         }
 
         public override void Reset()
         {
             FlightEngineerCore.Instance.AddUpdatable(RendezvousProcessor.Instance);
         }
+
+        public override void Update()
+        {
+            RendezvousProcessor.RequestUpdate();
+        }
+
+        #endregion
     }
 }

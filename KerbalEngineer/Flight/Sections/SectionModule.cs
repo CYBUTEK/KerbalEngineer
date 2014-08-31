@@ -316,7 +316,9 @@ namespace KerbalEngineer.Flight.Sections
             {
                 foreach (var readout in this.ReadoutModules)
                 {
+                    readout.LineCountStart();
                     readout.Draw();
+                    readout.LineCountEnd();
                 }
             }
             else

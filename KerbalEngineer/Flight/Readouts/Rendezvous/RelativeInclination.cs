@@ -27,6 +27,8 @@ namespace KerbalEngineer.Flight.Readouts.Rendezvous
 {
     public class RelativeInclination : ReadoutModule
     {
+        #region Constructors
+
         public RelativeInclination()
         {
             this.Name = "Relative Inclination";
@@ -35,24 +37,28 @@ namespace KerbalEngineer.Flight.Readouts.Rendezvous
             this.IsDefault = true;
         }
 
-        public override void Update()
-        {
-            RendezvousProcessor.RequestUpdate();
-        }
+        #endregion
+
+        #region Methods: public
 
         public override void Draw()
         {
-            if (!RendezvousProcessor.ShowDetails)
+            if (RendezvousProcessor.ShowDetails)
             {
-                return;
+                this.DrawLine(RendezvousProcessor.RelativeInclination.ToAngle());
             }
-
-            this.DrawLine(RendezvousProcessor.RelativeInclination.ToAngle());
         }
 
         public override void Reset()
         {
             FlightEngineerCore.Instance.AddUpdatable(RendezvousProcessor.Instance);
         }
+
+        public override void Update()
+        {
+            RendezvousProcessor.RequestUpdate();
+        }
+
+        #endregion
     }
 }

@@ -27,6 +27,8 @@ namespace KerbalEngineer.Flight.Readouts.Rendezvous
 {
     public class PhaseAngle : ReadoutModule
     {
+        #region Constructors
+
         public PhaseAngle()
         {
             this.Name = "Phase Angle";
@@ -35,24 +37,28 @@ namespace KerbalEngineer.Flight.Readouts.Rendezvous
             this.IsDefault = true;
         }
 
-        public override void Update()
-        {
-            RendezvousProcessor.RequestUpdate();
-        }
+        #endregion
+
+        #region Methods: public
 
         public override void Draw()
         {
-            if (!RendezvousProcessor.ShowDetails)
+            if (RendezvousProcessor.ShowDetails)
             {
-                return;
+                this.DrawLine(RendezvousProcessor.PhaseAngle.ToAngle());
             }
-
-            this.DrawLine(RendezvousProcessor.PhaseAngle.ToAngle());
         }
 
         public override void Reset()
         {
             FlightEngineerCore.Instance.AddUpdatable(RendezvousProcessor.Instance);
         }
+
+        public override void Update()
+        {
+            RendezvousProcessor.RequestUpdate();
+        }
+
+        #endregion
     }
 }

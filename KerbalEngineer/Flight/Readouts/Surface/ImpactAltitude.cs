@@ -27,7 +27,7 @@ namespace KerbalEngineer.Flight.Readouts.Surface
 {
     public class ImpactAltitude : ReadoutModule
     {
-        private bool showing;
+        #region Constructors
 
         public ImpactAltitude()
         {
@@ -37,22 +37,15 @@ namespace KerbalEngineer.Flight.Readouts.Surface
             this.IsDefault = true;
         }
 
-        public override void Update()
-        {
-            ImpactProcessor.RequestUpdate();
-        }
+        #endregion
+
+        #region Methods: public
 
         public override void Draw()
         {
             if (ImpactProcessor.ShowDetails)
             {
-                this.showing = true;
                 this.DrawLine(ImpactProcessor.Altitude.ToDistance());
-            }
-            else if (this.showing)
-            {
-                this.showing = false;
-                this.ResizeRequested = true;
             }
         }
 
@@ -60,5 +53,12 @@ namespace KerbalEngineer.Flight.Readouts.Surface
         {
             FlightEngineerCore.Instance.AddUpdatable(ImpactProcessor.Instance);
         }
+
+        public override void Update()
+        {
+            ImpactProcessor.RequestUpdate();
+        }
+
+        #endregion
     }
 }

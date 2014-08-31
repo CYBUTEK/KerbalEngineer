@@ -21,7 +21,7 @@ namespace KerbalEngineer.Flight.Readouts.Surface
 {
     public class AtmosphericEfficiency : ReadoutModule
     {
-        private bool showing;
+        #region Constructors
 
         public AtmosphericEfficiency()
         {
@@ -31,22 +31,15 @@ namespace KerbalEngineer.Flight.Readouts.Surface
             this.IsDefault = true;
         }
 
-        public override void Update()
-        {
-            AtmosphericProcessor.RequestUpdate();
-        }
+        #endregion
+
+        #region Methods: public
 
         public override void Draw()
         {
             if (AtmosphericProcessor.ShowDetails)
             {
-                this.showing = true;
                 this.DrawLine(AtmosphericProcessor.Efficiency.ToString("F2"));
-            }
-            else if (this.showing)
-            {
-                this.showing = false;
-                this.ResizeRequested = true;
             }
         }
 
@@ -54,5 +47,12 @@ namespace KerbalEngineer.Flight.Readouts.Surface
         {
             FlightEngineerCore.Instance.AddUpdatable(AtmosphericProcessor.Instance);
         }
+
+        public override void Update()
+        {
+            AtmosphericProcessor.RequestUpdate();
+        }
+
+        #endregion
     }
 }
