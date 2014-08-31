@@ -74,6 +74,11 @@ namespace KerbalEngineer.Settings
         #region Properties
 
         /// <summary>
+        ///     Gets the directory where settings files are saved/loaded.
+        /// </summary>
+        public static string SettingsDirectory { get { return settingsDirectory; } }
+
+        /// <summary>
         ///     Gets and sets the list of items.
         /// </summary>
         public List<SettingItem> Items { get; set; }

@@ -20,8 +20,10 @@
 #region Using Directives
 
 using System;
+using System.Linq;
 
 using KerbalEngineer.Extensions;
+using KerbalEngineer.Flight.Presets;
 using KerbalEngineer.Flight.Readouts;
 using KerbalEngineer.UIControls;
 
@@ -42,10 +44,11 @@ namespace KerbalEngineer.Flight.Sections
 
         #region Fields
 
+        private DropDown categoryList;
+        private Rect position;
+        private DropDown presetList;
         private Vector2 scrollPositionAvailable;
         private Vector2 scrollPositionInstalled;
-        private Rect position;
-        private DropDown categoryList;
 
         #endregion
 
@@ -57,6 +60,9 @@ namespace KerbalEngineer.Flight.Sections
             {
                 this.categoryList = this.gameObject.AddComponent<DropDown>();
                 this.categoryList.DrawCallback = this.DrawCategories;
+
+                this.presetList = this.gameObject.AddComponent<DropDown>();
+                this.presetList.DrawCallback = this.DrawPresets;
             }
             catch (Exception ex)
             {
@@ -96,9 +102,9 @@ namespace KerbalEngineer.Flight.Sections
 
         #region GUIStyles
 
-        private GUIStyle categoryTitleButtonStyle;
-        private GUIStyle categoryButtonStyle;
         private GUIStyle categoryButtonActiveStyle;
+        private GUIStyle categoryButtonStyle;
+        private GUIStyle categoryTitleButtonStyle;
         private GUIStyle helpBoxStyle;
         private GUIStyle helpTextStyle;
         private GUIStyle panelTitleStyle;
@@ -120,8 +126,8 @@ namespace KerbalEngineer.Flight.Sections
                 {
                     textColor = Color.white
                 },
-                margin = new RectOffset(0,0,2,0),
-                padding = new RectOffset(5,5,5,5),
+                margin = new RectOffset(0, 0, 2, 0),
+                padding = new RectOffset(5, 5, 5, 5),
                 alignment = TextAnchor.MiddleCenter,
                 fontSize = 12,
                 fontStyle = FontStyle.Normal,
@@ -234,7 +240,10 @@ namespace KerbalEngineer.Flight.Sections
         private void Window(int windowId)
         {
             this.DrawCustomOptions();
+            GUILayout.BeginHorizontal();
             this.DrawCategorySelector();
+            this.DrawPresetSelector();
+            GUILayout.EndHorizontal();
             this.DrawAvailableReadouts();
             GUILayout.Space(5.0f);
             this.DrawInstalledReadouts();
@@ -262,9 +271,8 @@ namespace KerbalEngineer.Flight.Sections
                 {
                     DisplayStack.Instance.RequestResize();
                 }
-                if (GUILayout.Button("DELETE SECTION", this.readoutButtonStyle, GUILayout.Width(125.0f)))
+                if (GUILayout.Button("DELETE SECTION", this.readoutButtonStyle, GUILayout.Width(150.0f)))
                 {
-
                     this.ParentSection.IsFloating = false;
                     this.ParentSection.IsEditorVisible = false;
                     SectionLibrary.CustomSections.Remove(this.ParentSection);
@@ -286,15 +294,87 @@ namespace KerbalEngineer.Flight.Sections
             }
         }
 
+        /// <summary>
+        ///     Draws the categories list drop down UI.
+        /// </summary>
         private void DrawCategories()
         {
             foreach (var category in ReadoutCategory.Categories)
             {
-                if (GUILayout.Button("<b>" + category.Name.ToUpper() + "</b>" + (string.IsNullOrEmpty(category.Description) ? string.Empty : "\n<i>" + category.Description + "</i>"), category == ReadoutCategory.Selected ? this.categoryButtonActiveStyle : this.categoryButtonStyle))
+                var description = category.Description;
+                if (description.Length > 50)
+                {
+                    description = description.Substring(0, 50 - 1) + "...";
+                }
+
+                if (GUILayout.Button("<b>" + category.Name.ToUpper() + "</b>" + (string.IsNullOrEmpty(category.Description) ? string.Empty : "\n<i>" + description + "</i>"), category == ReadoutCategory.Selected ? this.categoryButtonActiveStyle : this.categoryButtonStyle))
                 {
                     ReadoutCategory.Selected = category;
                     this.categoryList.enabled = false;
                 }
+            }
+        }
+
+        /// <summary>
+        ///     Draws the presetsList selection list.
+        /// </summary>
+        private void DrawPresetSelector()
+        {
+            this.presetList.enabled = GUILayout.Toggle(this.presetList.enabled, "▼ PRESETS ▼", this.categoryTitleButtonStyle, GUILayout.Width(150.0f));
+            if (Event.current.type == EventType.repaint)
+            {
+                this.presetList.SetPosition(GUILayoutUtility.GetLastRect().Translate(this.position));
+            }
+        }
+
+        /// <summary>
+        ///     Draws the preset list drop down UI.
+        /// </summary>
+        private void DrawPresets()
+        {
+            Preset removePreset = null;
+            foreach (var preset in PresetLibrary.Presets)
+            {
+                GUILayout.BeginHorizontal();
+                if (GUILayout.Button("<b>" + preset.Name.ToUpper() + "</b>", this.categoryButtonStyle))
+                {
+                    this.ParentSection.Name = preset.Name;
+                    this.ParentSection.Abbreviation = preset.Abbreviation;
+                    this.ParentSection.ReadoutModuleNames = preset.ReadoutNames;
+                    this.presetList.enabled = false;
+                }
+                if (GUILayout.Button("<b>X</b>", this.categoryButtonStyle, GUILayout.Width(30.0f)))
+                {
+                    removePreset = preset;
+                }
+                GUILayout.EndHorizontal();
+            }
+            if (removePreset != null)
+            {
+                PresetLibrary.Presets.Remove(removePreset);
+                this.presetList.Resize = true;
+            }
+
+            if (GUILayout.Button("<b>NEW PRESET</b>", this.categoryButtonStyle))
+            {
+                var preset = PresetLibrary.Presets.Find(p => String.Equals(p.Name, this.ParentSection.Name, StringComparison.CurrentCultureIgnoreCase));
+                if (preset != null)
+                {
+                    preset.Name = this.ParentSection.Name;
+                    preset.Abbreviation = this.ParentSection.Abbreviation;
+                    preset.ReadoutNames = this.ParentSection.ReadoutModuleNames;
+                }
+                else
+                {
+                    preset = new Preset()
+                    {
+                        Name = this.ParentSection.Name,
+                        Abbreviation = this.ParentSection.Abbreviation,
+                        ReadoutNames = this.ParentSection.ReadoutModuleNames
+                    };
+                    PresetLibrary.Presets.Add(preset);
+                }
+                PresetLibrary.Save();
             }
         }
 

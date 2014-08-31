@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ArrayOfSettingItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <SettingItem>
+    <Name>preset</Name>
+    <Value xsi:type="Preset">
+      <Name>VESSEL</Name>
+      <Abbreviation>VESL</Abbreviation>
+      <ReadoutNames>
+        <string>Vessel.DeltaVStaged</string>
+        <string>Miscellaneous.Separator</string>
+        <string>Vessel.DeltaVTotal</string>
+        <string>Miscellaneous.Separator</string>
+        <string>Vessel.ThrustToWeight</string>
+        <string>Vessel.Acceleration</string>
+      </ReadoutNames>
+    </Value>
+  </SettingItem>
+</ArrayOfSettingItem>
