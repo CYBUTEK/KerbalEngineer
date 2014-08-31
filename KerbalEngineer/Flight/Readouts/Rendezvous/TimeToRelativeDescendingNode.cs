@@ -25,11 +25,11 @@ using KerbalEngineer.Extensions;
 
 namespace KerbalEngineer.Flight.Readouts.Rendezvous
 {
-    public class TimeToDescendingNode : ReadoutModule
+    public class TimeToRelativeDescendingNode : ReadoutModule
     {
-        public TimeToDescendingNode()
+        public TimeToRelativeDescendingNode()
         {
-            this.Name = "Time to DN";
+            this.Name = "Time to Rel. DN";
             this.Category = ReadoutCategory.GetCategory("Rendezvous");
             this.HelpString = string.Empty;
             this.IsDefault = true;

@@ -25,11 +25,11 @@ using KerbalEngineer.Extensions;
 
 namespace KerbalEngineer.Flight.Readouts.Orbital
 {
-    public class AngleToAscendingNode : ReadoutModule
+    public class AngleToEquatorialAscendingNode : ReadoutModule
     {
-        public AngleToAscendingNode()
+        public AngleToEquatorialAscendingNode()
         {
-            this.Name = "Angle to AN";
+            this.Name = "Angle to Equ. AN";
             this.Category = ReadoutCategory.GetCategory("Orbital");
             this.HelpString = string.Empty;
             this.IsDefault = true;

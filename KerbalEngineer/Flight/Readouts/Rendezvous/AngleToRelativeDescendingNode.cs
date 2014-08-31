@@ -25,11 +25,11 @@ using KerbalEngineer.Extensions;
 
 namespace KerbalEngineer.Flight.Readouts.Rendezvous
 {
-    public class AngleToDescendingNode : ReadoutModule
+    public class AngleToRelativeDescendingNode : ReadoutModule
     {
-        public AngleToDescendingNode()
+        public AngleToRelativeDescendingNode()
         {
-            this.Name = "Angle to DN";
+            this.Name = "Angle to Rel. DN";
             this.Category = ReadoutCategory.GetCategory("Rendezvous");
             this.HelpString = string.Empty;
             this.IsDefault = true;

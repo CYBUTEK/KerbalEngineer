@@ -25,11 +25,11 @@ using KerbalEngineer.Extensions;
 
 namespace KerbalEngineer.Flight.Readouts.Orbital
 {
-    public class AngleToDescendingNode : ReadoutModule
+    public class TimeToEquatorialAscendingNode : ReadoutModule
     {
-        public AngleToDescendingNode()
+        public TimeToEquatorialAscendingNode()
         {
-            this.Name = "Angle to DN";
+            this.Name = "Time to Equ. AN";
             this.Category = ReadoutCategory.GetCategory("Orbital");
             this.HelpString = string.Empty;
             this.IsDefault = true;
@@ -37,7 +37,7 @@ namespace KerbalEngineer.Flight.Readouts.Orbital
 
         public override void Draw()
         {
-            this.DrawLine(FlightGlobals.ActiveVessel.orbit.GetAngleToDescendingNode().ToAngle());
+            this.DrawLine(FlightGlobals.ActiveVessel.orbit.GetTimeToAscendingNode().ToTime());
         }
     }
 }

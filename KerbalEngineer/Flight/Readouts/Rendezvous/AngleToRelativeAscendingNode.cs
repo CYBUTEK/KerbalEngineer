@@ -23,21 +23,36 @@ using KerbalEngineer.Extensions;
 
 #endregion
 
-namespace KerbalEngineer.Flight.Readouts.Orbital
+namespace KerbalEngineer.Flight.Readouts.Rendezvous
 {
-    public class TimeToAscendingNode : ReadoutModule
+    public class AngleToRelativeAscendingNode : ReadoutModule
     {
-        public TimeToAscendingNode()
+        public AngleToRelativeAscendingNode()
         {
-            this.Name = "Time to AN";
-            this.Category = ReadoutCategory.GetCategory("Orbital");
+            this.Name = "Angle to Rel. AN";
+            this.Category = ReadoutCategory.GetCategory("Rendezvous");
             this.HelpString = string.Empty;
             this.IsDefault = true;
         }
 
+        public override void Update()
+        {
+            RendezvousProcessor.RequestUpdate();
+        }
+
         public override void Draw()
         {
-            this.DrawLine(FlightGlobals.ActiveVessel.orbit.GetTimeToAscendingNode().ToTime());
+            if (!RendezvousProcessor.ShowDetails)
+            {
+                return;
+            }
+
+            this.DrawLine(RendezvousProcessor.AngleToAscendingNode.ToAngle());
+        }
+
+        public override void Reset()
+        {
+            FlightEngineerCore.Instance.AddUpdatable(RendezvousProcessor.Instance);
         }
     }
 }
