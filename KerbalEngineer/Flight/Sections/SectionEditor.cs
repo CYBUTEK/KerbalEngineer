@@ -20,7 +20,6 @@
 #region Using Directives
 
 using System;
-using System.Linq;
 
 using KerbalEngineer.Extensions;
 using KerbalEngineer.Flight.Presets;
@@ -37,48 +36,28 @@ namespace KerbalEngineer.Flight.Sections
     {
         #region Constants
 
-        public const float Width = 500.0f;
         public const float Height = 500.0f;
+        public const float Width = 500.0f;
 
         #endregion
 
         #region Fields
 
+        private GUIStyle categoryButtonActiveStyle;
+        private GUIStyle categoryButtonStyle;
         private DropDown categoryList;
+        private GUIStyle categoryTitleButtonStyle;
+        private GUIStyle helpBoxStyle;
+        private GUIStyle helpTextStyle;
+        private GUIStyle panelTitleStyle;
         private Rect position;
         private DropDown presetList;
+        private GUIStyle readoutButtonStyle;
+        private GUIStyle readoutNameStyle;
         private Vector2 scrollPositionAvailable;
         private Vector2 scrollPositionInstalled;
-
-        #endregion
-
-        #region Constructors
-
-        private void Awake()
-        {
-            try
-            {
-                this.categoryList = this.gameObject.AddComponent<DropDown>();
-                this.categoryList.DrawCallback = this.DrawCategories;
-
-                this.presetList = this.gameObject.AddComponent<DropDown>();
-                this.presetList.DrawCallback = this.DrawPresets;
-            }
-            catch (Exception ex)
-            {
-                Logger.Exception(ex);
-            }
-        }
-
-        /// <summary>
-        ///     Initialises the object's state on creation.
-        /// </summary>
-        private void Start()
-        {
-            this.InitialiseStyles();
-            ReadoutCategory.Selected = ReadoutCategory.GetCategory("Orbital");
-            RenderingManager.AddToPostDrawQueue(0, this.Draw);
-        }
+        private GUIStyle textStyle;
+        private GUIStyle windowStyle;
 
         #endregion
 
@@ -100,18 +79,271 @@ namespace KerbalEngineer.Flight.Sections
 
         #endregion
 
-        #region GUIStyles
+        #region Methods: protected
 
-        private GUIStyle categoryButtonActiveStyle;
-        private GUIStyle categoryButtonStyle;
-        private GUIStyle categoryTitleButtonStyle;
-        private GUIStyle helpBoxStyle;
-        private GUIStyle helpTextStyle;
-        private GUIStyle panelTitleStyle;
-        private GUIStyle readoutButtonStyle;
-        private GUIStyle readoutNameStyle;
-        private GUIStyle textStyle;
-        private GUIStyle windowStyle;
+        protected void Awake()
+        {
+            try
+            {
+                this.categoryList = this.gameObject.AddComponent<DropDown>();
+                this.categoryList.DrawCallback = this.DrawCategories;
+                this.presetList = this.gameObject.AddComponent<DropDown>();
+                this.presetList.DrawCallback = this.DrawPresets;
+            }
+            catch (Exception ex)
+            {
+                Logger.Exception(ex);
+            }
+        }
+
+        /// <summary>
+        ///     Runs when the object is destroyed.
+        /// </summary>
+        protected void OnDestroy()
+        {
+            try
+            {
+                RenderingManager.RemoveFromPostDrawQueue(0, this.Draw);
+            }
+            catch (Exception ex)
+            {
+                Logger.Exception(ex);
+            }
+        }
+
+        /// <summary>
+        ///     Initialises the object's state on creation.
+        /// </summary>
+        protected void Start()
+        {
+            try
+            {
+                this.InitialiseStyles();
+                ReadoutCategory.Selected = ReadoutCategory.GetCategory("Orbital");
+                RenderingManager.AddToPostDrawQueue(0, this.Draw);
+            }
+            catch (Exception ex)
+            {
+                Logger.Exception(ex);
+            }
+        }
+
+        #endregion
+
+        #region Methods: private
+
+        /// <summary>
+        ///     Called to draw the editor when the UI is enabled.
+        /// </summary>
+        private void Draw()
+        {
+            this.position = GUILayout.Window(this.GetInstanceID(), this.position, this.Window, "EDIT SECTION - " + this.ParentSection.Name.ToUpper(), this.windowStyle).ClampToScreen();
+            this.ParentSection.EditorPositionX = this.position.x;
+            this.ParentSection.EditorPositionY = this.position.y;
+        }
+
+        /// <summary>
+        ///     Draws the available readouts panel.
+        /// </summary>
+        private void DrawAvailableReadouts()
+        {
+            GUI.skin = HighLogic.Skin;
+            this.scrollPositionAvailable = GUILayout.BeginScrollView(this.scrollPositionAvailable, false, true, GUILayout.Height(200.0f));
+            GUI.skin = null;
+
+            GUILayout.Label("AVAILABLE", this.panelTitleStyle);
+
+            foreach (var readout in ReadoutLibrary.GetCategory(ReadoutCategory.Selected))
+            {
+                if (!this.ParentSection.ReadoutModules.Contains(readout) || readout.Cloneable)
+                {
+                    GUILayout.BeginHorizontal(GUILayout.Height(30.0f));
+                    GUILayout.Label(readout.Name, this.readoutNameStyle);
+                    readout.ShowHelp = GUILayout.Toggle(readout.ShowHelp, "?", this.readoutButtonStyle, GUILayout.Width(30.0f));
+                    if (GUILayout.Button("INSTALL", this.readoutButtonStyle, GUILayout.Width(125.0f)))
+                    {
+                        this.ParentSection.ReadoutModules.Add(readout);
+                    }
+                    GUILayout.EndHorizontal();
+
+                    this.ShowHelpMessage(readout);
+                }
+            }
+
+            GUILayout.EndScrollView();
+        }
+
+        /// <summary>
+        ///     Draws the categories list drop down UI.
+        /// </summary>
+        private void DrawCategories()
+        {
+            foreach (var category in ReadoutCategory.Categories)
+            {
+                var description = category.Description;
+                if (description.Length > 50)
+                {
+                    description = description.Substring(0, 50 - 1) + "...";
+                }
+
+                if (GUILayout.Button("<b>" + category.Name.ToUpper() + "</b>" + (string.IsNullOrEmpty(category.Description) ? string.Empty : "\n<i>" + description + "</i>"), category == ReadoutCategory.Selected ? this.categoryButtonActiveStyle : this.categoryButtonStyle))
+                {
+                    ReadoutCategory.Selected = category;
+                    this.categoryList.enabled = false;
+                }
+            }
+        }
+
+        /// <summary>
+        ///     Draws the readoutCategories selection list.
+        /// </summary>
+        private void DrawCategorySelector()
+        {
+            this.categoryList.enabled = GUILayout.Toggle(this.categoryList.enabled, "▼ SELECTED CATEGORY: " + ReadoutCategory.Selected.ToString().ToUpper() + " ▼", this.categoryTitleButtonStyle);
+            if (Event.current.type == EventType.repaint)
+            {
+                this.categoryList.SetPosition(GUILayoutUtility.GetLastRect().Translate(this.position));
+            }
+        }
+
+        /// <summary>
+        ///     Draws the options for editing custom sections.
+        /// </summary>
+        private void DrawCustomOptions()
+        {
+            GUILayout.BeginHorizontal(GUILayout.Height(25.0f));
+            this.ParentSection.Name = GUILayout.TextField(this.ParentSection.Name, this.textStyle);
+            var isShowingInControlBar = !string.IsNullOrEmpty(this.ParentSection.Abbreviation);
+            this.ParentSection.Abbreviation = GUILayout.TextField(this.ParentSection.Abbreviation, this.textStyle, GUILayout.Width(75.0f));
+            if (this.ParentSection.IsCustom)
+            {
+                if (isShowingInControlBar && string.IsNullOrEmpty(this.ParentSection.Abbreviation))
+                {
+                    DisplayStack.Instance.RequestResize();
+                }
+                if (GUILayout.Button("DELETE SECTION", this.readoutButtonStyle, GUILayout.Width(150.0f)))
+                {
+                    this.ParentSection.IsFloating = false;
+                    this.ParentSection.IsEditorVisible = false;
+                    SectionLibrary.CustomSections.Remove(this.ParentSection);
+                    DisplayStack.Instance.RequestResize();
+                }
+            }
+            GUILayout.EndHorizontal();
+        }
+
+        /// <summary>
+        ///     Draws the installed readouts panel.
+        /// </summary>
+        private void DrawInstalledReadouts()
+        {
+            GUI.skin = HighLogic.Skin;
+            this.scrollPositionInstalled = GUILayout.BeginScrollView(this.scrollPositionInstalled, false, true);
+            GUI.skin = null;
+
+            GUILayout.Label("INSTALLED", this.panelTitleStyle);
+            var removeReadout = false;
+            var removeReadoutIndex = 0;
+
+            for (var i = 0; i < this.ParentSection.ReadoutModules.Count; i++)
+            {
+                var readout = this.ParentSection.ReadoutModules[i];
+
+                GUILayout.BeginHorizontal(GUILayout.Height(30.0f));
+                GUILayout.Label(readout.Name, this.readoutNameStyle);
+                if (GUILayout.Button("▲", this.readoutButtonStyle, GUILayout.Width(30.0f)))
+                {
+                    if (i > 0)
+                    {
+                        this.ParentSection.ReadoutModules[i] = this.ParentSection.ReadoutModules[i - 1];
+                        this.ParentSection.ReadoutModules[i - 1] = readout;
+                    }
+                }
+                if (GUILayout.Button("▼", this.readoutButtonStyle, GUILayout.Width(30.0f)))
+                {
+                    if (i < this.ParentSection.ReadoutModules.Count - 1)
+                    {
+                        this.ParentSection.ReadoutModules[i] = this.ParentSection.ReadoutModules[i + 1];
+                        this.ParentSection.ReadoutModules[i + 1] = readout;
+                    }
+                }
+                readout.ShowHelp = GUILayout.Toggle(readout.ShowHelp, "?", this.readoutButtonStyle, GUILayout.Width(30.0f));
+                if (GUILayout.Button("REMOVE", this.readoutButtonStyle, GUILayout.Width(125.0f)))
+                {
+                    removeReadout = true;
+                    removeReadoutIndex = i;
+                }
+                GUILayout.EndHorizontal();
+
+                this.ShowHelpMessage(readout);
+            }
+
+            GUILayout.EndScrollView();
+
+            if (removeReadout)
+            {
+                this.ParentSection.ReadoutModules.RemoveAt(removeReadoutIndex);
+            }
+        }
+
+        private void DrawPresetButton(Preset preset)
+        {
+            if (!GUILayout.Button("<b>" + preset.Name.ToUpper() + "</b>", this.categoryButtonStyle))
+            {
+                return;
+            }
+
+            this.ParentSection.Name = preset.Name;
+            this.ParentSection.Abbreviation = preset.Abbreviation;
+            this.ParentSection.ReadoutModuleNames = preset.ReadoutNames;
+            this.presetList.enabled = false;
+        }
+
+        private void DrawPresetSaveButton()
+        {
+            if (!GUILayout.Button("<b>SAVE PRESET</b>", this.categoryButtonStyle))
+            {
+                return;
+            }
+
+            this.SavePreset(PresetLibrary.Presets.Find(p => String.Equals(p.Name, this.ParentSection.Name, StringComparison.CurrentCultureIgnoreCase)));
+        }
+
+        /// <summary>
+        ///     Draws the presetsList selection list.
+        /// </summary>
+        private void DrawPresetSelector()
+        {
+            this.presetList.enabled = GUILayout.Toggle(this.presetList.enabled, "▼ PRESETS ▼", this.categoryTitleButtonStyle, GUILayout.Width(150.0f));
+            if (Event.current.type == EventType.repaint)
+            {
+                this.presetList.SetPosition(GUILayoutUtility.GetLastRect().Translate(this.position));
+            }
+        }
+
+        /// <summary>
+        ///     Draws the preset list drop down UI.
+        /// </summary>
+        private void DrawPresets()
+        {
+            Preset removePreset = null;
+            foreach (var preset in PresetLibrary.Presets)
+            {
+                GUILayout.BeginHorizontal();
+                this.DrawPresetButton(preset);
+                if (GUILayout.Button("<b>X</b>", this.categoryButtonStyle, GUILayout.Width(30.0f)))
+                {
+                    removePreset = preset;
+                }
+                GUILayout.EndHorizontal();
+            }
+            if (removePreset != null && PresetLibrary.Remove(removePreset))
+            {
+                this.presetList.Resize = true;
+            }
+
+            this.DrawPresetSaveButton();
+        }
 
         /// <summary>
         ///     Initialises all the styles required for this object.
@@ -220,18 +452,30 @@ namespace KerbalEngineer.Flight.Sections
             };
         }
 
-        #endregion
-
-        #region Drawing
-
-        /// <summary>
-        ///     Called to draw the editor when the UI is enabled.
-        /// </summary>
-        private void Draw()
+        private void SavePreset(Preset preset)
         {
-            this.position = GUILayout.Window(this.GetInstanceID(), this.position, this.Window, "EDIT SECTION - " + this.ParentSection.Name.ToUpper(), this.windowStyle).ClampToScreen();
-            this.ParentSection.EditorPositionX = this.position.x;
-            this.ParentSection.EditorPositionY = this.position.y;
+            if (preset == null)
+            {
+                preset = new Preset();
+            }
+
+            preset.Name = this.ParentSection.Name;
+            preset.Abbreviation = this.ParentSection.Abbreviation;
+            preset.ReadoutNames = this.ParentSection.ReadoutModuleNames;
+
+            PresetLibrary.Save(preset);
+        }
+
+        private void ShowHelpMessage(ReadoutModule readout)
+        {
+            if (!readout.ShowHelp)
+            {
+                return;
+            }
+
+            GUILayout.BeginVertical(this.helpBoxStyle);
+            GUILayout.Label(!String.IsNullOrEmpty(readout.HelpString) ? readout.HelpString : "Sorry, no help information has been provided for this readout module.", this.helpTextStyle);
+            GUILayout.EndVertical();
         }
 
         /// <summary>
@@ -239,258 +483,28 @@ namespace KerbalEngineer.Flight.Sections
         /// </summary>
         private void Window(int windowId)
         {
-            this.DrawCustomOptions();
-            GUILayout.BeginHorizontal();
-            this.DrawCategorySelector();
-            this.DrawPresetSelector();
-            GUILayout.EndHorizontal();
-            this.DrawAvailableReadouts();
-            GUILayout.Space(5.0f);
-            this.DrawInstalledReadouts();
-
-            if (GUILayout.Button("CLOSE EDITOR", this.categoryTitleButtonStyle))
+            try
             {
-                this.ParentSection.IsEditorVisible = false;
-            }
-
-            GUI.DragWindow();
-        }
-
-        /// <summary>
-        ///     Draws the options for editing custom sections.
-        /// </summary>
-        private void DrawCustomOptions()
-        {
-            GUILayout.BeginHorizontal(GUILayout.Height(25.0f));
-            this.ParentSection.Name = GUILayout.TextField(this.ParentSection.Name, this.textStyle);
-            var isShowingInControlBar = !string.IsNullOrEmpty(this.ParentSection.Abbreviation);
-            this.ParentSection.Abbreviation = GUILayout.TextField(this.ParentSection.Abbreviation, this.textStyle, GUILayout.Width(75.0f));
-            if (this.ParentSection.IsCustom)
-            {
-                if (isShowingInControlBar && string.IsNullOrEmpty(this.ParentSection.Abbreviation))
-                {
-                    DisplayStack.Instance.RequestResize();
-                }
-                if (GUILayout.Button("DELETE SECTION", this.readoutButtonStyle, GUILayout.Width(150.0f)))
-                {
-                    this.ParentSection.IsFloating = false;
-                    this.ParentSection.IsEditorVisible = false;
-                    SectionLibrary.CustomSections.Remove(this.ParentSection);
-                    DisplayStack.Instance.RequestResize();
-                }
-            }
-            GUILayout.EndHorizontal();
-        }
-
-        /// <summary>
-        ///     Draws the readoutCategories selection list.
-        /// </summary>
-        private void DrawCategorySelector()
-        {
-            this.categoryList.enabled = GUILayout.Toggle(this.categoryList.enabled, "▼ SELECTED CATEGORY: " + ReadoutCategory.Selected.ToString().ToUpper() + " ▼", this.categoryTitleButtonStyle);
-            if (Event.current.type == EventType.repaint)
-            {
-                this.categoryList.SetPosition(GUILayoutUtility.GetLastRect().Translate(this.position));
-            }
-        }
-
-        /// <summary>
-        ///     Draws the categories list drop down UI.
-        /// </summary>
-        private void DrawCategories()
-        {
-            foreach (var category in ReadoutCategory.Categories)
-            {
-                var description = category.Description;
-                if (description.Length > 50)
-                {
-                    description = description.Substring(0, 50 - 1) + "...";
-                }
-
-                if (GUILayout.Button("<b>" + category.Name.ToUpper() + "</b>" + (string.IsNullOrEmpty(category.Description) ? string.Empty : "\n<i>" + description + "</i>"), category == ReadoutCategory.Selected ? this.categoryButtonActiveStyle : this.categoryButtonStyle))
-                {
-                    ReadoutCategory.Selected = category;
-                    this.categoryList.enabled = false;
-                }
-            }
-        }
-
-        /// <summary>
-        ///     Draws the presetsList selection list.
-        /// </summary>
-        private void DrawPresetSelector()
-        {
-            this.presetList.enabled = GUILayout.Toggle(this.presetList.enabled, "▼ PRESETS ▼", this.categoryTitleButtonStyle, GUILayout.Width(150.0f));
-            if (Event.current.type == EventType.repaint)
-            {
-                this.presetList.SetPosition(GUILayoutUtility.GetLastRect().Translate(this.position));
-            }
-        }
-
-        /// <summary>
-        ///     Draws the preset list drop down UI.
-        /// </summary>
-        private void DrawPresets()
-        {
-            Preset removePreset = null;
-            foreach (var preset in PresetLibrary.Presets)
-            {
+                this.DrawCustomOptions();
                 GUILayout.BeginHorizontal();
-                if (GUILayout.Button("<b>" + preset.Name.ToUpper() + "</b>", this.categoryButtonStyle))
-                {
-                    this.ParentSection.Name = preset.Name;
-                    this.ParentSection.Abbreviation = preset.Abbreviation;
-                    this.ParentSection.ReadoutModuleNames = preset.ReadoutNames;
-                    this.presetList.enabled = false;
-                }
-                if (GUILayout.Button("<b>X</b>", this.categoryButtonStyle, GUILayout.Width(30.0f)))
-                {
-                    removePreset = preset;
-                }
+                this.DrawCategorySelector();
+                this.DrawPresetSelector();
                 GUILayout.EndHorizontal();
+                this.DrawAvailableReadouts();
+                GUILayout.Space(5.0f);
+                this.DrawInstalledReadouts();
+
+                if (GUILayout.Button("CLOSE EDITOR", this.categoryTitleButtonStyle))
+                {
+                    this.ParentSection.IsEditorVisible = false;
+                }
+
+                GUI.DragWindow();
             }
-            if (removePreset != null)
+            catch (Exception ex)
             {
-                PresetLibrary.Presets.Remove(removePreset);
-                this.presetList.Resize = true;
+                Logger.Exception(ex);
             }
-
-            if (GUILayout.Button("<b>NEW PRESET</b>", this.categoryButtonStyle))
-            {
-                var preset = PresetLibrary.Presets.Find(p => String.Equals(p.Name, this.ParentSection.Name, StringComparison.CurrentCultureIgnoreCase));
-                if (preset != null)
-                {
-                    preset.Name = this.ParentSection.Name;
-                    preset.Abbreviation = this.ParentSection.Abbreviation;
-                    preset.ReadoutNames = this.ParentSection.ReadoutModuleNames;
-                }
-                else
-                {
-                    preset = new Preset()
-                    {
-                        Name = this.ParentSection.Name,
-                        Abbreviation = this.ParentSection.Abbreviation,
-                        ReadoutNames = this.ParentSection.ReadoutModuleNames
-                    };
-                    PresetLibrary.Presets.Add(preset);
-                }
-                PresetLibrary.Save();
-            }
-        }
-
-        /// <summary>
-        ///     Draws the available readouts panel.
-        /// </summary>
-        private void DrawAvailableReadouts()
-        {
-            GUI.skin = HighLogic.Skin;
-            this.scrollPositionAvailable = GUILayout.BeginScrollView(this.scrollPositionAvailable, false, true, GUILayout.Height(200.0f));
-            GUI.skin = null;
-
-            GUILayout.Label("AVAILABLE", this.panelTitleStyle);
-
-            foreach (var readout in ReadoutLibrary.GetCategory(ReadoutCategory.Selected))
-            {
-                if (!this.ParentSection.ReadoutModules.Contains(readout) || readout.Cloneable)
-                {
-                    GUILayout.BeginHorizontal(GUILayout.Height(30.0f));
-                    GUILayout.Label(readout.Name, this.readoutNameStyle);
-                    readout.ShowHelp = GUILayout.Toggle(readout.ShowHelp, "?", this.readoutButtonStyle, GUILayout.Width(30.0f));
-                    if (GUILayout.Button("INSTALL", this.readoutButtonStyle, GUILayout.Width(125.0f)))
-                    {
-                        this.ParentSection.ReadoutModules.Add(readout);
-                    }
-                    GUILayout.EndHorizontal();
-
-                    this.ShowHelpMessage(readout);
-                }
-            }
-
-            GUILayout.EndScrollView();
-        }
-
-        /// <summary>
-        ///     Draws the installed readouts panel.
-        /// </summary>
-        private void DrawInstalledReadouts()
-        {
-            GUI.skin = HighLogic.Skin;
-            this.scrollPositionInstalled = GUILayout.BeginScrollView(this.scrollPositionInstalled, false, true);
-            GUI.skin = null;
-
-            GUILayout.Label("INSTALLED", this.panelTitleStyle);
-            var removeReadout = false;
-            var removeReadoutIndex = 0;
-
-            for (var i = 0; i < this.ParentSection.ReadoutModules.Count; i++)
-            {
-                var readout = this.ParentSection.ReadoutModules[i];
-
-                GUILayout.BeginHorizontal(GUILayout.Height(30.0f));
-                GUILayout.Label(readout.Name, this.readoutNameStyle);
-                if (GUILayout.Button("▲", this.readoutButtonStyle, GUILayout.Width(30.0f)))
-                {
-                    if (i > 0)
-                    {
-                        this.ParentSection.ReadoutModules[i] = this.ParentSection.ReadoutModules[i - 1];
-                        this.ParentSection.ReadoutModules[i - 1] = readout;
-                    }
-                }
-                if (GUILayout.Button("▼", this.readoutButtonStyle, GUILayout.Width(30.0f)))
-                {
-                    if (i < this.ParentSection.ReadoutModules.Count - 1)
-                    {
-                        this.ParentSection.ReadoutModules[i] = this.ParentSection.ReadoutModules[i + 1];
-                        this.ParentSection.ReadoutModules[i + 1] = readout;
-                    }
-                }
-                readout.ShowHelp = GUILayout.Toggle(readout.ShowHelp, "?", this.readoutButtonStyle, GUILayout.Width(30.0f));
-                if (GUILayout.Button("REMOVE", this.readoutButtonStyle, GUILayout.Width(125.0f)))
-                {
-                    removeReadout = true;
-                    removeReadoutIndex = i;
-                }
-                GUILayout.EndHorizontal();
-
-                this.ShowHelpMessage(readout);
-            }
-
-            GUILayout.EndScrollView();
-
-            if (removeReadout)
-            {
-                this.ParentSection.ReadoutModules.RemoveAt(removeReadoutIndex);
-            }
-        }
-
-        private void ShowHelpMessage(ReadoutModule readout)
-        {
-            if (readout.ShowHelp)
-            {
-                GUILayout.BeginVertical(this.helpBoxStyle);
-                if (readout.HelpString != null && readout.HelpString.Length > 0)
-                {
-                    GUILayout.Label(readout.HelpString, this.helpTextStyle);
-                }
-                else
-                {
-                    GUILayout.Label("Sorry, no help information has been provided for this readout module.", this.helpTextStyle);
-                }
-
-                GUILayout.EndVertical();
-            }
-        }
-
-        #endregion
-
-        #region Destruction
-
-        /// <summary>
-        ///     Runs when the object is destroyed.
-        /// </summary>
-        private void OnDestroy()
-        {
-            RenderingManager.RemoveFromPostDrawQueue(0, this.Draw);
         }
 
         #endregion

@@ -20,6 +20,7 @@
 #region Using Directives
 
 using System.Linq;
+using System.Text.RegularExpressions;
 
 #endregion
 
@@ -29,15 +30,20 @@ namespace KerbalEngineer.Flight.Presets
     {
         #region Properties
 
-        public string Name { get; set; }
-
         public string Abbreviation { get; set; }
+
+        public string FileName
+        {
+            get { return Regex.Replace(this.Name, @"[^\d\w]", string.Empty) + ".xml"; }
+        }
+
+        public string Name { get; set; }
 
         public string[] ReadoutNames { get; set; }
 
         #endregion
 
-        #region Debugging
+        #region Methods: public
 
         public override string ToString()
         {

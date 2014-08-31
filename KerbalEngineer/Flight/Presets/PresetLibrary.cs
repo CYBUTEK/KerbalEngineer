@@ -21,7 +21,6 @@
 
 using System.Collections.Generic;
 using System.IO;
-using System.Text.RegularExpressions;
 
 using KerbalEngineer.Settings;
 
@@ -34,6 +33,7 @@ namespace KerbalEngineer.Flight.Presets
         #region Fields
 
         private static readonly List<Preset> presets = new List<Preset>();
+        private static readonly string rootPath = Path.Combine(EngineerGlobals.AssemblyPath, "Presets");
 
         #endregion
 
@@ -55,33 +55,57 @@ namespace KerbalEngineer.Flight.Presets
 
         #endregion
 
-        #region Public Methods
+        #region Methods: public
 
-        public static void Save()
+        public static void Add(Preset preset)
         {
-            if (!Directory.Exists(Path.Combine(SettingHandler.SettingsDirectory, "../Presets")))
-            {
-                Directory.CreateDirectory(Path.Combine(SettingHandler.SettingsDirectory, "../Presets"));
-            }
-            foreach (var preset in presets)
-            {
-                var handler = new SettingHandler();
-                handler.Set("preset", preset);
-                handler.Save(Path.Combine("../Presets", Regex.Replace(preset.Name, @"[^\d\w]", string.Empty) + ".xml"));
-            }
+            Presets.Add(preset);
         }
 
         public static void Load()
         {
-            if (!Directory.Exists(Path.Combine(SettingHandler.SettingsDirectory, "../Presets")))
+            if (!Directory.Exists(rootPath))
             {
-                Directory.CreateDirectory(Path.Combine(SettingHandler.SettingsDirectory, "../Presets"));
+                Directory.CreateDirectory(rootPath);
             }
-            foreach (var file in Directory.GetFiles(Path.Combine(SettingHandler.SettingsDirectory, "../Presets")))
+            foreach (var file in Directory.GetFiles(rootPath))
             {
                 var handler = SettingHandler.Load(file, new[] {typeof(Preset)});
                 presets.Add(handler.Get<Preset>("preset", null));
             }
+        }
+
+        public static bool Remove(Preset preset)
+        {
+            if (File.Exists(Path.Combine(rootPath, preset.FileName)))
+            {
+                File.Delete(Path.Combine(rootPath, preset.FileName));
+            }
+            return Presets.Remove(preset);
+        }
+
+        public static void Save()
+        {
+            Presets.ForEach(Save);
+        }
+
+        public static void Save(Preset preset)
+        {
+            if (!Directory.Exists(rootPath))
+            {
+                Directory.CreateDirectory(rootPath);
+            }
+
+            if (!Presets.Contains(preset))
+            {
+                Presets.Add(preset);
+            }
+
+            var handler = new SettingHandler();
+            handler.Set("preset", preset);
+            handler.Save(Path.Combine("../Presets", preset.FileName));
+
+            ScreenMessages.PostScreenMessage("Saved Preset: " + preset.Name, 2.0f, ScreenMessageStyle.UPPER_CENTER);
         }
 
         #endregion
