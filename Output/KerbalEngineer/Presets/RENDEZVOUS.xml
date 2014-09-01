@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ArrayOfSettingItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <SettingItem>
+    <Name>preset</Name>
+    <Value xsi:type="Preset">
+      <Abbreviation>RDZV</Abbreviation>
+      <Name>RENDEZVOUS</Name>
+      <ReadoutNames>
+        <string>Rendezvous.TargetSelector</string>
+        <string>Rendezvous.PhaseAngle</string>
+        <string>Rendezvous.InterceptAngle</string>
+        <string>Rendezvous.Distance</string>
+        <string>Miscellaneous.Separator</string>
+        <string>Rendezvous.ApoapsisHeight</string>
+        <string>Rendezvous.PeriapsisHeight</string>
+        <string>Miscellaneous.Separator</string>
+        <string>Rendezvous.TimeToRelativeAscendingNode</string>
+        <string>Rendezvous.TimeToRelativeDescendingNode</string>
+        <string>Rendezvous.RelativeInclination</string>
+        <string>Miscellaneous.Separator</string>
+        <string>Rendezvous.OrbitalPeriod</string>
+        <string>Rendezvous.SemiMajorAxis</string>
+      </ReadoutNames>
+    </Value>
+  </SettingItem>
+</ArrayOfSettingItem>

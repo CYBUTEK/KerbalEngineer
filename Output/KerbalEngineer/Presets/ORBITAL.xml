@@ -3,8 +3,8 @@
   <SettingItem>
     <Name>preset</Name>
     <Value xsi:type="Preset">
-      <Name>ORBITAL</Name>
       <Abbreviation>ORBT</Abbreviation>
+      <Name>ORBITAL</Name>
       <ReadoutNames>
         <string>Orbital.ApoapsisHeight</string>
         <string>Orbital.TimeToApoapsis</string>
@@ -14,6 +14,8 @@
         <string>Miscellaneous.Separator</string>
         <string>Surface.VerticalSpeed</string>
         <string>Orbital.Inclination</string>
+        <string>Miscellaneous.Separator</string>
+        <string>Orbital.OrbitalPeriod</string>
         <string>Orbital.SemiMajorAxis</string>
       </ReadoutNames>
     </Value>

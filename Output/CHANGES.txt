@@ -25,6 +25,7 @@
     Changed: Moved Sim Delay readout into the Miscellaneous category.
     Changed: Updated MiniAVC to v1.0.2.3.
 	Fixed: Issues with large value wrap around in the Flight Engineer.
+	Fixed: Bug in the phase angle calculation.
 
 1.0.6.0
     Added: Time and Angle to equatorial ascending/descending nodes in the orbital display.

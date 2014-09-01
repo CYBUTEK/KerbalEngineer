@@ -59,7 +59,7 @@ namespace KerbalEngineer.Extensions
 
             angle = (angle + 90.0).ClampTo(0.0, 360.0);
 
-            return orbit.inclination < 90.0 ? angle : 360.0 - angle;
+            return orbit.inclination <= 90.0 ? angle : 360.0 - angle;
         }
 
         public static double GetAngleToRetrograde(this Orbit orbit)
@@ -74,7 +74,7 @@ namespace KerbalEngineer.Extensions
 
             angle = (angle - 90.0).ClampTo(0.0, 360.0);
 
-            return orbit.inclination < 90.0 ? angle : 360.0 - angle;
+            return orbit.inclination <= 90.0 ? angle : 360.0 - angle;
         }
 
         public static double GetAngleToTrueAnomaly(this Orbit orbit, double tA)
@@ -89,7 +89,14 @@ namespace KerbalEngineer.Extensions
 
         public static double GetPhaseAngle(this Orbit orbit, Orbit target)
         {
-            return AngleBetweenVectors(orbit.pos, Vector3d.Exclude(orbit.GetOrbitNormal(), target.pos));
+            return orbit.inclination <= 90.0
+                ? AngleBetweenVectors(orbit.pos, Vector3d.Exclude(orbit.GetOrbitNormal(), target.pos))
+                : AngleBetweenVectors(Vector3d.Exclude(orbit.GetOrbitNormal(), target.pos), orbit.pos);
+        }
+
+        public static double GetRelativeInclination(this Orbit orbit, Orbit target)
+        {
+            return Vector3d.Angle(orbit.GetOrbitNormal(), target.GetOrbitNormal());
         }
 
         public static double GetTimeToAscendingNode(this Orbit orbit)

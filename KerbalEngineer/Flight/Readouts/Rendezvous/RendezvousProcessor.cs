@@ -161,8 +161,8 @@ namespace KerbalEngineer.Flight.Readouts.Rendezvous
                 ? FlightGlobals.ship_orbit
                 : FlightGlobals.ship_orbit.referenceBody.orbit;
 
-            RelativeInclination = Vector3d.Angle(this.originOrbit.GetOrbitNormal(), this.targetOrbit.GetOrbitNormal());
-            PhaseAngle = RelativeInclination < 90.0 ? this.originOrbit.GetPhaseAngle(this.targetOrbit) : 360.0 - this.originOrbit.GetPhaseAngle(this.targetOrbit);
+            RelativeInclination = this.originOrbit.GetRelativeInclination(this.targetOrbit);
+            PhaseAngle = this.originOrbit.GetPhaseAngle(this.targetOrbit);
             InterceptAngle = this.CalcInterceptAngle();
             TimeToAscendingNode = this.originOrbit.GetTimeToVector(this.GetAscendingNode());
             TimeToDescendingNode = this.originOrbit.GetTimeToVector(this.GetDescendingNode());
