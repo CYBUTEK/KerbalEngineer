@@ -34,6 +34,8 @@ using AltitudeSeaLevel = KerbalEngineer.Flight.Readouts.Surface.AltitudeSeaLevel
 using ApoapsisHeight = KerbalEngineer.Flight.Readouts.Orbital.ApoapsisHeight;
 using OrbitalPeriod = KerbalEngineer.Flight.Readouts.Orbital.OrbitalPeriod;
 using PeriapsisHeight = KerbalEngineer.Flight.Readouts.Orbital.PeriapsisHeight;
+using SemiMajorAxis = KerbalEngineer.Flight.Readouts.Orbital.SemiMajorAxis;
+using SemiMinorAxis = KerbalEngineer.Flight.Readouts.Orbital.SemiMinorAxis;
 using TimeToApoapsis = KerbalEngineer.Flight.Readouts.Orbital.TimeToApoapsis;
 using TimeToPeriapsis = KerbalEngineer.Flight.Readouts.Orbital.TimeToPeriapsis;
 
@@ -79,9 +81,14 @@ namespace KerbalEngineer.Flight.Readouts
                 readouts.Add(new OrbitalPeriod());
                 readouts.Add(new LongitudeOfAscendingNode());
                 readouts.Add(new LongitudeOfPeriapsis());
+                readouts.Add(new ArgumentOfPeriapsis());
                 readouts.Add(new TrueAnomaly());
+                readouts.Add(new MeanAnomaly());
+                readouts.Add(new EccentricAnomaly());
                 readouts.Add(new SemiMajorAxis());
                 readouts.Add(new SemiMinorAxis());
+                readouts.Add(new AngleToPrograde());
+                readouts.Add(new AngleToRetrograde());
 
                 // Surface
                 readouts.Add(new AltitudeSeaLevel());
@@ -112,7 +119,6 @@ namespace KerbalEngineer.Flight.Readouts
                 readouts.Add(new IntakeAirDemand());
                 readouts.Add(new IntakeAirSupply());
                 readouts.Add(new IntakeAirSupplyDemand());
-                readouts.Add(new SimulationDelay());
 
                 // Rendezvous
                 readouts.Add(new TargetSelector());
@@ -130,10 +136,13 @@ namespace KerbalEngineer.Flight.Readouts
                 readouts.Add(new Rendezvous.TimeToPeriapsis());
                 readouts.Add(new Distance());
                 readouts.Add(new Rendezvous.OrbitalPeriod());
+                readouts.Add(new Rendezvous.SemiMajorAxis());
+                readouts.Add(new Rendezvous.SemiMinorAxis());
 
                 // Misc
                 readouts.Add(new Separator());
                 readouts.Add(new GuiSizeAdjustor());
+                readouts.Add(new SimulationDelay());
                 readouts.Add(new TimeReference());
 
                 LoadHelpStrings();
@@ -159,15 +168,7 @@ namespace KerbalEngineer.Flight.Readouts
 
         #endregion
 
-        #region Public Methods
-
-        /// <summary>
-        ///     Gets a readout module with the specified name or class name. (Returns null if not found.)
-        /// </summary>
-        public static ReadoutModule GetReadout(string name)
-        {
-            return readouts.FirstOrDefault(r => r.Name == name || r.GetType().Name == name || r.Category + "." + r.GetType().Name == name);
-        }
+        #region Methods: public
 
         /// <summary>
         ///     Gets a list of readout modules which are associated with the specified category.
@@ -175,6 +176,14 @@ namespace KerbalEngineer.Flight.Readouts
         public static List<ReadoutModule> GetCategory(ReadoutCategory category)
         {
             return readouts.Where(r => r.Category == category).ToList();
+        }
+
+        /// <summary>
+        ///     Gets a readout module with the specified name or class name. (Returns null if not found.)
+        /// </summary>
+        public static ReadoutModule GetReadout(string name)
+        {
+            return readouts.FirstOrDefault(r => r.Name == name || r.GetType().Name == name || r.Category + "." + r.GetType().Name == name);
         }
 
         /// <summary>
@@ -190,7 +199,7 @@ namespace KerbalEngineer.Flight.Readouts
 
         #endregion
 
-        #region Private Methods
+        #region Methods: private
 
         /// <summary>
         ///     Loads the help strings from file.

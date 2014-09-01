@@ -377,7 +377,7 @@ namespace KerbalEngineer.Editor
                 {
                     if (this.showAllStages || stage.deltaV > 0)
                     {
-                        //GUILayout.Label(stage.PartCount.ToString("N0"), this.infoStyle);
+                        GUILayout.Label(stage.partCount.ToString("N0"), this.infoStyle);
                     }
                 }
                 GUILayout.EndVertical();
@@ -807,7 +807,7 @@ namespace KerbalEngineer.Editor
                 {
                     GUILayout.BeginHorizontal(this.areaStyle);
                     this.DrawStageNumbers();
-                    //this.DrawPartCount();
+                    this.DrawPartCount();
                     this.DrawCost();
                     this.DrawMass();
                     this.DrawIsp();

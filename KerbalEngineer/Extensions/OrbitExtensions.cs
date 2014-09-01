@@ -29,23 +29,13 @@ namespace KerbalEngineer.Extensions
 {
     public static class OrbitExtensions
     {
+        #region Constants
+
         public const double Tau = Math.PI * 2.0;
 
-        public static double GetTimeToTrueAnomaly(this Orbit orbit, double tA)
-        {
-            var time = orbit.GetDTforTrueAnomaly(tA * Mathf.Deg2Rad, orbit.period);
-            return time < 0.0 ? time + orbit.period : time;
-        }
+        #endregion
 
-        public static double GetTrueAnomalyOfAscendingNode(this Orbit orbit)
-        {
-            return 360.0 - orbit.argumentOfPeriapsis;
-        }
-
-        public static double GetTrueAnomalyOfDescendingNode(this Orbit orbit)
-        {
-            return 180.0 - orbit.argumentOfPeriapsis;
-        }
+        #region Methods: public
 
         public static double GetAngleToAscendingNode(this Orbit orbit)
         {
@@ -55,6 +45,51 @@ namespace KerbalEngineer.Extensions
         public static double GetAngleToDescendingNode(this Orbit orbit)
         {
             return GetAngleToTrueAnomaly(orbit, GetTrueAnomalyOfDescendingNode(orbit));
+        }
+
+        public static double GetAngleToPrograde(this Orbit orbit)
+        {
+            if (orbit.referenceBody == CelestialBodies.SystemBody.CelestialBody)
+            {
+                return 0.0;
+            }
+
+            var angle = AngleBetweenVectors(orbit.getRelativePositionAtUT(Planetarium.GetUniversalTime()),
+                                            Vector3d.Exclude(orbit.GetOrbitNormal(), orbit.referenceBody.orbit.getRelativePositionAtUT(Planetarium.GetUniversalTime())));
+
+            angle = (angle + 90.0).ClampTo(0.0, 360.0);
+
+            return orbit.inclination < 90.0 ? angle : 360.0 - angle;
+        }
+
+        public static double GetAngleToRetrograde(this Orbit orbit)
+        {
+            if (orbit.referenceBody == CelestialBodies.SystemBody.CelestialBody)
+            {
+                return 0.0;
+            }
+
+            var angle = AngleBetweenVectors(orbit.getRelativePositionAtUT(Planetarium.GetUniversalTime()),
+                                            Vector3d.Exclude(orbit.GetOrbitNormal(), orbit.referenceBody.orbit.getRelativePositionAtUT(Planetarium.GetUniversalTime())));
+
+            angle = (angle - 90.0).ClampTo(0.0, 360.0);
+
+            return orbit.inclination < 90.0 ? angle : 360.0 - angle;
+        }
+
+        public static double GetAngleToTrueAnomaly(this Orbit orbit, double tA)
+        {
+            return (tA - orbit.trueAnomaly).ClampTo(0.0, 360.0);
+        }
+
+        public static double GetAngleToVector(this Orbit orbit, Vector3d vector)
+        {
+            return GetAngleToTrueAnomaly(orbit, GetTrueAnomalyFromVector(orbit, Vector3d.Exclude(orbit.GetOrbitNormal(), vector)));
+        }
+
+        public static double GetPhaseAngle(this Orbit orbit, Orbit target)
+        {
+            return AngleBetweenVectors(orbit.pos, Vector3d.Exclude(orbit.GetOrbitNormal(), target.pos));
         }
 
         public static double GetTimeToAscendingNode(this Orbit orbit)
@@ -67,14 +102,10 @@ namespace KerbalEngineer.Extensions
             return GetTimeToTrueAnomaly(orbit, GetTrueAnomalyOfDescendingNode(orbit));
         }
 
-        public static double GetTrueAnomalyFromVector(this Orbit orbit, Vector3d vector)
+        public static double GetTimeToTrueAnomaly(this Orbit orbit, double tA)
         {
-            return orbit.GetTrueAnomalyOfZupVector(vector) * Mathf.Rad2Deg;
-        }
-
-        public static double GetAngleToTrueAnomaly(this Orbit orbit, double tA)
-        {
-            return (tA - orbit.trueAnomaly).ClampTo(0.0, 360.0);
+            var time = orbit.GetDTforTrueAnomaly(tA * Mathf.Deg2Rad, orbit.period);
+            return time < 0.0 ? time + orbit.period : time;
         }
 
         public static double GetTimeToVector(this Orbit orbit, Vector3d vector)
@@ -82,24 +113,38 @@ namespace KerbalEngineer.Extensions
             return GetTimeToTrueAnomaly(orbit, GetTrueAnomalyFromVector(orbit, vector));
         }
 
-        public static double GetAngleToVector(this Orbit orbit, Vector3d vector)
+        public static double GetTrueAnomalyFromVector(this Orbit orbit, Vector3d vector)
         {
-            return GetAngleToTrueAnomaly(orbit, GetTrueAnomalyFromVector(orbit, Vector3d.Exclude(orbit.GetOrbitNormal(), vector)));
+            return orbit.GetTrueAnomalyOfZupVector(vector) * Mathf.Rad2Deg;
         }
 
-        public static double GetPhaseAngle(this Orbit orbit, Orbit target)
+        public static double GetTrueAnomalyOfAscendingNode(this Orbit orbit)
         {
-            var originPosition = orbit.pos;
-            var targetPosition = Vector3d.Exclude(orbit.GetOrbitNormal(), target.pos);
-            var phase = Vector3d.Angle(originPosition, targetPosition);
-            var rotated = QuaternionD.AngleAxis(90.0, Vector3d.forward) * originPosition;
+            return 360.0 - orbit.argumentOfPeriapsis;
+        }
 
-            if (Vector3d.Angle(rotated, targetPosition) > 90.0)
+        public static double GetTrueAnomalyOfDescendingNode(this Orbit orbit)
+        {
+            return 180.0 - orbit.argumentOfPeriapsis;
+        }
+
+        #endregion
+
+        #region Methods: private
+
+        private static double AngleBetweenVectors(Vector3d vector1, Vector3d vector2)
+        {
+            var angle = Vector3d.Angle(vector1, vector2);
+            var rotated = QuaternionD.AngleAxis(90.0, Vector3d.forward) * vector1;
+
+            if (Vector3d.Angle(rotated, vector2) > 90.0)
             {
-                phase = 360.0 - phase;
+                angle = 360.0 - angle;
             }
 
-            return phase;
+            return angle;
         }
+
+        #endregion
     }
 }

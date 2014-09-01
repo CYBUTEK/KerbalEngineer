@@ -27,17 +27,25 @@ namespace KerbalEngineer.Flight.Readouts.Orbital
 {
     public class SemiMinorAxis : ReadoutModule
     {
+        #region Constructors
+
         public SemiMinorAxis()
         {
-            this.Name = "Semi-Minor Axis";
+            this.Name = "Semi-minor Axis";
             this.Category = ReadoutCategory.GetCategory("Orbital");
             this.HelpString = "Shows the distance from the centre of an orbit to the nearest edge.";
             this.IsDefault = true;
         }
 
+        #endregion
+
+        #region Methods: public
+
         public override void Draw()
         {
             this.DrawLine(FlightGlobals.ship_orbit.semiMinorAxis.ToDistance("N3"));
         }
+
+        #endregion
     }
 }

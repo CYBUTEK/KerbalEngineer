@@ -27,11 +27,11 @@ using KerbalEngineer.Extensions;
 
 namespace KerbalEngineer.Flight.Readouts.Orbital
 {
-    public class TrueAnomaly : ReadoutModule
+    public class MeanAnomaly : ReadoutModule
     {
-        public TrueAnomaly()
+        public MeanAnomaly()
         {
-            this.Name = "True Anomaly";
+            this.Name = "Mean Anomaly";
             this.Category = ReadoutCategory.GetCategory("Orbital");
             this.HelpString = String.Empty;
             this.IsDefault = true;
@@ -39,7 +39,7 @@ namespace KerbalEngineer.Flight.Readouts.Orbital
 
         public override void Draw()
         {
-            this.DrawLine(FlightGlobals.ship_orbit.trueAnomaly.ToAngle());
+            this.DrawLine(FlightGlobals.ship_orbit.meanAnomaly.ToAngle());
         }
     }
 }

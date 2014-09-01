@@ -69,9 +69,16 @@
     <Compile Include="Flight\Readouts\Miscellaneous\GuiSizeAdjustor.cs" />
     <Compile Include="Flight\Readouts\Orbital\AngleToEquatorialDescendingNode.cs" />
     <Compile Include="Flight\Readouts\Orbital\AngleToEquatorialAscendingNode.cs" />
+    <Compile Include="Flight\Readouts\Orbital\AngleToRetrograde.cs" />
+    <Compile Include="Flight\Readouts\Orbital\AngleToPrograde.cs" />
+    <Compile Include="Flight\Readouts\Orbital\MeanAnomaly.cs" />
+    <Compile Include="Flight\Readouts\Orbital\EccentricAnomaly.cs" />
+    <Compile Include="Flight\Readouts\Orbital\ArgumentOfPeriapsis.cs" />
     <Compile Include="Flight\Readouts\Orbital\TrueAnomaly.cs" />
     <Compile Include="Flight\Readouts\Orbital\TimeToEquatorialAscendingNode.cs" />
     <Compile Include="Flight\Readouts\Orbital\TimeToEquatorialDescendingNode.cs" />
+    <Compile Include="Flight\Readouts\Rendezvous\SemiMinorAxis.cs" />
+    <Compile Include="Flight\Readouts\Rendezvous\SemiMajorAxis.cs" />
     <Compile Include="Flight\Readouts\Rendezvous\TimeToRelativeDescendingNode.cs" />
     <Compile Include="Flight\Readouts\Rendezvous\TimeToRelativeAscendingNode.cs" />
     <Compile Include="Flight\Readouts\Surface\ImpactBiome.cs" />
@@ -80,7 +87,7 @@
     <Compile Include="Flight\Readouts\Vessel\IntakeAirSupplyDemand.cs" />
     <Compile Include="Flight\Readouts\Vessel\IntakeAirSupply.cs" />
     <Compile Include="Flight\Readouts\Vessel\IntakeAirDemand.cs" />
-    <Compile Include="Flight\Readouts\Vessel\SimulationDelay.cs" />
+    <Compile Include="Flight\Readouts\Miscellaneous\SimulationDelay.cs" />
     <Compile Include="Flight\Readouts\Vessel\SimulationProcessor.cs" />
     <Compile Include="Flight\Readouts\Vessel\Acceleration.cs" />
     <Compile Include="Flight\Presets\PresetLibrary.cs" />

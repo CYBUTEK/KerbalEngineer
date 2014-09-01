@@ -27,17 +27,25 @@ namespace KerbalEngineer.Flight.Readouts.Orbital
 {
     public class SemiMajorAxis : ReadoutModule
     {
+        #region Constructors
+
         public SemiMajorAxis()
         {
-            this.Name = "Semi-Major Axis";
+            this.Name = "Semi-major Axis";
             this.Category = ReadoutCategory.GetCategory("Orbital");
             this.HelpString = "Shows the distance from the centre of an orbit to the farthest edge.";
             this.IsDefault = true;
         }
 
+        #endregion
+
+        #region Methods: public
+
         public override void Draw()
         {
             this.DrawLine(FlightGlobals.ship_orbit.semiMajorAxis.ToDistance("N3"));
         }
+
+        #endregion
     }
 }

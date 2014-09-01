@@ -129,6 +129,16 @@ namespace KerbalEngineer.Flight.Readouts.Rendezvous
         /// </summary>
         public static double OrbitalPeriod { get; private set; }
 
+        /// <summary>
+        ///     Gets the semi-major axis of the target orbit.
+        /// </summary>
+        public static double SemiMajorAxis { get; private set; }
+
+        /// <summary>
+        ///     Gets the semi-minor axis of the target orbit.
+        /// </summary>
+        public static double SemiMinorAxis { get; private set; }
+
         #endregion
 
         #region IUpdatable Members
@@ -163,6 +173,8 @@ namespace KerbalEngineer.Flight.Readouts.Rendezvous
             PeriapsisHeight = this.targetOrbit.PeA;
             TimeToApoapsis = this.targetOrbit.timeToAp;
             TimeToPeriapsis = this.targetOrbit.timeToPe;
+            SemiMajorAxis = this.targetOrbit.semiMajorAxis;
+            SemiMinorAxis = this.targetOrbit.semiMinorAxis;
 
             Distance = Vector3d.Distance(this.targetOrbit.pos, this.originOrbit.pos);
             OrbitalPeriod = this.targetOrbit.period;

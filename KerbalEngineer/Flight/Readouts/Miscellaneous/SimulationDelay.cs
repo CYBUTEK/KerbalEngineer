@@ -19,27 +19,32 @@
 
 #region Using Directives
 
-using System;
+using KerbalEngineer.VesselSimulator;
 
-using KerbalEngineer.Extensions;
+using UnityEngine;
 
 #endregion
 
-namespace KerbalEngineer.Flight.Readouts.Orbital
+namespace KerbalEngineer.Flight.Readouts.Miscellaneous
 {
-    public class TrueAnomaly : ReadoutModule
+    public class SimulationDelay : ReadoutModule
     {
-        public TrueAnomaly()
+        public SimulationDelay()
         {
-            this.Name = "True Anomaly";
-            this.Category = ReadoutCategory.GetCategory("Orbital");
-            this.HelpString = String.Empty;
+            this.Name = "Minimum Simulation Delay";
+            this.Category = ReadoutCategory.GetCategory("Miscellaneous");
+            this.HelpString = "Controls the minimum delay between processing vessel simulations.";
             this.IsDefault = true;
         }
 
         public override void Draw()
         {
-            this.DrawLine(FlightGlobals.ship_orbit.trueAnomaly.ToAngle());
+            GUILayout.BeginHorizontal();
+            GUILayout.Label("Sim Delay", this.NameStyle);
+            GUI.skin = HighLogic.Skin;
+            SimManager.minSimTime = (long)GUILayout.HorizontalSlider(SimManager.minSimTime, 0, 1000.0f);
+            GUI.skin = null;
+            GUILayout.EndHorizontal();
         }
     }
 }

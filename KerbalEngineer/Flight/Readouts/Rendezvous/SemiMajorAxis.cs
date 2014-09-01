@@ -25,21 +25,42 @@ using KerbalEngineer.Extensions;
 
 #endregion
 
-namespace KerbalEngineer.Flight.Readouts.Orbital
+namespace KerbalEngineer.Flight.Readouts.Rendezvous
 {
-    public class TrueAnomaly : ReadoutModule
+    public class SemiMajorAxis : ReadoutModule
     {
-        public TrueAnomaly()
+        #region Constructors
+
+        public SemiMajorAxis()
         {
-            this.Name = "True Anomaly";
-            this.Category = ReadoutCategory.GetCategory("Orbital");
+            this.Name = "Semi-major Axis";
+            this.Category = ReadoutCategory.GetCategory("Rendezvous");
             this.HelpString = String.Empty;
             this.IsDefault = true;
         }
 
+        #endregion
+
+        #region Methods: public
+
         public override void Draw()
         {
-            this.DrawLine(FlightGlobals.ship_orbit.trueAnomaly.ToAngle());
+            if (RendezvousProcessor.ShowDetails)
+            {
+                this.DrawLine(RendezvousProcessor.SemiMajorAxis.ToDistance("N3"));
+            }
         }
+
+        public override void Reset()
+        {
+            FlightEngineerCore.Instance.AddUpdatable(RendezvousProcessor.Instance);
+        }
+
+        public override void Update()
+        {
+            RendezvousProcessor.RequestUpdate();
+        }
+
+        #endregion
     }
 }

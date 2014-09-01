@@ -27,19 +27,27 @@ using KerbalEngineer.Extensions;
 
 namespace KerbalEngineer.Flight.Readouts.Orbital
 {
-    public class TrueAnomaly : ReadoutModule
+    public class AngleToRetrograde : ReadoutModule
     {
-        public TrueAnomaly()
+        #region Constructors
+
+        public AngleToRetrograde()
         {
-            this.Name = "True Anomaly";
+            this.Name = "Angle to Retrograde";
             this.Category = ReadoutCategory.GetCategory("Orbital");
             this.HelpString = String.Empty;
             this.IsDefault = true;
         }
 
+        #endregion
+
+        #region Methods: public
+
         public override void Draw()
         {
-            this.DrawLine(FlightGlobals.ship_orbit.trueAnomaly.ToAngle());
+            this.DrawLine(FlightGlobals.ship_orbit.GetAngleToRetrograde().ToAngle());
         }
+
+        #endregion
     }
 }

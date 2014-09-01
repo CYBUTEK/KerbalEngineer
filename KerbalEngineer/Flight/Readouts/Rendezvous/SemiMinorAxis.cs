@@ -19,32 +19,48 @@
 
 #region Using Directives
 
-using KerbalEngineer.VesselSimulator;
+using System;
 
-using UnityEngine;
+using KerbalEngineer.Extensions;
 
 #endregion
 
-namespace KerbalEngineer.Flight.Readouts.Vessel
+namespace KerbalEngineer.Flight.Readouts.Rendezvous
 {
-    public class SimulationDelay : ReadoutModule
+    public class SemiMinorAxis : ReadoutModule
     {
-        public SimulationDelay()
+        #region Constructors
+
+        public SemiMinorAxis()
         {
-            this.Name = "Minimum Simulation Delay";
-            this.Category = ReadoutCategory.GetCategory("Vessel");
-            this.HelpString = "Controls the minimum delay between processing vessel simulations.";
+            this.Name = "Semi-minor Axis";
+            this.Category = ReadoutCategory.GetCategory("Rendezvous");
+            this.HelpString = String.Empty;
             this.IsDefault = true;
         }
 
+        #endregion
+
+        #region Methods: public
+
         public override void Draw()
         {
-            GUILayout.BeginHorizontal();
-            GUILayout.Label("Sim Delay", this.NameStyle);
-            GUI.skin = HighLogic.Skin;
-            SimManager.minSimTime = (long)GUILayout.HorizontalSlider(SimManager.minSimTime, 0, 1000.0f);
-            GUI.skin = null;
-            GUILayout.EndHorizontal();
+            if (RendezvousProcessor.ShowDetails)
+            {
+                this.DrawLine(RendezvousProcessor.SemiMajorAxis.ToDistance("N3"));
+            }
         }
+
+        public override void Reset()
+        {
+            FlightEngineerCore.Instance.AddUpdatable(RendezvousProcessor.Instance);
+        }
+
+        public override void Update()
+        {
+            RendezvousProcessor.RequestUpdate();
+        }
+
+        #endregion
     }
 }
