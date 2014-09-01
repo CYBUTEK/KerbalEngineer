@@ -64,6 +64,7 @@
     <Compile Include="Flight\ActionMenuGui.cs" />
     <Compile Include="Flight\FlightEngineerPartless.cs" />
     <Compile Include="Flight\Presets\Preset.cs" />
+    <Compile Include="Flight\Readouts\Miscellaneous\TimeReference.cs" />
     <Compile Include="Flight\Readouts\Miscellaneous\Separator.cs" />
     <Compile Include="Flight\Readouts\Miscellaneous\GuiSizeAdjustor.cs" />
     <Compile Include="Flight\Readouts\Orbital\AngleToEquatorialDescendingNode.cs" />
@@ -84,6 +85,7 @@
     <Compile Include="Flight\Readouts\Vessel\Acceleration.cs" />
     <Compile Include="Flight\Presets\PresetLibrary.cs" />
     <Compile Include="GuiDisplaySize.cs" />
+    <Compile Include="Helpers\TimeFormatter.cs" />
     <Compile Include="UIControls\DropDown.cs" />
     <Compile Include="Logger.cs" />
     <Compile Include="EngineerGlobals.cs" />

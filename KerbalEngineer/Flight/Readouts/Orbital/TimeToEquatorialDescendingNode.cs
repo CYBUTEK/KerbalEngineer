@@ -20,6 +20,7 @@
 #region Using Directives
 
 using KerbalEngineer.Extensions;
+using KerbalEngineer.Helpers;
 
 #endregion
 
@@ -27,6 +28,8 @@ namespace KerbalEngineer.Flight.Readouts.Orbital
 {
     public class TimeToEquatorialDescendingNode : ReadoutModule
     {
+        #region Constructors
+
         public TimeToEquatorialDescendingNode()
         {
             this.Name = "Time to Equ. DN";
@@ -35,9 +38,15 @@ namespace KerbalEngineer.Flight.Readouts.Orbital
             this.IsDefault = true;
         }
 
+        #endregion
+
+        #region Methods: public
+
         public override void Draw()
         {
-            this.DrawLine(FlightGlobals.ActiveVessel.orbit.GetTimeToDescendingNode().ToTime());
+            this.DrawLine(TimeFormatter.ConvertToString(FlightGlobals.ActiveVessel.orbit.GetTimeToDescendingNode()));
         }
+
+        #endregion
     }
 }

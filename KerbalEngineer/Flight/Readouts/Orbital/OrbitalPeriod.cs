@@ -19,7 +19,7 @@
 
 #region Using Directives
 
-using KerbalEngineer.Extensions;
+using KerbalEngineer.Helpers;
 
 #endregion
 
@@ -27,6 +27,8 @@ namespace KerbalEngineer.Flight.Readouts.Orbital
 {
     public class OrbitalPeriod : ReadoutModule
     {
+        #region Constructors
+
         public OrbitalPeriod()
         {
             this.Name = "Orbital Period";
@@ -35,9 +37,15 @@ namespace KerbalEngineer.Flight.Readouts.Orbital
             this.IsDefault = true;
         }
 
+        #endregion
+
+        #region Methods: public
+
         public override void Draw()
         {
-            this.DrawLine(FlightGlobals.ship_orbit.period.ToTime("F3"));
+            this.DrawLine(TimeFormatter.ConvertToString(FlightGlobals.ship_orbit.period, "F3"));
         }
+
+        #endregion
     }
 }

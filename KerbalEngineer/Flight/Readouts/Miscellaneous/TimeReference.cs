@@ -19,28 +19,26 @@
 
 #region Using Directives
 
+using System;
+
 using KerbalEngineer.Helpers;
+
+using UnityEngine;
 
 #endregion
 
-namespace KerbalEngineer.Flight.Readouts.Vessel
+namespace KerbalEngineer.Flight.Readouts.Miscellaneous
 {
-    public class DeltaVTotal : ReadoutModule
+    public class TimeReference : ReadoutModule
     {
-        #region Fields
-
-        private bool showing;
-
-        #endregion
-
         #region Constructors
 
-        public DeltaVTotal()
+        public TimeReference()
         {
-            this.Name = "DeltaV Total";
-            this.Category = ReadoutCategory.GetCategory("Vessel");
-            this.HelpString = "Shows the vessel's total delta velocity.";
-            this.IsDefault = true;
+            this.Name = "Time Reference Adjuster";
+            this.Category = ReadoutCategory.GetCategory("Miscellaneous");
+            this.HelpString = String.Empty;
+            this.IsDefault = false;
         }
 
         #endregion
@@ -49,26 +47,17 @@ namespace KerbalEngineer.Flight.Readouts.Vessel
 
         public override void Draw()
         {
-            if (SimulationProcessor.ShowDetails)
+            GUILayout.BeginHorizontal();
+            GUILayout.Label("Time Ref.: " + TimeFormatter.Reference, this.NameStyle);
+            if (GUILayout.Button("Earth", this.ButtonStyle))
             {
-                this.showing = true;
-                this.DrawLine(SimulationProcessor.LastStage.totalDeltaV.ToString("N0") + "m/s (" + TimeFormatter.ConvertToString(SimulationProcessor.LastStage.totalTime) + ")");
+                TimeFormatter.SetReference();
             }
-            else if (this.showing)
+            if (GUILayout.Button("Kerbin", this.ButtonStyle))
             {
-                this.showing = false;
-                this.ResizeRequested = true;
+                TimeFormatter.SetReference(PSystemManager.Instance.localBodies.Find(body => body.bodyName.Equals("Kerbin")));
             }
-        }
-
-        public override void Reset()
-        {
-            FlightEngineerCore.Instance.AddUpdatable(SimulationProcessor.Instance);
-        }
-
-        public override void Update()
-        {
-            SimulationProcessor.RequestUpdate();
+            GUILayout.EndHorizontal();
         }
 
         #endregion

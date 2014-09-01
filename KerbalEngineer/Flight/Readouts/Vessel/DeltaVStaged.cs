@@ -19,19 +19,22 @@
 
 #region Using Directives
 
-using KerbalEngineer.Extensions;
-using KerbalEngineer.VesselSimulator;
+using KerbalEngineer.Helpers;
 
 #endregion
-
-
 
 namespace KerbalEngineer.Flight.Readouts.Vessel
 {
     public class DeltaVStaged : ReadoutModule
     {
+        #region Fields
+
         private int numberOfStages;
         private bool showing;
+
+        #endregion
+
+        #region Constructors
 
         public DeltaVStaged()
         {
@@ -41,10 +44,9 @@ namespace KerbalEngineer.Flight.Readouts.Vessel
             this.IsDefault = true;
         }
 
-        public override void Update()
-        {
-            SimulationProcessor.RequestUpdate();
-        }
+        #endregion
+
+        #region Methods: public
 
         public override void Draw()
         {
@@ -56,7 +58,7 @@ namespace KerbalEngineer.Flight.Readouts.Vessel
                 {
                     if (stage.deltaV > 0 || stage.number == Staging.CurrentStage)
                     {
-                        this.DrawLine("DeltaV (S" + stage.number + ")", stage.deltaV.ToString("N0") + "m/s (" + stage.time.ToTime() + ")");
+                        this.DrawLine("DeltaV (S" + stage.number + ")", stage.deltaV.ToString("N0") + "m/s (" + TimeFormatter.ConvertToString(stage.time) + ")");
                         newNumberOfStages++;
                     }
                 }
@@ -78,5 +80,12 @@ namespace KerbalEngineer.Flight.Readouts.Vessel
         {
             FlightEngineerCore.Instance.AddUpdatable(SimulationProcessor.Instance);
         }
+
+        public override void Update()
+        {
+            SimulationProcessor.RequestUpdate();
+        }
+
+        #endregion
     }
 }

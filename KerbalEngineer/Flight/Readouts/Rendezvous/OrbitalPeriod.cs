@@ -19,7 +19,7 @@
 
 #region Using Directives
 
-using KerbalEngineer.Extensions;
+using KerbalEngineer.Helpers;
 
 #endregion
 
@@ -45,7 +45,7 @@ namespace KerbalEngineer.Flight.Readouts.Rendezvous
         {
             if (RendezvousProcessor.ShowDetails)
             {
-                this.DrawLine(RendezvousProcessor.OrbitalPeriod.ToTime("F3"));
+                this.DrawLine(TimeFormatter.ConvertToString(RendezvousProcessor.OrbitalPeriod, "F3"));
             }
         }
 

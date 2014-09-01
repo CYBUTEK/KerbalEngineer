@@ -27,70 +27,21 @@ namespace KerbalEngineer.Extensions
 {
     public static class DoubleExtensions
     {
-        /// <summary>
-        ///     Convert to a single precision floating point number.
-        /// </summary>
-        public static float ToFloat(this double value)
-        {
-            try
-            {
-                return (float)value;
-            }
-            catch (Exception ex)
-            {
-                Logger.Exception(ex, "DoubleExtentions->ToFloat");
-                return 0;
-            }
-        }
+        #region Methods: public
 
-        /// <summary>
-        ///     Convert to a ReadoutCategory formatted as a mass.
-        /// </summary>
-        public static string ToMass(this double value, bool showNotation = true)
+        public static double ClampTo(this double value, double min, double max)
         {
-            try
+            while (value < min)
             {
-                value *= 1000;
-                return showNotation ? value.ToString("N0") + "kg" : value.ToString("N0");
+                value += max;
             }
-            catch (Exception ex)
-            {
-                Logger.Exception(ex, "DoubleExtentions->ToMass");
-                return "ERR";
-            }
-        }
 
-        /// <summary>
-        ///     Convert to ReadoutCategory formatted as a force.
-        /// </summary>
-        public static string ToForce(this double value, bool showNotation = true)
-        {
-            try
+            while (value > max)
             {
-                var format = (value < 100000) ? (value < 10000) ? (value < 100) ? "N3" : "N2" : "N1" : "N0";
-                return showNotation ? value.ToString(format) + "kN" : value.ToString(format);
+                value -= max;
             }
-            catch (Exception ex)
-            {
-                Logger.Exception(ex, "DoubleExtentions->ToForce");
-                return "ERR";
-            }
-        }
 
-        /// <summary>
-        ///     Convert to ReadoutCategory formatted as a speed.
-        /// </summary>
-        public static string ToSpeed(this double value, bool showNotation = true)
-        {
-            try
-            {
-                return showNotation ? value.ToString("N2") + "m/s" : value.ToString("N2");
-            }
-            catch (Exception ex)
-            {
-                Logger.Exception(ex, "DoubleExtentions->ToSpeed");
-                return "ERR";
-            }
+            return value;
         }
 
         /// <summary>
@@ -105,6 +56,22 @@ namespace KerbalEngineer.Extensions
             catch (Exception ex)
             {
                 Logger.Exception(ex);
+                return "ERR";
+            }
+        }
+
+        /// <summary>
+        ///     Convert to ReadoutCategory formatted as an angle.
+        /// </summary>
+        public static string ToAngle(this double value, string format = "F3")
+        {
+            try
+            {
+                return value.ToString(format) + "°";
+            }
+            catch (Exception ex)
+            {
+                Logger.Exception(ex, "DoubleExtentions->ToAngle");
                 return "ERR";
             }
         }
@@ -169,6 +136,56 @@ namespace KerbalEngineer.Extensions
         }
 
         /// <summary>
+        ///     Convert to a single precision floating point number.
+        /// </summary>
+        public static float ToFloat(this double value)
+        {
+            try
+            {
+                return (float)value;
+            }
+            catch (Exception ex)
+            {
+                Logger.Exception(ex, "DoubleExtentions->ToFloat");
+                return 0;
+            }
+        }
+
+        /// <summary>
+        ///     Convert to ReadoutCategory formatted as a force.
+        /// </summary>
+        public static string ToForce(this double value, bool showNotation = true)
+        {
+            try
+            {
+                var format = (value < 100000) ? (value < 10000) ? (value < 100) ? "N3" : "N2" : "N1" : "N0";
+                return showNotation ? value.ToString(format) + "kN" : value.ToString(format);
+            }
+            catch (Exception ex)
+            {
+                Logger.Exception(ex, "DoubleExtentions->ToForce");
+                return "ERR";
+            }
+        }
+
+        /// <summary>
+        ///     Convert to a ReadoutCategory formatted as a mass.
+        /// </summary>
+        public static string ToMass(this double value, bool showNotation = true)
+        {
+            try
+            {
+                value *= 1000;
+                return showNotation ? value.ToString("N0") + "kg" : value.ToString("N0");
+            }
+            catch (Exception ex)
+            {
+                Logger.Exception(ex, "DoubleExtentions->ToMass");
+                return "ERR";
+            }
+        }
+
+        /// <summary>
         ///     Convert to ReadoutCategory formatted as a rate.
         /// </summary>
         public static string ToRate(this double value)
@@ -185,104 +202,21 @@ namespace KerbalEngineer.Extensions
         }
 
         /// <summary>
-        ///     Convert to ReadoutCategory formatted as an angle.
+        ///     Convert to ReadoutCategory formatted as a speed.
         /// </summary>
-        public static string ToAngle(this double value, string format = "F3")
+        public static string ToSpeed(this double value, bool showNotation = true)
         {
             try
             {
-                return value.ToString(format) + "°";
+                return showNotation ? value.ToString("N2") + "m/s" : value.ToString("N2");
             }
             catch (Exception ex)
             {
-                Logger.Exception(ex, "DoubleExtentions->ToAngle");
+                Logger.Exception(ex, "DoubleExtentions->ToSpeed");
                 return "ERR";
             }
         }
 
-        /// <summary>
-        ///     Convert to ReadoutCategory formatted as a time.
-        /// </summary>
-        public static string ToTime(this double value, string format = "F1")
-        {
-            try
-            {
-                var s = value;
-                var m = 0;
-                var h = 0;
-                var d = 0;
-                var y = 0;
-
-                // Years
-                while (s >= 31536000)
-                {
-                    y++;
-                    s -= 31536000;
-                }
-
-                // Days
-                while (s >= 86400)
-                {
-                    d++;
-                    s -= 86400;
-                }
-
-                // Hours
-                while (s >= 3600)
-                {
-                    h++;
-                    s -= 3600;
-                }
-
-                // Minutes
-                while (s >= 60)
-                {
-                    m++;
-                    s -= 60;
-                }
-
-                if (y > 0)
-                {
-                    return y + "y " + d + "d " + h + "h " + m + "m " + s.ToString(format) + "s";
-                }
-
-                if (d > 0)
-                {
-                    return d + "d " + h + "h " + m + "m " + s.ToString(format) + "s";
-                }
-
-                if (h > 0)
-                {
-                    return h + "h " + m + "m " + s.ToString(format) + "s";
-                }
-
-                if (m > 0)
-                {
-                    return m + "m " + s.ToString(format) + "s";
-                }
-
-                return s.ToString(format) + "s";
-            }
-            catch (Exception ex)
-            {
-                Logger.Exception(ex, "DoubleExtentions->ToTime");
-                return "ERR";
-            }
-        }
-
-        public static double ClampTo(this double value, double min, double max)
-        {
-            while (value < min)
-            {
-                value += max;
-            }
-
-            while (value > max)
-            {
-                value -= max;
-            }
-
-            return value;
-        }
+        #endregion
     }
 }

@@ -134,6 +134,7 @@ namespace KerbalEngineer.Flight.Readouts
                 // Misc
                 readouts.Add(new Separator());
                 readouts.Add(new GuiSizeAdjustor());
+                readouts.Add(new TimeReference());
 
                 LoadHelpStrings();
             }
