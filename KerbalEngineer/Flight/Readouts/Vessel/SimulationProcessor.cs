@@ -21,7 +21,7 @@ namespace KerbalEngineer.Flight.Readouts.Vessel
         }
         #endregion
 
-        #region Properies
+        #region Properties
 
         /// <summary>
         ///     Gets whether the details are ready to be shown.
@@ -60,10 +60,12 @@ namespace KerbalEngineer.Flight.Readouts.Vessel
 
             if (FlightGlobals.ActiveVessel != null)
             {
-                SimManager.Gravity = FlightGlobals.ActiveVessel.mainBody.gravParameter / Math.Pow(FlightGlobals.ActiveVessel.mainBody.Radius + FlightGlobals.ActiveVessel.mainBody.GetAltitude(FlightGlobals.ActiveVessel.CoM), 2);
+                SimManager.Gravity = FlightGlobals.ActiveVessel.mainBody.gravParameter /
+                                        Math.Pow(FlightGlobals.ActiveVessel.mainBody.Radius +
+                                                    FlightGlobals.ActiveVessel.mainBody.GetAltitude(FlightGlobals.ActiveVessel.CoM), 2);
                 SimManager.Velocity = FlightGlobals.ActiveVessel.srfSpeed;
             }
-            // We should be allowing this to be set too...
+            // Cybutek: We should be allowing this to be set too but not sure where you want to put the control
             //SimManager.vectoredThrust = vectoredThrust; 
             SimManager.TryStartSimulation();
         }
