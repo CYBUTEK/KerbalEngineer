@@ -1,7 +1,8 @@
 1.0.7.1
     Changed: Reversed Intake Air readout from 'S/D' to 'D/S' for easier reading.
-    Changed: Increased Intake Air readout precision to 4 decimal
+    Changed: Increased Intake Air readout precision to 4 decimal places.
     Fixed: Issue where Intake Air supply was not representative of total supply.
+    Fixed: Bug where actual thrust does not reset to zero on deactivated engines.
     Fixed: Thrust now scales with velocity for atmospheric engines. (Padishar's fix)
 
 1.0.7.0
