@@ -27,39 +27,74 @@ namespace KerbalEngineer.Flight.Readouts.Vessel
 {
     public class IntakeAirSupplyDemand : ReadoutModule
     {
-        private double supply;
+        #region Fields
+
         private double demand;
+        private double supply;
+
+        #endregion
+
+        #region Constructors
 
         public IntakeAirSupplyDemand()
         {
-            this.Name = "Intake Air (S/D)";
+            this.Name = "Intake Air (D/S)";
             this.Category = ReadoutCategory.GetCategory("Vessel");
             this.HelpString = string.Empty;
             this.IsDefault = true;
         }
 
-        public override void Update()
+        #endregion
+
+        #region Methods: public
+
+        public static double GetDemand()
         {
-            foreach (var part in FlightGlobals.ActiveVessel.Parts.Where(part => part.Modules.Contains("ModuleEngines") && (part.Modules["ModuleEngines"] as ModuleEngines).propellants.Exists(prop => prop.name == "IntakeAir")))
+            var demand = 0.0;
+            foreach (var part in FlightGlobals.ActiveVessel.Parts)
             {
-                if (part.inverseStage == Staging.CurrentStage)
+                if (part.Modules.Contains("ModuleEngines"))
                 {
-                    var engine = (part.Modules["ModuleEngines"] as ModuleEngines);
-                    foreach (var propellant in engine.propellants)
+                    var engine = part.Modules["ModuleEngines"] as ModuleEngines;
+                    if (engine.isOperational)
                     {
-                        if (propellant.name == "IntakeAir")
-                        {
-                            this.supply = propellant.currentAmount;
-                            this.demand = propellant.currentRequirement;
-                        }
+                        demand += engine.propellants
+                            .Where(p => p.name == "IntakeAir")
+                            .Sum(p => p.currentRequirement);
+                    }
+                }
+                if (part.Modules.Contains("ModuleEnginesFX"))
+                {
+                    var engine = part.Modules["ModuleEngines"] as ModuleEnginesFX;
+                    if (engine.isOperational)
+                    {
+                        demand += engine.propellants
+                            .Where(p => p.name == "IntakeAir")
+                            .Sum(p => p.currentRequirement);
                     }
                 }
             }
+            return demand;
+        }
+
+        public static double GetSupply()
+        {
+            return FlightGlobals.ActiveVessel.Parts
+                .Where(p => p.Resources.Contains("IntakeAir"))
+                .Sum(p => p.Resources["IntakeAir"].amount);
         }
 
         public override void Draw()
         {
-            this.DrawLine(this.supply.ToString("F3") + " / " + this.demand.ToString("F3"));
+            this.DrawLine(this.demand.ToString("F4") + " / " + this.supply.ToString("F4"));
         }
+
+        public override void Update()
+        {
+            this.demand = GetDemand();
+            this.supply = GetSupply();
+        }
+
+        #endregion
     }
 }

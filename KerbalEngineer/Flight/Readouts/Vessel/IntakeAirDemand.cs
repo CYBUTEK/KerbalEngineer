@@ -19,7 +19,7 @@
 
 #region Using Directives
 
-using System.Linq;
+
 
 #endregion
 
@@ -27,7 +27,13 @@ namespace KerbalEngineer.Flight.Readouts.Vessel
 {
     public class IntakeAirDemand : ReadoutModule
     {
+        #region Fields
+
         private double demand;
+
+        #endregion
+
+        #region Constructors
 
         public IntakeAirDemand()
         {
@@ -37,27 +43,20 @@ namespace KerbalEngineer.Flight.Readouts.Vessel
             this.IsDefault = true;
         }
 
-        public override void Update()
-        {
-            foreach (var part in FlightGlobals.ActiveVessel.Parts.Where(part => part.Modules.Contains("ModuleEngines") && (part.Modules["ModuleEngines"] as ModuleEngines).propellants.Exists(prop => prop.name == "IntakeAir")))
-            {
-                if (part.inverseStage == Staging.CurrentStage)
-                {
-                    var engine = (part.Modules["ModuleEngines"] as ModuleEngines);
-                    foreach (var propellant in engine.propellants)
-                    {
-                        if (propellant.name == "IntakeAir")
-                        {
-                            this.demand = propellant.currentRequirement;
-                        }
-                    }
-                }
-            }
-        }
+        #endregion
+
+        #region Methods: public
 
         public override void Draw()
         {
-            this.DrawLine(this.demand.ToString("F3"));
+            this.DrawLine(this.demand.ToString("F4"));
         }
+
+        public override void Update()
+        {
+            this.demand = IntakeAirSupplyDemand.GetDemand();
+        }
+
+        #endregion
     }
 }

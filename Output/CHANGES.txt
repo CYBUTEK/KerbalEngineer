@@ -1,31 +1,44 @@
+1.0.7.1
+    Changed: Reversed Intake Air readout from 'S/D' to 'D/S' for easier reading.
+    Changed: Increased Intake Air readout precision to 4 decimal
+    Fixed: Issue where Intake Air supply was not representative of total supply.
+    Fixed: Thrust now scales with velocity for atmospheric engines. (Padishar's fix)
+
 1.0.7.0
-	Added: Preset systems to the Flight Engineer.
-	Added: Time formatter which can show time as referenced by any celestial body.
     Added: Part count information to the Build Engineer.
+    Added: Reset button to the G-Force readout.
+    Added: Preset system to the Flight Engineer.
+    Added: New stock presets:
+        - Orbital
+        - Surface
+        - Vessel
+        - Rendezvous
+
     Added: New readouts to the orbital category:
-    	- True Anomaly
-    	- Eccentric Anomaly
-    	- Mean Anomaly
-    	- Argument of Periapsis
-    	- Angle to Prograde
-    	- Angle to Retrograde
+        - True Anomaly
+        - Eccentric Anomaly
+        - Mean Anomaly
+        - Argument of Periapsis
+        - Angle to Prograde
+        - Angle to Retrograde
 
     Added: New readouts to the vessel category:
-    	- Intake Air (Demand)
-    	- Intake Air (Supply)
-    	- Intake Air (Supply/Demand)
+        - Intake Air (Demand)
+        - Intake Air (Supply)
+        - Intake Air (Supply/Demand)
 
-    Added: new readouts to the rendezvous category.
-    	- Semi-major Axis
-    	- Semi-minor Axis
+    Added: New readouts to the rendezvous category.
+        - Semi-major Axis
+        - Semi-minor Axis
 
+    Added: Time formatter which can show time as referenced by any celestial body.
     Added: New readouts to the miscellaneous category:
-    	- Time Reference Adjuster
+        - Time Reference Adjuster
 
     Changed: Moved Sim Delay readout into the Miscellaneous category.
     Changed: Updated MiniAVC to v1.0.2.3.
-	Fixed: Issues with large value wrap around in the Flight Engineer.
-	Fixed: Bug in the phase angle calculation.
+    Fixed: Issues with large value wrap around in the Flight Engineer.
+    Fixed: Bug in the phase angle calculation.
 
 1.0.6.0
     Added: Time and Angle to equatorial ascending/descending nodes in the orbital display.
