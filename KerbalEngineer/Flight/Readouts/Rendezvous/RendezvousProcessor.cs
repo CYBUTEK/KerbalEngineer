@@ -19,11 +19,10 @@
 
 #region Using Directives
 
+using KerbalEngineer.Extensions;
 using System;
 
-using KerbalEngineer.Extensions;
 
-using UnityEngine;
 
 #endregion
 
@@ -73,6 +72,11 @@ namespace KerbalEngineer.Flight.Readouts.Rendezvous
         ///     Gets the angular difference between the origin and target orbits.
         /// </summary>
         public static double RelativeInclination { get; private set; }
+
+        /// <summary>
+        ///     Gets the relative orbital velocity between the your vessel and target.
+        /// </summary>
+        public static double RelativeVelocity { get; private set; }
 
         /// <summary>
         ///     Gets the time it will take to reach the ascending node.
@@ -161,13 +165,14 @@ namespace KerbalEngineer.Flight.Readouts.Rendezvous
                 ? FlightGlobals.ship_orbit
                 : FlightGlobals.ship_orbit.referenceBody.orbit;
 
+            RelativeVelocity = FlightGlobals.fetch.VesselTarget.GetObtVelocity().magnitude - FlightGlobals.ship_obtVelocity.magnitude;
             RelativeInclination = this.originOrbit.GetRelativeInclination(this.targetOrbit);
             PhaseAngle = this.originOrbit.GetPhaseAngle(this.targetOrbit);
             InterceptAngle = this.CalcInterceptAngle();
             TimeToAscendingNode = this.originOrbit.GetTimeToVector(this.GetAscendingNode());
             TimeToDescendingNode = this.originOrbit.GetTimeToVector(this.GetDescendingNode());
             AngleToAscendingNode = this.originOrbit.GetAngleToVector(this.GetAscendingNode());
-            AngleToDescendingNode =this.originOrbit.GetAngleToVector(this.GetDescendingNode());
+            AngleToDescendingNode = this.originOrbit.GetAngleToVector(this.GetDescendingNode());
             AltitudeSeaLevel = this.targetOrbit.altitude;
             ApoapsisHeight = this.targetOrbit.ApA;
             PeriapsisHeight = this.targetOrbit.PeA;

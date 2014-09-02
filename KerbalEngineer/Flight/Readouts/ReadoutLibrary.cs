@@ -19,17 +19,15 @@
 
 #region Using Directives
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-
 using KerbalEngineer.Flight.Readouts.Miscellaneous;
 using KerbalEngineer.Flight.Readouts.Orbital;
 using KerbalEngineer.Flight.Readouts.Rendezvous;
 using KerbalEngineer.Flight.Readouts.Surface;
 using KerbalEngineer.Flight.Readouts.Vessel;
 using KerbalEngineer.Settings;
-
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using AltitudeSeaLevel = KerbalEngineer.Flight.Readouts.Surface.AltitudeSeaLevel;
 using ApoapsisHeight = KerbalEngineer.Flight.Readouts.Orbital.ApoapsisHeight;
 using OrbitalPeriod = KerbalEngineer.Flight.Readouts.Orbital.OrbitalPeriod;
@@ -125,6 +123,7 @@ namespace KerbalEngineer.Flight.Readouts
                 readouts.Add(new PhaseAngle());
                 readouts.Add(new InterceptAngle());
                 readouts.Add(new RelativeInclination());
+                readouts.Add(new RelativeVelocity());
                 readouts.Add(new TimeToRelativeAscendingNode());
                 readouts.Add(new TimeToRelativeDescendingNode());
                 readouts.Add(new AngleToRelativeAscendingNode());
