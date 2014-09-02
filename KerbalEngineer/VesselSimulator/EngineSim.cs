@@ -80,7 +80,7 @@ namespace KerbalEngineer.VesselSimulator
             if (this.partSim.hasVessel)
             {
                 //MonoBehaviour.print("hasVessel is true");
-                this.actualThrust = requestedThrust;
+                this.actualThrust = isActive ? requestedThrust : 0.0;
                 if (velocityCurve != null)
                 {
                     this.actualThrust *= velocityCurve.Evaluate((float)velocity);
