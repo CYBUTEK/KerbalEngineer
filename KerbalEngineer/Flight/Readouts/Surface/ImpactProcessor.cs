@@ -48,7 +48,6 @@ namespace KerbalEngineer.Flight.Readouts.Surface
         #region Fields
 
         private double impactAltitude;
-        private string impactBiome;
         private bool impactHappening;
         private double impactLatitude;
         private double impactLongitude;
@@ -104,7 +103,6 @@ namespace KerbalEngineer.Flight.Readouts.Surface
                 this.impactLongitude = 0;
                 this.impactLatitude = 0;
                 this.impactAltitude = 0;
-                this.impactBiome = "---";
                 var e = FlightGlobals.ActiveVessel.orbit.eccentricity;
                 //get current position direction vector
                 var currentpos = this.RadiusDirection(FlightGlobals.ActiveVessel.orbit.trueAnomaly);

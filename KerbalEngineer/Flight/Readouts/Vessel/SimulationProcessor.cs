@@ -43,7 +43,6 @@ namespace KerbalEngineer.Flight.Readouts.Vessel
         public void Update()
         {
             SimManager.RequestSimulation();
-            SimManager.TryStartSimulation();
 
             if (!SimManager.ResultsReady())
             {
@@ -57,6 +56,16 @@ namespace KerbalEngineer.Flight.Readouts.Vessel
             {
                 ShowDetails = true;
             }
+
+
+            if (FlightGlobals.ActiveVessel != null)
+            {
+                SimManager.Gravity = FlightGlobals.ActiveVessel.mainBody.gravParameter / Math.Pow(FlightGlobals.ActiveVessel.mainBody.Radius + FlightGlobals.ActiveVessel.mainBody.GetAltitude(FlightGlobals.ActiveVessel.CoM), 2);
+                SimManager.Velocity = FlightGlobals.ActiveVessel.srfSpeed;
+            }
+            // We should be allowing this to be set too...
+            //SimManager.vectoredThrust = vectoredThrust; 
+            SimManager.TryStartSimulation();
         }
 
         public bool UpdateRequested { get; set; }
