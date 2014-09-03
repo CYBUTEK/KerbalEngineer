@@ -22,6 +22,7 @@
 using System;
 
 using KerbalEngineer.Extensions;
+using KerbalEngineer.Helpers;
 
 using UnityEngine;
 
@@ -31,21 +32,9 @@ namespace KerbalEngineer.Flight.Readouts.Rendezvous
 {
     public class RendezvousProcessor : IUpdatable, IUpdateRequest
     {
-        #region Instance
+        #region Fields
 
         private static readonly RendezvousProcessor instance = new RendezvousProcessor();
-
-        /// <summary>
-        ///     Gets the current instance of the rendezvous processor.
-        /// </summary>
-        public static RendezvousProcessor Instance
-        {
-            get { return instance; }
-        }
-
-        #endregion
-
-        #region Fields
 
         private Orbit originOrbit;
         private Orbit targetOrbit;
@@ -55,34 +44,9 @@ namespace KerbalEngineer.Flight.Readouts.Rendezvous
         #region Properties
 
         /// <summary>
-        ///     Gets whether the details are ready to be shown.
+        ///     Gets the target's altitude above its reference body.
         /// </summary>
-        public static bool ShowDetails { get; private set; }
-
-        /// <summary>
-        ///     Gets the difference in angle from the origin position to the target position based on a common reference.
-        /// </summary>
-        public static double PhaseAngle { get; private set; }
-
-        /// <summary>
-        ///     Gets the difference in angle from the origin position to where it is most efficient to burn for an encounter.
-        /// </summary>
-        public static double InterceptAngle { get; private set; }
-
-        /// <summary>
-        ///     Gets the angular difference between the origin and target orbits.
-        /// </summary>
-        public static double RelativeInclination { get; private set; }
-
-        /// <summary>
-        ///     Gets the time it will take to reach the ascending node.
-        /// </summary>
-        public static double TimeToAscendingNode { get; private set; }
-
-        /// <summary>
-        ///     Gets the time it will take to reach the descending node.
-        /// </summary>
-        public static double TimeToDescendingNode { get; private set; }
+        public static double AltitudeSeaLevel { get; private set; }
 
         /// <summary>
         ///     Gets the angle from the origin position to the ascending node.
@@ -95,29 +59,9 @@ namespace KerbalEngineer.Flight.Readouts.Rendezvous
         public static double AngleToDescendingNode { get; private set; }
 
         /// <summary>
-        ///     Gets the target's altitude above its reference body.
-        /// </summary>
-        public static double AltitudeSeaLevel { get; private set; }
-
-        /// <summary>
         ///     Gets the target's apoapsis above its reference body.
         /// </summary>
         public static double ApoapsisHeight { get; private set; }
-
-        /// <summary>
-        ///     Gets the target's periapsis above its reference body.
-        /// </summary>
-        public static double PeriapsisHeight { get; private set; }
-
-        /// <summary>
-        ///     Gets the target's time to apoapsis.
-        /// </summary>
-        public static double TimeToApoapsis { get; private set; }
-
-        /// <summary>
-        ///     Gets the target's time to periapsis.
-        /// </summary>
-        public static double TimeToPeriapsis { get; private set; }
 
         /// <summary>
         ///     Gets the distance from the origin position to the target position.
@@ -125,9 +69,47 @@ namespace KerbalEngineer.Flight.Readouts.Rendezvous
         public static double Distance { get; private set; }
 
         /// <summary>
+        ///     Gets the current instance of the rendezvous processor.
+        /// </summary>
+        public static RendezvousProcessor Instance
+        {
+            get { return instance; }
+        }
+
+        /// <summary>
+        ///     Gets the difference in angle from the origin position to where it is most efficient to burn for an encounter.
+        /// </summary>
+        public static double InterceptAngle { get; private set; }
+
+        /// <summary>
         ///     Gets the orbital period of the target orbit.
         /// </summary>
         public static double OrbitalPeriod { get; private set; }
+
+        /// <summary>
+        ///     Gets the target's periapsis above its reference body.
+        /// </summary>
+        public static double PeriapsisHeight { get; private set; }
+
+        /// <summary>
+        ///     Gets the difference in angle from the origin position to the target position based on a common reference.
+        /// </summary>
+        public static double PhaseAngle { get; private set; }
+
+        /// <summary>
+        ///     Gets the angular difference between the origin and target orbits.
+        /// </summary>
+        public static double RelativeInclination { get; private set; }
+
+        /// <summary>
+        ///     Gets the relative orbital velocity between the vessel and target.
+        /// </summary>
+        public static double RelativeVelocity { get; private set; }
+
+        /// <summary>
+        ///     Gets the relative orbital speed between the vessel and target.
+        /// </summary>
+        public static double RelativeSpeed { get; private set; }
 
         /// <summary>
         ///     Gets the semi-major axis of the target orbit.
@@ -139,9 +121,47 @@ namespace KerbalEngineer.Flight.Readouts.Rendezvous
         /// </summary>
         public static double SemiMinorAxis { get; private set; }
 
+        /// <summary>
+        ///     Gets whether the details are ready to be shown.
+        /// </summary>
+        public static bool ShowDetails { get; private set; }
+
+        /// <summary>
+        ///     Gets the target's time to apoapsis.
+        /// </summary>
+        public static double TimeToApoapsis { get; private set; }
+
+        /// <summary>
+        ///     Gets the time it will take to reach the ascending node.
+        /// </summary>
+        public static double TimeToAscendingNode { get; private set; }
+
+        /// <summary>
+        ///     Gets the time it will take to reach the descending node.
+        /// </summary>
+        public static double TimeToDescendingNode { get; private set; }
+
+        /// <summary>
+        ///     Gets the target's time to periapsis.
+        /// </summary>
+        public static double TimeToPeriapsis { get; private set; }
+
+        /// <summary>
+        ///     Gets and sets whether the updatable object should be updated.
+        /// </summary>
+        public bool UpdateRequested { get; set; }
+
         #endregion
 
-        #region IUpdatable Members
+        #region Methods: public
+
+        /// <summary>
+        ///     Request and update to calculate the details.
+        /// </summary>
+        public static void RequestUpdate()
+        {
+            instance.UpdateRequested = true;
+        }
 
         /// <summary>
         ///     Updates the details by recalculating if requested.
@@ -162,12 +182,14 @@ namespace KerbalEngineer.Flight.Readouts.Rendezvous
                 : FlightGlobals.ship_orbit.referenceBody.orbit;
 
             RelativeInclination = this.originOrbit.GetRelativeInclination(this.targetOrbit);
+            RelativeVelocity = FlightGlobals.ship_tgtSpeed;
+            RelativeSpeed = FlightGlobals.ship_obtSpeed - FlightGlobals.ActiveVessel.targetObject.GetObtVelocity().magnitude;
             PhaseAngle = this.originOrbit.GetPhaseAngle(this.targetOrbit);
             InterceptAngle = this.CalcInterceptAngle();
             TimeToAscendingNode = this.originOrbit.GetTimeToVector(this.GetAscendingNode());
             TimeToDescendingNode = this.originOrbit.GetTimeToVector(this.GetDescendingNode());
             AngleToAscendingNode = this.originOrbit.GetAngleToVector(this.GetAscendingNode());
-            AngleToDescendingNode =this.originOrbit.GetAngleToVector(this.GetDescendingNode());
+            AngleToDescendingNode = this.originOrbit.GetAngleToVector(this.GetDescendingNode());
             AltitudeSeaLevel = this.targetOrbit.altitude;
             ApoapsisHeight = this.targetOrbit.ApA;
             PeriapsisHeight = this.targetOrbit.PeA;
@@ -182,24 +204,7 @@ namespace KerbalEngineer.Flight.Readouts.Rendezvous
 
         #endregion
 
-        #region IUpdateRequest Members
-
-        /// <summary>
-        ///     Gets and sets whether the updatable object should be updated.
-        /// </summary>
-        public bool UpdateRequested { get; set; }
-
-        #endregion
-
-        /// <summary>
-        ///     Request and update to calculate the details.
-        /// </summary>
-        public static void RequestUpdate()
-        {
-            instance.UpdateRequested = true;
-        }
-
-        #region Calculations
+        #region Methods: private
 
         private double CalcInterceptAngle()
         {

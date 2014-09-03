@@ -22,6 +22,7 @@
 using System.Diagnostics;
 
 using KerbalEngineer.Extensions;
+using KerbalEngineer.Helpers;
 
 using UnityEngine;
 
@@ -50,7 +51,7 @@ namespace KerbalEngineer.Flight.Readouts.Vessel
         {
             if (SimulationProcessor.ShowDetails)
             {
-                this.DrawLine((SimulationProcessor.LastStage.actualThrust / SimulationProcessor.LastStage.totalMass).ToAcceleration(false) + " / " + (SimulationProcessor.LastStage.thrust / SimulationProcessor.LastStage.totalMass).ToAcceleration());
+                this.DrawLine(Units.ToAcceleration(SimulationProcessor.LastStage.actualThrust / SimulationProcessor.LastStage.totalMass, SimulationProcessor.LastStage.thrust / SimulationProcessor.LastStage.totalMass));
             }
             else if (this.showing)
             {

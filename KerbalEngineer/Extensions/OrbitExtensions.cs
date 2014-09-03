@@ -21,6 +21,8 @@
 
 using System;
 
+using KerbalEngineer.Helpers;
+
 using UnityEngine;
 
 #endregion
@@ -54,7 +56,7 @@ namespace KerbalEngineer.Extensions
                 return 0.0;
             }
 
-            var angle = AngleBetweenVectors(orbit.getRelativePositionAtUT(Planetarium.GetUniversalTime()),
+            var angle = AngleHelper.GetAngleBetweenVectors(orbit.getRelativePositionAtUT(Planetarium.GetUniversalTime()),
                                             Vector3d.Exclude(orbit.GetOrbitNormal(), orbit.referenceBody.orbit.getRelativePositionAtUT(Planetarium.GetUniversalTime())));
 
             angle = (angle + 90.0).ClampTo(0.0, 360.0);
@@ -69,7 +71,7 @@ namespace KerbalEngineer.Extensions
                 return 0.0;
             }
 
-            var angle = AngleBetweenVectors(orbit.getRelativePositionAtUT(Planetarium.GetUniversalTime()),
+            var angle = AngleHelper.GetAngleBetweenVectors(orbit.getRelativePositionAtUT(Planetarium.GetUniversalTime()),
                                             Vector3d.Exclude(orbit.GetOrbitNormal(), orbit.referenceBody.orbit.getRelativePositionAtUT(Planetarium.GetUniversalTime())));
 
             angle = (angle - 90.0).ClampTo(0.0, 360.0);
@@ -90,8 +92,8 @@ namespace KerbalEngineer.Extensions
         public static double GetPhaseAngle(this Orbit orbit, Orbit target)
         {
             return orbit.inclination <= 90.0
-                ? AngleBetweenVectors(orbit.pos, Vector3d.Exclude(orbit.GetOrbitNormal(), target.pos))
-                : AngleBetweenVectors(Vector3d.Exclude(orbit.GetOrbitNormal(), target.pos), orbit.pos);
+                ? AngleHelper.GetAngleBetweenVectors(orbit.pos, Vector3d.Exclude(orbit.GetOrbitNormal(), target.pos))
+                : AngleHelper.GetAngleBetweenVectors(Vector3d.Exclude(orbit.GetOrbitNormal(), target.pos), orbit.pos);
         }
 
         public static double GetRelativeInclination(this Orbit orbit, Orbit target)
@@ -133,23 +135,6 @@ namespace KerbalEngineer.Extensions
         public static double GetTrueAnomalyOfDescendingNode(this Orbit orbit)
         {
             return 180.0 - orbit.argumentOfPeriapsis;
-        }
-
-        #endregion
-
-        #region Methods: private
-
-        private static double AngleBetweenVectors(Vector3d vector1, Vector3d vector2)
-        {
-            var angle = Vector3d.Angle(vector1, vector2);
-            var rotated = QuaternionD.AngleAxis(90.0, Vector3d.forward) * vector1;
-
-            if (Vector3d.Angle(rotated, vector2) > 90.0)
-            {
-                angle = 360.0 - angle;
-            }
-
-            return angle;
         }
 
         #endregion

@@ -353,7 +353,7 @@ namespace KerbalEngineer.Editor
                 {
                     if (this.showAllStages || stage.deltaV > 0)
                     {
-                        GUILayout.Label(stage.mass.ToMass(false) + " / " + stage.totalMass.ToMass(), this.infoStyle);
+                        GUILayout.Label(Units.ToMass(stage.mass, stage.totalMass), this.infoStyle);
                     }
                 }
                 GUILayout.EndVertical();

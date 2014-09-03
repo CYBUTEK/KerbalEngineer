@@ -19,22 +19,22 @@
 
 #region Using Directives
 
-using KerbalEngineer.Helpers;
+using KerbalEngineer.Extensions;
 
 #endregion
 
-namespace KerbalEngineer.Flight.Readouts.Orbital
+namespace KerbalEngineer.Flight.Readouts.Rendezvous
 {
-    public class SemiMinorAxis : ReadoutModule
+    public class RelativeSpeed : ReadoutModule
     {
         #region Constructors
 
-        public SemiMinorAxis()
+        public RelativeSpeed()
         {
-            this.Name = "Semi-minor Axis";
-            this.Category = ReadoutCategory.GetCategory("Orbital");
-            this.HelpString = "Shows the distance from the centre of an orbit to the nearest edge.";
-            this.IsDefault = true;
+            this.Name = "Relative Speed";
+            this.Category = ReadoutCategory.GetCategory("Rendezvous");
+            this.HelpString = "Shows the difference in orbital speed between your vessel and the target object.";
+            this.IsDefault = false;
         }
 
         #endregion
@@ -43,7 +43,20 @@ namespace KerbalEngineer.Flight.Readouts.Orbital
 
         public override void Draw()
         {
-            this.DrawLine(Units.ToDistance(FlightGlobals.ship_orbit.semiMinorAxis, 3));
+            if (RendezvousProcessor.ShowDetails)
+            {
+                this.DrawLine(RendezvousProcessor.RelativeSpeed.ToSpeed());
+            }
+        }
+
+        public override void Reset()
+        {
+            FlightEngineerCore.Instance.AddUpdatable(RendezvousProcessor.Instance);
+        }
+
+        public override void Update()
+        {
+            RendezvousProcessor.RequestUpdate();
         }
 
         #endregion

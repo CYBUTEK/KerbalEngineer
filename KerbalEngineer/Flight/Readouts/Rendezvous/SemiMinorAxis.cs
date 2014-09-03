@@ -21,7 +21,7 @@
 
 using System;
 
-using KerbalEngineer.Extensions;
+using KerbalEngineer.Helpers;
 
 #endregion
 
@@ -47,7 +47,7 @@ namespace KerbalEngineer.Flight.Readouts.Rendezvous
         {
             if (RendezvousProcessor.ShowDetails)
             {
-                this.DrawLine(RendezvousProcessor.SemiMajorAxis.ToDistance("N3"));
+                this.DrawLine(Units.ToDistance(RendezvousProcessor.SemiMajorAxis, 3));
             }
         }
 

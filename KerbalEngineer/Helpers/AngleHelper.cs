@@ -19,31 +19,27 @@
 
 #region Using Directives
 
-using KerbalEngineer.Helpers;
+using UnityEngine;
 
 #endregion
 
-namespace KerbalEngineer.Flight.Readouts.Orbital
+namespace KerbalEngineer.Helpers
 {
-    public class SemiMinorAxis : ReadoutModule
+    public static class AngleHelper
     {
-        #region Constructors
-
-        public SemiMinorAxis()
-        {
-            this.Name = "Semi-minor Axis";
-            this.Category = ReadoutCategory.GetCategory("Orbital");
-            this.HelpString = "Shows the distance from the centre of an orbit to the nearest edge.";
-            this.IsDefault = true;
-        }
-
-        #endregion
-
         #region Methods: public
 
-        public override void Draw()
+        public static double GetAngleBetweenVectors(Vector3d vector1, Vector3d vector2)
         {
-            this.DrawLine(Units.ToDistance(FlightGlobals.ship_orbit.semiMinorAxis, 3));
+            var angle = Vector3d.Angle(vector1, vector2);
+            var rotated = QuaternionD.AngleAxis(90.0, Vector3d.forward) * vector1;
+
+            if (Vector3d.Angle(rotated, vector2) > 90.0)
+            {
+                angle = 360.0 - angle;
+            }
+
+            return angle;
         }
 
         #endregion

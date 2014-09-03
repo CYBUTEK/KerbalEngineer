@@ -21,7 +21,7 @@
 
 using System;
 
-using KerbalEngineer.Extensions;
+using KerbalEngineer.Helpers;
 
 using UnityEngine;
 
@@ -31,6 +31,8 @@ namespace KerbalEngineer.Flight.Readouts.Surface
 {
     public class Slope : ReadoutModule
     {
+        #region Constructors
+
         public Slope()
         {
             this.Name = "Slope";
@@ -39,10 +41,18 @@ namespace KerbalEngineer.Flight.Readouts.Surface
             this.IsDefault = true;
         }
 
+        #endregion
+
+        #region Methods: public
+
         public override void Draw()
         {
             this.DrawLine(this.GetSlopeAngleAndHeading());
         }
+
+        #endregion
+
+        #region Methods: private
 
         private string GetSlopeAngleAndHeading()
         {
@@ -66,7 +76,7 @@ namespace KerbalEngineer.Flight.Readouts.Surface
                         raddotnorm = 0.0;
                     }
                     var slope = Math.Acos(raddotnorm) * 180 / Math.PI;
-                    result = slope.ToAngle("F1");
+                    result = Units.ToAngle(slope, 1);
                     if (slope < 0.05)
                     {
                         result += " @ ---°";
@@ -83,7 +93,7 @@ namespace KerbalEngineer.Flight.Readouts.Surface
                         {
                             direction = 360 - direction;
                         }
-                        result += " @ " + direction.ToAngle("F0");
+                        result += " @ " + Units.ToAngle(direction, 1);
                     }
                 }
 
@@ -95,5 +105,7 @@ namespace KerbalEngineer.Flight.Readouts.Surface
                 return "--° @ ---°";
             }
         }
+
+        #endregion
     }
 }

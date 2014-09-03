@@ -19,7 +19,7 @@
 
 #region Using Directives
 
-using KerbalEngineer.Extensions;
+using KerbalEngineer.Helpers;
 
 #endregion
 
@@ -27,6 +27,8 @@ namespace KerbalEngineer.Flight.Readouts.Surface
 {
     public class Longitude : ReadoutModule
     {
+        #region Constructors
+
         public Longitude()
         {
             this.Name = "Longitude";
@@ -35,9 +37,15 @@ namespace KerbalEngineer.Flight.Readouts.Surface
             this.IsDefault = true;
         }
 
+        #endregion
+
+        #region Methods: public
+
         public override void Draw()
         {
-            this.DrawLine(FlightGlobals.ship_longitude.ToAngle());
+            this.DrawLine(Units.ToAngle(FlightGlobals.ship_longitude));
         }
+
+        #endregion
     }
 }

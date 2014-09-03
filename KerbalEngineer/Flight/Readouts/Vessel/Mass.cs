@@ -19,8 +19,7 @@
 
 #region Using Directives
 
-using KerbalEngineer.Extensions;
-using KerbalEngineer.VesselSimulator;
+using KerbalEngineer.Helpers;
 
 #endregion
 
@@ -28,7 +27,13 @@ namespace KerbalEngineer.Flight.Readouts.Vessel
 {
     public class Mass : ReadoutModule
     {
+        #region Fields
+
         private bool showing;
+
+        #endregion
+
+        #region Constructors
 
         public Mass()
         {
@@ -38,16 +43,15 @@ namespace KerbalEngineer.Flight.Readouts.Vessel
             this.IsDefault = true;
         }
 
-        public override void Update()
-        {
-            SimulationProcessor.RequestUpdate();
-        }
+        #endregion
+
+        #region Methods: public
 
         public override void Draw()
         {
             if (SimulationProcessor.ShowDetails)
             {
-                this.DrawLine(SimulationProcessor.LastStage.mass.ToMass(false) + " / " + SimulationProcessor.LastStage.totalMass.ToMass());
+                this.DrawLine(Units.ToMass(SimulationProcessor.LastStage.mass, SimulationProcessor.LastStage.totalMass));
             }
             else if (this.showing)
             {
@@ -60,5 +64,12 @@ namespace KerbalEngineer.Flight.Readouts.Vessel
         {
             FlightEngineerCore.Instance.AddUpdatable(SimulationProcessor.Instance);
         }
+
+        public override void Update()
+        {
+            SimulationProcessor.RequestUpdate();
+        }
+
+        #endregion
     }
 }

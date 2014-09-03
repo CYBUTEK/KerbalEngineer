@@ -19,7 +19,7 @@
 
 #region Using Directives
 
-using KerbalEngineer.Extensions;
+using KerbalEngineer.Helpers;
 
 #endregion
 
@@ -43,7 +43,7 @@ namespace KerbalEngineer.Flight.Readouts.Orbital
 
         public override void Draw()
         {
-            this.DrawLine(FlightGlobals.ship_orbit.semiMajorAxis.ToDistance("N3"));
+            this.DrawLine(Units.ToDistance(FlightGlobals.ship_orbit.semiMajorAxis, 3));
         }
 
         #endregion

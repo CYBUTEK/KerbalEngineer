@@ -124,6 +124,8 @@ namespace KerbalEngineer.Flight.Readouts
                 readouts.Add(new TargetSelector());
                 readouts.Add(new PhaseAngle());
                 readouts.Add(new InterceptAngle());
+                readouts.Add(new RelativeVelocity());
+                readouts.Add(new RelativeSpeed());
                 readouts.Add(new RelativeInclination());
                 readouts.Add(new TimeToRelativeAscendingNode());
                 readouts.Add(new TimeToRelativeDescendingNode());
