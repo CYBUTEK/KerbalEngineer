@@ -29,6 +29,26 @@ namespace KerbalEngineer.Helpers
     {
         #region Methods: public
 
+        public static double Clamp360(double value)
+        {
+            return ClampBetween(value, 0.0, 360.0);
+        }
+
+        public static double ClampBetween(double value, double minimum, double maximum)
+        {
+            while (value < minimum)
+            {
+                value += maximum;
+            }
+
+            while (value > maximum)
+            {
+                value -= maximum;
+            }
+
+            return value;
+        }
+
         public static double GetAngleBetweenVectors(Vector3d vector1, Vector3d vector2)
         {
             var angle = Vector3d.Angle(vector1, vector2);

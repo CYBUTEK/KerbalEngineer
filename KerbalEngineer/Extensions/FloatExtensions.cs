@@ -19,7 +19,7 @@
 
 #region Using Directives
 
-using System;
+using KerbalEngineer.Helpers;
 
 #endregion
 
@@ -29,177 +29,39 @@ namespace KerbalEngineer.Extensions
     {
         #region Methods: public
 
-        /// <summary>
-        ///     Convert to ReadoutCategory formatted as acceleration.
-        /// </summary>
-        public static string ToAcceleration(this float value, bool showNotation = true)
+        public static string ToAcceleration(this float value)
         {
-            try
-            {
-                return showNotation ? value.ToString("N2") + "m/s²" : value.ToString("N2");
-            }
-            catch (Exception ex)
-            {
-                Logger.Exception(ex);
-                return "ERR";
-            }
+            return Units.ToAcceleration(value);
         }
 
-        /// <summary>
-        ///     Convert to ReadoutCategory formatted as an angle.
-        /// </summary>
-        public static string ToAngle(this float value, string format = "F3")
+        public static string ToAngle(this float value)
         {
-            try
-            {
-                return value.ToString(format) + "°";
-            }
-            catch (Exception ex)
-            {
-                Logger.Exception(ex, "FloatExtentions->ToAngle");
-                return "ERR";
-            }
+            return Units.ToAngle(value);
         }
 
-        /// <summary>
-        ///     Convert to ReadoutCategory formatted as a distance.
-        /// </summary>
-        public static string ToDistance(this float value, string format = "N1")
+        public static string ToDistance(this float value)
         {
-            try
-            {
-                var negative = value < 0;
-
-                if (negative)
-                {
-                    value = -value;
-                }
-
-                if (value < 1000000.0f)
-                {
-                    if (value < 1.0f)
-                    {
-                        value *= 1000.0f;
-
-                        if (negative)
-                        {
-                            value = -value;
-                        }
-                        return value.ToString(format) + "mm";
-                    }
-
-                    if (negative)
-                    {
-                        value = -value;
-                    }
-                    return value.ToString(format) + "m";
-                }
-
-                value /= 1000.0f;
-                if (value >= 1000000.0f)
-                {
-                    value /= 1000.0f;
-
-                    if (negative)
-                    {
-                        value = -value;
-                    }
-                    return value.ToString(format) + "Mm";
-                }
-
-                if (negative)
-                {
-                    value = -value;
-                }
-                return value.ToString(format) + "km";
-            }
-            catch (Exception ex)
-            {
-                Logger.Exception(ex, "FloatExtentions->ToDistance");
-                return "ERR";
-            }
+            return Units.ToDistance(value);
         }
 
-        /// <summary>
-        ///     Convert to a double precision floating point number.
-        /// </summary>
-        public static double ToDouble(this float value)
+        public static string ToForce(this float value)
         {
-            try
-            {
-                return value;
-            }
-            catch (Exception ex)
-            {
-                Logger.Exception(ex, "FloatExtentions->ToDouble");
-                return 0;
-            }
+            return Units.ToForce(value);
         }
 
-        /// <summary>
-        ///     Convert to ReadoutCategory formatted as a force.
-        /// </summary>
-        public static string ToForce(this float value, bool showNotation = true)
+        public static string ToMass(this float value)
         {
-            try
-            {
-                var format = (value < 100000) ? (value < 10000) ? (value < 100) ? "N3" : "N2" : "N1" : "N0";
-                return showNotation ? value.ToString(format) + "kN" : value.ToString(format);
-            }
-            catch (Exception ex)
-            {
-                Logger.Exception(ex, "FloatExtentions->ToForce");
-                return "ERR";
-            }
+            return Units.ToMass(value);
         }
 
-        /// <summary>
-        ///     Convert to a ReadoutCategory formatted as a mass.
-        /// </summary>
-        public static string ToMass(this float value, bool showNotation = true)
-        {
-            try
-            {
-                value *= 1000;
-                return showNotation ? value.ToString("N0") + "kg" : value.ToString("N0");
-            }
-            catch (Exception ex)
-            {
-                Logger.Exception(ex, "FloatExtentions->ToMass");
-                return "ERR";
-            }
-        }
-
-        /// <summary>
-        ///     Convert to ReadoutCategory formatted as a rate.
-        /// </summary>
         public static string ToRate(this float value)
         {
-            try
-            {
-                return value > 0 ? value.ToString("F1") + "/sec" : (60.0f * value).ToString("F1") + "/min";
-            }
-            catch (Exception ex)
-            {
-                Logger.Exception(ex, "FloatExtentions->ToRate");
-                return "ERR";
-            }
+            return Units.ToRate(value);
         }
 
-        /// <summary>
-        ///     Convert to ReadoutCategory formatted as a speed.
-        /// </summary>
-        public static string ToSpeed(this float value, bool showNotation = true)
+        public static string ToSpeed(this float value)
         {
-            try
-            {
-                return showNotation ? value.ToString("N2") + "m/s" : value.ToString("N2");
-            }
-            catch (Exception ex)
-            {
-                Logger.Exception(ex, "FloatExtentions->ToSpeed");
-                return "ERR";
-            }
+            return Units.ToSpeed(value);
         }
 
         #endregion

@@ -19,8 +19,6 @@
 
 #region Using Directives
 
-using System;
-
 using KerbalEngineer.Helpers;
 
 #endregion
@@ -30,21 +28,6 @@ namespace KerbalEngineer.Extensions
     public static class DoubleExtensions
     {
         #region Methods: public
-
-        public static double ClampTo(this double value, double min, double max)
-        {
-            while (value < min)
-            {
-                value += max;
-            }
-
-            while (value > max)
-            {
-                value -= max;
-            }
-
-            return value;
-        }
 
         public static string ToAcceleration(this double value)
         {
@@ -61,19 +44,6 @@ namespace KerbalEngineer.Extensions
             return Units.ToDistance(value);
         }
 
-        public static float ToFloat(this double value)
-        {
-            try
-            {
-                return (float)value;
-            }
-            catch (Exception ex)
-            {
-                Logger.Exception(ex, "DoubleExtentions->ToFloat");
-                return 0;
-            }
-        }
-
         public static string ToForce(this double value)
         {
             return Units.ToForce(value);
@@ -86,15 +56,7 @@ namespace KerbalEngineer.Extensions
 
         public static string ToRate(this double value)
         {
-            try
-            {
-                return value > 0 ? value.ToString("F1") + "/sec" : (60.0f * value).ToString("F1") + "/min";
-            }
-            catch (Exception ex)
-            {
-                Logger.Exception(ex, "DoubleExtentions->ToRate");
-                return "ERR";
-            }
+            return Units.ToRate(value);
         }
 
         public static string ToSpeed(this double value)

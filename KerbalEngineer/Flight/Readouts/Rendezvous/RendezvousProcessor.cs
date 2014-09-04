@@ -24,8 +24,6 @@ using System;
 using KerbalEngineer.Extensions;
 using KerbalEngineer.Helpers;
 
-using UnityEngine;
-
 #endregion
 
 namespace KerbalEngineer.Flight.Readouts.Rendezvous
@@ -102,14 +100,14 @@ namespace KerbalEngineer.Flight.Readouts.Rendezvous
         public static double RelativeInclination { get; private set; }
 
         /// <summary>
-        ///     Gets the relative orbital velocity between the vessel and target.
-        /// </summary>
-        public static double RelativeVelocity { get; private set; }
-
-        /// <summary>
         ///     Gets the relative orbital speed between the vessel and target.
         /// </summary>
         public static double RelativeSpeed { get; private set; }
+
+        /// <summary>
+        ///     Gets the relative orbital velocity between the vessel and target.
+        /// </summary>
+        public static double RelativeVelocity { get; private set; }
 
         /// <summary>
         ///     Gets the semi-major axis of the target orbit.
@@ -211,7 +209,7 @@ namespace KerbalEngineer.Flight.Readouts.Rendezvous
             // Only works when going into higher orbits.  Need to figure out a way for it to work with lower orbits.
             var angle = 180.0 * (1.0 - Math.Pow((this.originOrbit.radius + this.targetOrbit.radius) / (2.0 * this.targetOrbit.radius), 1.5));
             angle = PhaseAngle - angle;
-            return RelativeInclination < 90.0 ? angle.ClampTo(0.0, 360.0) : (360.0 - (180.0 - angle)).ClampTo(0.0, 360.0);
+            return RelativeInclination < 90.0 ? AngleHelper.Clamp360(angle) : AngleHelper.Clamp360(360.0 - (180.0 - angle));
         }
 
         private Vector3d GetAscendingNode()

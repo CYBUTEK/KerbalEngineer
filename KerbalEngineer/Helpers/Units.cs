@@ -23,8 +23,6 @@ using System;
 
 #endregion
 
-
-
 namespace KerbalEngineer.Helpers
 {
     public static class Units
@@ -50,26 +48,29 @@ namespace KerbalEngineer.Helpers
         {
             if (Math.Abs(value) < 1000000.0)
             {
-                if (Math.Abs(value) < 10.0)
+                if (Math.Abs(value) >= 10.0)
                 {
-                    value *= 100.0;
-                    if (Math.Abs(value) < 100.0)
-                    {
-                        value *= 10.0;
-                        return value.ToString("N" + decimals) + "mm";
-                    }
+                    return value.ToString("N" + decimals) + "m";
+                }
+
+                value *= 100.0;
+                if (Math.Abs(value) >= 100.0)
+                {
                     return value.ToString("N" + decimals) + "cm";
                 }
-                return value.ToString("N" + decimals) + "m";
+
+                value *= 10.0;
+                return value.ToString("N" + decimals) + "mm";
             }
 
             value /= 1000.0;
-            if (Math.Abs(value) >= 1000000.0)
+            if (Math.Abs(value) < 1000000.0)
             {
-                value /= 1000.0;
-                return value.ToString("N" + decimals) + "Mm";
+                return value.ToString("N" + decimals) + "km";
             }
-            return value.ToString("N" + decimals) + "km";
+
+            value /= 1000.0;
+            return value.ToString("N" + decimals) + "Mm";
         }
 
         public static string ToForce(double value)
@@ -94,6 +95,11 @@ namespace KerbalEngineer.Helpers
             value1 *= 1000.0;
             value2 *= 1000.0;
             return value1.ToString("N" + decimals) + " / " + value2.ToString("N" + decimals) + "kg";
+        }
+
+        public static string ToRate(double value, int decimals = 1)
+        {
+            return value > 0 ? value.ToString("F" + decimals) + "/sec" : (value * 60.0).ToString("F" + decimals);
         }
 
         public static string ToSpeed(double value, int decimals = 2)

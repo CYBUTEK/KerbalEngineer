@@ -60,6 +60,7 @@
     <Compile Include="Editor\BuildOverlay.cs" />
     <Compile Include="CelestialBodies.cs" />
     <Compile Include="Editor\BuildToolbar.cs" />
+    <Compile Include="Extensions\FloatExtensions.cs" />
     <Compile Include="Extensions\OrbitExtensions.cs" />
     <Compile Include="Flight\ActionMenuGui.cs" />
     <Compile Include="Flight\FlightEngineerPartless.cs" />
@@ -101,7 +102,6 @@
     <Compile Include="Logger.cs" />
     <Compile Include="EngineerGlobals.cs" />
     <Compile Include="Extensions\DoubleExtensions.cs" />
-    <Compile Include="Extensions\FloatExtensions.cs" />
     <Compile Include="Extensions\PartExtensions.cs" />
     <Compile Include="Extensions\PartResourceExtensions.cs" />
     <Compile Include="Extensions\RectExtensions.cs" />

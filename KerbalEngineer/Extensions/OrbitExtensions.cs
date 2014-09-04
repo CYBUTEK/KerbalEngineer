@@ -59,7 +59,7 @@ namespace KerbalEngineer.Extensions
             var angle = AngleHelper.GetAngleBetweenVectors(orbit.getRelativePositionAtUT(Planetarium.GetUniversalTime()),
                                             Vector3d.Exclude(orbit.GetOrbitNormal(), orbit.referenceBody.orbit.getRelativePositionAtUT(Planetarium.GetUniversalTime())));
 
-            angle = (angle + 90.0).ClampTo(0.0, 360.0);
+            angle = AngleHelper.Clamp360(angle + 90.0);
 
             return orbit.inclination <= 90.0 ? angle : 360.0 - angle;
         }
@@ -74,14 +74,14 @@ namespace KerbalEngineer.Extensions
             var angle = AngleHelper.GetAngleBetweenVectors(orbit.getRelativePositionAtUT(Planetarium.GetUniversalTime()),
                                             Vector3d.Exclude(orbit.GetOrbitNormal(), orbit.referenceBody.orbit.getRelativePositionAtUT(Planetarium.GetUniversalTime())));
 
-            angle = (angle - 90.0).ClampTo(0.0, 360.0);
+            angle = AngleHelper.Clamp360(angle - 90.0);
 
             return orbit.inclination <= 90.0 ? angle : 360.0 - angle;
         }
 
-        public static double GetAngleToTrueAnomaly(this Orbit orbit, double tA)
+        public static double GetAngleToTrueAnomaly(this Orbit orbit, double trueAnomaly)
         {
-            return (tA - orbit.trueAnomaly).ClampTo(0.0, 360.0);
+            return AngleHelper.Clamp360(trueAnomaly - orbit.trueAnomaly);
         }
 
         public static double GetAngleToVector(this Orbit orbit, Vector3d vector)
@@ -111,9 +111,9 @@ namespace KerbalEngineer.Extensions
             return GetTimeToTrueAnomaly(orbit, GetTrueAnomalyOfDescendingNode(orbit));
         }
 
-        public static double GetTimeToTrueAnomaly(this Orbit orbit, double tA)
+        public static double GetTimeToTrueAnomaly(this Orbit orbit, double trueAnomaly)
         {
-            var time = orbit.GetDTforTrueAnomaly(tA * Mathf.Deg2Rad, orbit.period);
+            var time = orbit.GetDTforTrueAnomaly(trueAnomaly * Mathf.Deg2Rad, orbit.period);
             return time < 0.0 ? time + orbit.period : time;
         }
 
