@@ -97,6 +97,12 @@ namespace KerbalEngineer.Helpers
             return value1.ToString("N" + decimals) + " / " + value2.ToString("N" + decimals) + "kg";
         }
 
+        public static string ToPercent(double value, int decimals = 2)
+        {
+            value *= 100.0;
+            return value.ToString("F" + decimals) + "%";
+        }
+
         public static string ToRate(double value, int decimals = 1)
         {
             return value > 0 ? value.ToString("F" + decimals) + "/sec" : (value * 60.0).ToString("F" + decimals);

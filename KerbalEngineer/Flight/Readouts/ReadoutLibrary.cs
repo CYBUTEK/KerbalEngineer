@@ -116,9 +116,10 @@ namespace KerbalEngineer.Flight.Readouts
                 readouts.Add(new Thrust());
                 readouts.Add(new ThrustToWeight());
                 readouts.Add(new Acceleration());
+                readouts.Add(new IntakeAirUsage());
                 readouts.Add(new IntakeAirDemand());
                 readouts.Add(new IntakeAirSupply());
-                readouts.Add(new IntakeAirSupplyDemand());
+                readouts.Add(new IntakeAirDemandSupply());
 
                 // Rendezvous
                 readouts.Add(new TargetSelector());

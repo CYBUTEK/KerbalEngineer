@@ -54,6 +54,11 @@ namespace KerbalEngineer.Extensions
             return Units.ToMass(value);
         }
 
+        public static string ToPercent(this double value)
+        {
+            return Units.ToPercent(value);
+        }
+
         public static string ToRate(this double value)
         {
             return Units.ToRate(value);

@@ -54,7 +54,7 @@ namespace KerbalEngineer.Flight.Readouts.Vessel
 
         public override void Update()
         {
-            this.demand = IntakeAirSupplyDemand.GetDemand();
+            this.demand = IntakeAirDemandSupply.GetDemand();
         }
 
         #endregion

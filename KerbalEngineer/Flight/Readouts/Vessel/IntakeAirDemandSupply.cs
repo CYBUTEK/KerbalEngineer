@@ -25,7 +25,7 @@ using System.Linq;
 
 namespace KerbalEngineer.Flight.Readouts.Vessel
 {
-    public class IntakeAirSupplyDemand : ReadoutModule
+    public class IntakeAirDemandSupply : ReadoutModule
     {
         #region Fields
 
@@ -36,7 +36,7 @@ namespace KerbalEngineer.Flight.Readouts.Vessel
 
         #region Constructors
 
-        public IntakeAirSupplyDemand()
+        public IntakeAirDemandSupply()
         {
             this.Name = "Intake Air (D/S)";
             this.Category = ReadoutCategory.GetCategory("Vessel");

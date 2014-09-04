@@ -87,7 +87,8 @@
     <Compile Include="Flight\Readouts\Surface\ImpactBiome.cs" />
     <Compile Include="Flight\Readouts\Surface\Slope.cs" />
     <Compile Include="Flight\Readouts\Surface\Biome.cs" />
-    <Compile Include="Flight\Readouts\Vessel\IntakeAirSupplyDemand.cs" />
+    <Compile Include="Flight\Readouts\Vessel\IntakeAirUsage.cs" />
+    <Compile Include="Flight\Readouts\Vessel\IntakeAirDemandSupply.cs" />
     <Compile Include="Flight\Readouts\Vessel\IntakeAirSupply.cs" />
     <Compile Include="Flight\Readouts\Vessel\IntakeAirDemand.cs" />
     <Compile Include="Flight\Readouts\Miscellaneous\SimulationDelay.cs" />

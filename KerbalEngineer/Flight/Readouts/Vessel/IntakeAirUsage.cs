@@ -19,25 +19,30 @@
 
 #region Using Directives
 
+using System;
 
+using KerbalEngineer.Extensions;
+using KerbalEngineer.Helpers;
 
 #endregion
 
+
+
 namespace KerbalEngineer.Flight.Readouts.Vessel
 {
-    public class IntakeAirSupply : ReadoutModule
+    public class IntakeAirUsage : ReadoutModule
     {
         #region Fields
 
-        private double supply;
+        private double percentage;
 
         #endregion
 
         #region Constructors
 
-        public IntakeAirSupply()
+        public IntakeAirUsage()
         {
-            this.Name = "Intake Air (Supply)";
+            this.Name = "Intake Air (Usage)";
             this.Category = ReadoutCategory.GetCategory("Vessel");
             this.HelpString = string.Empty;
             this.IsDefault = true;
@@ -49,12 +54,16 @@ namespace KerbalEngineer.Flight.Readouts.Vessel
 
         public override void Draw()
         {
-            this.DrawLine(this.supply.ToString("F4"));
+            this.DrawLine(Units.ToPercent(this.percentage));
         }
 
         public override void Update()
         {
-            this.supply = IntakeAirDemandSupply.GetSupply();
+            this.percentage = IntakeAirDemandSupply.GetDemand() / IntakeAirDemandSupply.GetSupply();
+            if (Double.IsNaN(this.percentage) || Double.IsInfinity(this.percentage))
+            {
+                this.percentage = 0.0;
+            }
         }
 
         #endregion
