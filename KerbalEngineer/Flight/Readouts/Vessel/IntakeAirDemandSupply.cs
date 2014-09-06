@@ -65,7 +65,7 @@ namespace KerbalEngineer.Flight.Readouts.Vessel
                 }
                 if (part.Modules.Contains("ModuleEnginesFX"))
                 {
-                    var engine = part.Modules["ModuleEngines"] as ModuleEnginesFX;
+                    var engine = part.Modules["ModuleEnginesFX"] as ModuleEnginesFX;
                     if (engine.isOperational)
                     {
                         demand += engine.propellants
