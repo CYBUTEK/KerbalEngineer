@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset='UTF-8'>
+	<title>Kerbal Engineer Redux - README</title>
+	<link href='http://fonts.googleapis.com/css?family=PT+Sans:400,700' rel='stylesheet' type='text/css'>
+	<script>
+		function resizeIframe(obj) {
+			obj.style.height = obj.contentWindow.document.body.scrollHeight + 'px';
+		}
+	</script>
+	<style>
+		* {
+			margin: 0; padding: 0;
+			box-sizing: border-box; moz-box-sizing: border-box; webkit-box-sizing: border-box;
+		}
+
+		html, body {
+			height: 100%;
+			font-family: 'PT Sans', Verdana, Geneva, sans-serif;
+		}
+
+		a {
+			text-decoration: none;
+			font-weight: 700;
+			color: inherit;
+		}
+
+		a:hover {
+			text-decoration: underline;
+		}
+
+		h3 {
+			display: block;
+			line-height: 1.5em;
+			font-size: 1.1em;
+			font-weight: 700;
+		}
+
+		p {
+			display: block;
+			margin: 0 0.5em;
+			text-align: justify;
+		}
+
+		ul {
+			display: block;
+			margin-left: 1.5em;
+			list-style-type: square;
+		}
+
+		li {
+			margin-top: 0.5em;
+			text-align: justify;
+		}
+
+		iframe {
+			width: 100%;
+			border: none;
+		}
+
+		header {
+			display: block;
+			padding: 25px;
+			text-align: center;
+			font-size: 3rem;
+			font-weight: 700;
+			letter-spacing: 0.2em;
+			color: white;
+			background-color: black;
+		}
+
+		section {
+			display: block;
+			margin: 10px;
+			padding: 0.5em 1em;
+			line-height: 1.5em;
+			background-color: #DDD;
+		}
+
+		footer {
+			display: block;
+			text-align: center;
+			line-height: 50px;
+			font-size: 0.8rem;
+			letter-spacing: 0.2em;
+			color: white;
+			background-color: black;
+		}
+
+		.nested_list > li {
+			margin-top: 1em;
+		}
+
+		.nested_list > li:first-child {
+			margin-top: 0.5em;
+		}
+
+		#root {
+			clear: both;
+			min-height: 100%;
+			height: auto !important;
+			height: 100%;
+			margin-bottom: -50px;
+		}
+
+		#root > #root_footer {
+			height: 50px;
+		}
+
+		#footer {
+			clear: both;
+			position: relative;
+			height: 50px;
+		}
+	</style>
+</head>
+<body>
+	<div id='root'>
+		<header>Kerbal Engineer Redux v1.0</header>
+
+		<section>
+			<h3>Developers</h3>
+			<p>
+				CYBUTEK: Primary Development<br>
+				Padishar: Simulation Logic
+			</p>
+		</section>
+
+		<section>
+			<h3>Honourable Mentions</h3>
+			<p>
+				Mic_E: Impact Readouts
+			</p>
+		</section>
+
+		<section>
+			<h3>Goto the Forum Thread</h3>
+			<p>
+				<a href="http://forum.kerbalspaceprogram.com/threads/18230" target='_blank'>http://forum.kerbalspaceprogram.com/threads/18230</a>
+			</p>
+		</section>
+
+		<section>
+			<h3>KSP-AVC Ready</h3>
+			<p>
+				KSP Add-on Version Checker is a standardised system for versioning mods. You can get more information on this
+				<a href='http://forum.kerbalspaceprogram.com/threads/79745' target='_blank'>forum thread</a>.
+			</p>
+		</section>
+
+		<section>
+			<h3>Contains MiniAVC</h3>
+			<p>
+				This mod includes version checking using <a href="http://forum.kerbalspaceprogram.com/threads/79745">MiniAVC</a>. If you opt-in, it will use the internet to check whether there is a new version available. Data is only read from the internet and no personal information is sent. For a more comprehensive version checking experience, please download the <a href="http://forum.kerbalspaceprogram.com/threads/79745">KSP-AVC Plugin</a>. 
+			</p>
+		</section>
+
+		<section>
+			<h3>Description</h3>
+			<p>
+				This plugin will allow you to view important statistics about your ship on the fly, whilst constructing and in flight.
+			</p>
+		</section>
+
+		<section>
+			<h3>Installation</h3>
+			<ul>
+				<li>Copy the 'KerbalEngineer' folder into the 'GameData' folder located within your Kerbal Space Program installation directory.</li>
+				<li>The 'Parts' folder including the 'ER7500' and 'EngineerChip' is optional and are only required if running in module mode.</li>
+			</ul>
+		</section>
+
+		<section>
+			<h3>Change Log</h3>
+			<iframe src='CHANGES.txt' onload="this.style.height = this.contentWindow.document.body.scrollHeight + 'px'"></iframe>
+		</section>
+
+		<section>
+			<h3>Software License</h3>
+			<p>
+				Licensed under the <a href='LICENSE.txt'>GNU General Public License v3</a>.
+			</p>
+		</section>
+
+		<div id='root_footer'></div>
+	</div>
+
+	<footer id='footer'>
+		README design by <a href='http://ksp.cybutek.net' target='_blank'><strong>CYBUTEK</strong></a> (GPLv3)
+	</footer>
+</body>
+</html>
