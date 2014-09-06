@@ -109,12 +109,6 @@ namespace KerbalEngineer.Flight.Readouts.Rendezvous
         /// </summary>
         public static double RelativeVelocity { get; private set; }
 
-        public static double RelativeVelocityForward { get; private set; }
-
-        public static double RelativeVelocityRight { get; private set; }
-
-        public static double RelativeVelocityUp { get; private set; }
-
         /// <summary>
         ///     Gets the semi-major axis of the target orbit.
         /// </summary>
@@ -187,7 +181,7 @@ namespace KerbalEngineer.Flight.Readouts.Rendezvous
 
             RelativeInclination = this.originOrbit.GetRelativeInclination(this.targetOrbit);
             RelativeVelocity = FlightGlobals.ship_tgtSpeed;
-            RelativeSpeed = FlightGlobals.ship_obtSpeed - FlightGlobals.ActiveVessel.targetObject.GetObtVelocity().magnitude;
+            RelativeSpeed = FlightGlobals.ship_obtSpeed - this.targetOrbit.orbitalSpeed;
             PhaseAngle = this.originOrbit.GetPhaseAngle(this.targetOrbit);
             InterceptAngle = this.CalcInterceptAngle();
             TimeToAscendingNode = this.originOrbit.GetTimeToVector(this.GetAscendingNode());
@@ -202,8 +196,8 @@ namespace KerbalEngineer.Flight.Readouts.Rendezvous
             SemiMajorAxis = this.targetOrbit.semiMajorAxis;
             SemiMinorAxis = this.targetOrbit.semiMinorAxis;
 
-            Distance = Vector3d.Distance(this.targetOrbit.pos, this.originOrbit.pos);
-            OrbitalPeriod = this.targetOrbit.period;
+            //Distance = Vector3d.Distance(this.targetOrbit.pos, this.originOrbit.pos);
+            //OrbitalPeriod = this.targetOrbit.period;
         }
 
         #endregion
