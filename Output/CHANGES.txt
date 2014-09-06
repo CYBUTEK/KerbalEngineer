@@ -1,3 +1,11 @@
+1.0.8.0
+    Added: New readouts to the vessel category:
+        - Intake Air (Usage)
+
+    Added: New readouts to the rendezvous category:
+        - Relative Velocity
+        - Relative Speed
+
 1.0.7.1
     Changed: Reversed Intake Air readout from 'S/D' to 'D/S' for easier reading.
     Changed: Increased Intake Air readout precision to 4 decimal places.

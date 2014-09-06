@@ -109,6 +109,12 @@ namespace KerbalEngineer.Flight.Readouts.Rendezvous
         /// </summary>
         public static double RelativeVelocity { get; private set; }
 
+        public static double RelativeVelocityForward { get; private set; }
+
+        public static double RelativeVelocityRight { get; private set; }
+
+        public static double RelativeVelocityUp { get; private set; }
+
         /// <summary>
         ///     Gets the semi-major axis of the target orbit.
         /// </summary>

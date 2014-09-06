@@ -49,16 +49,15 @@ namespace KerbalEngineer.Helpers
             return value;
         }
 
-        public static double GetAngleBetweenVectors(Vector3d vector1, Vector3d vector2)
+        public static double GetAngleBetweenVectors(Vector3d left, Vector3d right)
         {
-            var angle = Vector3d.Angle(vector1, vector2);
-            var rotated = QuaternionD.AngleAxis(90.0, Vector3d.forward) * vector1;
+            var angle = Vector3d.Angle(left, right);
+            var rotated = QuaternionD.AngleAxis(90.0, Vector3d.forward) * right;
 
-            if (Vector3d.Angle(rotated, vector2) > 90.0)
+            if (Vector3d.Angle(rotated, left) > 90.0)
             {
-                angle = 360.0 - angle;
+                return 360.0 - angle;
             }
-
             return angle;
         }
 
