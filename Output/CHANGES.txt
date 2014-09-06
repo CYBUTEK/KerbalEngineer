@@ -1,5 +1,5 @@
 1.0.8.1
-	Fixed: Bug which caused rendezvous readouts to freeze the game or show zero.
+	Fixed: Bug which caused rendezvous readouts to freeze the game or show all zeros.
 
 1.0.8.0
     Added: New readouts to the vessel category:

@@ -196,8 +196,8 @@ namespace KerbalEngineer.Flight.Readouts.Rendezvous
             SemiMajorAxis = this.targetOrbit.semiMajorAxis;
             SemiMinorAxis = this.targetOrbit.semiMinorAxis;
 
-            //Distance = Vector3d.Distance(this.targetOrbit.pos, this.originOrbit.pos);
-            //OrbitalPeriod = this.targetOrbit.period;
+            Distance = Vector3d.Distance(this.targetOrbit.pos, this.originOrbit.pos);
+            OrbitalPeriod = this.targetOrbit.period;
         }
 
         #endregion
