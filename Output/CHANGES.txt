@@ -7,6 +7,7 @@
         - Relative Speed
 
     Fixed: An issue where deltaV would not be calculated whilst flying.
+    Fixed: NullRef whilst loading the in flight Action Menu.
 
 1.0.7.1
     Changed: Reversed Intake Air readout from 'S/D' to 'D/S' for easier reading.

@@ -20,7 +20,6 @@
 #region Using Directives
 
 using System;
-using System.Threading;
 
 using UnityEngine;
 
@@ -41,29 +40,45 @@ namespace KerbalEngineer.Flight
 
         #endregion
 
-        #region Initialisation
+        #region Methods: protected
 
-        private void Awake()
+        protected void Awake()
         {
             try
             {
                 GameEvents.onGUIApplicationLauncherReady.Add(this.OnGuiAppLauncherReady);
-                Logger.Log("ActionMenu was created.");
             }
             catch (Exception ex)
             {
                 Logger.Exception(ex);
             }
+            Logger.Log("ActionMenu was created.");
         }
 
-        #endregion
-
-        #region Updating
-
-        private void Update()
+        protected void OnDestroy()
         {
             try
             {
+                GameEvents.onGUIApplicationLauncherReady.Remove(this.OnGuiAppLauncherReady);
+                GameEvents.onHideUI.Remove(this.OnHide);
+                GameEvents.onShowUI.Remove(this.OnShow);
+                ApplicationLauncher.Instance.RemoveModApplication(this.button);
+            }
+            catch (Exception ex)
+            {
+                Logger.Exception(ex);
+            }
+            Logger.Log("ActionMenu was destroyed.");
+        }
+
+        protected void Update()
+        {
+            try
+            {
+                if (this.button == null)
+                {
+                    return;
+                }
                 if (FlightEngineerCore.Instance != null && this.button.State == RUIToggleButton.ButtonState.DISABLED)
                 {
                     this.button.Enable();
@@ -81,7 +96,20 @@ namespace KerbalEngineer.Flight
 
         #endregion
 
-        #region Callbacks
+        #region Methods: private
+
+        private void OnFalse()
+        {
+            try
+            {
+                this.actionMenuGui.enabled = false;
+                this.actionMenuGui.StayOpen = false;
+            }
+            catch (Exception ex)
+            {
+                Logger.Exception(ex);
+            }
+        }
 
         private void OnGuiAppLauncherReady()
         {
@@ -108,25 +136,11 @@ namespace KerbalEngineer.Flight
             }
         }
 
-        private void OnTrue()
+        private void OnHide()
         {
             try
             {
-                this.actionMenuGui.enabled = true;
-                this.actionMenuGui.StayOpen = true;
-            }
-            catch (Exception ex)
-            {
-                Logger.Exception(ex);
-            }
-        }
-
-        private void OnFalse()
-        {
-            try
-            {
-                this.actionMenuGui.enabled = false;
-                this.actionMenuGui.StayOpen = false;
+                this.actionMenuGui.Hidden = true;
             }
             catch (Exception ex)
             {
@@ -159,18 +173,6 @@ namespace KerbalEngineer.Flight
             }
         }
 
-        private void OnHide()
-        {
-            try
-            {
-                this.actionMenuGui.Hidden = true;
-            }
-            catch (Exception ex)
-            {
-                Logger.Exception(ex);
-            }
-        }
-
         private void OnShow()
         {
             try
@@ -183,19 +185,12 @@ namespace KerbalEngineer.Flight
             }
         }
 
-        #endregion
-
-        #region Destruction
-
-        private void OnDestroy()
+        private void OnTrue()
         {
             try
             {
-                GameEvents.onGUIApplicationLauncherReady.Remove(this.OnGuiAppLauncherReady);
-                GameEvents.onHideUI.Remove(this.OnHide);
-                GameEvents.onShowUI.Remove(this.OnShow);
-                ApplicationLauncher.Instance.RemoveModApplication(this.button);
-                Logger.Log("ActionMenu was destroyed.");
+                this.actionMenuGui.enabled = true;
+                this.actionMenuGui.StayOpen = true;
             }
             catch (Exception ex)
             {
