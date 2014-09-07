@@ -148,7 +148,7 @@ namespace KerbalEngineer.Editor
                         this.tooltipInfoTimer.Reset();
                     }
 
-                    this.DrawTooltip(EditorLogic.SelectedPart);
+                    //this.DrawTooltip(EditorLogic.SelectedPart);
                 }
                 else
                 {
@@ -166,7 +166,7 @@ namespace KerbalEngineer.Editor
                             }
                             isPartSelected = true;
 
-                            this.DrawTooltip(part);
+                            //this.DrawTooltip(part);
                             break;
                         }
                     }

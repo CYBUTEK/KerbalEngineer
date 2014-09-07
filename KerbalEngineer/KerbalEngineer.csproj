@@ -59,6 +59,7 @@
     <Compile Include="Editor\BuildAdvanced.cs" />
     <Compile Include="Editor\BuildOverlay.cs" />
     <Compile Include="CelestialBodies.cs" />
+    <Compile Include="Editor\BuildPartInfo.cs" />
     <Compile Include="Editor\BuildToolbar.cs" />
     <Compile Include="Extensions\FloatExtensions.cs" />
     <Compile Include="Extensions\OrbitExtensions.cs" />
