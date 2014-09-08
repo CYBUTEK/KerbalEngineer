@@ -402,9 +402,16 @@ namespace KerbalEngineer.Editor
                 GUILayout.EndHorizontal();
 
                 GUILayout.BeginHorizontal();
-                GUILayout.Label("Build Engineer Overlay:", this.settingStyle);
+                GUILayout.Label("Build Engineer Overlay (Vessel):", this.settingStyle);
                 BuildOverlay.Instance.Visible = GUILayout.Toggle(BuildOverlay.Instance.Visible, "ENABLED", this.buttonStyle, GUILayout.Width(100.0f * GuiDisplaySize.Offset));
                 BuildOverlay.Instance.Visible = !GUILayout.Toggle(!BuildOverlay.Instance.Visible, "DISABLED", this.buttonStyle, GUILayout.Width(100.0f * GuiDisplaySize.Offset));
+                GUILayout.EndHorizontal();
+
+                GUILayout.BeginHorizontal();
+                GUILayout.Label("Build Engineer Overlay (Part Info):", this.settingStyle);
+                BuildOverlayPartInfo.Visible = GUILayout.Toggle(BuildOverlayPartInfo.Visible, "VISIBLE", this.buttonStyle, GUILayout.Width(100.0f * GuiDisplaySize.Offset));
+                BuildOverlayPartInfo.NamesOnly = GUILayout.Toggle(BuildOverlayPartInfo.NamesOnly, "NAMES ONLY", this.buttonStyle, GUILayout.Width(100.0f * GuiDisplaySize.Offset));
+                BuildOverlayPartInfo.ClickToOpen = GUILayout.Toggle(BuildOverlayPartInfo.ClickToOpen, "CLICK TO OPEN", this.buttonStyle, GUILayout.Width(100.0f * GuiDisplaySize.Offset));
                 GUILayout.EndHorizontal();
 
                 GUILayout.BeginHorizontal();
@@ -424,11 +431,6 @@ namespace KerbalEngineer.Editor
                     GuiDisplaySize.Increment++;
                 }
                 GUILayout.EndHorizontal();
-
-                GUILayout.Label("Tooltip information delay: " + (BuildOverlay.Instance.TooltipInfoDelay * 1000.0f) + "ms", this.settingStyle);
-                GUI.skin = HighLogic.Skin;
-                BuildOverlay.Instance.TooltipInfoDelay = (float)Math.Round(GUILayout.HorizontalSlider(BuildOverlay.Instance.TooltipInfoDelay, 0, 2.0f), 2);
-                GUI.skin = null;
 
                 GUILayout.Label("Minimum delay between simulations: " + SimManager.minSimTime + "ms", this.settingStyle);
                 GUI.skin = HighLogic.Skin;

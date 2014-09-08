@@ -29,28 +29,65 @@ namespace KerbalEngineer.Extensions
 {
     public static class PartExtensions
     {
-        /// <summary>
-        ///     Gets whether the part contains a PartModule.
-        /// </summary>
-        public static bool HasModule<T>(this Part part)
+        #region Methods: public
+
+        public static bool ContainsResource(this Part part, int resourceId)
         {
-            return part.Modules.OfType<T>().Any();
+            return part.Resources.Contains(resourceId);
         }
 
         /// <summary>
-        ///     Gets whether the part contains a PartModule.
+        ///     Gets whether the part contains resources.
         /// </summary>
-        public static bool HasModule(this Part part, string className)
+        public static bool ContainsResources(this Part part)
         {
-            return part.Modules.Contains(className);
+            return part.Resources.list.Count(p => p.amount > 0d) > 0;
         }
 
         /// <summary>
-        ///     Gets whether the part contains a PartModule.
+        ///     Gets whether the part has fuel.
         /// </summary>
-        public static bool HasModule(this Part part, int moduleId)
+        public static bool EngineHasFuel(this Part part)
         {
-            return part.Modules.Contains(moduleId);
+            if (part.HasModule<ModuleEngines>())
+            {
+                return part.GetModuleEngines().getFlameoutState;
+            }
+            if (part.HasModule<MultiModeEngine>())
+            {
+                return part.GetModuleMultiModeEngine().getFlameoutState;
+            }
+
+            return false;
+        }
+
+        /// <summary>
+        ///     Gets the dry mass of the part.
+        /// </summary>
+        public static double GetDryMass(this Part part)
+        {
+            return (part.physicalSignificance == Part.PhysicalSignificance.FULL) ? part.mass : 0d;
+        }
+
+        /// <summary>
+        ///     Gets the maximum thrust of the part if it's an engine.
+        /// </summary>
+        public static double GetMaxThrust(this Part part)
+        {
+            if (part.HasModule<ModuleEngines>())
+            {
+                return part.GetModuleEngines().maxThrust;
+            }
+            if (part.HasModule<MultiModeEngine>())
+            {
+                return part.GetModuleMultiModeEngine().maxThrust;
+            }
+            if (part.HasModule<ModuleEnginesFX>())
+            {
+                return part.GetModuleEnginesFx().maxThrust;
+            }
+
+            return 0d;
         }
 
         /// <summary>
@@ -77,39 +114,12 @@ namespace KerbalEngineer.Extensions
             return (T)Convert.ChangeType(part.Modules[classId], typeof(T));
         }
 
-        public static List<T> GetModules<T>(this Part part) where T : PartModule
-        {
-            return part.Modules.OfType<T>().ToList();
-        }
-
         /// <summary>
-        ///     Gets a ModuleEngines typed PartModule.
+        ///     Gets a ModuleAlternator typed PartModule.
         /// </summary>
-        public static ModuleEngines GetModuleEngines(this Part part)
+        public static ModuleAlternator GetModuleAlternator(this Part part)
         {
-            return part.GetModule<ModuleEngines>();
-        }
-
-        /// <summary>
-        ///     Gets the current selected ModuleEnginesFX.
-        /// </summary>
-        public static ModuleEnginesFX GetModuleEnginesFx(this Part part)
-        {
-            var mode = part.GetModule<MultiModeEngine>().mode;
-            return part.Modules.OfType<ModuleEnginesFX>().FirstOrDefault(engine => engine.engineID == mode);
-        }
-
-        public static ModuleRCS GetModuleRcs(this Part part)
-        {
-            return part.GetModule<ModuleRCS>();
-        }
-
-        /// <summary>
-        ///     Gets a ModuleGimbal typed PartModule.
-        /// </summary>
-        public static ModuleGimbal GetModuleGimbal(this Part part)
-        {
-            return part.GetModule<ModuleGimbal>();
+            return part.GetModule<ModuleAlternator>();
         }
 
         /// <summary>
@@ -121,11 +131,16 @@ namespace KerbalEngineer.Extensions
         }
 
         /// <summary>
-        ///     Gets a ModuleAlternator typed PartModule.
+        ///     Gets a ModuleEngines typed PartModule.
         /// </summary>
-        public static ModuleAlternator GetModuleAlternator(this Part part)
+        public static ModuleEngines GetModuleEngines(this Part part)
         {
-            return part.GetModule<ModuleAlternator>();
+            return part.GetModule<ModuleEngines>();
+        }
+
+        public static ModuleEnginesFX GetModuleEnginesFx(this Part part)
+        {
+            return part.GetModule<ModuleEnginesFX>();
         }
 
         /// <summary>
@@ -137,6 +152,23 @@ namespace KerbalEngineer.Extensions
         }
 
         /// <summary>
+        ///     Gets a ModuleGimbal typed PartModule.
+        /// </summary>
+        public static ModuleGimbal GetModuleGimbal(this Part part)
+        {
+            return part.GetModule<ModuleGimbal>();
+        }
+
+        /// <summary>
+        ///     Gets the current selected ModuleEnginesFX.
+        /// </summary>
+        public static ModuleEnginesFX GetModuleMultiModeEngine(this Part part)
+        {
+            var mode = part.GetModule<MultiModeEngine>().mode;
+            return part.Modules.OfType<ModuleEnginesFX>().FirstOrDefault(engine => engine.engineID == mode);
+        }
+
+        /// <summary>
         ///     Gets a ModuleParachute typed PartModule.
         /// </summary>
         public static ModuleParachute GetModuleParachute(this Part part)
@@ -144,37 +176,37 @@ namespace KerbalEngineer.Extensions
             return part.GetModule<ModuleParachute>();
         }
 
-        /// <summary>
-        ///     Gets the total mass of the part including resources.
-        /// </summary>
-        public static double GetWetMass(this Part part)
+        public static ModuleRCS GetModuleRcs(this Part part)
         {
-            return (part.physicalSignificance == Part.PhysicalSignificance.FULL) ? part.mass + part.GetResourceMass() : part.GetResourceMass();
+            return part.GetModule<ModuleRCS>();
         }
 
         /// <summary>
-        ///     Gets the dry mass of the part.
+        ///     Gets a typed list of PartModules.
         /// </summary>
-        public static double GetDryMass(this Part part)
+        public static List<T> GetModules<T>(this Part part) where T : PartModule
         {
-            return (part.physicalSignificance == Part.PhysicalSignificance.FULL) ? part.mass : 0d;
+            return part.Modules.OfType<T>().ToList();
         }
 
         /// <summary>
-        ///     Gets the maximum thrust of the part if it's an engine.
+        ///     Gets a generic proto engine for the current engine module attached to the part.
         /// </summary>
-        public static double GetMaxThrust(this Part part)
+        public static ProtoModuleEngine GetProtoModuleEngine(this Part part)
         {
-            if (part.HasModule<ModuleEngines>())
+            if (HasModule<ModuleEngines>(part))
             {
-                return part.GetModuleEngines().maxThrust;
+                return new ProtoModuleEngine(GetModule<ModuleEngines>(part));
             }
-            if (part.HasModule<MultiModeEngine>())
+            if (HasModule<MultiModeEngine>(part))
             {
-                return part.GetModuleEnginesFx().maxThrust;
+                return new ProtoModuleEngine(GetModuleMultiModeEngine(part));
             }
-
-            return 0d;
+            if (HasModule<ModuleEnginesFX>(part))
+            {
+                return new ProtoModuleEngine(GetModule<ModuleEnginesFX>(part));
+            }
+            return null;
         }
 
         /// <summary>
@@ -188,48 +220,83 @@ namespace KerbalEngineer.Extensions
             }
             if (part.HasModule<MultiModeEngine>())
             {
+                return part.GetModuleMultiModeEngine().atmosphereCurve.Evaluate(atmosphere);
+            }
+            if (part.HasModule<ModuleEnginesFX>())
+            {
                 return part.GetModuleEnginesFx().atmosphereCurve.Evaluate(atmosphere);
             }
 
             return 0d;
         }
 
-        /// <summary>
-        ///     Gets whether the part has fuel.
-        /// </summary>
-        public static bool EngineHasFuel(this Part part)
+        public static ProtoModuleDecoupler GetProtoModuleDecoupler(this Part part)
         {
-            if (part.HasModule<ModuleEngines>())
+            if (HasModule<ModuleDecouple>(part))
             {
-                return part.GetModuleEngines().getFlameoutState;
+                return new ProtoModuleDecoupler(GetModule<ModuleDecouple>(part));
             }
-            if (part.HasModule<MultiModeEngine>())
+            if (HasModule<ModuleAnchoredDecoupler>(part))
             {
-                return part.GetModuleEnginesFx().getFlameoutState;
+                return new ProtoModuleDecoupler(GetModule<ModuleAnchoredDecoupler>(part));
             }
-
-            return false;
+            return null;
         }
 
         /// <summary>
-        ///     Gets whether the part contains resources.
+        ///     Gets the total mass of the part including resources.
         /// </summary>
-        public static bool ContainsResources(this Part part)
+        public static double GetWetMass(this Part part)
         {
-            return part.Resources.list.Count(p => p.amount > 0d) > 0;
-        }
-
-        public static bool ContainsResource(this Part part, int resourceId)
-        {
-            return part.Resources.Contains(resourceId);
+            return (part.physicalSignificance == Part.PhysicalSignificance.FULL) ? part.mass + part.GetResourceMass() : part.GetResourceMass();
         }
 
         /// <summary>
-        ///     Gets whether the part is a decoupler.
+        ///     Gets whether the part contains a PartModule.
         /// </summary>
-        public static bool IsDecoupler(this Part part)
+        public static bool HasModule<T>(this Part part) where T : PartModule
         {
-            return part.HasModule<ModuleDecouple>() || part.HasModule<ModuleAnchoredDecoupler>();
+            return part.Modules.OfType<T>().Any();
+        }
+
+        /// <summary>
+        ///     Gets whether the part contains a PartModule conforming to the supplied predicate.
+        /// </summary>
+        public static bool HasModule<T>(this Part part, Func<T, bool> predicate) where T : PartModule
+        {
+            return part.Modules.OfType<T>().Any(predicate);
+        }
+
+        /// <summary>
+        ///     Gets whether the part contains a PartModule.
+        /// </summary>
+        public static bool HasModule(this Part part, string className)
+        {
+            return part.Modules.Contains(className);
+        }
+
+        /// <summary>
+        ///     Gets whether the part contains a PartModule.
+        /// </summary>
+        public static bool HasModule(this Part part, int moduleId)
+        {
+            return part.Modules.Contains(moduleId);
+        }
+
+        /// <summary>
+        ///     Gets whether the part has a one shot animation.
+        /// </summary>
+        public static bool HasOneShotAnimation(this Part part)
+        {
+            return part.HasModule<ModuleAnimateGeneric>() && part.GetModule<ModuleAnimateGeneric>().isOneShot;
+        }
+
+        /// <summary>
+        ///     Gets whether the part is a command module.
+        /// </summary>
+        public static bool IsCommandModule(this Part part)
+        {
+            return part.HasModule<ModuleCommand>();
         }
 
         /// <summary>
@@ -249,11 +316,11 @@ namespace KerbalEngineer.Extensions
         }
 
         /// <summary>
-        ///     Gets whether the part is a launch clamp.
+        ///     Gets whether the part is a decoupler.
         /// </summary>
-        public static bool IsLaunchClamp(this Part part)
+        public static bool IsDecoupler(this Part part)
         {
-            return part.HasModule<LaunchClamp>();
+            return part.HasModule<ModuleDecouple>() || part.HasModule<ModuleAnchoredDecoupler>();
         }
 
         /// <summary>
@@ -261,20 +328,15 @@ namespace KerbalEngineer.Extensions
         /// </summary>
         public static bool IsEngine(this Part part)
         {
-            return part.HasModule<ModuleEngines>() || part.HasModule<MultiModeEngine>();
-        }
-
-        public static bool IsRcsModule(this Part part)
-        {
-            return part.HasModule<ModuleRCS>();
+            return part.HasModule<ModuleEngines>() || part.HasModule<ModuleEnginesFX>();
         }
 
         /// <summary>
-        ///     Gets whether the part is a deployable solar panel.
+        ///     Gets whether the part is a fuel line.
         /// </summary>
-        public static bool IsSolarPanel(this Part part)
+        public static bool IsFuelLine(this Part part)
         {
-            return part.HasModule<ModuleDeployableSolarPanel>();
+            return (part is FuelLine);
         }
 
         /// <summary>
@@ -286,11 +348,11 @@ namespace KerbalEngineer.Extensions
         }
 
         /// <summary>
-        ///     Gets whether the part is a command module.
+        ///     Gets whether the part is a launch clamp.
         /// </summary>
-        public static bool IsCommandModule(this Part part)
+        public static bool IsLaunchClamp(this Part part)
         {
-            return part.HasModule<ModuleCommand>();
+            return part.HasModule<LaunchClamp>();
         }
 
         /// <summary>
@@ -299,30 +361,6 @@ namespace KerbalEngineer.Extensions
         public static bool IsParachute(this Part part)
         {
             return part.HasModule<ModuleParachute>();
-        }
-
-        /// <summary>
-        ///     Gets whether the part is a solid rocket motor.
-        /// </summary>
-        public static bool IsSolidRocket(this Part part)
-        {
-            return part.HasModule<ModuleEngines>() && part.GetModuleEngines().throttleLocked;
-        }
-
-        /// <summary>
-        ///     Gets whether the part is a sepratron.
-        /// </summary>
-        public static bool IsSepratron(this Part part)
-        {
-            return (part.IsSolidRocket() && part.ActivatesEvenIfDisconnected && part.IsDecoupledInStage(part.inverseStage));
-        }
-
-        /// <summary>
-        ///     Gets whether the part is a fuel line.
-        /// </summary>
-        public static bool IsFuelLine(this Part part)
-        {
-            return (part is FuelLine);
         }
 
         /// <summary>
@@ -347,12 +385,186 @@ namespace KerbalEngineer.Extensions
             return false;
         }
 
-        /// <summary>
-        ///     Gets whether the part has a one shot animation.
-        /// </summary>
-        public static bool HasOneShotAnimation(this Part part)
+        public static bool IsRcsModule(this Part part)
         {
-            return part.HasModule<ModuleAnimateGeneric>() && part.GetModule<ModuleAnimateGeneric>().isOneShot;
+            return part.HasModule<ModuleRCS>();
         }
+
+        /// <summary>
+        ///     Gets whether the part is a sepratron.
+        /// </summary>
+        public static bool IsSepratron(this Part part)
+        {
+            return (part.IsSolidRocket() && part.ActivatesEvenIfDisconnected && part.IsDecoupledInStage(part.inverseStage));
+        }
+
+        /// <summary>
+        ///     Gets whether the part is a deployable solar panel.
+        /// </summary>
+        public static bool IsSolarPanel(this Part part)
+        {
+            return part.HasModule<ModuleDeployableSolarPanel>();
+        }
+
+        /// <summary>
+        ///     Gets whether the part is a solid rocket motor.
+        /// </summary>
+        public static bool IsSolidRocket(this Part part)
+        {
+            return part.HasModule<ModuleEngines>() && part.GetModuleEngines().throttleLocked;
+        }
+
+        #endregion
+
+        #region Nested Type: ProtoModuleDecoupler
+
+        public class ProtoModuleDecoupler
+        {
+            #region Fields
+
+            private readonly PartModule module;
+
+            #endregion
+
+            #region Constructors
+
+            public ProtoModuleDecoupler(PartModule module)
+            {
+                this.module = module;
+
+                if (this.module is ModuleDecouple)
+                {
+                    this.SetModuleDecouple();
+                }
+                else if (this.module is ModuleAnchoredDecoupler)
+                {
+                    this.SetModuleAnchoredDecoupler();
+                }
+            }
+
+            #endregion
+
+            #region Properties
+
+            public double EjectionForce { get; private set; }
+            public bool IsOmniDecoupler { get; private set; }
+
+            #endregion
+
+            #region Methods: private
+
+            private void SetModuleAnchoredDecoupler()
+            {
+                var decoupler = this.module as ModuleAnchoredDecoupler;
+                if (decoupler == null)
+                {
+                    return;
+                }
+
+                this.EjectionForce = decoupler.ejectionForce;
+            }
+
+            private void SetModuleDecouple()
+            {
+                var decoupler = this.module as ModuleDecouple;
+                if (decoupler == null)
+                {
+                    return;
+                }
+
+                this.EjectionForce = decoupler.ejectionForce;
+                this.IsOmniDecoupler = decoupler.isOmniDecoupler;
+            }
+
+            #endregion
+        }
+
+        #endregion
+
+        #region Nested Type: ProtoModuleEngine
+
+        public class ProtoModuleEngine
+        {
+            #region Fields
+
+            private readonly PartModule module;
+
+            #endregion
+
+            #region Constructors
+
+            public ProtoModuleEngine(PartModule module)
+            {
+                this.module = module;
+
+                if (module is ModuleEngines)
+                {
+                    this.SetModuleEngines();
+                }
+                else if (module is ModuleEnginesFX)
+                {
+                    this.SetModuleEnginesFx();
+                }
+            }
+
+            #endregion
+
+            #region Properties
+
+            public double MaximumThrust { get; private set; }
+            public double MinimumThrust { get; private set; }
+            public List<Propellant> Propellants { get; private set; }
+
+            #endregion
+
+            #region Methods: public
+
+            public float GetSpecificImpulse(float atmosphere)
+            {
+                if (this.module is ModuleEngines)
+                {
+                    return (this.module as ModuleEngines).atmosphereCurve.Evaluate(atmosphere);
+                }
+                if (this.module is ModuleEnginesFX)
+                {
+                    return (this.module as ModuleEnginesFX).atmosphereCurve.Evaluate(atmosphere);
+                }
+                return 0.0f;
+            }
+
+            #endregion
+
+            #region Methods: private
+
+            private void SetModuleEngines()
+            {
+                var engine = this.module as ModuleEngines;
+                if (engine == null)
+                {
+                    return;
+                }
+
+                this.MaximumThrust = engine.maxThrust * (engine.thrustPercentage * 0.01);
+                this.MinimumThrust = engine.minThrust;
+                this.Propellants = engine.propellants;
+            }
+
+            private void SetModuleEnginesFx()
+            {
+                var engine = this.module as ModuleEnginesFX;
+                if (engine == null)
+                {
+                    return;
+                }
+
+                this.MaximumThrust = engine.maxThrust * (engine.thrustPercentage * 0.01);
+                this.MinimumThrust = engine.minThrust;
+                this.Propellants = engine.propellants;
+            }
+
+            #endregion
+        }
+
+        #endregion
     }
 }

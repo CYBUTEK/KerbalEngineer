@@ -22,7 +22,6 @@
 using System;
 using System.Diagnostics;
 
-using KerbalEngineer.Extensions;
 using KerbalEngineer.Settings;
 using KerbalEngineer.VesselSimulator;
 
@@ -37,15 +36,10 @@ namespace KerbalEngineer.Editor
     {
         #region Fields
 
-        private readonly Stopwatch tooltipInfoTimer = new Stopwatch();
         private GUIStyle infoStyle;
         private Stage lastStage;
 
-        private Part selectedPart;
         private GUIStyle titleStyle;
-        private float tooltipInfoDelay = 0.5f;
-        private GUIStyle tooltipInfoStyle;
-        private GUIStyle tooltipTitleStyle;
         private bool visible = true;
         private int windowId;
         private Rect windowPosition = new Rect(300.0f, 0, 0, 0);
@@ -60,11 +54,6 @@ namespace KerbalEngineer.Editor
         /// </summary>
         public static BuildOverlay Instance { get; private set; }
 
-        public float TooltipInfoDelay
-        {
-            get { return this.tooltipInfoDelay; }
-            set { this.tooltipInfoDelay = value; }
-        }
 
         /// <summary>
         ///     Gets and sets whether the display is enabled.
@@ -137,47 +126,6 @@ namespace KerbalEngineer.Editor
                 {
                     this.windowPosition.y = Screen.height - this.windowPosition.height - 5.0f;
                 }
-
-                // Find if a part is selected or being hovered over.
-                if (EditorLogic.SelectedPart != null)
-                {
-                    // Do not allow the extended information to be shown.
-                    if (this.selectedPart != null)
-                    {
-                        this.selectedPart = null;
-                        this.tooltipInfoTimer.Reset();
-                    }
-
-                    //this.DrawTooltip(EditorLogic.SelectedPart);
-                }
-                else
-                {
-                    var isPartSelected = false;
-                    foreach (var part in EditorLogic.SortedShipList)
-                    {
-                        if (part.stackIcon.highlightIcon)
-                        {
-                            // Start the extended information timer.
-                            if (part != this.selectedPart)
-                            {
-                                this.selectedPart = part;
-                                this.tooltipInfoTimer.Reset();
-                                this.tooltipInfoTimer.Start();
-                            }
-                            isPartSelected = true;
-
-                            //this.DrawTooltip(part);
-                            break;
-                        }
-                    }
-
-                    // If no part is being hovered over we must reset the extended information timer.
-                    if (!isPartSelected && this.selectedPart != null)
-                    {
-                        this.selectedPart = null;
-                        this.tooltipInfoTimer.Reset();
-                    }
-                }
             }
             catch (Exception ex)
             {
@@ -232,150 +180,6 @@ namespace KerbalEngineer.Editor
 
         #region Methods: private
 
-        /// <summary>
-        ///     Draws the tooltip details of the selected/highlighted part.
-        /// </summary>
-        private void DrawTooltip(Part part)
-        {
-            // Tooltip title (name of part).
-            var content = new GUIContent(part.partInfo.title);
-            var size = this.tooltipTitleStyle.CalcSize(content);
-            var position = new Rect(Event.current.mousePosition.x + 16.0f, Event.current.mousePosition.y, size.x, size.y).ClampInsideScreen();
-
-            if (position.x < Event.current.mousePosition.x + 16.0f)
-            {
-                position.y += 16.0f;
-            }
-            GUI.Label(position, content, this.tooltipTitleStyle);
-
-            // After hovering for a period of time, show extended information.
-            if (this.tooltipInfoTimer.Elapsed.TotalSeconds >= this.tooltipInfoDelay)
-            {
-                // Stop the timer as it is no longer needed.
-                if (this.tooltipInfoTimer.IsRunning)
-                {
-                    this.tooltipInfoTimer.Stop();
-                }
-
-                // Show the dry mass of the part if applicable.
-                if (part.physicalSignificance == Part.PhysicalSignificance.FULL)
-                {
-                    this.DrawTooltipInfo(ref position, "Dry Mass: " + part.GetDryMass().ToMass());
-                }
-
-                // Show resources contained within the part.
-                if (part.ContainsResources())
-                {
-                    // Show the wet mass of the part if applicable.
-                    if (part.GetResourceMass() > 0)
-                    {
-                        this.DrawTooltipInfo(ref position, "Wet Mass: " + part.GetWetMass().ToMass());
-                    }
-
-                    // List all the resources contained within the part.
-                    foreach (PartResource resource in part.Resources)
-                    {
-                        if (resource.GetDensity() > 0)
-                        {
-                            this.DrawTooltipInfo(ref position, resource.info.name + ": " + resource.GetMass().ToMass() + " (" + resource.amount + ")");
-                        }
-                        else
-                        {
-                            this.DrawTooltipInfo(ref position, resource.info.name + ": " + resource.amount);
-                        }
-                    }
-                }
-
-                // Show details for engines.
-                if (part.IsEngine())
-                {
-                    this.DrawTooltipInfo(ref position, "Maximum Thrust: " + part.GetMaxThrust().ToForce());
-                    this.DrawTooltipInfo(ref position, "Specific Impulse: " + part.GetSpecificImpulse(1f) + " / " + part.GetSpecificImpulse(0f) + "s");
-
-                    // Thrust vectoring.
-                    if (part.HasModule("ModuleGimbal"))
-                    {
-                        this.DrawTooltipInfo(ref position, "Thrust Vectoring Enabled");
-                    }
-
-                    // Contains alternator.
-                    if (part.HasModule("ModuleAlternator"))
-                    {
-                        this.DrawTooltipInfo(ref position, "Contains Alternator");
-                    }
-                }
-
-                // Show details for RCS.
-                if (part.IsRcsModule())
-                {
-                    var moduleRcs = part.GetModuleRcs();
-                    this.DrawTooltipInfo(ref position, "Thrust Power: " + moduleRcs.thrusterPower.ToForce());
-                    this.DrawTooltipInfo(ref position, "Specific Impulse: " + moduleRcs.atmosphereCurve.Evaluate(1f) + " / " + moduleRcs.atmosphereCurve.Evaluate(0f) + "s");
-                }
-
-                // Show details for solar panels.
-                if (part.IsSolarPanel())
-                {
-                    this.DrawTooltipInfo(ref position, "Charge Rate: " + part.GetModuleDeployableSolarPanel().chargeRate.ToRate());
-                }
-
-                // Show details for generators.
-                if (part.IsGenerator())
-                {
-                    foreach (var resource in part.GetModuleGenerator().inputList)
-                    {
-                        this.DrawTooltipInfo(ref position, "Input: " + resource.name + " (" + resource.rate.ToRate() + ")");
-                    }
-
-                    foreach (var resource in part.GetModuleGenerator().outputList)
-                    {
-                        this.DrawTooltipInfo(ref position, "Output: " + resource.name + " (" + resource.rate.ToRate() + ")");
-                    }
-                }
-
-                // Show details for parachutes.
-                if (part.IsParachute())
-                {
-                    var module = part.GetModuleParachute();
-                    this.DrawTooltipInfo(ref position, "Semi Deployed Drag: " + module.semiDeployedDrag);
-                    this.DrawTooltipInfo(ref position, "Fully Deployed Drag: " + module.fullyDeployedDrag);
-                    this.DrawTooltipInfo(ref position, "Deployment Altitude: " + module.deployAltitude.ToDistance());
-                }
-
-                // Contains stability augmentation system.
-                if (part.HasModule("ModuleSAS"))
-                {
-                    this.DrawTooltipInfo(ref position, "Contains SAS");
-                }
-
-                // Contains reaction wheels.
-                if (part.HasModule("ModuleReactionWheel"))
-                {
-                    this.DrawTooltipInfo(ref position, "Contains Reaction Wheels");
-                }
-
-                // Show if the part has an animation that can only be used once.
-                if (part.HasOneShotAnimation())
-                {
-                    this.DrawTooltipInfo(ref position, "Single Activation Only");
-                }
-            }
-        }
-
-        /// <summary>
-        ///     Draws a line of extended information below the previous.
-        /// </summary>
-        private void DrawTooltipInfo(ref Rect position, string value)
-        {
-            var content = new GUIContent(value);
-            var size = this.tooltipInfoStyle.CalcSize(content);
-
-            position.y += 16.0f * GuiDisplaySize.Offset;
-            position.width = size.x;
-            position.height = size.y;
-            GUI.Label(position, content, this.tooltipInfoStyle);
-        }
-
         private void InitialiseStyles()
         {
             this.windowStyle = new GUIStyle(GUIStyle.none)
@@ -406,30 +210,12 @@ namespace KerbalEngineer.Editor
                 stretchWidth = true
             };
 
-            this.tooltipTitleStyle = new GUIStyle(HighLogic.Skin.label)
-            {
-                normal =
-                {
-                    textColor = Color.white
-                },
-                fontSize = (int)(11 * GuiDisplaySize.Offset),
-                fontStyle = FontStyle.Bold,
-                stretchWidth = true
-            };
-
-            this.tooltipInfoStyle = new GUIStyle(HighLogic.Skin.label)
-            {
-                fontSize = (int)(11 * GuiDisplaySize.Offset),
-                fontStyle = FontStyle.Bold,
-                stretchWidth = true
-            };
         }
 
         private void Load()
         {
             var handler = SettingHandler.Load("BuildOverlay.xml");
             handler.Get("visible", ref this.visible);
-            handler.Get("tooltipInfoDelay", ref this.tooltipInfoDelay);
         }
 
         private void OnSizeChanged()
@@ -443,7 +229,6 @@ namespace KerbalEngineer.Editor
         {
             var handler = new SettingHandler();
             handler.Set("visible", this.visible);
-            handler.Set("tooltipInfoDelay", this.tooltipInfoDelay);
             handler.Save("BuildOverlay.xml");
         }
 
