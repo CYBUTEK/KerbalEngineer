@@ -88,7 +88,6 @@ namespace KerbalEngineer.Flight
                         handler.Save("FlightEngineerPartless.xml");
                     }
                     isPartless = value;
-                    Logger.Log("FlightEngineerPartless->IsPartless = " + value);
                 }
                 catch (Exception ex)
                 {

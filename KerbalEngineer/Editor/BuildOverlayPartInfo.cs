@@ -25,7 +25,6 @@ using System.Linq;
 
 using KerbalEngineer.Extensions;
 using KerbalEngineer.Helpers;
-using KerbalEngineer.Settings;
 
 using UnityEngine;
 
@@ -33,78 +32,34 @@ using UnityEngine;
 
 namespace KerbalEngineer.Editor
 {
-    [KSPAddon(KSPAddon.Startup.EditorAny, false)]
     public class BuildOverlayPartInfo : MonoBehaviour
     {
         #region Fields
 
-        private static bool clickToOpen = true;
-        private static bool namesOnly;
-        private static bool visible = true;
+        private readonly List<PartInfoItem> infoItems = new List<PartInfoItem>();
+        private bool clickToOpen = true;
+        private bool namesOnly;
 
-        private readonly List<InfoItem> infoItems = new List<InfoItem>();
-        private GUIStyle nameStyle;
         private Rect position;
         private Part selectedPart;
         private bool showInfo;
-        private GUIStyle titleStyle;
-        private GUIStyle valueStyle;
-        private GUIStyle windowStyle;
 
         #endregion
 
         #region Properties
 
-        public static bool ClickToOpen
+        public bool ClickToOpen
         {
-            get { return clickToOpen; }
-            set
-            {
-                clickToOpen = value;
-                Save();
-            }
+            get { return this.clickToOpen; }
+            set { this.clickToOpen = value; }
         }
 
-        public static bool NamesOnly
+        public bool Hidden { get; set; }
+
+        public bool NamesOnly
         {
-            get { return namesOnly; }
-            set
-            {
-                namesOnly = value;
-                Save();
-            }
-        }
-
-        public static bool Visible
-        {
-            get { return visible; }
-            set
-            {
-                visible = value;
-                Save();
-            }
-        }
-
-        #endregion
-
-        #region Methods: public
-
-        public static void Load()
-        {
-            var handler = SettingHandler.Load("BuildOverlayPartInfo.xml");
-            handler.GetSet("visible", ref visible);
-            handler.GetSet("namesOnly", ref namesOnly);
-            handler.GetSet("clickToOpen", ref clickToOpen);
-            handler.Save("BuildOverlayPartInfo.xml");
-        }
-
-        public static void Save()
-        {
-            var handler = SettingHandler.Load("BuildOverlayPartInfo.xml");
-            handler.Set("visible", visible);
-            handler.Set("namesOnly", namesOnly);
-            handler.Set("clickToOpen", clickToOpen);
-            handler.Save("BuildOverlayPartInfo.xml");
+            get { return this.namesOnly; }
+            set { this.namesOnly = value; }
         }
 
         #endregion
@@ -115,28 +70,15 @@ namespace KerbalEngineer.Editor
         {
             try
             {
-                if (this.selectedPart == null || !Visible)
+                if (!BuildOverlay.Visible || this.Hidden || this.selectedPart == null)
                 {
                     return;
                 }
 
-                this.position = GUILayout.Window(this.GetInstanceID(), this.position, this.Window, String.Empty, this.windowStyle);
+                this.position = GUILayout.Window(this.GetInstanceID(), this.position, this.Window, String.Empty, BuildOverlay.WindowStyle);
             }
             catch (Exception ex)
 
-            {
-                Logger.Exception(ex);
-            }
-        }
-
-        protected void Start()
-        {
-            try
-            {
-                this.InitialiseStyles();
-                Load();
-            }
-            catch (Exception ex)
             {
                 Logger.Exception(ex);
             }
@@ -146,7 +88,7 @@ namespace KerbalEngineer.Editor
         {
             try
             {
-                if (!Visible)
+                if (!BuildOverlay.Visible || this.Hidden || EditorLogic.startPod == null)
                 {
                     return;
                 }
@@ -163,7 +105,7 @@ namespace KerbalEngineer.Editor
                 }
 
                 this.infoItems.Clear();
-                var part = EditorLogic.SortedShipList.Find(p => p.stackIcon.highlightIcon) ?? EditorLogic.SelectedPart;
+                var part = EditorLogic.fetch.ship.parts.Find(p => p.stackIcon.highlightIcon) ?? EditorLogic.SelectedPart;
                 if (part != null)
                 {
                     if (!part.Equals(this.selectedPart))
@@ -171,12 +113,12 @@ namespace KerbalEngineer.Editor
                         this.selectedPart = part;
                         this.ResetInfo();
                     }
-                    if (NamesOnly)
+                    if (this.NamesOnly)
                     {
                         return;
                     }
 
-                    this.infoItems.Add(new InfoItem("Cost", this.selectedPart.partInfo.cost.ToString("N0")));
+                    this.infoItems.Add(new PartInfoItem("Cost", this.selectedPart.partInfo.cost.ToString("N0")));
                     this.SetMassItems();
                     this.SetResourceItems();
                     this.SetEngineInfo();
@@ -198,7 +140,7 @@ namespace KerbalEngineer.Editor
                     {
                         this.showInfo = true;
                     }
-                    else if (ClickToOpen && this.showInfo && Input.GetMouseButtonDown(2))
+                    else if (this.ClickToOpen && this.showInfo && Input.GetMouseButtonDown(2))
                     {
                         this.ResetInfo();
                     }
@@ -218,48 +160,10 @@ namespace KerbalEngineer.Editor
 
         #region Methods: private
 
-        private void InitialiseStyles()
-        {
-            this.windowStyle = new GUIStyle
-            {
-                normal =
-                {
-                    background = TextureHelper.CreateTextureFromColour(new Color(0.0f, 0.0f, 0.0f, 0.5f))
-                },
-                padding = new RectOffset(5, 5, 3, 3),
-            };
-
-            this.titleStyle = new GUIStyle
-            {
-                normal =
-                {
-                    textColor = Color.yellow
-                },
-                fontSize = (int)(11 * GuiDisplaySize.Offset),
-                fontStyle = FontStyle.Bold,
-                stretchWidth = true
-            };
-
-            this.nameStyle = new GUIStyle(this.titleStyle)
-            {
-                normal =
-                {
-                    textColor = Color.white
-                },
-                padding = new RectOffset(0, 0, 2, 0),
-                fontStyle = FontStyle.Normal
-            };
-
-            this.valueStyle = new GUIStyle(this.nameStyle)
-            {
-                alignment = TextAnchor.UpperRight
-            };
-        }
-
         private void ResetInfo()
         {
-            this.showInfo = !clickToOpen;
-            this.position.width = namesOnly || clickToOpen ? 0.0f : 200.0f;
+            this.showInfo = !this.clickToOpen;
+            this.position.width = this.namesOnly || this.clickToOpen ? 0.0f : 200.0f;
             this.position.height = 0.0f;
         }
 
@@ -271,10 +175,10 @@ namespace KerbalEngineer.Editor
             }
 
             var alternator = this.selectedPart.GetModule<ModuleAlternator>();
-            this.infoItems.Add(new InfoItem("Alternator"));
+            this.infoItems.Add(new PartInfoItem("Alternator"));
             foreach (var resource in alternator.outputResources)
             {
-                this.infoItems.Add(new InfoItem("\t" + resource.name, resource.rate.ToRate()));
+                this.infoItems.Add(new PartInfoItem("\t" + resource.name, resource.rate.ToRate()));
             }
         }
 
@@ -286,10 +190,10 @@ namespace KerbalEngineer.Editor
             }
 
             var decoupler = this.selectedPart.GetProtoModuleDecoupler();
-            this.infoItems.Add(new InfoItem("Ejection Force", decoupler.EjectionForce.ToForce()));
+            this.infoItems.Add(new PartInfoItem("Ejection Force", decoupler.EjectionForce.ToForce()));
             if (decoupler.IsOmniDecoupler)
             {
-                this.infoItems.Add(new InfoItem("Omni-directional"));
+                this.infoItems.Add(new PartInfoItem("Omni-directional"));
             }
         }
 
@@ -301,15 +205,15 @@ namespace KerbalEngineer.Editor
             }
 
             var engine = this.selectedPart.GetProtoModuleEngine();
-            this.infoItems.Add(new InfoItem("Thrust", Units.ToForce(engine.MinimumThrust, engine.MaximumThrust)));
-            this.infoItems.Add(new InfoItem("Isp", Units.Concat(engine.GetSpecificImpulse(1.0f), engine.GetSpecificImpulse(0.0f)) + "s"));
+            this.infoItems.Add(new PartInfoItem("Thrust", Units.ToForce(engine.MinimumThrust, engine.MaximumThrust)));
+            this.infoItems.Add(new PartInfoItem("Isp", Units.Concat(engine.GetSpecificImpulse(1.0f), engine.GetSpecificImpulse(0.0f)) + "s"));
             if (engine.Propellants.Count > 0)
             {
-                this.infoItems.Add(new InfoItem("Propellants"));
+                this.infoItems.Add(new PartInfoItem("Propellants"));
                 var totalRatio = engine.Propellants.Sum(p => p.ratio);
                 foreach (var propellant in engine.Propellants)
                 {
-                    this.infoItems.Add(new InfoItem("\t" + propellant.name, (propellant.ratio / totalRatio).ToPercent()));
+                    this.infoItems.Add(new PartInfoItem("\t" + propellant.name, (propellant.ratio / totalRatio).ToPercent()));
                 }
             }
         }
@@ -324,23 +228,23 @@ namespace KerbalEngineer.Editor
             var generator = this.selectedPart.GetModule<ModuleGenerator>();
             if (generator.inputList.Count > 0)
             {
-                this.infoItems.Add(new InfoItem("Generator Input"));
+                this.infoItems.Add(new PartInfoItem("Generator Input"));
                 foreach (var resource in generator.inputList)
                 {
-                    this.infoItems.Add(new InfoItem("\t" + resource.name, resource.rate.ToRate()));
+                    this.infoItems.Add(new PartInfoItem("\t" + resource.name, resource.rate.ToRate()));
                 }
             }
             if (generator.outputList.Count > 0)
             {
-                this.infoItems.Add(new InfoItem("Generator Output"));
+                this.infoItems.Add(new PartInfoItem("Generator Output"));
                 foreach (var resource in generator.outputList)
                 {
-                    this.infoItems.Add(new InfoItem("\t" + resource.name, resource.rate.ToRate()));
+                    this.infoItems.Add(new PartInfoItem("\t" + resource.name, resource.rate.ToRate()));
                 }
             }
             if (generator.isAlwaysActive)
             {
-                this.infoItems.Add(new InfoItem("Generator is Always Active"));
+                this.infoItems.Add(new PartInfoItem("Generator is Always Active"));
             }
         }
 
@@ -352,14 +256,14 @@ namespace KerbalEngineer.Editor
             }
 
             var gimbal = this.selectedPart.GetModule<ModuleGimbal>();
-            this.infoItems.Add(new InfoItem("Thrust Vectoring", gimbal.gimbalRange.ToString("F2")));
+            this.infoItems.Add(new PartInfoItem("Thrust Vectoring", gimbal.gimbalRange.ToString("F2")));
         }
 
         private void SetMassItems()
         {
             if (this.selectedPart.physicalSignificance == Part.PhysicalSignificance.FULL)
             {
-                this.infoItems.Add(new InfoItem("Mass", Units.ToMass(this.selectedPart.GetDryMass(), this.selectedPart.GetWetMass())));
+                this.infoItems.Add(new PartInfoItem("Mass", Units.ToMass(this.selectedPart.GetDryMass(), this.selectedPart.GetWetMass())));
             }
         }
 
@@ -371,9 +275,9 @@ namespace KerbalEngineer.Editor
             }
 
             var parachute = this.selectedPart.GetModule<ModuleParachute>();
-            this.infoItems.Add(new InfoItem("Deployed Drag", Units.Concat(parachute.semiDeployedDrag, parachute.fullyDeployedDrag)));
-            this.infoItems.Add(new InfoItem("Deployment Altitude", parachute.deployAltitude.ToDistance()));
-            this.infoItems.Add(new InfoItem("Deployment Pressure", parachute.minAirPressureToOpen.ToString("F2")));
+            this.infoItems.Add(new PartInfoItem("Deployed Drag", Units.Concat(parachute.semiDeployedDrag, parachute.fullyDeployedDrag)));
+            this.infoItems.Add(new PartInfoItem("Deployment Altitude", parachute.deployAltitude.ToDistance()));
+            this.infoItems.Add(new PartInfoItem("Deployment Pressure", parachute.minAirPressureToOpen.ToString("F2")));
         }
 
         private void SetRcsInfo()
@@ -384,8 +288,8 @@ namespace KerbalEngineer.Editor
             }
 
             var rcs = this.selectedPart.GetModule<ModuleRCS>();
-            this.infoItems.Add(new InfoItem("Thruster Power", rcs.thrusterPower.ToForce()));
-            this.infoItems.Add(new InfoItem("Specific Impulse", Units.Concat(rcs.atmosphereCurve.Evaluate(1.0f), rcs.atmosphereCurve.Evaluate(0.0f)) + "s"));
+            this.infoItems.Add(new PartInfoItem("Thruster Power", rcs.thrusterPower.ToForce()));
+            this.infoItems.Add(new PartInfoItem("Specific Impulse", Units.Concat(rcs.atmosphereCurve.Evaluate(1.0f), rcs.atmosphereCurve.Evaluate(0.0f)) + "s"));
         }
 
         private void SetReactionWheelInfo()
@@ -396,13 +300,13 @@ namespace KerbalEngineer.Editor
             }
 
             var reactionWheel = this.selectedPart.GetModule<ModuleReactionWheel>();
-            this.infoItems.Add(new InfoItem("Reaction Wheel Torque"));
-            this.infoItems.Add(new InfoItem("\tPitch", reactionWheel.PitchTorque.ToForce()));
-            this.infoItems.Add(new InfoItem("\tRoll", reactionWheel.RollTorque.ToForce()));
-            this.infoItems.Add(new InfoItem("\tYaw", reactionWheel.YawTorque.ToForce()));
+            this.infoItems.Add(new PartInfoItem("Reaction Wheel Torque"));
+            this.infoItems.Add(new PartInfoItem("\tPitch", reactionWheel.PitchTorque.ToForce()));
+            this.infoItems.Add(new PartInfoItem("\tRoll", reactionWheel.RollTorque.ToForce()));
+            this.infoItems.Add(new PartInfoItem("\tYaw", reactionWheel.YawTorque.ToForce()));
             foreach (var resource in reactionWheel.inputResources)
             {
-                this.infoItems.Add(new InfoItem("\t" + resource.name, resource.rate.ToRate()));
+                this.infoItems.Add(new PartInfoItem("\t" + resource.name, resource.rate.ToRate()));
             }
         }
 
@@ -410,12 +314,12 @@ namespace KerbalEngineer.Editor
         {
             if (this.selectedPart.Resources.list.Any(r => !r.hideFlow))
             {
-                this.infoItems.Add(new InfoItem("Resources"));
+                this.infoItems.Add(new PartInfoItem("Resources"));
                 foreach (var resource in this.selectedPart.Resources.list.Where(r => !r.hideFlow))
                 {
                     this.infoItems.Add(resource.GetDensity() > 0
-                        ? new InfoItem("\t" + resource.info.name, "(" + resource.GetMass().ToMass() + ") " + resource.amount.ToString("F1"))
-                        : new InfoItem("\t" + resource.info.name, resource.amount.ToString("F1")));
+                        ? new PartInfoItem("\t" + resource.info.name, "(" + resource.GetMass().ToMass() + ") " + resource.amount.ToString("F1"))
+                        : new PartInfoItem("\t" + resource.info.name, resource.amount.ToString("F1")));
                 }
             }
         }
@@ -424,7 +328,7 @@ namespace KerbalEngineer.Editor
         {
             if (this.selectedPart.HasModule<ModuleSAS>())
             {
-                this.infoItems.Add(new InfoItem("SAS Equiped"));
+                this.infoItems.Add(new PartInfoItem("SAS Equiped"));
             }
         }
 
@@ -432,7 +336,7 @@ namespace KerbalEngineer.Editor
         {
             if (this.selectedPart.HasModule<ModuleScienceContainer>())
             {
-                this.infoItems.Add(new InfoItem("Science Container"));
+                this.infoItems.Add(new PartInfoItem("Science Container"));
             }
         }
 
@@ -444,11 +348,11 @@ namespace KerbalEngineer.Editor
             }
 
             var experiment = this.selectedPart.GetModule<ModuleScienceExperiment>();
-            this.infoItems.Add(new InfoItem("Science Experiment", experiment.experimentActionName));
-            this.infoItems.Add(new InfoItem("\tTransmit Efficiency", experiment.xmitDataScalar.ToPercent()));
+            this.infoItems.Add(new PartInfoItem("Science Experiment", experiment.experimentActionName));
+            this.infoItems.Add(new PartInfoItem("\tTransmit Efficiency", experiment.xmitDataScalar.ToPercent()));
             if (!experiment.rerunnable)
             {
-                this.infoItems.Add(new InfoItem("\tSingle Usage"));
+                this.infoItems.Add(new PartInfoItem("\tSingle Usage"));
             }
         }
 
@@ -456,7 +360,7 @@ namespace KerbalEngineer.Editor
         {
             if (this.selectedPart.HasModule<ModuleAnimateGeneric>(m => m.isOneShot))
             {
-                this.infoItems.Add(new InfoItem("Single Activation"));
+                this.infoItems.Add(new PartInfoItem("Single Activation"));
             }
         }
 
@@ -468,14 +372,14 @@ namespace KerbalEngineer.Editor
             }
 
             var solarPanel = this.selectedPart.GetModule<ModuleDeployableSolarPanel>();
-            this.infoItems.Add(new InfoItem("Charge Rate", solarPanel.chargeRate.ToRate()));
+            this.infoItems.Add(new PartInfoItem("Charge Rate", solarPanel.chargeRate.ToRate()));
             if (solarPanel.isBreakable)
             {
-                this.infoItems.Add(new InfoItem("Breakable"));
+                this.infoItems.Add(new PartInfoItem("Breakable"));
             }
             if (solarPanel.sunTracking)
             {
-                this.infoItems.Add(new InfoItem("Sun Tracking"));
+                this.infoItems.Add(new PartInfoItem("Sun Tracking"));
             }
         }
 
@@ -487,73 +391,45 @@ namespace KerbalEngineer.Editor
             }
 
             var transmitter = this.selectedPart.GetModule<ModuleDataTransmitter>();
-            this.infoItems.Add(new InfoItem("Packet Size", transmitter.packetSize.ToString("F2") + " Mits"));
-            this.infoItems.Add(new InfoItem("Bandwidth", (transmitter.packetInterval * transmitter.packetSize).ToString("F2") + "Mits/sec"));
-            this.infoItems.Add(new InfoItem(transmitter.requiredResource, transmitter.packetResourceCost.ToString("F2") + "/Packet"));
+            this.infoItems.Add(new PartInfoItem("Packet Size", transmitter.packetSize.ToString("F2") + " Mits"));
+            this.infoItems.Add(new PartInfoItem("Bandwidth", (transmitter.packetInterval * transmitter.packetSize).ToString("F2") + "Mits/sec"));
+            this.infoItems.Add(new PartInfoItem(transmitter.requiredResource, transmitter.packetResourceCost.ToString("F2") + "/Packet"));
         }
 
         private void Window(int windowId)
         {
             try
             {
-                GUILayout.Label(this.selectedPart.partInfo.title, this.titleStyle);
+                GUILayout.Label(this.selectedPart.partInfo.title, BuildOverlay.TitleStyle);
                 if (this.showInfo)
                 {
                     foreach (var item in this.infoItems)
                     {
+                        GUILayout.Space(2.0f);
                         GUILayout.BeginHorizontal();
                         if (item.Value != null)
                         {
-                            GUILayout.Label(item.Name + ":", this.nameStyle);
+                            GUILayout.Label(item.Name + ":", BuildOverlay.NameStyle);
                             GUILayout.Space(25.0f);
-                            GUILayout.Label(item.Value, this.valueStyle);
+                            GUILayout.Label(item.Value, BuildOverlay.ValueStyle);
                         }
                         else
                         {
-                            GUILayout.Label(item.Name, this.nameStyle);
+                            GUILayout.Label(item.Name, BuildOverlay.NameStyle);
                         }
                         GUILayout.EndHorizontal();
                     }
                 }
-                else if (!NamesOnly)
+                else if (!this.NamesOnly)
                 {
-                    GUILayout.Label("Click middle mouse to show more info...", this.nameStyle);
+                    GUILayout.Space(2.0f);
+                    GUILayout.Label("Click middle mouse to show more info...", BuildOverlay.NameStyle);
                 }
             }
             catch (Exception ex)
             {
                 Logger.Exception(ex);
             }
-        }
-
-        #endregion
-
-        #region Nested Type: InfoItem
-
-        public class InfoItem
-        {
-            #region Constructors
-
-            public InfoItem(string name)
-            {
-                this.Name = name;
-            }
-
-            public InfoItem(string name, string value)
-            {
-                this.Name = name;
-                this.Value = value;
-            }
-
-            #endregion
-
-            #region Properties
-
-            public string Name { get; set; }
-
-            public string Value { get; set; }
-
-            #endregion
         }
 
         #endregion

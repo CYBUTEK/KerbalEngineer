@@ -60,7 +60,11 @@
     <Compile Include="Editor\BuildOverlay.cs" />
     <Compile Include="CelestialBodies.cs" />
     <Compile Include="Editor\BuildOverlayPartInfo.cs" />
+    <Compile Include="Editor\BuildOverlayResources.cs" />
+    <Compile Include="Editor\BuildOverlayVessel.cs" />
     <Compile Include="Editor\BuildToolbar.cs" />
+    <Compile Include="Editor\PartInfoItem.cs" />
+    <Compile Include="Editor\ResourceInfoItem.cs" />
     <Compile Include="Extensions\FloatExtensions.cs" />
     <Compile Include="Extensions\OrbitExtensions.cs" />
     <Compile Include="Flight\ActionMenuGui.cs" />

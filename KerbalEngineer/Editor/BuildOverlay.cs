@@ -20,10 +20,9 @@
 #region Using Directives
 
 using System;
-using System.Diagnostics;
 
+using KerbalEngineer.Helpers;
 using KerbalEngineer.Settings;
-using KerbalEngineer.VesselSimulator;
 
 using UnityEngine;
 
@@ -36,32 +35,186 @@ namespace KerbalEngineer.Editor
     {
         #region Fields
 
-        private GUIStyle infoStyle;
-        private Stage lastStage;
+        private static BuildOverlay instance;
 
-        private GUIStyle titleStyle;
-        private bool visible = true;
-        private int windowId;
-        private Rect windowPosition = new Rect(300.0f, 0, 0, 0);
-        private GUIStyle windowStyle;
+        private static float minimumWidth = 200.0f;
+        private static GUIStyle nameStyle;
+        private static float tabSpeed = 5.0f;
+        private static GUIStyle tabStyle;
+        private static GUIStyle titleStyle;
+        private static GUIStyle valueStyle;
+        private static bool visible = true;
+        private static GUIStyle windowStyle;
+
+        private BuildOverlayPartInfo buildOverlayPartInfo;
+        private BuildOverlayResources buildOverlayResources;
+        private BuildOverlayVessel buildOverlayVessel;
 
         #endregion
 
         #region Properties
 
-        /// <summary>
-        ///     Gets the current instance if started or returns null.
-        /// </summary>
-        public static BuildOverlay Instance { get; private set; }
-
-
-        /// <summary>
-        ///     Gets and sets whether the display is enabled.
-        /// </summary>
-        public bool Visible
+        public static BuildOverlayPartInfo BuildOverlayPartInfo
         {
-            get { return this.visible; }
-            set { this.visible = value; }
+            get { return instance.buildOverlayPartInfo; }
+        }
+
+        public static BuildOverlayResources BuildOverlayResources
+        {
+            get { return instance.buildOverlayResources; }
+        }
+
+        public static BuildOverlayVessel BuildOverlayVessel
+        {
+            get { return instance.buildOverlayVessel; }
+        }
+
+        public static float MinimumWidth
+        {
+            get { return minimumWidth; }
+            set { minimumWidth = value; }
+        }
+
+        public static GUIStyle NameStyle
+        {
+            get
+            {
+                return nameStyle ?? (nameStyle = new GUIStyle
+                {
+                    normal =
+                    {
+                        textColor = Color.white
+                    },
+                    fontSize = 11,
+                    fontStyle = FontStyle.Bold,
+                    alignment = TextAnchor.UpperLeft,
+                    stretchWidth = true
+                });
+            }
+        }
+
+        public static float TabSpeed
+        {
+            get { return tabSpeed; }
+            set { tabSpeed = value; }
+        }
+
+        public static GUIStyle TabStyle
+        {
+            get
+            {
+                return tabStyle ?? (tabStyle = new GUIStyle
+                {
+                    normal =
+                    {
+                        background = TextureHelper.CreateTextureFromColour(new Color(0.0f, 0.0f, 0.0f, 0.5f)),
+                        textColor = Color.yellow
+                    },
+                    hover =
+                    {
+                        background = TextureHelper.CreateTextureFromColour(new Color(0.0f, 0.0f, 0.0f, 0.75f)),
+                        textColor = Color.yellow
+                    },
+                    onNormal =
+                    {
+                        background = TextureHelper.CreateTextureFromColour(new Color(0.0f, 0.0f, 0.0f, 0.5f)),
+                        textColor = Color.yellow
+                    },
+                    onHover =
+                    {
+                        background = TextureHelper.CreateTextureFromColour(new Color(0.0f, 0.0f, 0.0f, 0.75f)),
+                        textColor = Color.yellow
+                    },
+                    padding = new RectOffset(20, 20, 0, 0),
+                    fontSize = 11,
+                    fontStyle = FontStyle.Bold,
+                    alignment = TextAnchor.MiddleCenter,
+                    fixedHeight = 15.0f,
+                    stretchWidth = true
+                });
+            }
+        }
+
+        public static GUIStyle TitleStyle
+        {
+            get
+            {
+                return titleStyle ?? (titleStyle = new GUIStyle
+                {
+                    normal =
+                    {
+                        textColor = Color.yellow
+                    },
+                    fontSize = 11,
+                    fontStyle = FontStyle.Bold,
+                    stretchWidth = true
+                });
+            }
+        }
+
+        public static GUIStyle ValueStyle
+        {
+            get
+            {
+                return valueStyle ?? (valueStyle = new GUIStyle
+                {
+                    normal =
+                    {
+                        textColor = HighLogic.Skin.label.normal.textColor
+                    },
+                    fontSize = 11,
+                    fontStyle = FontStyle.Normal,
+                    alignment = TextAnchor.UpperRight,
+                    stretchWidth = true
+                });
+            }
+        }
+
+        public static bool Visible
+        {
+            get { return visible; }
+            set { visible = value; }
+        }
+
+        public static GUIStyle WindowStyle
+        {
+            get
+            {
+                return windowStyle ?? (windowStyle = new GUIStyle
+                {
+                    normal =
+                    {
+                        background = TextureHelper.CreateTextureFromColour(new Color(0.0f, 0.0f, 0.0f, 0.5f))
+                    },
+                    padding = new RectOffset(5, 5, 3, 3),
+                });
+            }
+        }
+
+        #endregion
+
+        #region Methods: public
+
+        public static void Load()
+        {
+            var handler = SettingHandler.Load("BuildOverlay.xml");
+            handler.GetSet("visible", visible);
+            instance.buildOverlayPartInfo.NamesOnly = handler.GetSet("namesOnly", instance.buildOverlayPartInfo.NamesOnly);
+            instance.buildOverlayPartInfo.ClickToOpen = handler.GetSet("clickToOpen", instance.buildOverlayPartInfo.ClickToOpen);
+            instance.buildOverlayVessel.Open = handler.GetSet("vesselOpen", instance.buildOverlayVessel.Open);
+            instance.buildOverlayResources.Open = handler.GetSet("resourcesOpen", instance.buildOverlayResources.Open);
+            handler.Save("BuildOverlay.xml");
+        }
+
+        public static void Save()
+        {
+            var handler = SettingHandler.Load("BuildOverlay.xml");
+            handler.Set("visible", visible);
+            handler.Set("namesOnly", instance.buildOverlayPartInfo.NamesOnly);
+            handler.Set("clickToOpen", instance.buildOverlayPartInfo.ClickToOpen);
+            handler.Set("vesselOpen", instance.buildOverlayVessel.Open);
+            handler.Set("resourcesOpen", instance.buildOverlayResources.Open);
+            handler.Save("BuildOverlay.xml");
         }
 
         #endregion
@@ -72,8 +225,16 @@ namespace KerbalEngineer.Editor
         {
             try
             {
-                Instance = this;
-                GuiDisplaySize.OnSizeChanged += this.OnSizeChanged;
+                if (instance != null)
+                {
+                    Destroy(this);
+                    return;
+                }
+                instance = this;
+                this.buildOverlayPartInfo = this.gameObject.AddComponent<BuildOverlayPartInfo>();
+                this.buildOverlayVessel = this.gameObject.AddComponent<BuildOverlayVessel>();
+                this.buildOverlayResources = this.gameObject.AddComponent<BuildOverlayResources>();
+                Load();
             }
             catch (Exception ex)
             {
@@ -81,178 +242,23 @@ namespace KerbalEngineer.Editor
             }
         }
 
-        /// <summary>
-        ///     Saves the settings when this object is destroyed.
-        /// </summary>
         protected void OnDestroy()
         {
             try
             {
-                this.Save();
-                GuiDisplaySize.OnSizeChanged -= this.OnSizeChanged;
-            }
-            catch (Exception ex)
-            {
-                Logger.Exception(ex);
-            }
-        }
-
-        protected void OnGUI()
-        {
-            try
-            {
-                if (!this.visible || EditorLogic.fetch == null || EditorLogic.fetch.ship.parts.Count == 0 || EditorLogic.fetch.editorScreen != EditorLogic.EditorScreen.Parts)
+                Save();
+                if (this.buildOverlayPartInfo != null)
                 {
-                    return;
+                    Destroy(this.buildOverlayPartInfo);
                 }
-
-                if (SimManager.ResultsReady())
+                if (this.buildOverlayVessel != null)
                 {
-                    this.lastStage = SimManager.LastStage;
+                    Destroy(this.buildOverlayVessel);
                 }
-
-                SimManager.RequestSimulation();
-
-                if (this.lastStage == null)
+                if (this.buildOverlayResources != null)
                 {
-                    return;
+                    Destroy(this.buildOverlayResources);
                 }
-
-                GUI.skin = null;
-                this.windowPosition = GUILayout.Window(this.windowId, this.windowPosition, this.Window, string.Empty, this.windowStyle);
-
-                // Check and set that the window is at the bottom of the screen.
-                if (this.windowPosition.y + this.windowPosition.height != Screen.height - 5.0f)
-                {
-                    this.windowPosition.y = Screen.height - this.windowPosition.height - 5.0f;
-                }
-            }
-            catch (Exception ex)
-            {
-                Logger.Exception(ex);
-            }
-        }
-
-        protected void Start()
-        {
-            try
-            {
-                this.windowId = this.GetHashCode();
-                this.InitialiseStyles();
-                this.Load();
-            }
-            catch (Exception ex)
-            {
-                Logger.Exception(ex);
-            }
-        }
-
-        protected void Update()
-        {
-            try
-            {
-                if (!this.visible || BuildAdvanced.Instance == null || EditorLogic.fetch == null || EditorLogic.fetch.ship.parts.Count == 0 || EditorLogic.fetch.editorScreen != EditorLogic.EditorScreen.Parts)
-                {
-                    return;
-                }
-
-                // Configure the simulation parameters based on the selected reference body.
-                SimManager.Gravity = CelestialBodies.SelectedBody.Gravity;
-
-                if (BuildAdvanced.Instance.ShowAtmosphericDetails)
-                {
-                    SimManager.Atmosphere = CelestialBodies.SelectedBody.Atmosphere * 0.01d;
-                }
-                else
-                {
-                    SimManager.Atmosphere = 0;
-                }
-
-                SimManager.TryStartSimulation();
-            }
-            catch (Exception ex)
-            {
-                Logger.Exception(ex);
-            }
-        }
-
-        #endregion
-
-        #region Methods: private
-
-        private void InitialiseStyles()
-        {
-            this.windowStyle = new GUIStyle(GUIStyle.none)
-            {
-                margin = new RectOffset(),
-                padding = new RectOffset()
-            };
-
-            this.titleStyle = new GUIStyle(HighLogic.Skin.label)
-            {
-                normal =
-                {
-                    textColor = Color.white
-                },
-                margin = new RectOffset(),
-                padding = new RectOffset(),
-                fontSize = (int)(11 * GuiDisplaySize.Offset),
-                fontStyle = FontStyle.Bold,
-                stretchWidth = true
-            };
-
-            this.infoStyle = new GUIStyle(HighLogic.Skin.label)
-            {
-                margin = new RectOffset(),
-                padding = new RectOffset(),
-                fontSize = (int)(11 * GuiDisplaySize.Offset),
-                fontStyle = FontStyle.Bold,
-                stretchWidth = true
-            };
-
-        }
-
-        private void Load()
-        {
-            var handler = SettingHandler.Load("BuildOverlay.xml");
-            handler.Get("visible", ref this.visible);
-        }
-
-        private void OnSizeChanged()
-        {
-            this.InitialiseStyles();
-            this.windowPosition.width = 0;
-            this.windowPosition.height = 0;
-        }
-
-        private void Save()
-        {
-            var handler = new SettingHandler();
-            handler.Set("visible", this.visible);
-            handler.Save("BuildOverlay.xml");
-        }
-
-        private void Window(int windowId)
-        {
-            try
-            {
-                GUILayout.BeginHorizontal();
-
-                // Titles
-                GUILayout.BeginVertical(GUILayout.Width(75.0f * GuiDisplaySize.Offset));
-                GUILayout.Label("Parts:", this.titleStyle);
-                GUILayout.Label("Delta-V:", this.titleStyle);
-                GUILayout.Label("TWR:", this.titleStyle);
-                GUILayout.EndVertical();
-
-                // Details
-                GUILayout.BeginVertical(GUILayout.Width(100.0f * GuiDisplaySize.Offset));
-                GUILayout.Label(this.lastStage.partCount.ToString("N0"), this.infoStyle);
-                GUILayout.Label(this.lastStage.totalDeltaV.ToString("N0") + " m/s", this.infoStyle);
-                GUILayout.Label(this.lastStage.thrustToWeight.ToString("F2"), this.infoStyle);
-                GUILayout.EndVertical();
-
-                GUILayout.EndHorizontal();
             }
             catch (Exception ex)
             {

@@ -141,20 +141,22 @@ namespace KerbalEngineer.Editor
         {
             try
             {
-                if ((this.position.MouseIsOver() || this.bodiesList.Position.MouseIsOver()) && this.isEditorLocked == false)
+                if ((this.position.MouseIsOver() || this.bodiesList.Position.MouseIsOver()) && !this.isEditorLocked)
                 {
-                    EditorLogic.fetch.State = EditorLogic.EditorState.GUI_SELECTED;
+                    EditorLogic.fetch.Lock(true, true, true, "KER_BuildAdvanced");
+                    BuildOverlay.BuildOverlayPartInfo.Hidden = true;
                     this.isEditorLocked = true;
                 }
                 else if (!this.position.MouseIsOver() && !this.bodiesList.Position.MouseIsOver() && this.isEditorLocked)
                 {
-                    EditorLogic.fetch.State = EditorLogic.EditorState.PAD_UNSELECTED;
+                    EditorLogic.fetch.Unlock("KER_BuildAdvanced");
+                    BuildOverlay.BuildOverlayPartInfo.Hidden = false;
                     this.isEditorLocked = false;
                 }
             }
             catch (Exception ex)
             {
-                Logger.Exception(ex, "BuildAdvanced->CheckEditorLock");
+                Logger.Exception(ex);
             }
         }
 
@@ -402,16 +404,10 @@ namespace KerbalEngineer.Editor
                 GUILayout.EndHorizontal();
 
                 GUILayout.BeginHorizontal();
-                GUILayout.Label("Build Engineer Overlay (Vessel):", this.settingStyle);
-                BuildOverlay.Instance.Visible = GUILayout.Toggle(BuildOverlay.Instance.Visible, "ENABLED", this.buttonStyle, GUILayout.Width(100.0f * GuiDisplaySize.Offset));
-                BuildOverlay.Instance.Visible = !GUILayout.Toggle(!BuildOverlay.Instance.Visible, "DISABLED", this.buttonStyle, GUILayout.Width(100.0f * GuiDisplaySize.Offset));
-                GUILayout.EndHorizontal();
-
-                GUILayout.BeginHorizontal();
-                GUILayout.Label("Build Engineer Overlay (Part Info):", this.settingStyle);
-                BuildOverlayPartInfo.Visible = GUILayout.Toggle(BuildOverlayPartInfo.Visible, "VISIBLE", this.buttonStyle, GUILayout.Width(100.0f * GuiDisplaySize.Offset));
-                BuildOverlayPartInfo.NamesOnly = GUILayout.Toggle(BuildOverlayPartInfo.NamesOnly, "NAMES ONLY", this.buttonStyle, GUILayout.Width(100.0f * GuiDisplaySize.Offset));
-                BuildOverlayPartInfo.ClickToOpen = GUILayout.Toggle(BuildOverlayPartInfo.ClickToOpen, "CLICK TO OPEN", this.buttonStyle, GUILayout.Width(100.0f * GuiDisplaySize.Offset));
+                GUILayout.Label("Build Engineer Overlay:", this.settingStyle);
+                BuildOverlay.Visible = GUILayout.Toggle(BuildOverlay.Visible, "VISIBLE", this.buttonStyle, GUILayout.Width(100.0f * GuiDisplaySize.Offset));
+                BuildOverlay.BuildOverlayPartInfo.NamesOnly = GUILayout.Toggle(BuildOverlay.BuildOverlayPartInfo.NamesOnly, "NAMES ONLY", this.buttonStyle, GUILayout.Width(100.0f * GuiDisplaySize.Offset));
+                BuildOverlay.BuildOverlayPartInfo.ClickToOpen = GUILayout.Toggle(BuildOverlay.BuildOverlayPartInfo.ClickToOpen, "CLICK TO OPEN", this.buttonStyle, GUILayout.Width(100.0f * GuiDisplaySize.Offset));
                 GUILayout.EndHorizontal();
 
                 GUILayout.BeginHorizontal();

@@ -20,7 +20,6 @@
 #region Using Directives
 
 using System;
-using System.IO;
 
 using UnityEngine;
 
@@ -31,12 +30,28 @@ namespace KerbalEngineer.Editor
     [KSPAddon(KSPAddon.Startup.EditorAny, false)]
     public class BuildToolbar : MonoBehaviour
     {
+        #region Fields
+
         private ApplicationLauncherButton button;
+
+        #endregion
+
+        #region Methods: private
 
         private void Awake()
         {
             GameEvents.onGUIApplicationLauncherReady.Add(this.OnGuiAppLauncherReady);
             Logger.Log("BuildToolbar->Awake");
+        }
+
+        private void OnDestroy()
+        {
+            GameEvents.onGUIApplicationLauncherReady.Remove(this.OnGuiAppLauncherReady);
+            if (this.button != null)
+            {
+                ApplicationLauncher.Instance.RemoveModApplication(this.button);
+            }
+            Logger.Log("BuildToolbar->OnDestroy");
         }
 
         private void OnGuiAppLauncherReady()
@@ -92,14 +107,6 @@ namespace KerbalEngineer.Editor
             }
         }
 
-        private void OnDestroy()
-        {
-            GameEvents.onGUIApplicationLauncherReady.Remove(this.OnGuiAppLauncherReady);
-            if (this.button != null)
-            {
-                ApplicationLauncher.Instance.RemoveModApplication(this.button);
-            }
-            Logger.Log("BuildToolbar->OnDestroy");
-        }
+        #endregion
     }
 }
