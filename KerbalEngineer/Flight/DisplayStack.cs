@@ -39,30 +39,57 @@ namespace KerbalEngineer.Flight
     [KSPAddon(KSPAddon.Startup.Flight, false)]
     public class DisplayStack : MonoBehaviour
     {
-        #region Instance
+        #region Fields
+
+        private GUIStyle buttonStyle;
+        private int numberOfStackSections;
+        private bool resizeRequested;
+        private bool showControlBar = true;
+        private GUIStyle titleStyle;
+        private int windowId;
+        private Rect windowPosition;
+        private GUIStyle windowStyle;
+
+        #endregion
+
+        #region Properties
 
         /// <summary>
         ///     Gets the current instance of the DisplayStack.
         /// </summary>
         public static DisplayStack Instance { get; private set; }
 
+        public bool Hidden { get; set; }
+
+        /// <summary>
+        ///     Gets and sets the visibility of the control bar.
+        /// </summary>
+        public bool ShowControlBar
+        {
+            get { return this.showControlBar; }
+            set { this.showControlBar = value; }
+        }
+
         #endregion
 
-        #region Fields
+        #region Methods: public
 
-        private int numberOfStackSections;
-        private bool resizeRequested;
-        private int windowId;
-        private Rect windowPosition;
+        /// <summary>
+        ///     Request that the display stack's size is reset in the next draw call.
+        /// </summary>
+        public void RequestResize()
+        {
+            this.resizeRequested = true;
+        }
 
         #endregion
 
-        #region Constructors
+        #region Methods: protected
 
         /// <summary>
         ///     Sets the instance to this object.
         /// </summary>
-        private void Awake()
+        protected void Awake()
         {
             try
             {
@@ -79,14 +106,31 @@ namespace KerbalEngineer.Flight
             }
             catch (Exception ex)
             {
-                Logger.Exception(ex, "DisplayStack->Awake");
+                Logger.Exception(ex);
             }
+        }
+
+        /// <summary>
+        ///     Runs when the object is destroyed.
+        /// </summary>
+        protected void OnDestroy()
+        {
+            try
+            {
+                this.Save();
+                RenderingManager.RemoveFromPostDrawQueue(0, this.Draw);
+            }
+            catch (Exception ex)
+            {
+                Logger.Exception(ex);
+            }
+            Logger.Log("ActionMenu->OnDestroy");
         }
 
         /// <summary>
         ///     Initialises the object's state on creation.
         /// </summary>
-        private void Start()
+        protected void Start()
         {
             try
             {
@@ -98,90 +142,11 @@ namespace KerbalEngineer.Flight
             }
             catch (Exception ex)
             {
-                Logger.Exception(ex, "DisplayStack->Start");
+                Logger.Exception(ex);
             }
         }
 
-        #endregion
-
-        #region Properties
-
-        private bool showControlBar = true;
-
-        /// <summary>
-        ///     Gets and sets the visibility of the control bar.
-        /// </summary>
-        public bool ShowControlBar
-        {
-            get { return this.showControlBar; }
-            set { this.showControlBar = value; }
-        }
-
-        public bool Hidden { get; set; }
-
-        #endregion
-
-        #region GUIStyles
-
-        private GUIStyle buttonStyle;
-        private GUIStyle titleStyle;
-        private GUIStyle windowStyle;
-
-        /// <summary>
-        ///     Initialises all the styles required for this object.
-        /// </summary>
-        private void InitialiseStyles()
-        {
-            try
-            {
-                this.windowStyle = new GUIStyle(HighLogic.Skin.window)
-                {
-                    margin = new RectOffset(),
-                    padding = new RectOffset(5, 5, 0, 5)
-                };
-
-                this.titleStyle = new GUIStyle(HighLogic.Skin.label)
-                {
-                    margin = new RectOffset(0, 0, 5, 3),
-                    padding = new RectOffset(),
-                    alignment = TextAnchor.MiddleCenter,
-                    fontSize = (int)(13 * GuiDisplaySize.Offset),
-                    fontStyle = FontStyle.Bold,
-                    stretchWidth = true
-                };
-
-                this.buttonStyle = new GUIStyle(HighLogic.Skin.button)
-                {
-                    normal =
-                    {
-                        textColor = Color.white
-                    },
-                    margin = new RectOffset(),
-                    padding = new RectOffset(),
-                    alignment = TextAnchor.MiddleCenter,
-                    fontSize = (int)(11 * GuiDisplaySize.Offset),
-                    fontStyle = FontStyle.Bold,
-                    fixedWidth = 60.0f * GuiDisplaySize.Offset,
-                    fixedHeight = 25.0f * GuiDisplaySize.Offset,
-                };
-            }
-            catch (Exception ex)
-            {
-                Logger.Exception(ex, "DisplayStack->InitialiseStyles");
-            }
-        }
-
-        private void OnSizeChanged()
-        {
-            this.InitialiseStyles();
-            this.RequestResize();
-        }
-
-        #endregion
-
-        #region Updating
-
-        private void Update()
+        protected void Update()
         {
             try
             {
@@ -190,20 +155,20 @@ namespace KerbalEngineer.Flight
                     return;
                 }
 
-                if (Input.GetKeyDown(KeyCode.Backslash))
+                if (Input.GetKeyDown(KeyBinder.FlightShowHide))
                 {
                     this.Hidden = !this.Hidden;
                 }
             }
             catch (Exception ex)
             {
-                Logger.Exception(ex, "DisplayStack->Update");
+                Logger.Exception(ex);
             }
         }
 
         #endregion
 
-        #region Drawing
+        #region Methods: private
 
         /// <summary>
         ///     Called to draw the display stack when the UI is enabled.
@@ -238,7 +203,137 @@ namespace KerbalEngineer.Flight
             }
             catch (Exception ex)
             {
-                Logger.Exception(ex, "DisplayStack->Draw");
+                Logger.Exception(ex);
+            }
+        }
+
+        /// <summary>
+        ///     Draws the control bar.
+        /// </summary>
+        private void DrawControlBar()
+        {
+            GUILayout.Label("FLIGHT ENGINEER " + EngineerGlobals.AssemblyVersion, this.titleStyle);
+
+            this.DrawControlBarButtons(SectionLibrary.StockSections);
+            this.DrawControlBarButtons(SectionLibrary.CustomSections);
+        }
+
+        /// <summary>
+        ///     Draws a button list for a set of sections.
+        /// </summary>
+        private void DrawControlBarButtons(IEnumerable<SectionModule> sections)
+        {
+            var index = 0;
+            foreach (var section in sections.Where(s => !string.IsNullOrEmpty(s.Abbreviation) || !s.IsCustom))
+            {
+                if (index % 4 == 0)
+                {
+                    if (index > 0)
+                    {
+                        GUILayout.EndHorizontal();
+                    }
+                    GUILayout.BeginHorizontal();
+                }
+                section.IsVisible = GUILayout.Toggle(section.IsVisible, section.Abbreviation.ToUpper(), this.buttonStyle);
+                index++;
+            }
+            if (index > 0)
+            {
+                GUILayout.EndHorizontal();
+            }
+        }
+
+        /// <summary>
+        ///     Draws a list of sections.
+        /// </summary>
+        private void DrawSections(IEnumerable<SectionModule> sections)
+        {
+            foreach (var section in sections)
+            {
+                if (!section.IsFloating)
+                {
+                    section.Draw();
+                }
+            }
+        }
+
+        /// <summary>
+        ///     Initialises all the styles required for this object.
+        /// </summary>
+        private void InitialiseStyles()
+        {
+            this.windowStyle = new GUIStyle(HighLogic.Skin.window)
+            {
+                margin = new RectOffset(),
+                padding = new RectOffset(5, 5, 0, 5)
+            };
+
+            this.titleStyle = new GUIStyle(HighLogic.Skin.label)
+            {
+                margin = new RectOffset(0, 0, 5, 3),
+                padding = new RectOffset(),
+                alignment = TextAnchor.MiddleCenter,
+                fontSize = (int)(13 * GuiDisplaySize.Offset),
+                fontStyle = FontStyle.Bold,
+                stretchWidth = true
+            };
+
+            this.buttonStyle = new GUIStyle(HighLogic.Skin.button)
+            {
+                normal =
+                {
+                    textColor = Color.white
+                },
+                margin = new RectOffset(),
+                padding = new RectOffset(),
+                alignment = TextAnchor.MiddleCenter,
+                fontSize = (int)(11 * GuiDisplaySize.Offset),
+                fontStyle = FontStyle.Bold,
+                fixedWidth = 60.0f * GuiDisplaySize.Offset,
+                fixedHeight = 25.0f * GuiDisplaySize.Offset,
+            };
+        }
+
+        /// <summary>
+        ///     Load the stack's state.
+        /// </summary>
+        private void Load()
+        {
+            try
+            {
+                var handler = SettingHandler.Load("DisplayStack.xml");
+                this.ShowControlBar = handler.Get("showControlBar", this.ShowControlBar);
+                this.windowPosition.x = handler.Get("windowPositionX", this.windowPosition.x);
+                this.windowPosition.y = handler.Get("windowPositionY", this.windowPosition.y);
+            }
+            catch (Exception ex)
+            {
+                Logger.Exception(ex, "DisplayStack->Load");
+            }
+        }
+
+        private void OnSizeChanged()
+        {
+            this.InitialiseStyles();
+            this.RequestResize();
+        }
+
+        /// <summary>
+        ///     Saves the stack's state.
+        /// </summary>
+        private void Save()
+        {
+            try
+            {
+                var handler = new SettingHandler();
+                handler.Set("showControlBar", this.ShowControlBar);
+                handler.Set("windowPositionX", this.windowPosition.x);
+                handler.Set("windowPositionY", this.windowPosition.y);
+                handler.Save("DisplayStack.xml");
+            }
+            catch (Exception ex)
+            {
+                Logger.Exception(ex, "DisplayStack->Save");
             }
         }
 
@@ -266,151 +361,6 @@ namespace KerbalEngineer.Flight
             {
                 Logger.Exception(ex, "DisplayStack->Widnow");
             }
-        }
-
-        /// <summary>
-        ///     Draws the control bar.
-        /// </summary>
-        private void DrawControlBar()
-        {
-            try
-            {
-                GUILayout.Label("FLIGHT ENGINEER " + EngineerGlobals.AssemblyVersion, this.titleStyle);
-
-                this.DrawControlBarButtons(SectionLibrary.StockSections);
-                this.DrawControlBarButtons(SectionLibrary.CustomSections);
-            }
-            catch (Exception ex)
-            {
-                Logger.Exception(ex, "DisplayStack->DrawControlBar");
-            }
-        }
-
-        /// <summary>
-        ///     Draws a button list for a set of sections.
-        /// </summary>
-        private void DrawControlBarButtons(IEnumerable<SectionModule> sections)
-        {
-            try
-            {
-                var index = 0;
-                foreach (var section in sections.Where(s => !string.IsNullOrEmpty(s.Abbreviation) || !s.IsCustom))
-                {
-                    if (index % 4 == 0)
-                    {
-                        if (index > 0)
-                        {
-                            GUILayout.EndHorizontal();
-                        }
-                        GUILayout.BeginHorizontal();
-                    }
-                    section.IsVisible = GUILayout.Toggle(section.IsVisible, section.Abbreviation.ToUpper(), this.buttonStyle);
-                    index++;
-                }
-                if (index > 0)
-                {
-                    GUILayout.EndHorizontal();
-                }
-            }
-            catch (Exception ex)
-            {
-                Logger.Exception(ex, "DisplayStack->DrawControlBarButtons");
-            }
-        }
-
-        /// <summary>
-        ///     Draws a list of sections.
-        /// </summary>
-        private void DrawSections(IEnumerable<SectionModule> sections)
-        {
-            try
-            {
-                foreach (var section in sections)
-                {
-                    if (!section.IsFloating)
-                    {
-                        section.Draw();
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                Logger.Exception(ex, "DisplayStack->DrawSections");
-            }
-        }
-
-        #endregion
-
-        #region Destruction
-
-        /// <summary>
-        ///     Runs when the object is destroyed.
-        /// </summary>
-        private void OnDestroy()
-        {
-            try
-            {
-                this.Save();
-                RenderingManager.RemoveFromPostDrawQueue(0, this.Draw);
-                Logger.Log("ActionMenu->OnDestroy");
-            }
-            catch (Exception ex)
-            {
-                Logger.Exception(ex, "DisplayStack->OnDestroy");
-            }
-        }
-
-        #endregion
-
-        #region Saving and Loading
-
-        /// <summary>
-        ///     Saves the stack's state.
-        /// </summary>
-        private void Save()
-        {
-            try
-            {
-                var handler = new SettingHandler();
-                handler.Set("showControlBar", this.ShowControlBar);
-                handler.Set("windowPositionX", this.windowPosition.x);
-                handler.Set("windowPositionY", this.windowPosition.y);
-                handler.Save("DisplayStack.xml");
-            }
-            catch (Exception ex)
-            {
-                Logger.Exception(ex, "DisplayStack->Save");
-            }
-        }
-
-        /// <summary>
-        ///     Load the stack's state.
-        /// </summary>
-        private void Load()
-        {
-            try
-            {
-                var handler = SettingHandler.Load("DisplayStack.xml");
-                this.ShowControlBar = handler.Get("showControlBar", this.ShowControlBar);
-                this.windowPosition.x = handler.Get("windowPositionX", this.windowPosition.x);
-                this.windowPosition.y = handler.Get("windowPositionY", this.windowPosition.y);
-            }
-            catch (Exception ex)
-            {
-                Logger.Exception(ex, "DisplayStack->Load");
-            }
-        }
-
-        #endregion
-
-        #region Methods
-
-        /// <summary>
-        ///     Request that the display stack's size is reset in the next draw call.
-        /// </summary>
-        public void RequestResize()
-        {
-            this.resizeRequested = true;
         }
 
         #endregion

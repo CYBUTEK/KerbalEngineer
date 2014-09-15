@@ -107,6 +107,7 @@
     <Compile Include="Helpers\TextureHelper.cs" />
     <Compile Include="Helpers\Units.cs" />
     <Compile Include="Helpers\TimeFormatter.cs" />
+    <Compile Include="KeyBinder.cs" />
     <Compile Include="UIControls\DropDown.cs" />
     <Compile Include="Logger.cs" />
     <Compile Include="EngineerGlobals.cs" />

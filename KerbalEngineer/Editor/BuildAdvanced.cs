@@ -124,518 +124,27 @@ namespace KerbalEngineer.Editor
 
         #endregion
 
-        #region Methods: private
+        #region Methods: protected
 
-        private void Awake()
-        {
-            Instance = this;
-            this.bodiesList = this.gameObject.AddComponent<DropDown>();
-            this.bodiesList.DrawCallback = this.DrawBodiesList;
-            this.Load();
-        }
-
-        /// <summary>
-        ///     Checks whether the editor should be locked to stop click-through.
-        /// </summary>
-        private void CheckEditorLock()
+        protected void Awake()
         {
             try
             {
-                if ((this.position.MouseIsOver() || this.bodiesList.Position.MouseIsOver()) && !this.isEditorLocked)
-                {
-                    EditorLogic.fetch.Lock(true, true, true, "KER_BuildAdvanced");
-                    BuildOverlay.BuildOverlayPartInfo.Hidden = true;
-                    this.isEditorLocked = true;
-                }
-                else if (!this.position.MouseIsOver() && !this.bodiesList.Position.MouseIsOver() && this.isEditorLocked)
-                {
-                    EditorLogic.fetch.Unlock("KER_BuildAdvanced");
-                    BuildOverlay.BuildOverlayPartInfo.Hidden = false;
-                    this.isEditorLocked = false;
-                }
+                Instance = this;
+                this.bodiesList = this.gameObject.AddComponent<DropDown>();
+                this.bodiesList.DrawCallback = this.DrawBodiesList;
+                this.Load();
             }
             catch (Exception ex)
             {
                 Logger.Exception(ex);
-            }
-        }
-
-        /// <summary>
-        ///     Draws the atmospheric settings.
-        /// </summary>
-        private void DrawAtmosphericDetails()
-        {
-            try
-            {
-                GUILayout.BeginHorizontal();
-                GUILayout.Label("Pressure: " + (this.atmosphericPercentage * 100.0f).ToString("F1") + "%", this.settingAtmoStyle, GUILayout.Width(125.0f * GuiDisplaySize.Offset));
-                GUI.skin = HighLogic.Skin;
-                GUILayout.BeginVertical();
-                GUILayout.FlexibleSpace();
-                this.atmosphericPercentage = GUILayout.HorizontalSlider(this.atmosphericPercentage, 0, 1.0f);
-                GUILayout.FlexibleSpace();
-                GUILayout.EndVertical();
-                GUI.skin = null;
-                GUILayout.EndHorizontal();
-
-                GUILayout.Space(5.0f);
-
-                GUILayout.BeginHorizontal();
-                GUILayout.Label("Velocity: " + this.atmosphericVelocity.ToString("F1") + "m/s", this.settingAtmoStyle, GUILayout.Width(125.0f * GuiDisplaySize.Offset));
-                GUI.skin = HighLogic.Skin;
-                GUILayout.BeginVertical();
-                GUILayout.FlexibleSpace();
-                this.atmosphericVelocity = GUILayout.HorizontalSlider(this.atmosphericVelocity, 0, 2500f);
-                GUILayout.FlexibleSpace();
-                GUILayout.EndVertical();
-                GUI.skin = null;
-                GUILayout.EndHorizontal();
-            }
-            catch (Exception ex)
-            {
-                Logger.Exception(ex, "BuildAdvanced->DrawAtmosphericDetails");
-            }
-        }
-
-        private void DrawBodiesList()
-        {
-            try
-            {
-                if (CelestialBodies.SystemBody == CelestialBodies.SelectedBody)
-                {
-                    this.DrawBody(CelestialBodies.SystemBody);
-                }
-                else
-                {
-                    foreach (var body in CelestialBodies.SystemBody.Children)
-                    {
-                        this.DrawBody(body);
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                Logger.Exception(ex);
-            }
-        }
-
-        private void DrawBody(CelestialBodies.BodyInfo bodyInfo, int depth = 0)
-        {
-            try
-            {
-                GUILayout.BeginHorizontal();
-                GUILayout.Space(20.0f * depth);
-                if (GUILayout.Button(bodyInfo.Children.Count > 0 ? bodyInfo.Name + " [" + bodyInfo.Children.Count + "]" : bodyInfo.Name, bodyInfo.Selected && bodyInfo.SelectedDepth == 0 ? this.bodiesButtonActiveStyle : this.bodiesButtonStyle))
-                {
-                    CelestialBodies.SetSelectedBody(bodyInfo.Name);
-                    this.bodiesList.Resize = true;
-                }
-                GUILayout.EndHorizontal();
-
-                if (bodyInfo.Selected)
-                {
-                    foreach (var body in bodyInfo.Children)
-                    {
-                        this.DrawBody(body, depth + 1);
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                Logger.Exception(ex);
-            }
-        }
-
-        /// <summary>
-        ///     Draws the burn time column.
-        /// </summary>
-        private void DrawBurnTime()
-        {
-            try
-            {
-                GUILayout.BeginVertical(GUILayout.Width(75.0f * GuiDisplaySize.Offset));
-                GUILayout.Label("BURN", this.titleStyle);
-                foreach (var stage in this.stages)
-                {
-                    if (this.showAllStages || stage.deltaV > 0)
-                    {
-                        GUILayout.Label(TimeFormatter.ConvertToString(stage.time), this.infoStyle);
-                    }
-                }
-                GUILayout.EndVertical();
-            }
-            catch (Exception ex)
-            {
-                Logger.Exception(ex, "BuildAdvanced->DrawBurnTime");
-            }
-        }
-
-        /// <summary>
-        ///     Draws the cost column.
-        /// </summary>
-        private void DrawCost()
-        {
-            try
-            {
-                GUILayout.BeginVertical(GUILayout.Width(110.0f * GuiDisplaySize.Offset));
-                GUILayout.Label("COST", this.titleStyle);
-                foreach (var stage in this.stages)
-                {
-                    if (this.showAllStages || stage.deltaV > 0)
-                    {
-                        GUILayout.Label(stage.cost.ToString("N0") + " / " + stage.totalCost.ToString("N0"), this.infoStyle);
-                    }
-                }
-                GUILayout.EndVertical();
-            }
-            catch (Exception ex)
-            {
-                Logger.Exception(ex, "BuildAdvanced->DrawCost");
-            }
-        }
-
-        /// <summary>
-        ///     Draws the deltaV column.
-        /// </summary>
-        private void DrawDeltaV()
-        {
-            try
-            {
-                GUILayout.BeginVertical(GUILayout.Width(100.0f * GuiDisplaySize.Offset));
-                GUILayout.Label("DELTA-V", this.titleStyle);
-                foreach (var stage in this.stages)
-                {
-                    if (this.showAllStages || stage.deltaV > 0)
-                    {
-                        GUILayout.Label(stage.deltaV.ToString("N0") + " / " + stage.inverseTotalDeltaV.ToString("N0") + "m/s", this.infoStyle);
-                    }
-                }
-                GUILayout.EndVertical();
-            }
-            catch (Exception ex)
-            {
-                Logger.Exception(ex, "BuildAdvanced->DrawDeltaV");
-            }
-        }
-
-        /// <summary>
-        ///     Draws the specific impluse column.
-        /// </summary>
-        private void DrawIsp()
-        {
-            try
-            {
-                GUILayout.BeginVertical(GUILayout.Width(75.0f * GuiDisplaySize.Offset));
-                GUILayout.Label("ISP", this.titleStyle);
-                foreach (var stage in this.stages)
-                {
-                    if (this.showAllStages || stage.deltaV > 0)
-                    {
-                        GUILayout.Label(stage.isp.ToString("F1") + "s", this.infoStyle);
-                    }
-                }
-                GUILayout.EndVertical();
-            }
-            catch (Exception ex)
-            {
-                Logger.Exception(ex, "BuildAdvanced->DrawIsp");
-            }
-        }
-
-        /// <summary>
-        ///     Draws the mass column.
-        /// </summary>
-        private void DrawMass()
-        {
-            try
-            {
-                GUILayout.BeginVertical(GUILayout.Width(110.0f * GuiDisplaySize.Offset));
-                GUILayout.Label("MASS", this.titleStyle);
-                foreach (var stage in this.stages)
-                {
-                    if (this.showAllStages || stage.deltaV > 0)
-                    {
-                        GUILayout.Label(Units.ToMass(stage.mass, stage.totalMass), this.infoStyle);
-                    }
-                }
-                GUILayout.EndVertical();
-            }
-            catch (Exception ex)
-            {
-                Logger.Exception(ex, "BuildAdvanced->DrawMass");
-            }
-        }
-
-        /// <summary>
-        ///     Draws the part count column.
-        /// </summary>
-        private void DrawPartCount()
-        {
-            try
-            {
-                GUILayout.BeginVertical(GUILayout.Width(50.0f * GuiDisplaySize.Offset));
-                GUILayout.Label("PARTS", this.titleStyle);
-                foreach (var stage in this.stages)
-                {
-                    if (this.showAllStages || stage.deltaV > 0)
-                    {
-                        GUILayout.Label(stage.partCount.ToString("N0"), this.infoStyle);
-                    }
-                }
-                GUILayout.EndVertical();
-            }
-            catch (Exception ex)
-            {
-                Logger.Exception(ex, "BuildAdvanced->DrawPartCount");
-            }
-        }
-
-        /// <summary>
-        ///     Draws the settings panel.
-        /// </summary>
-        private void DrawSettings()
-        {
-            try
-            {
-                GUILayout.BeginHorizontal();
-                GUILayout.Label("Compact mode collapses to the:", this.settingStyle);
-                this.compactCollapseRight = !GUILayout.Toggle(!this.compactCollapseRight, "LEFT", this.buttonStyle, GUILayout.Width(100.0f * GuiDisplaySize.Offset));
-                this.compactCollapseRight = GUILayout.Toggle(this.compactCollapseRight, "RIGHT", this.buttonStyle, GUILayout.Width(100.0f * GuiDisplaySize.Offset));
-                GUILayout.EndHorizontal();
-
-                GUILayout.BeginHorizontal();
-                GUILayout.Label("Build Engineer Overlay:", this.settingStyle);
-                BuildOverlay.Visible = GUILayout.Toggle(BuildOverlay.Visible, "VISIBLE", this.buttonStyle, GUILayout.Width(100.0f * GuiDisplaySize.Offset));
-                BuildOverlay.BuildOverlayPartInfo.NamesOnly = GUILayout.Toggle(BuildOverlay.BuildOverlayPartInfo.NamesOnly, "NAMES ONLY", this.buttonStyle, GUILayout.Width(100.0f * GuiDisplaySize.Offset));
-                BuildOverlay.BuildOverlayPartInfo.ClickToOpen = GUILayout.Toggle(BuildOverlay.BuildOverlayPartInfo.ClickToOpen, "CLICK TO OPEN", this.buttonStyle, GUILayout.Width(100.0f * GuiDisplaySize.Offset));
-                GUILayout.EndHorizontal();
-
-                GUILayout.BeginHorizontal();
-                GUILayout.Label("Flight Engineer activation mode:", this.settingStyle);
-                FlightEngineerPartless.IsPartless = GUILayout.Toggle(FlightEngineerPartless.IsPartless, "PARTLESS", this.buttonStyle, GUILayout.Width(100.0f * GuiDisplaySize.Offset));
-                FlightEngineerPartless.IsPartless = !GUILayout.Toggle(!FlightEngineerPartless.IsPartless, "MODULE", this.buttonStyle, GUILayout.Width(100.0f * GuiDisplaySize.Offset));
-                GUILayout.EndHorizontal();
-
-                GUILayout.BeginHorizontal();
-                GUILayout.Label("GUI Size: " + GuiDisplaySize.Increment, this.settingStyle);
-                if (GUILayout.Button("<", this.buttonStyle, GUILayout.Width(100.0f * GuiDisplaySize.Offset)))
-                {
-                    GuiDisplaySize.Increment--;
-                }
-                if (GUILayout.Button(">", this.buttonStyle, GUILayout.Width(100.0f * GuiDisplaySize.Offset)))
-                {
-                    GuiDisplaySize.Increment++;
-                }
-                GUILayout.EndHorizontal();
-
-                GUILayout.Label("Minimum delay between simulations: " + SimManager.minSimTime + "ms", this.settingStyle);
-                GUI.skin = HighLogic.Skin;
-                SimManager.minSimTime = (long)GUILayout.HorizontalSlider(SimManager.minSimTime, 0, 2000.0f);
-                GUI.skin = null;
-            }
-            catch (Exception ex)
-            {
-                Logger.Exception(ex, "BuildAdvanced->DrawSettings");
-            }
-        }
-
-        /// <summary>
-        ///     Draws the stage number column.
-        /// </summary>
-        private void DrawStageNumbers()
-        {
-            try
-            {
-                GUILayout.BeginVertical(GUILayout.Width(30.0f * GuiDisplaySize.Offset));
-                GUILayout.Label(string.Empty, this.titleStyle);
-                foreach (var stage in this.stages)
-                {
-                    if (this.showAllStages || stage.deltaV > 0)
-                    {
-                        GUILayout.Label("S" + stage.number, this.titleStyle);
-                    }
-                }
-                GUILayout.EndVertical();
-            }
-            catch (Exception ex)
-            {
-                Logger.Exception(ex, "BuildAdvanced->DrawStageNumbers");
-            }
-        }
-
-        /// <summary>
-        ///     Draws the thrust column.
-        /// </summary>
-        private void DrawThrust()
-        {
-            try
-            {
-                GUILayout.BeginVertical(GUILayout.Width(75.0f * GuiDisplaySize.Offset));
-                GUILayout.Label("THRUST", this.titleStyle);
-                foreach (var stage in this.stages)
-                {
-                    if (this.showAllStages || stage.deltaV > 0)
-                    {
-                        GUILayout.Label(stage.thrust.ToForce(), this.infoStyle);
-                    }
-                }
-                GUILayout.EndVertical();
-            }
-            catch (Exception ex)
-            {
-                Logger.Exception(ex, "BuildAdvanced->DrawThrust");
-            }
-        }
-
-        /// <summary>
-        ///     Drwas the thrust to weight ratio column.
-        /// </summary>
-        private void DrawTwr()
-        {
-            try
-            {
-                GUILayout.BeginVertical(GUILayout.Width(100.0f * GuiDisplaySize.Offset));
-                GUILayout.Label("TWR (MAX)", this.titleStyle);
-                foreach (var stage in this.stages)
-                {
-                    if (this.showAllStages || stage.deltaV > 0)
-                    {
-                        GUILayout.Label(stage.thrustToWeight.ToString("F2") + " (" + stage.maxThrustToWeight.ToString("F2") + ")", this.infoStyle);
-                    }
-                }
-                GUILayout.EndVertical();
-            }
-            catch (Exception ex)
-            {
-                Logger.Exception(ex, "BuildAdvanced->DrawTwr");
-            }
-        }
-
-        /// <summary>
-        ///     Initialises all the styles that are required.
-        /// </summary>
-        private void InitialiseStyles()
-        {
-            try
-            {
-                this.windowStyle = new GUIStyle(HighLogic.Skin.window)
-                {
-                    alignment = TextAnchor.UpperLeft
-                };
-
-                this.areaStyle = new GUIStyle(HighLogic.Skin.box)
-                {
-                    padding = new RectOffset(0, 0, 9, 0)
-                };
-
-                this.areaSettingStyle = new GUIStyle(HighLogic.Skin.box)
-                {
-                    padding = new RectOffset(10, 10, 10, 10)
-                };
-
-                this.buttonStyle = new GUIStyle(HighLogic.Skin.button)
-                {
-                    normal =
-                    {
-                        textColor = Color.white
-                    },
-                    fontSize = (int)(11 * GuiDisplaySize.Offset),
-                    fontStyle = FontStyle.Bold,
-                    alignment = TextAnchor.MiddleCenter
-                };
-
-                this.titleStyle = new GUIStyle(HighLogic.Skin.label)
-                {
-                    normal =
-                    {
-                        textColor = Color.white
-                    },
-                    fontSize = (int)(11 * GuiDisplaySize.Offset),
-                    fontStyle = FontStyle.Bold,
-                    alignment = TextAnchor.MiddleCenter,
-                    stretchWidth = true,
-                };
-
-                this.infoStyle = new GUIStyle(HighLogic.Skin.label)
-                {
-                    fontSize = (int)(11 * GuiDisplaySize.Offset),
-                    fontStyle = FontStyle.Bold,
-                    alignment = TextAnchor.MiddleCenter,
-                    stretchWidth = true
-                };
-
-                this.settingStyle = new GUIStyle(this.titleStyle)
-                {
-                    alignment = TextAnchor.MiddleLeft,
-                    stretchWidth = true,
-                    stretchHeight = true
-                };
-
-                this.settingAtmoStyle = new GUIStyle(this.titleStyle)
-                {
-                    margin = new RectOffset(),
-                    padding = new RectOffset(),
-                    alignment = TextAnchor.UpperLeft
-                };
-
-                this.bodiesButtonStyle = new GUIStyle(HighLogic.Skin.button)
-                {
-                    margin = new RectOffset(0, 0, 2, 0),
-                    padding = new RectOffset(5, 5, 5, 5),
-                    normal =
-                    {
-                        textColor = Color.white
-                    },
-                    active =
-                    {
-                        textColor = Color.white
-                    },
-                    fontSize = (int)(11 * GuiDisplaySize.Offset),
-                    fontStyle = FontStyle.Bold,
-                    alignment = TextAnchor.MiddleCenter,
-                    fixedHeight = 20.0f
-                };
-
-                this.bodiesButtonActiveStyle = new GUIStyle(this.bodiesButtonStyle)
-                {
-                    normal = this.bodiesButtonStyle.onNormal,
-                    hover = this.bodiesButtonStyle.onHover
-                };
-            }
-            catch (Exception ex)
-            {
-                Logger.Exception(ex, "BuildAdvanced->InitialiseStyles");
-            }
-        }
-
-        /// <summary>
-        ///     Loads the settings when this object is created.
-        /// </summary>
-        private void Load()
-        {
-            try
-            {
-                var handler = SettingHandler.Load("BuildAdvanced.xml");
-                handler.Get("visible", ref this.visible);
-                this.position.x = handler.Get("windowPositionX", this.position.x);
-                this.position.y = handler.Get("windowPositionY", this.position.y);
-                handler.Get("compactMode", ref this.compactMode);
-                handler.Get("compactCollapseRight", ref this.compactCollapseRight);
-                handler.Get("showAllStages", ref this.showAllStages);
-                handler.Get("showAtmosphericDetails", ref this.showAtmosphericDetails);
-                handler.Get("showSettings", ref this.showSettings);
-                CelestialBodies.SetSelectedBody(handler.Get("selectedBodyName", CelestialBodies.SelectedBody.Name));
-            }
-            catch (Exception ex)
-            {
-                Logger.Exception(ex, "BuildAdvanced->Load");
             }
         }
 
         /// <summary>
         ///     Saves the settings when this object is destroyed.
         /// </summary>
-        private void OnDestroy()
+        protected void OnDestroy()
         {
             try
             {
@@ -654,11 +163,11 @@ namespace KerbalEngineer.Editor
             }
             catch (Exception ex)
             {
-                Logger.Exception(ex, "BuildAdvanced->OnDestroy");
+                Logger.Exception(ex);
             }
         }
 
-        private void OnGUI()
+        protected void OnGUI()
         {
             try
             {
@@ -711,26 +220,32 @@ namespace KerbalEngineer.Editor
             }
             catch (Exception ex)
             {
-                Logger.Exception(ex, "BuildAdvanced->OnDraw");
+                Logger.Exception(ex);
             }
         }
 
-        private void OnSizeChanged()
-        {
-            this.InitialiseStyles();
-            this.hasChanged = true;
-        }
-
-        private void Start()
-        {
-            this.InitialiseStyles();
-            GuiDisplaySize.OnSizeChanged += this.OnSizeChanged;
-        }
-
-        private void Update()
+        protected void Start()
         {
             try
             {
+                this.InitialiseStyles();
+                GuiDisplaySize.OnSizeChanged += this.OnSizeChanged;
+            }
+            catch (Exception ex)
+            {
+                Logger.Exception(ex);
+            }
+        }
+
+        protected void Update()
+        {
+            try
+            {
+                if (Input.GetKeyDown(KeyBinder.EditorShowHide))
+                {
+                    this.visible = !this.visible;
+                }
+
                 if (!this.visible || EditorLogic.fetch == null || EditorLogic.fetch.ship.parts.Count == 0)
                 {
                     this.bodiesList.enabled = false;
@@ -756,6 +271,409 @@ namespace KerbalEngineer.Editor
             {
                 Logger.Exception(ex, "BuildAdvanced->Update");
             }
+        }
+
+        #endregion
+
+        #region Methods: private
+
+        /// <summary>
+        ///     Checks whether the editor should be locked to stop click-through.
+        /// </summary>
+        private void CheckEditorLock()
+        {
+            if ((this.position.MouseIsOver() || this.bodiesList.Position.MouseIsOver()) && !this.isEditorLocked)
+            {
+                EditorLogic.fetch.Lock(true, true, true, "KER_BuildAdvanced");
+                BuildOverlay.BuildOverlayPartInfo.Hidden = true;
+                this.isEditorLocked = true;
+            }
+            else if (!this.position.MouseIsOver() && !this.bodiesList.Position.MouseIsOver() && this.isEditorLocked)
+            {
+                EditorLogic.fetch.Unlock("KER_BuildAdvanced");
+                BuildOverlay.BuildOverlayPartInfo.Hidden = false;
+                this.isEditorLocked = false;
+            }
+        }
+
+        /// <summary>
+        ///     Draws the atmospheric settings.
+        /// </summary>
+        private void DrawAtmosphericDetails()
+        {
+            GUILayout.BeginHorizontal();
+            GUILayout.Label("Pressure: " + (this.atmosphericPercentage * 100.0f).ToString("F1") + "%", this.settingAtmoStyle, GUILayout.Width(125.0f * GuiDisplaySize.Offset));
+            GUI.skin = HighLogic.Skin;
+            GUILayout.BeginVertical();
+            GUILayout.FlexibleSpace();
+            this.atmosphericPercentage = GUILayout.HorizontalSlider(this.atmosphericPercentage, 0, 1.0f);
+            GUILayout.FlexibleSpace();
+            GUILayout.EndVertical();
+            GUI.skin = null;
+            GUILayout.EndHorizontal();
+
+            GUILayout.Space(5.0f);
+
+            GUILayout.BeginHorizontal();
+            GUILayout.Label("Velocity: " + this.atmosphericVelocity.ToString("F1") + "m/s", this.settingAtmoStyle, GUILayout.Width(125.0f * GuiDisplaySize.Offset));
+            GUI.skin = HighLogic.Skin;
+            GUILayout.BeginVertical();
+            GUILayout.FlexibleSpace();
+            this.atmosphericVelocity = GUILayout.HorizontalSlider(this.atmosphericVelocity, 0, 2500f);
+            GUILayout.FlexibleSpace();
+            GUILayout.EndVertical();
+            GUI.skin = null;
+            GUILayout.EndHorizontal();
+        }
+
+        private void DrawBodiesList()
+        {
+            if (CelestialBodies.SystemBody == CelestialBodies.SelectedBody)
+            {
+                this.DrawBody(CelestialBodies.SystemBody);
+            }
+            else
+            {
+                foreach (var body in CelestialBodies.SystemBody.Children)
+                {
+                    this.DrawBody(body);
+                }
+            }
+        }
+
+        private void DrawBody(CelestialBodies.BodyInfo bodyInfo, int depth = 0)
+        {
+            GUILayout.BeginHorizontal();
+            GUILayout.Space(20.0f * depth);
+            if (GUILayout.Button(bodyInfo.Children.Count > 0 ? bodyInfo.Name + " [" + bodyInfo.Children.Count + "]" : bodyInfo.Name, bodyInfo.Selected && bodyInfo.SelectedDepth == 0 ? this.bodiesButtonActiveStyle : this.bodiesButtonStyle))
+            {
+                CelestialBodies.SetSelectedBody(bodyInfo.Name);
+                this.bodiesList.Resize = true;
+            }
+            GUILayout.EndHorizontal();
+
+            if (bodyInfo.Selected)
+            {
+                foreach (var body in bodyInfo.Children)
+                {
+                    this.DrawBody(body, depth + 1);
+                }
+            }
+        }
+
+        /// <summary>
+        ///     Draws the burn time column.
+        /// </summary>
+        private void DrawBurnTime()
+        {
+            GUILayout.BeginVertical(GUILayout.Width(75.0f * GuiDisplaySize.Offset));
+            GUILayout.Label("BURN", this.titleStyle);
+            foreach (var stage in this.stages)
+            {
+                if (this.showAllStages || stage.deltaV > 0)
+                {
+                    GUILayout.Label(TimeFormatter.ConvertToString(stage.time), this.infoStyle);
+                }
+            }
+            GUILayout.EndVertical();
+        }
+
+        /// <summary>
+        ///     Draws the cost column.
+        /// </summary>
+        private void DrawCost()
+        {
+            GUILayout.BeginVertical(GUILayout.Width(110.0f * GuiDisplaySize.Offset));
+            GUILayout.Label("COST", this.titleStyle);
+            foreach (var stage in this.stages)
+            {
+                if (this.showAllStages || stage.deltaV > 0)
+                {
+                    GUILayout.Label(stage.cost.ToString("N0") + " / " + stage.totalCost.ToString("N0"), this.infoStyle);
+                }
+            }
+            GUILayout.EndVertical();
+        }
+
+        /// <summary>
+        ///     Draws the deltaV column.
+        /// </summary>
+        private void DrawDeltaV()
+        {
+            GUILayout.BeginVertical(GUILayout.Width(100.0f * GuiDisplaySize.Offset));
+            GUILayout.Label("DELTA-V", this.titleStyle);
+            foreach (var stage in this.stages)
+            {
+                if (this.showAllStages || stage.deltaV > 0)
+                {
+                    GUILayout.Label(stage.deltaV.ToString("N0") + " / " + stage.inverseTotalDeltaV.ToString("N0") + "m/s", this.infoStyle);
+                }
+            }
+            GUILayout.EndVertical();
+        }
+
+        /// <summary>
+        ///     Draws the specific impluse column.
+        /// </summary>
+        private void DrawIsp()
+        {
+            GUILayout.BeginVertical(GUILayout.Width(75.0f * GuiDisplaySize.Offset));
+            GUILayout.Label("ISP", this.titleStyle);
+            foreach (var stage in this.stages)
+            {
+                if (this.showAllStages || stage.deltaV > 0)
+                {
+                    GUILayout.Label(stage.isp.ToString("F1") + "s", this.infoStyle);
+                }
+            }
+            GUILayout.EndVertical();
+        }
+
+        /// <summary>
+        ///     Draws the mass column.
+        /// </summary>
+        private void DrawMass()
+        {
+            GUILayout.BeginVertical(GUILayout.Width(110.0f * GuiDisplaySize.Offset));
+            GUILayout.Label("MASS", this.titleStyle);
+            foreach (var stage in this.stages)
+            {
+                if (this.showAllStages || stage.deltaV > 0)
+                {
+                    GUILayout.Label(Units.ToMass(stage.mass, stage.totalMass), this.infoStyle);
+                }
+            }
+            GUILayout.EndVertical();
+        }
+
+        /// <summary>
+        ///     Draws the part count column.
+        /// </summary>
+        private void DrawPartCount()
+        {
+            GUILayout.BeginVertical(GUILayout.Width(50.0f * GuiDisplaySize.Offset));
+            GUILayout.Label("PARTS", this.titleStyle);
+            foreach (var stage in this.stages)
+            {
+                if (this.showAllStages || stage.deltaV > 0)
+                {
+                    GUILayout.Label(stage.partCount.ToString("N0"), this.infoStyle);
+                }
+            }
+            GUILayout.EndVertical();
+        }
+
+        /// <summary>
+        ///     Draws the settings panel.
+        /// </summary>
+        private void DrawSettings()
+        {
+            GUILayout.BeginHorizontal();
+            GUILayout.Label("Compact mode collapses to the:", this.settingStyle);
+            this.compactCollapseRight = !GUILayout.Toggle(!this.compactCollapseRight, "LEFT", this.buttonStyle, GUILayout.Width(100.0f * GuiDisplaySize.Offset));
+            this.compactCollapseRight = GUILayout.Toggle(this.compactCollapseRight, "RIGHT", this.buttonStyle, GUILayout.Width(100.0f * GuiDisplaySize.Offset));
+            GUILayout.EndHorizontal();
+
+            GUILayout.BeginHorizontal();
+            GUILayout.Label("Build Engineer Overlay:", this.settingStyle);
+            BuildOverlay.Visible = GUILayout.Toggle(BuildOverlay.Visible, "VISIBLE", this.buttonStyle, GUILayout.Width(100.0f * GuiDisplaySize.Offset));
+            BuildOverlay.BuildOverlayPartInfo.NamesOnly = GUILayout.Toggle(BuildOverlay.BuildOverlayPartInfo.NamesOnly, "NAMES ONLY", this.buttonStyle, GUILayout.Width(100.0f * GuiDisplaySize.Offset));
+            BuildOverlay.BuildOverlayPartInfo.ClickToOpen = GUILayout.Toggle(BuildOverlay.BuildOverlayPartInfo.ClickToOpen, "CLICK TO OPEN", this.buttonStyle, GUILayout.Width(100.0f * GuiDisplaySize.Offset));
+            GUILayout.EndHorizontal();
+
+            GUILayout.BeginHorizontal();
+            GUILayout.Label("Flight Engineer activation mode:", this.settingStyle);
+            FlightEngineerPartless.IsPartless = GUILayout.Toggle(FlightEngineerPartless.IsPartless, "PARTLESS", this.buttonStyle, GUILayout.Width(100.0f * GuiDisplaySize.Offset));
+            FlightEngineerPartless.IsPartless = !GUILayout.Toggle(!FlightEngineerPartless.IsPartless, "MODULE", this.buttonStyle, GUILayout.Width(100.0f * GuiDisplaySize.Offset));
+            GUILayout.EndHorizontal();
+
+            GUILayout.BeginHorizontal();
+            GUILayout.Label("GUI Size: " + GuiDisplaySize.Increment, this.settingStyle);
+            if (GUILayout.Button("<", this.buttonStyle, GUILayout.Width(100.0f * GuiDisplaySize.Offset)))
+            {
+                GuiDisplaySize.Increment--;
+            }
+            if (GUILayout.Button(">", this.buttonStyle, GUILayout.Width(100.0f * GuiDisplaySize.Offset)))
+            {
+                GuiDisplaySize.Increment++;
+            }
+            GUILayout.EndHorizontal();
+
+            GUILayout.Label("Minimum delay between simulations: " + SimManager.minSimTime + "ms", this.settingStyle);
+            GUI.skin = HighLogic.Skin;
+            SimManager.minSimTime = (long)GUILayout.HorizontalSlider(SimManager.minSimTime, 0, 2000.0f);
+            GUI.skin = null;
+        }
+
+        /// <summary>
+        ///     Draws the stage number column.
+        /// </summary>
+        private void DrawStageNumbers()
+        {
+            GUILayout.BeginVertical(GUILayout.Width(30.0f * GuiDisplaySize.Offset));
+            GUILayout.Label(string.Empty, this.titleStyle);
+            foreach (var stage in this.stages)
+            {
+                if (this.showAllStages || stage.deltaV > 0)
+                {
+                    GUILayout.Label("S" + stage.number, this.titleStyle);
+                }
+            }
+            GUILayout.EndVertical();
+        }
+
+        /// <summary>
+        ///     Draws the thrust column.
+        /// </summary>
+        private void DrawThrust()
+        {
+            GUILayout.BeginVertical(GUILayout.Width(75.0f * GuiDisplaySize.Offset));
+            GUILayout.Label("THRUST", this.titleStyle);
+            foreach (var stage in this.stages)
+            {
+                if (this.showAllStages || stage.deltaV > 0)
+                {
+                    GUILayout.Label(stage.thrust.ToForce(), this.infoStyle);
+                }
+            }
+            GUILayout.EndVertical();
+        }
+
+        /// <summary>
+        ///     Drwas the thrust to weight ratio column.
+        /// </summary>
+        private void DrawTwr()
+        {
+            GUILayout.BeginVertical(GUILayout.Width(100.0f * GuiDisplaySize.Offset));
+            GUILayout.Label("TWR (MAX)", this.titleStyle);
+            foreach (var stage in this.stages)
+            {
+                if (this.showAllStages || stage.deltaV > 0)
+                {
+                    GUILayout.Label(stage.thrustToWeight.ToString("F2") + " (" + stage.maxThrustToWeight.ToString("F2") + ")", this.infoStyle);
+                }
+            }
+            GUILayout.EndVertical();
+        }
+
+        /// <summary>
+        ///     Initialises all the styles that are required.
+        /// </summary>
+        private void InitialiseStyles()
+        {
+            this.windowStyle = new GUIStyle(HighLogic.Skin.window)
+            {
+                alignment = TextAnchor.UpperLeft
+            };
+
+            this.areaStyle = new GUIStyle(HighLogic.Skin.box)
+            {
+                padding = new RectOffset(0, 0, 9, 0)
+            };
+
+            this.areaSettingStyle = new GUIStyle(HighLogic.Skin.box)
+            {
+                padding = new RectOffset(10, 10, 10, 10)
+            };
+
+            this.buttonStyle = new GUIStyle(HighLogic.Skin.button)
+            {
+                normal =
+                {
+                    textColor = Color.white
+                },
+                fontSize = (int)(11 * GuiDisplaySize.Offset),
+                fontStyle = FontStyle.Bold,
+                alignment = TextAnchor.MiddleCenter
+            };
+
+            this.titleStyle = new GUIStyle(HighLogic.Skin.label)
+            {
+                normal =
+                {
+                    textColor = Color.white
+                },
+                fontSize = (int)(11 * GuiDisplaySize.Offset),
+                fontStyle = FontStyle.Bold,
+                alignment = TextAnchor.MiddleCenter,
+                stretchWidth = true,
+            };
+
+            this.infoStyle = new GUIStyle(HighLogic.Skin.label)
+            {
+                fontSize = (int)(11 * GuiDisplaySize.Offset),
+                fontStyle = FontStyle.Bold,
+                alignment = TextAnchor.MiddleCenter,
+                stretchWidth = true
+            };
+
+            this.settingStyle = new GUIStyle(this.titleStyle)
+            {
+                alignment = TextAnchor.MiddleLeft,
+                stretchWidth = true,
+                stretchHeight = true
+            };
+
+            this.settingAtmoStyle = new GUIStyle(this.titleStyle)
+            {
+                margin = new RectOffset(),
+                padding = new RectOffset(),
+                alignment = TextAnchor.UpperLeft
+            };
+
+            this.bodiesButtonStyle = new GUIStyle(HighLogic.Skin.button)
+            {
+                margin = new RectOffset(0, 0, 2, 0),
+                padding = new RectOffset(5, 5, 5, 5),
+                normal =
+                {
+                    textColor = Color.white
+                },
+                active =
+                {
+                    textColor = Color.white
+                },
+                fontSize = (int)(11 * GuiDisplaySize.Offset),
+                fontStyle = FontStyle.Bold,
+                alignment = TextAnchor.MiddleCenter,
+                fixedHeight = 20.0f
+            };
+
+            this.bodiesButtonActiveStyle = new GUIStyle(this.bodiesButtonStyle)
+            {
+                normal = this.bodiesButtonStyle.onNormal,
+                hover = this.bodiesButtonStyle.onHover
+            };
+        }
+
+        /// <summary>
+        ///     Loads the settings when this object is created.
+        /// </summary>
+        private void Load()
+        {
+            try
+            {
+                var handler = SettingHandler.Load("BuildAdvanced.xml");
+                handler.Get("visible", ref this.visible);
+                this.position.x = handler.Get("windowPositionX", this.position.x);
+                this.position.y = handler.Get("windowPositionY", this.position.y);
+                handler.Get("compactMode", ref this.compactMode);
+                handler.Get("compactCollapseRight", ref this.compactCollapseRight);
+                handler.Get("showAllStages", ref this.showAllStages);
+                handler.Get("showAtmosphericDetails", ref this.showAtmosphericDetails);
+                handler.Get("showSettings", ref this.showSettings);
+                CelestialBodies.SetSelectedBody(handler.Get("selectedBodyName", CelestialBodies.SelectedBody.Name));
+            }
+            catch (Exception ex)
+            {
+                Logger.Exception(ex, "BuildAdvanced->Load");
+            }
+        }
+
+        private void OnSizeChanged()
+        {
+            this.InitialiseStyles();
+            this.hasChanged = true;
         }
 
         /// <summary>
@@ -842,7 +760,7 @@ namespace KerbalEngineer.Editor
             }
             catch (Exception ex)
             {
-                Logger.Exception(ex, "BuildAdvanced->Window");
+                Logger.Exception(ex);
             }
         }
 

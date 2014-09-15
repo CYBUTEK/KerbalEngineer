@@ -1,3 +1,19 @@
+1.0.9.0
+	Added: Build Engineer now implements the '\' backslash show/hide shortcut.
+	Added: New readouts to the vessel category:
+		- Current Stage DeltaV
+		- Surface Thrust to Weight Ratio
+
+	Added: New editor overlay system.
+		- Sleeker design.
+		- Hover over part information options:
+			- Name only
+			- Middle click to show
+			- Always show
+		- Slide out overlay displays:
+			- Vessel information
+			- Resources display
+
 1.0.8.1
 	Fixed: Bug which caused rendezvous readouts to freeze the game or show all zeros.
 
