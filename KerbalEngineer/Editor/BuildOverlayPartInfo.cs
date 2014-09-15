@@ -118,7 +118,7 @@ namespace KerbalEngineer.Editor
                         return;
                     }
 
-                    this.infoItems.Add(new PartInfoItem("Cost", this.selectedPart.partInfo.cost.ToString("N0")));
+                    this.SetCostInfo();
                     this.SetMassItems();
                     this.SetResourceItems();
                     this.SetEngineInfo();
@@ -180,6 +180,11 @@ namespace KerbalEngineer.Editor
             {
                 this.infoItems.Add(new PartInfoItem("\t" + resource.name, resource.rate.ToRate()));
             }
+        }
+
+        private void SetCostInfo()
+        {
+            this.infoItems.Add(new PartInfoItem("Cost", Units.Concat(this.selectedPart.GetCostDry(), this.selectedPart.GetCostWet())));
         }
 
         private void SetDecouplerInfo()

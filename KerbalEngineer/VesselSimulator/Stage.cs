@@ -31,7 +31,7 @@ namespace KerbalEngineer.VesselSimulator
     {
         public double actualThrust = 0f;
         public double actualThrustToWeight = 0f;
-        public float cost = 0;
+        public double cost = 0d;
         public double deltaV = 0f;
         public double inverseTotalDeltaV = 0f;
         public double isp = 0f;
@@ -41,7 +41,7 @@ namespace KerbalEngineer.VesselSimulator
         public double thrust = 0f;
         public double thrustToWeight = 0f;
         public double time = 0f;
-        public float totalCost = 0;
+        public double totalCost = 0;
         public double totalDeltaV = 0f;
         public double totalMass = 0f;
         public double totalTime = 0f;

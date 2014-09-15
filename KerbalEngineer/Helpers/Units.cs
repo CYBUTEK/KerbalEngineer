@@ -29,6 +29,16 @@ namespace KerbalEngineer.Helpers
     {
         #region Methods: public
 
+        public static string Concat(double value1, double value2, int decimals = 1)
+        {
+            return value1.ToString("F" + decimals) + " / " + value2.ToString("F" + decimals);
+        }
+
+        public static string Concat(double value1, double value2, double value3, int decimals = 1)
+        {
+            return value1.ToString("F" + decimals) + " / " + value2.ToString("F" + decimals) + " / " + value3.ToString("F" + decimals);
+        }
+
         public static string ToAcceleration(double value, int decimals = 2)
         {
             return value.ToString("N" + decimals) + "m/s²";
@@ -121,11 +131,6 @@ namespace KerbalEngineer.Helpers
         public static string ToTime(double value)
         {
             return TimeFormatter.ConvertToString(value);
-        }
-
-        public static string Concat(double value1, double value2, int decimals = 1)
-        {
-            return value1.ToString("F" + decimals) + " / " + value2.ToString("F" + decimals);
         }
 
         #endregion

@@ -31,6 +31,9 @@ namespace KerbalEngineer.Extensions
     {
         #region Methods: public
 
+        /// <summary>
+        ///     Gets whether the part contains a specific resource.
+        /// </summary>
         public static bool ContainsResource(this Part part, int resourceId)
         {
             return part.Resources.Contains(resourceId);
@@ -59,6 +62,30 @@ namespace KerbalEngineer.Extensions
             }
 
             return false;
+        }
+
+        /// <summary>
+        ///     Gets the cost of the part excluding resources.
+        /// </summary>
+        public static double GetCostDry(this Part part)
+        {
+            return part.partInfo.cost - GetResourceCostMax(part) + part.GetModuleCosts();
+        }
+
+        /// <summary>
+        ///     Gets the cost of the part including maximum resources.
+        /// </summary>
+        public static double GetCostMax(this Part part)
+        {
+            return part.partInfo.cost + part.GetModuleCosts();
+        }
+
+        /// <summary>
+        ///     Gets the cost of the part including resources.
+        /// </summary>
+        public static double GetCostWet(this Part part)
+        {
+            return part.partInfo.cost - GetResourceCostInverted(part) + part.GetModuleCosts();
         }
 
         /// <summary>
@@ -189,6 +216,19 @@ namespace KerbalEngineer.Extensions
             return part.Modules.OfType<T>().ToList();
         }
 
+        public static ProtoModuleDecoupler GetProtoModuleDecoupler(this Part part)
+        {
+            if (HasModule<ModuleDecouple>(part))
+            {
+                return new ProtoModuleDecoupler(GetModule<ModuleDecouple>(part));
+            }
+            if (HasModule<ModuleAnchoredDecoupler>(part))
+            {
+                return new ProtoModuleDecoupler(GetModule<ModuleAnchoredDecoupler>(part));
+            }
+            return null;
+        }
+
         /// <summary>
         ///     Gets a generic proto engine for the current engine module attached to the part.
         /// </summary>
@@ -210,6 +250,30 @@ namespace KerbalEngineer.Extensions
         }
 
         /// <summary>
+        ///     Gets the cost of the part's contained resources.
+        /// </summary>
+        public static double GetResourceCost(this Part part)
+        {
+            return part.Resources.list.Sum(r => r.amount * r.info.unitCost);
+        }
+
+        /// <summary>
+        ///     Gets the cost of the part's contained resources, inverted.
+        /// </summary>
+        public static double GetResourceCostInverted(this Part part)
+        {
+            return part.Resources.list.Sum(r => (r.maxAmount - r.amount) * r.info.unitCost);
+        }
+
+        /// <summary>
+        ///     Gets the cost of the part's maximum contained resources.
+        /// </summary>
+        public static double GetResourceCostMax(this Part part)
+        {
+            return part.Resources.list.Sum(r => r.maxAmount * r.info.unitCost);
+        }
+
+        /// <summary>
         ///     Gets the current specific impulse for the engine.
         /// </summary>
         public static double GetSpecificImpulse(this Part part, float atmosphere)
@@ -228,19 +292,6 @@ namespace KerbalEngineer.Extensions
             }
 
             return 0d;
-        }
-
-        public static ProtoModuleDecoupler GetProtoModuleDecoupler(this Part part)
-        {
-            if (HasModule<ModuleDecouple>(part))
-            {
-                return new ProtoModuleDecoupler(GetModule<ModuleDecouple>(part));
-            }
-            if (HasModule<ModuleAnchoredDecoupler>(part))
-            {
-                return new ProtoModuleDecoupler(GetModule<ModuleAnchoredDecoupler>(part));
-            }
-            return null;
         }
 
         /// <summary>

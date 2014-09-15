@@ -36,7 +36,7 @@ namespace KerbalEngineer.VesselSimulator
     {
         private readonly List<AttachNodeSim> attachNodes = new List<AttachNodeSim>();
         public double baseMass = 0d;
-        public float cost;
+        public double cost;
         public int decoupledInStage;
         public bool fuelCrossFeed;
         public List<PartSim> fuelTargets = new List<PartSim>();
@@ -88,11 +88,7 @@ namespace KerbalEngineer.VesselSimulator
             this.inverseStage = this.part.inverseStage;
             //MonoBehaviour.print("inverseStage = " + inverseStage);
 
-            this.cost = this.part.partInfo.cost;
-            foreach (PartResource resource in this.part.Resources)
-            {
-                this.cost -= (float)((resource.maxAmount - resource.amount) * resource.info.unitCost);
-            }
+            this.cost = this.part.GetCostWet();
 
             // Work out if the part should have no physical significance
             this.isNoPhysics = this.part.HasModule<ModuleLandingGear>() ||

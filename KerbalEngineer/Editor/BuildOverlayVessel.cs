@@ -74,7 +74,10 @@ namespace KerbalEngineer.Editor
                 }
 
                 this.open = GUI.Toggle(this.tabPosition, this.open, this.tabContent, BuildOverlay.TabStyle);
-                this.windowPosition = GUILayout.Window(this.GetInstanceID(), this.windowPosition, this.VesselWindow, String.Empty, BuildOverlay.WindowStyle);
+                if (this.openPercent > 0.0)
+                {
+                    this.windowPosition = GUILayout.Window(this.GetInstanceID(), this.windowPosition, this.VesselWindow, String.Empty, BuildOverlay.WindowStyle);
+                }
             }
             catch (Exception ex)
             {
@@ -102,6 +105,20 @@ namespace KerbalEngineer.Editor
                 return;
             }
 
+            if (this.openPercent > 0.0)
+            {
+                this.SetVesselInfo();
+            }
+
+            this.SetSlidePosition();
+        }
+
+        #endregion
+
+        #region Methods: private
+
+        private void SetSlidePosition()
+        {
             if (this.open && this.openPercent < 1.0f)
             {
                 this.openPercent = Mathf.Clamp(this.openPercent + Time.deltaTime * BuildOverlay.TabSpeed, 0.0f, 1.0f);
@@ -116,7 +133,10 @@ namespace KerbalEngineer.Editor
             this.tabPosition.height = this.tabSize.y;
             this.tabPosition.x = this.windowPosition.x;
             this.tabPosition.y = this.windowPosition.y - this.tabPosition.height;
+        }
 
+        private void SetVesselInfo()
+        {
             SimManager.Gravity = CelestialBodies.SelectedBody.Gravity;
 
             if (BuildAdvanced.Instance.ShowAtmosphericDetails)
@@ -145,10 +165,6 @@ namespace KerbalEngineer.Editor
                 this.infoItems.Add(new PartInfoItem("Parts", this.lastStage.partCount.ToString("N0")));
             }
         }
-
-        #endregion
-
-        #region Methods: private
 
         private void VesselWindow(int windowId)
         {

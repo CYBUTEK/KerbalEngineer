@@ -67,7 +67,10 @@ namespace KerbalEngineer.Editor
                 }
 
                 this.open = GUI.Toggle(this.tabPosition, this.open, this.tabContent, BuildOverlay.TabStyle);
-                this.windowPosition = GUILayout.Window(this.GetInstanceID(), this.windowPosition, this.Window, String.Empty, BuildOverlay.WindowStyle);
+                if (this.openPercent > 0.0)
+                {
+                    this.windowPosition = GUILayout.Window(this.GetInstanceID(), this.windowPosition, this.Window, String.Empty, BuildOverlay.WindowStyle);
+                }
             }
             catch (Exception ex)
             {
@@ -97,40 +100,8 @@ namespace KerbalEngineer.Editor
                     return;
                 }
 
-                var previousCount = this.resources.Count;
-                this.resources.Clear();
-                foreach (var resource in EditorLogic.fetch.ship.parts.SelectMany(p => p.Resources.list).Where(r => r.amount > 0.0))
-                {
-                    if (this.resources.ContainsKey(resource.info.id))
-                    {
-                        this.resources[resource.info.id].Amount += resource.amount;
-                    }
-                    else
-                    {
-                        this.resources.Add(resource.info.id, new ResourceInfoItem(resource));
-                    }
-                }
-
-                if (this.resources.Count < previousCount)
-                {
-                    this.windowPosition.height = 0;
-                }
-
-                if (this.open && this.openPercent < 1.0f)
-                {
-                    this.openPercent = Mathf.Clamp(this.openPercent + Time.deltaTime * BuildOverlay.TabSpeed, 0.0f, 1.0f);
-                }
-                else if (!this.open && this.openPercent > 0.0f)
-                {
-                    this.openPercent = Mathf.Clamp(this.openPercent - Time.deltaTime * BuildOverlay.TabSpeed, 0.0f, 1.0f);
-                }
-
-                this.windowPosition.x = BuildOverlay.BuildOverlayVessel.WindowPosition.xMax + 5.0f;
-                this.windowPosition.y = Mathf.Lerp(Screen.height, Screen.height - this.windowPosition.height, this.openPercent);
-                this.tabPosition.width = this.tabSize.x;
-                this.tabPosition.height = this.tabSize.y;
-                this.tabPosition.x = this.windowPosition.x;
-                this.tabPosition.y = this.windowPosition.y - this.tabPosition.height;
+                this.SetResources();
+                this.SetSlidePosition();
             }
             catch (Exception ex)
             {
@@ -141,6 +112,47 @@ namespace KerbalEngineer.Editor
         #endregion
 
         #region Methods: private
+
+        private void SetResources()
+        {
+            var previousCount = this.resources.Count;
+            this.resources.Clear();
+            foreach (var resource in EditorLogic.fetch.ship.parts.SelectMany(p => p.Resources.list).Where(r => r.amount > 0.0))
+            {
+                if (this.resources.ContainsKey(resource.info.id))
+                {
+                    this.resources[resource.info.id].Amount += resource.amount;
+                }
+                else
+                {
+                    this.resources.Add(resource.info.id, new ResourceInfoItem(resource));
+                }
+            }
+
+            if (this.resources.Count < previousCount)
+            {
+                this.windowPosition.height = 0;
+            }
+        }
+
+        private void SetSlidePosition()
+        {
+            if (this.open && this.openPercent < 1.0f)
+            {
+                this.openPercent = Mathf.Clamp(this.openPercent + Time.deltaTime * BuildOverlay.TabSpeed, 0.0f, 1.0f);
+            }
+            else if (!this.open && this.openPercent > 0.0f)
+            {
+                this.openPercent = Mathf.Clamp(this.openPercent - Time.deltaTime * BuildOverlay.TabSpeed, 0.0f, 1.0f);
+            }
+
+            this.windowPosition.x = BuildOverlay.BuildOverlayVessel.WindowPosition.xMax + 5.0f;
+            this.windowPosition.y = Mathf.Lerp(Screen.height, Screen.height - this.windowPosition.height, this.openPercent);
+            this.tabPosition.width = this.tabSize.x;
+            this.tabPosition.height = this.tabSize.y;
+            this.tabPosition.x = this.windowPosition.x;
+            this.tabPosition.y = this.windowPosition.y - this.tabPosition.height;
+        }
 
         private void Window(int windowId)
         {
