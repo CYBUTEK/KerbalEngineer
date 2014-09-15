@@ -92,6 +92,7 @@
     <Compile Include="Flight\Readouts\Surface\ImpactBiome.cs" />
     <Compile Include="Flight\Readouts\Surface\Slope.cs" />
     <Compile Include="Flight\Readouts\Surface\Biome.cs" />
+    <Compile Include="Flight\Readouts\Vessel\DeltaVCurrent.cs" />
     <Compile Include="Flight\Readouts\Vessel\IntakeAirUsage.cs" />
     <Compile Include="Flight\Readouts\Vessel\IntakeAirDemandSupply.cs" />
     <Compile Include="Flight\Readouts\Vessel\IntakeAirSupply.cs" />
@@ -203,8 +204,8 @@
     <PostBuildEvent>xcopy "$(SolutionDir)Output\*" "$(SolutionDir)Game\GameData\*" /E /Y
 del "$(SolutionDir)Release\*" /Q
 xcopy "$(SolutionDir)Documents\*" "$(SolutionDir)Release\Documents\*" /E /Y
-"D:\Applications\7-Zip\7z.exe" a -tzip -mx3 "$(SolutionDir)Release\$(ProjectName)-@(VersionNumber).zip" "$(SolutionDir)Output\*"
-"D:\Applications\7-Zip\7z.exe" a -tzip -mx3 "$(SolutionDir)Release\$(ProjectName)-@(VersionNumber).zip" "$(SolutionDir)Documents\*"</PostBuildEvent>
+7z.exe a -tzip -mx3 "$(SolutionDir)Release\$(ProjectName)-@(VersionNumber).zip" "$(SolutionDir)Output\*"
+7z.exe a -tzip -mx3 "$(SolutionDir)Release\$(ProjectName)-@(VersionNumber).zip" "$(SolutionDir)Documents\*"</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

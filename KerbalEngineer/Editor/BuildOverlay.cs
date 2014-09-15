@@ -160,7 +160,7 @@ namespace KerbalEngineer.Editor
                 {
                     normal =
                     {
-                        textColor = HighLogic.Skin.label.normal.textColor
+                        textColor = Color.white
                     },
                     fontSize = 11,
                     fontStyle = FontStyle.Normal,
