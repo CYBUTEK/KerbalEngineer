@@ -19,12 +19,7 @@
 
 #region Using Directives
 
-using System.Diagnostics;
-
-using KerbalEngineer.Extensions;
 using KerbalEngineer.Helpers;
-
-using UnityEngine;
 
 #endregion
 
@@ -32,7 +27,7 @@ namespace KerbalEngineer.Flight.Readouts.Vessel
 {
     public class Acceleration : ReadoutModule
     {
-        private bool showing;
+        #region Constructors
 
         public Acceleration()
         {
@@ -42,10 +37,9 @@ namespace KerbalEngineer.Flight.Readouts.Vessel
             this.IsDefault = true;
         }
 
-        public override void Update()
-        {
-            SimulationProcessor.RequestUpdate();
-        }
+        #endregion
+
+        #region Methods: public
 
         public override void Draw()
         {
@@ -53,16 +47,18 @@ namespace KerbalEngineer.Flight.Readouts.Vessel
             {
                 this.DrawLine(Units.ToAcceleration(SimulationProcessor.LastStage.actualThrust / SimulationProcessor.LastStage.totalMass, SimulationProcessor.LastStage.thrust / SimulationProcessor.LastStage.totalMass));
             }
-            else if (this.showing)
-            {
-                this.showing = false;
-                this.ResizeRequested = true;
-            }
         }
 
         public override void Reset()
         {
             FlightEngineerCore.Instance.AddUpdatable(SimulationProcessor.Instance);
         }
+
+        public override void Update()
+        {
+            SimulationProcessor.RequestUpdate();
+        }
+
+        #endregion
     }
 }

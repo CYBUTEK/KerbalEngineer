@@ -19,17 +19,20 @@
 
 #region Using Directives
 
-
-
 #endregion
 
 namespace KerbalEngineer.Flight.Readouts.Vessel
 {
     public class ThrustToWeight : ReadoutModule
     {
+        #region Fields
+
         private string actual = string.Empty;
-        private bool showing;
         private string total = string.Empty;
+
+        #endregion
+
+        #region Constructors
 
         public ThrustToWeight()
         {
@@ -39,29 +42,32 @@ namespace KerbalEngineer.Flight.Readouts.Vessel
             this.IsDefault = true;
         }
 
-        public override void Update()
-        {
-            SimulationProcessor.RequestUpdate();
-        }
+        #endregion
+
+        #region Methods: public
 
         public override void Draw()
         {
-            if (SimulationProcessor.ShowDetails)
+            if (!SimulationProcessor.ShowDetails)
             {
-                this.actual = (SimulationProcessor.LastStage.actualThrust / (SimulationProcessor.LastStage.totalMass * FlightGlobals.getGeeForceAtPosition(FlightGlobals.ship_position).magnitude)).ToString("F2");
-                this.total = (SimulationProcessor.LastStage.thrust / (SimulationProcessor.LastStage.totalMass * FlightGlobals.getGeeForceAtPosition(FlightGlobals.ship_position).magnitude)).ToString("F2");
-                this.DrawLine("TWR", this.actual + " / " + this.total);
+                return;
             }
-            else if (this.showing)
-            {
-                this.showing = false;
-                this.ResizeRequested = true;
-            }
+
+            this.actual = (SimulationProcessor.LastStage.actualThrust / (SimulationProcessor.LastStage.totalMass * FlightGlobals.getGeeForceAtPosition(FlightGlobals.ship_position).magnitude)).ToString("F2");
+            this.total = (SimulationProcessor.LastStage.thrust / (SimulationProcessor.LastStage.totalMass * FlightGlobals.getGeeForceAtPosition(FlightGlobals.ship_position).magnitude)).ToString("F2");
+            this.DrawLine("TWR", this.actual + " / " + this.total);
         }
 
         public override void Reset()
         {
             FlightEngineerCore.Instance.AddUpdatable(SimulationProcessor.Instance);
         }
+
+        public override void Update()
+        {
+            SimulationProcessor.RequestUpdate();
+        }
+
+        #endregion
     }
 }

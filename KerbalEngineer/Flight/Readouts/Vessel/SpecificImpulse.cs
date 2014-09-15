@@ -19,15 +19,13 @@
 
 #region Using Directives
 
-
-
 #endregion
 
 namespace KerbalEngineer.Flight.Readouts.Vessel
 {
     public class SpecificImpulse : ReadoutModule
     {
-        private bool showing;
+        #region Constructors
 
         public SpecificImpulse()
         {
@@ -37,10 +35,9 @@ namespace KerbalEngineer.Flight.Readouts.Vessel
             this.IsDefault = true;
         }
 
-        public override void Update()
-        {
-            SimulationProcessor.RequestUpdate();
-        }
+        #endregion
+
+        #region Methods: public
 
         public override void Draw()
         {
@@ -48,16 +45,18 @@ namespace KerbalEngineer.Flight.Readouts.Vessel
             {
                 this.DrawLine(SimulationProcessor.LastStage.isp.ToString("F1") + "s");
             }
-            else if (this.showing)
-            {
-                this.showing = false;
-                this.ResizeRequested = true;
-            }
         }
 
         public override void Reset()
         {
             FlightEngineerCore.Instance.AddUpdatable(SimulationProcessor.Instance);
         }
+
+        public override void Update()
+        {
+            SimulationProcessor.RequestUpdate();
+        }
+
+        #endregion
     }
 }

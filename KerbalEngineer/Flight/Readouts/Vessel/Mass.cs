@@ -53,11 +53,6 @@ namespace KerbalEngineer.Flight.Readouts.Vessel
             {
                 this.DrawLine(Units.ToMass(SimulationProcessor.LastStage.mass, SimulationProcessor.LastStage.totalMass));
             }
-            else if (this.showing)
-            {
-                this.showing = false;
-                this.ResizeRequested = true;
-            }
         }
 
         public override void Reset()

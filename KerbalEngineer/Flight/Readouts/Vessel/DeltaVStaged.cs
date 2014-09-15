@@ -19,6 +19,8 @@
 
 #region Using Directives
 
+using System.Linq;
+
 using KerbalEngineer.Helpers;
 
 #endregion
@@ -50,29 +52,14 @@ namespace KerbalEngineer.Flight.Readouts.Vessel
 
         public override void Draw()
         {
-            if (SimulationProcessor.ShowDetails)
+            if (!SimulationProcessor.ShowDetails)
             {
-                this.showing = true;
-                var newNumberOfStages = 0;
-                foreach (var stage in SimulationProcessor.Stages)
-                {
-                    if (stage.deltaV > 0 || stage.number == Staging.CurrentStage)
-                    {
-                        this.DrawLine("DeltaV (S" + stage.number + ")", stage.deltaV.ToString("N0") + "m/s (" + TimeFormatter.ConvertToString(stage.time) + ")");
-                        newNumberOfStages++;
-                    }
-                }
-
-                if (newNumberOfStages != this.numberOfStages)
-                {
-                    this.numberOfStages = newNumberOfStages;
-                    this.ResizeRequested = true;
-                }
+                return;
             }
-            else if (this.showing)
+
+            foreach (var stage in SimulationProcessor.Stages.Where(stage => stage.deltaV > 0 || stage.number == Staging.CurrentStage))
             {
-                this.showing = false;
-                this.ResizeRequested = true;
+                this.DrawLine("DeltaV (S" + stage.number + ")", stage.deltaV.ToString("N0") + "m/s (" + TimeFormatter.ConvertToString(stage.time) + ")");
             }
         }
 

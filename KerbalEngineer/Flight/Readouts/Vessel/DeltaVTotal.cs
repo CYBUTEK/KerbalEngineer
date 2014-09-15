@@ -27,12 +27,6 @@ namespace KerbalEngineer.Flight.Readouts.Vessel
 {
     public class DeltaVTotal : ReadoutModule
     {
-        #region Fields
-
-        private bool showing;
-
-        #endregion
-
         #region Constructors
 
         public DeltaVTotal()
@@ -51,13 +45,7 @@ namespace KerbalEngineer.Flight.Readouts.Vessel
         {
             if (SimulationProcessor.ShowDetails)
             {
-                this.showing = true;
                 this.DrawLine(SimulationProcessor.LastStage.totalDeltaV.ToString("N0") + "m/s (" + TimeFormatter.ConvertToString(SimulationProcessor.LastStage.totalTime) + ")");
-            }
-            else if (this.showing)
-            {
-                this.showing = false;
-                this.ResizeRequested = true;
             }
         }
 

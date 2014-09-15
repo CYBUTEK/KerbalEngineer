@@ -27,11 +27,7 @@ namespace KerbalEngineer.Flight.Readouts.Vessel
 {
     public class Thrust : ReadoutModule
     {
-        #region Fields
 
-        private bool showing;
-
-        #endregion
 
         #region Constructors
 
@@ -53,11 +49,7 @@ namespace KerbalEngineer.Flight.Readouts.Vessel
             {
                 this.DrawLine(Units.ToForce(SimulationProcessor.LastStage.actualThrust, SimulationProcessor.LastStage.thrust));
             }
-            else if (this.showing)
-            {
-                this.showing = false;
-                this.ResizeRequested = true;
-            }
+
         }
 
         public override void Reset()
