@@ -116,6 +116,7 @@ namespace KerbalEngineer.Flight.Readouts
                 readouts.Add(new Mass());
                 readouts.Add(new Thrust());
                 readouts.Add(new ThrustToWeight());
+                readouts.Add(new SurfaceThrustToWeight());
                 readouts.Add(new Acceleration());
                 readouts.Add(new IntakeAirUsage());
                 readouts.Add(new IntakeAirDemand());

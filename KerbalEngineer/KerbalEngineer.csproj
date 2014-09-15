@@ -101,6 +101,7 @@
     <Compile Include="Flight\Readouts\Vessel\SimulationProcessor.cs" />
     <Compile Include="Flight\Readouts\Vessel\Acceleration.cs" />
     <Compile Include="Flight\Presets\PresetLibrary.cs" />
+    <Compile Include="Flight\Readouts\Vessel\SurfaceThrustToWeight.cs" />
     <Compile Include="GuiDisplaySize.cs" />
     <Compile Include="Helpers\AngleHelper.cs" />
     <Compile Include="Helpers\TextureHelper.cs" />

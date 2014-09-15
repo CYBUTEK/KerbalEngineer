@@ -19,11 +19,13 @@
 
 #region Using Directives
 
+using System;
+
 #endregion
 
 namespace KerbalEngineer.Flight.Readouts.Vessel
 {
-    public class ThrustToWeight : ReadoutModule
+    public class SurfaceThrustToWeight : ReadoutModule
     {
         #region Fields
 
@@ -35,11 +37,11 @@ namespace KerbalEngineer.Flight.Readouts.Vessel
 
         #region Constructors
 
-        public ThrustToWeight()
+        public SurfaceThrustToWeight()
         {
-            this.Name = "Thrust to Weight Ratio";
+            this.Name = "Surface Thrust to Weight Ratio";
             this.Category = ReadoutCategory.GetCategory("Vessel");
-            this.HelpString = "Shows the vessel's actual and total thrust to weight ratio.";
+            this.HelpString = "Shows the vessel's surface thrust to weight ratio.";
             this.IsDefault = true;
         }
 
@@ -53,11 +55,10 @@ namespace KerbalEngineer.Flight.Readouts.Vessel
             {
                 return;
             }
-
-            this.gravity = FlightGlobals.getGeeForceAtPosition(FlightGlobals.ship_position).magnitude;
+            this.gravity = FlightGlobals.currentMainBody.gravParameter / Math.Pow(FlightGlobals.currentMainBody.Radius, 2);
             this.actual = (SimulationProcessor.LastStage.actualThrust / (SimulationProcessor.LastStage.totalMass * this.gravity)).ToString("F2");
             this.total = (SimulationProcessor.LastStage.thrust / (SimulationProcessor.LastStage.totalMass * this.gravity)).ToString("F2");
-            this.DrawLine("TWR", this.actual + " / " + this.total);
+            this.DrawLine("TWR (Surface)", this.actual + " / " + this.total);
         }
 
         public override void Reset()
