@@ -35,6 +35,9 @@ namespace KerbalEngineer.Editor
     {
         #region Fields
 
+        private static BuildOverlayPartInfo buildOverlayPartInfo;
+        private static BuildOverlayResources buildOverlayResources;
+        private static BuildOverlayVessel buildOverlayVessel;
         private static BuildOverlay instance;
 
         private static float minimumWidth = 200.0f;
@@ -43,12 +46,7 @@ namespace KerbalEngineer.Editor
         private static GUIStyle tabStyle;
         private static GUIStyle titleStyle;
         private static GUIStyle valueStyle;
-        private static bool visible = true;
         private static GUIStyle windowStyle;
-
-        private BuildOverlayPartInfo buildOverlayPartInfo;
-        private BuildOverlayResources buildOverlayResources;
-        private BuildOverlayVessel buildOverlayVessel;
 
         #endregion
 
@@ -56,17 +54,17 @@ namespace KerbalEngineer.Editor
 
         public static BuildOverlayPartInfo BuildOverlayPartInfo
         {
-            get { return instance.buildOverlayPartInfo; }
+            get { return buildOverlayPartInfo; }
         }
 
         public static BuildOverlayResources BuildOverlayResources
         {
-            get { return instance.buildOverlayResources; }
+            get { return buildOverlayResources; }
         }
 
         public static BuildOverlayVessel BuildOverlayVessel
         {
-            get { return instance.buildOverlayVessel; }
+            get { return buildOverlayVessel; }
         }
 
         public static float MinimumWidth
@@ -172,8 +170,8 @@ namespace KerbalEngineer.Editor
 
         public static bool Visible
         {
-            get { return visible; }
-            set { visible = value; }
+            get { return BuildOverlayPartInfo.Visible && BuildOverlayVessel.Visible && BuildOverlayResources.Visible; }
+            set { BuildOverlayPartInfo.Visible = BuildOverlayVessel.Visible = BuildOverlayResources.Visible = value; }
         }
 
         public static GUIStyle WindowStyle
@@ -198,22 +196,22 @@ namespace KerbalEngineer.Editor
         public static void Load()
         {
             var handler = SettingHandler.Load("BuildOverlay.xml");
-            handler.GetSet("visible", visible);
-            instance.buildOverlayPartInfo.NamesOnly = handler.GetSet("namesOnly", instance.buildOverlayPartInfo.NamesOnly);
-            instance.buildOverlayPartInfo.ClickToOpen = handler.GetSet("clickToOpen", instance.buildOverlayPartInfo.ClickToOpen);
-            instance.buildOverlayVessel.Open = handler.GetSet("vesselOpen", instance.buildOverlayVessel.Open);
-            instance.buildOverlayResources.Open = handler.GetSet("resourcesOpen", instance.buildOverlayResources.Open);
+            handler.GetSet("visible", Visible);
+            BuildOverlayPartInfo.NamesOnly = handler.GetSet("namesOnly", BuildOverlayPartInfo.NamesOnly);
+            BuildOverlayPartInfo.ClickToOpen = handler.GetSet("clickToOpen", BuildOverlayPartInfo.ClickToOpen);
+            buildOverlayVessel.Open = handler.GetSet("vesselOpen", buildOverlayVessel.Open);
+            buildOverlayResources.Open = handler.GetSet("resourcesOpen", buildOverlayResources.Open);
             handler.Save("BuildOverlay.xml");
         }
 
         public static void Save()
         {
             var handler = SettingHandler.Load("BuildOverlay.xml");
-            handler.Set("visible", visible);
-            handler.Set("namesOnly", instance.buildOverlayPartInfo.NamesOnly);
-            handler.Set("clickToOpen", instance.buildOverlayPartInfo.ClickToOpen);
-            handler.Set("vesselOpen", instance.buildOverlayVessel.Open);
-            handler.Set("resourcesOpen", instance.buildOverlayResources.Open);
+            handler.Set("visible", Visible);
+            handler.Set("namesOnly", BuildOverlayPartInfo.NamesOnly);
+            handler.Set("clickToOpen", BuildOverlayPartInfo.ClickToOpen);
+            handler.Set("vesselOpen", buildOverlayVessel.Open);
+            handler.Set("resourcesOpen", buildOverlayResources.Open);
             handler.Save("BuildOverlay.xml");
         }
 
@@ -231,9 +229,9 @@ namespace KerbalEngineer.Editor
                     return;
                 }
                 instance = this;
-                this.buildOverlayPartInfo = this.gameObject.AddComponent<BuildOverlayPartInfo>();
-                this.buildOverlayVessel = this.gameObject.AddComponent<BuildOverlayVessel>();
-                this.buildOverlayResources = this.gameObject.AddComponent<BuildOverlayResources>();
+                buildOverlayPartInfo = this.gameObject.AddComponent<BuildOverlayPartInfo>();
+                buildOverlayVessel = this.gameObject.AddComponent<BuildOverlayVessel>();
+                buildOverlayResources = this.gameObject.AddComponent<BuildOverlayResources>();
                 Load();
             }
             catch (Exception ex)
@@ -247,17 +245,17 @@ namespace KerbalEngineer.Editor
             try
             {
                 Save();
-                if (this.buildOverlayPartInfo != null)
+                if (buildOverlayPartInfo != null)
                 {
-                    Destroy(this.buildOverlayPartInfo);
+                    Destroy(buildOverlayPartInfo);
                 }
-                if (this.buildOverlayVessel != null)
+                if (buildOverlayVessel != null)
                 {
-                    Destroy(this.buildOverlayVessel);
+                    Destroy(buildOverlayVessel);
                 }
-                if (this.buildOverlayResources != null)
+                if (buildOverlayResources != null)
                 {
-                    Destroy(this.buildOverlayResources);
+                    Destroy(buildOverlayResources);
                 }
             }
             catch (Exception ex)

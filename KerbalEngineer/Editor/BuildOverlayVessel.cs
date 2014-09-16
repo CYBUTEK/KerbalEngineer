@@ -35,6 +35,8 @@ namespace KerbalEngineer.Editor
     {
         #region Fields
 
+        private static bool visible = true;
+
         private readonly List<PartInfoItem> infoItems = new List<PartInfoItem>();
 
         private Stage lastStage;
@@ -48,6 +50,12 @@ namespace KerbalEngineer.Editor
         #endregion
 
         #region Properties
+
+        public static bool Visible
+        {
+            get { return visible; }
+            set { visible = value; }
+        }
 
         public bool Open
         {
@@ -68,7 +76,7 @@ namespace KerbalEngineer.Editor
         {
             try
             {
-                if (!BuildOverlay.Visible || EditorLogic.startPod == null || this.lastStage == null)
+                if (!Visible || EditorLogic.startPod == null || this.lastStage == null)
                 {
                     return;
                 }
@@ -100,7 +108,7 @@ namespace KerbalEngineer.Editor
 
         protected void Update()
         {
-            if (!BuildOverlay.Visible || EditorLogic.startPod == null)
+            if (!Visible || EditorLogic.startPod == null)
             {
                 return;
             }

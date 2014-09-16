@@ -56,6 +56,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Control\IControlPanel.cs" />
+    <Compile Include="Control\Panels\BuildOverlayPanel.cs" />
+    <Compile Include="Control\Panels\BuildEngineerPanel.cs" />
     <Compile Include="Editor\BuildAdvanced.cs" />
     <Compile Include="Editor\BuildOverlay.cs" />
     <Compile Include="CelestialBodies.cs" />
@@ -108,6 +111,7 @@
     <Compile Include="Helpers\Units.cs" />
     <Compile Include="Helpers\TimeFormatter.cs" />
     <Compile Include="KeyBinder.cs" />
+    <Compile Include="Control\ControlCentre.cs" />
     <Compile Include="UIControls\DropDown.cs" />
     <Compile Include="Logger.cs" />
     <Compile Include="EngineerGlobals.cs" />
@@ -180,6 +184,7 @@
     <Compile Include="Settings\SettingHandler.cs" />
     <Compile Include="Settings\SettingItem.cs" />
     <Compile Include="TapeDriveAnimator.cs" />
+    <Compile Include="UIControls\WindowObject.cs" />
     <Compile Include="VesselSimulator\AttachNodeSim.cs" />
     <Compile Include="VesselSimulator\EngineSim.cs" />
     <Compile Include="VesselSimulator\PartSim.cs" />

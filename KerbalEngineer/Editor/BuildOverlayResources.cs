@@ -35,7 +35,10 @@ namespace KerbalEngineer.Editor
     {
         #region Fields
 
+        private static bool visible = true;
+
         private readonly Dictionary<int, ResourceInfoItem> resources = new Dictionary<int, ResourceInfoItem>();
+
         private bool open = true;
         private float openPercent;
         private GUIContent tabContent;
@@ -46,6 +49,12 @@ namespace KerbalEngineer.Editor
         #endregion
 
         #region Properties
+
+        public static bool Visible
+        {
+            get { return visible; }
+            set { visible = value; }
+        }
 
         public bool Open
         {

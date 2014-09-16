@@ -36,9 +36,11 @@ namespace KerbalEngineer.Editor
     {
         #region Fields
 
+        private static bool clickToOpen = true;
+        private static bool namesOnly;
+        private static bool visible = true;
+
         private readonly List<PartInfoItem> infoItems = new List<PartInfoItem>();
-        private bool clickToOpen = true;
-        private bool namesOnly;
 
         private Rect position;
         private Part selectedPart;
@@ -48,18 +50,24 @@ namespace KerbalEngineer.Editor
 
         #region Properties
 
-        public bool ClickToOpen
+        public static bool ClickToOpen
         {
-            get { return this.clickToOpen; }
-            set { this.clickToOpen = value; }
+            get { return clickToOpen; }
+            set { clickToOpen = value; }
         }
 
-        public bool Hidden { get; set; }
+        public static bool Hidden { get; set; }
 
-        public bool NamesOnly
+        public static bool NamesOnly
         {
-            get { return this.namesOnly; }
-            set { this.namesOnly = value; }
+            get { return namesOnly; }
+            set { namesOnly = value; }
+        }
+
+        public static bool Visible
+        {
+            get { return visible; }
+            set { visible = value; }
         }
 
         #endregion
@@ -70,7 +78,7 @@ namespace KerbalEngineer.Editor
         {
             try
             {
-                if (!BuildOverlay.Visible || this.Hidden || this.selectedPart == null)
+                if (!Visible || Hidden || this.selectedPart == null)
                 {
                     return;
                 }
@@ -88,7 +96,7 @@ namespace KerbalEngineer.Editor
         {
             try
             {
-                if (!BuildOverlay.Visible || this.Hidden || EditorLogic.startPod == null)
+                if (!Visible || Hidden || EditorLogic.startPod == null)
                 {
                     return;
                 }
@@ -113,7 +121,7 @@ namespace KerbalEngineer.Editor
                         this.selectedPart = part;
                         this.ResetInfo();
                     }
-                    if (this.NamesOnly)
+                    if (NamesOnly)
                     {
                         return;
                     }
@@ -140,7 +148,7 @@ namespace KerbalEngineer.Editor
                     {
                         this.showInfo = true;
                     }
-                    else if (this.ClickToOpen && this.showInfo && Input.GetMouseButtonDown(2))
+                    else if (ClickToOpen && this.showInfo && Input.GetMouseButtonDown(2))
                     {
                         this.ResetInfo();
                     }
@@ -162,8 +170,8 @@ namespace KerbalEngineer.Editor
 
         private void ResetInfo()
         {
-            this.showInfo = !this.clickToOpen;
-            this.position.width = this.namesOnly || this.clickToOpen ? 0.0f : 200.0f;
+            this.showInfo = !clickToOpen;
+            this.position.width = namesOnly || clickToOpen ? 0.0f : 200.0f;
             this.position.height = 0.0f;
         }
 
@@ -425,7 +433,7 @@ namespace KerbalEngineer.Editor
                         GUILayout.EndHorizontal();
                     }
                 }
-                else if (!this.NamesOnly)
+                else if (!NamesOnly)
                 {
                     GUILayout.Space(2.0f);
                     GUILayout.Label("Click middle mouse to show more info...", BuildOverlay.NameStyle);

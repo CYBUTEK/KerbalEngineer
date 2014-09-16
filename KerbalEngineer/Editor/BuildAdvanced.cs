@@ -285,13 +285,13 @@ namespace KerbalEngineer.Editor
             if ((this.position.MouseIsOver() || this.bodiesList.Position.MouseIsOver()) && !this.isEditorLocked)
             {
                 EditorLogic.fetch.Lock(true, true, true, "KER_BuildAdvanced");
-                BuildOverlay.BuildOverlayPartInfo.Hidden = true;
+                BuildOverlayPartInfo.Hidden = true;
                 this.isEditorLocked = true;
             }
             else if (!this.position.MouseIsOver() && !this.bodiesList.Position.MouseIsOver() && this.isEditorLocked)
             {
                 EditorLogic.fetch.Unlock("KER_BuildAdvanced");
-                BuildOverlay.BuildOverlayPartInfo.Hidden = false;
+                BuildOverlayPartInfo.Hidden = false;
                 this.isEditorLocked = false;
             }
         }
@@ -477,8 +477,8 @@ namespace KerbalEngineer.Editor
             GUILayout.BeginHorizontal();
             GUILayout.Label("Build Engineer Overlay:", this.settingStyle);
             BuildOverlay.Visible = GUILayout.Toggle(BuildOverlay.Visible, "VISIBLE", this.buttonStyle, GUILayout.Width(100.0f * GuiDisplaySize.Offset));
-            BuildOverlay.BuildOverlayPartInfo.NamesOnly = GUILayout.Toggle(BuildOverlay.BuildOverlayPartInfo.NamesOnly, "NAMES ONLY", this.buttonStyle, GUILayout.Width(100.0f * GuiDisplaySize.Offset));
-            BuildOverlay.BuildOverlayPartInfo.ClickToOpen = GUILayout.Toggle(BuildOverlay.BuildOverlayPartInfo.ClickToOpen, "CLICK TO OPEN", this.buttonStyle, GUILayout.Width(100.0f * GuiDisplaySize.Offset));
+            BuildOverlayPartInfo.NamesOnly = GUILayout.Toggle(BuildOverlayPartInfo.NamesOnly, "NAMES ONLY", this.buttonStyle, GUILayout.Width(100.0f * GuiDisplaySize.Offset));
+            BuildOverlayPartInfo.ClickToOpen = GUILayout.Toggle(BuildOverlayPartInfo.ClickToOpen, "CLICK TO OPEN", this.buttonStyle, GUILayout.Width(100.0f * GuiDisplaySize.Offset));
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
