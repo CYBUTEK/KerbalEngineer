@@ -1,3 +1,6 @@
+1.0.9.1
+	Fixed: Part size bug caused by TweakScale's cost calculator.
+
 1.0.9.0
     Added: Build Engineer now also implements the '\' backslash show/hide shortcut.
     Added: New readouts to the vessel category:

@@ -126,7 +126,7 @@ namespace KerbalEngineer.Control
                 {
                     DontDestroyOnLoad(this);
                     instance = this;
-                    this.enabled = true;
+                    this.enabled = false;
                     return;
                 }
                 Destroy(this);

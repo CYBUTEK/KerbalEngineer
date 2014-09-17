@@ -45,6 +45,7 @@ namespace KerbalEngineer.Editor
         private Rect position;
         private Part selectedPart;
         private bool showInfo;
+        private bool skipFrame;
 
         #endregion
 
@@ -121,8 +122,9 @@ namespace KerbalEngineer.Editor
                         this.selectedPart = part;
                         this.ResetInfo();
                     }
-                    if (NamesOnly)
+                    if (NamesOnly || this.skipFrame)
                     {
+                        this.skipFrame = false;
                         return;
                     }
 
@@ -171,6 +173,7 @@ namespace KerbalEngineer.Editor
         private void ResetInfo()
         {
             this.showInfo = !clickToOpen;
+            this.skipFrame = true;
             this.position.width = namesOnly || clickToOpen ? 0.0f : 200.0f;
             this.position.height = 0.0f;
         }
@@ -433,7 +436,7 @@ namespace KerbalEngineer.Editor
                         GUILayout.EndHorizontal();
                     }
                 }
-                else if (!NamesOnly)
+                else if (this.infoItems.Count > 0)
                 {
                     GUILayout.Space(2.0f);
                     GUILayout.Label("Click middle mouse to show more info...", BuildOverlay.NameStyle);
