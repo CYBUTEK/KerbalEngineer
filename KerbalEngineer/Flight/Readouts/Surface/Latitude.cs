@@ -43,7 +43,7 @@ namespace KerbalEngineer.Flight.Readouts.Surface
 
         public override void Draw()
         {
-            this.DrawLine(Units.ToAngle(FlightGlobals.ship_latitude));
+            this.DrawLine(KSPUtil.PrintLatitude(FlightGlobals.ship_latitude));
         }
 
         #endregion
