@@ -1,5 +1,8 @@
-1.0.10.0
+
+1.0.9.2
+	Updated for KSP v0.25.0
 	Changed: Prettyfied Latitude and Longitude readouts.
+	Changed: ModuleLandingGear now uses the physical significance flag.
 
 1.0.9.1
     Fixed: Part size bug caused by TweakScale's cost calculator.

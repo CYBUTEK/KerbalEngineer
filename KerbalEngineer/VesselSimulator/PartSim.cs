@@ -91,8 +91,7 @@ namespace KerbalEngineer.VesselSimulator
             this.cost = this.part.GetCostWet();
 
             // Work out if the part should have no physical significance
-            this.isNoPhysics = this.part.HasModule<ModuleLandingGear>() ||
-                               this.part.HasModule<LaunchClamp>() ||
+            this.isNoPhysics = this.part.HasModule<LaunchClamp>() ||
                                this.part.physicalSignificance == Part.PhysicalSignificance.NONE ||
                                this.part.PhysicsSignificance == 1;
 
