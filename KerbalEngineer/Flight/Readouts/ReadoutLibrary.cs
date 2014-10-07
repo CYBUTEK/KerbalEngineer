@@ -94,7 +94,9 @@ namespace KerbalEngineer.Flight.Readouts
                 readouts.Add(new AltitudeSeaLevel());
                 readouts.Add(new AltitudeTerrain());
                 readouts.Add(new VerticalSpeed());
+                readouts.Add(new VerticalAcceleration());
                 readouts.Add(new HorizontalSpeed());
+                readouts.Add(new HorizontalAcceleration());
                 readouts.Add(new Latitude());
                 readouts.Add(new Longitude());
                 readouts.Add(new GeeForce());

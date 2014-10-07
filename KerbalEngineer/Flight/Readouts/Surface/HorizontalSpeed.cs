@@ -31,7 +31,7 @@ namespace KerbalEngineer.Flight.Readouts.Surface
         {
             this.Name = "Horizontal Speed";
             this.Category = ReadoutCategory.GetCategory("Surface");
-            this.HelpString = "Shows the vessel's horizontal speed across a celestial bodies surface.";
+            this.HelpString = "Shows the vessel's horizontal speed across a celestial body's surface.";
             this.IsDefault = true;
         }
 

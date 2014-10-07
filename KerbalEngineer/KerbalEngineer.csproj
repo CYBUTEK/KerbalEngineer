@@ -73,6 +73,8 @@
     <Compile Include="Flight\Readouts\Surface\ImpactBiome.cs" />
     <Compile Include="Flight\Readouts\Surface\Slope.cs" />
     <Compile Include="Flight\Readouts\Surface\Biome.cs" />
+    <Compile Include="Flight\Readouts\Surface\HorizontalAcceleration.cs" />
+    <Compile Include="Flight\Readouts\Surface\VerticalAcceleration.cs" />
     <Compile Include="Flight\Readouts\Vessel\DeltaVCurrent.cs" />
     <Compile Include="Flight\Readouts\Vessel\IntakeAirUsage.cs" />
     <Compile Include="Flight\Readouts\Vessel\IntakeAirDemandSupply.cs" />
