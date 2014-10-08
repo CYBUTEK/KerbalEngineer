@@ -17,6 +17,8 @@
 //     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // 
 
+using KerbalEngineer.Extensions;
+
 namespace KerbalEngineer.Flight.Readouts.Surface
 {
     public class AtmosphericEfficiency : ReadoutModule
@@ -39,7 +41,7 @@ namespace KerbalEngineer.Flight.Readouts.Surface
         {
             if (AtmosphericProcessor.ShowDetails)
             {
-                this.DrawLine(AtmosphericProcessor.Efficiency.ToString("F2"));
+                this.DrawLine(AtmosphericProcessor.Efficiency.ToPercent());
             }
         }
 
