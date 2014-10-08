@@ -302,27 +302,21 @@ namespace KerbalEngineer.Editor
         private void DrawAtmosphericDetails()
         {
             GUILayout.BeginHorizontal();
+            GUILayout.BeginVertical();
             GUILayout.Label("Pressure: " + (this.atmosphericPercentage * 100.0f).ToString("F1") + "%", this.settingAtmoStyle, GUILayout.Width(125.0f * GuiDisplaySize.Offset));
             GUI.skin = HighLogic.Skin;
-            GUILayout.BeginVertical();
-            GUILayout.FlexibleSpace();
             this.atmosphericPercentage = GUILayout.HorizontalSlider(this.atmosphericPercentage, 0, 1.0f);
-            GUILayout.FlexibleSpace();
-            GUILayout.EndVertical();
             GUI.skin = null;
-            GUILayout.EndHorizontal();
+            GUILayout.EndVertical();
 
             GUILayout.Space(5.0f);
 
-            GUILayout.BeginHorizontal();
+            GUILayout.BeginVertical();
             GUILayout.Label("Velocity: " + this.atmosphericVelocity.ToString("F1") + "m/s", this.settingAtmoStyle, GUILayout.Width(125.0f * GuiDisplaySize.Offset));
             GUI.skin = HighLogic.Skin;
-            GUILayout.BeginVertical();
-            GUILayout.FlexibleSpace();
             this.atmosphericVelocity = GUILayout.HorizontalSlider(this.atmosphericVelocity, 0, 2500f);
-            GUILayout.FlexibleSpace();
-            GUILayout.EndVertical();
             GUI.skin = null;
+            GUILayout.EndVertical();
             GUILayout.EndHorizontal();
         }
 

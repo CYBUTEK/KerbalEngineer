@@ -5,6 +5,7 @@
         - Horizontal Acceleration
     
     Changed: Atmospheric efficiency readout now shows as a percentage.
+    Changed: Atmospheric settings (pressure/velocity) in the editor condensed onto a single line.
     Fixed: Bug where the overlays in the editor would stay open outside of parts screen.
 
 1.0.9.2
