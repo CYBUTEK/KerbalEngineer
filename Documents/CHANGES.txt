@@ -4,7 +4,7 @@
         - Vertical Acceleration
         - Horizontal Acceleration
         
-    Fixed: Bug where the vessel and resources overlays in the editor would stay open.
+    Fixed: Bug where the overlays in the editor would stay open outside of parts screen.
 
 1.0.9.2
     Updated for KSP v0.25.0
