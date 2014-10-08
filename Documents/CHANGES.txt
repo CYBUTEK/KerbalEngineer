@@ -1,5 +1,5 @@
-
 1.0.9.3
+    Added: Title of the build engineer in compact mode now shows if you are using atmospheric data.
     Added: New readout to the surface category:
         - Vertical Acceleration
         - Horizontal Acceleration

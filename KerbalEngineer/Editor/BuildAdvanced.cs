@@ -189,7 +189,7 @@ namespace KerbalEngineer.Editor
                 }
 
                 // Change the window title based on whether in compact mode or not.
-                var title = !this.compactMode ? "KERBAL ENGINEER REDUX " + EngineerGlobals.AssemblyVersion : "K.E.R. " + EngineerGlobals.AssemblyVersion;
+                var title = !this.compactMode ? "KERBAL ENGINEER REDUX " + EngineerGlobals.AssemblyVersion : "K.E.R. " + EngineerGlobals.AssemblyVersion + (this.showAtmosphericDetails ? " (ATMOS.)" : String.Empty);
 
                 // Reset the window size when the staging or something else has changed.
                 var stageCount = this.stages.Count(stage => this.showAllStages || stage.deltaV > 0);
