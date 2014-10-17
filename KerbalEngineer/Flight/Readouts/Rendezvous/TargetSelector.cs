@@ -29,11 +29,11 @@ namespace KerbalEngineer.Flight.Readouts.Rendezvous
     {
         #region Fields
 
-        private float typeButtonWidth;
         private string searchQuery = string.Empty;
         private string searchText = string.Empty;
         private int targetCount;
         private ITargetable targetObject;
+        private float typeButtonWidth;
         private bool typeIsBody;
         private bool usingSearch;
         private VesselType vesselType = VesselType.Unknown;
@@ -53,6 +53,8 @@ namespace KerbalEngineer.Flight.Readouts.Rendezvous
         #endregion
 
         #region Drawing
+
+        #region Methods: public
 
         /// <summary>
         ///     Draws the target selector structure.
@@ -91,6 +93,80 @@ namespace KerbalEngineer.Flight.Readouts.Rendezvous
             }
         }
 
+        #endregion
+
+        #region Methods: private
+
+        /// <summary>
+        ///     Draws the back to types button.
+        /// </summary>
+        private void DrawBackToTypes()
+        {
+            if (GUILayout.Button("Go Back to Type Selection", this.ButtonStyle, GUILayout.Width(this.ContentWidth)))
+            {
+                this.typeIsBody = false;
+                this.vesselType = VesselType.Unknown;
+                this.ResizeRequested = true;
+            }
+
+            GUILayout.Space(3f);
+        }
+
+        /// <summary>
+        ///     Draws targetable moons.
+        /// </summary>
+        private int DrawMoons()
+        {
+            var count = 0;
+
+            foreach (var body in FlightGlobals.Bodies)
+            {
+                if (FlightGlobals.ActiveVessel.mainBody != body.referenceBody || body == Planetarium.fetch.Sun)
+                {
+                    continue;
+                }
+
+                if (this.searchQuery.Length > 0 && !body.bodyName.ToLower().Contains(this.searchQuery))
+                {
+                    continue;
+                }
+
+                count++;
+                if (GUILayout.Button(body.bodyName, this.ButtonStyle, GUILayout.Width(this.ContentWidth)))
+                {
+                    this.SetTargetAs(body);
+                }
+            }
+            return count;
+        }
+
+        /// <summary>
+        ///     Draws the targetable planets.
+        /// </summary>
+        private int DrawPlanets()
+        {
+            var count = 0;
+            foreach (var body in FlightGlobals.Bodies)
+            {
+                if (FlightGlobals.ActiveVessel.mainBody.referenceBody != body.referenceBody || body == Planetarium.fetch.Sun || body == FlightGlobals.ActiveVessel.mainBody)
+                {
+                    continue;
+                }
+
+                if (this.searchQuery.Length > 0 && !body.bodyName.ToLower().Contains(this.searchQuery))
+                {
+                    continue;
+                }
+
+                count++;
+                if (GUILayout.Button(body.GetName(), this.ButtonStyle, GUILayout.Width(this.ContentWidth)))
+                {
+                    this.SetTargetAs(body);
+                }
+            }
+            return count;
+        }
+
         /// <summary>
         ///     Draws the search bar.
         /// </summary>
@@ -114,9 +190,70 @@ namespace KerbalEngineer.Flight.Readouts.Rendezvous
             else if (this.usingSearch)
             {
                 this.usingSearch = false;
+                this.ResizeRequested = true;
             }
 
             GUILayout.EndHorizontal();
+        }
+
+        /// <summary>
+        ///     Draws the target information when selected.
+        /// </summary>
+        private void DrawTarget()
+        {
+            if (GUILayout.Button("Go Back to Target Selection", this.ButtonStyle, GUILayout.Width(this.ContentWidth)))
+            {
+                FlightGlobals.fetch.SetVesselTarget(null);
+                this.ResizeRequested = true;
+            }
+
+            if (!(FlightGlobals.fetch.VesselTarget is CelestialBody) && GUILayout.Button("Switch to Target", this.ButtonStyle, GUILayout.Width(this.ContentWidth)))
+            {
+                FlightGlobals.SetActiveVessel(FlightGlobals.fetch.VesselTarget.GetVessel());
+                this.ResizeRequested = true;
+            }
+
+            GUILayout.Space(3f);
+
+            this.DrawLine("Selected Target", FlightGlobals.fetch.VesselTarget.GetName());
+        }
+
+        /// <summary>
+        ///     Draws the target list.
+        /// </summary>
+        private void DrawTargetList()
+        {
+            var count = 0;
+
+            if (this.searchQuery.Length == 0)
+            {
+                if (this.typeIsBody)
+                {
+                    count += this.DrawMoons();
+                    count += this.DrawPlanets();
+                }
+                else
+                {
+                    count += this.DrawVessels();
+                }
+            }
+            else
+            {
+                count += this.DrawVessels();
+                count += this.DrawMoons();
+                count += this.DrawPlanets();
+            }
+
+            if (count == 0)
+            {
+                this.DrawMessageLine("No targets found!");
+            }
+
+            if (count != this.targetCount)
+            {
+                this.targetCount = count;
+                this.ResizeRequested = true;
+            }
         }
 
         /// <summary>
@@ -184,130 +321,6 @@ namespace KerbalEngineer.Flight.Readouts.Rendezvous
         }
 
         /// <summary>
-        ///     Draws the target information when selected.
-        /// </summary>
-        private void DrawTarget()
-        {
-            if (GUILayout.Button("Go Back to Target Selection", this.ButtonStyle, GUILayout.Width(this.ContentWidth)))
-            {
-                FlightGlobals.fetch.SetVesselTarget(null);
-                this.ResizeRequested = true;
-            }
-
-            GUILayout.Space(3f);
-
-            this.DrawLine("Selected Target", FlightGlobals.fetch.VesselTarget.GetName());
-        }
-
-        /// <summary>
-        ///     Draws the back to types button.
-        /// </summary>
-        private void DrawBackToTypes()
-        {
-            if (GUILayout.Button("Go Back to Type Selection", this.ButtonStyle, GUILayout.Width(this.ContentWidth)))
-            {
-                this.typeIsBody = false;
-                this.vesselType = VesselType.Unknown;
-                this.ResizeRequested = true;
-            }
-
-            GUILayout.Space(3f);
-        }
-
-        /// <summary>
-        ///     Draws the target list.
-        /// </summary>
-        private void DrawTargetList()
-        {
-            var count = 0;
-
-            if (this.searchQuery.Length == 0)
-            {
-                if (this.typeIsBody)
-                {
-                    count += this.DrawMoons();
-                    count += this.DrawPlanets();
-                }
-                else
-                {
-                    count += this.DrawVessels();
-                }
-            }
-            else
-            {
-                count += this.DrawVessels();
-                count += this.DrawMoons();
-                count += this.DrawPlanets();
-            }
-
-            if (count == 0)
-            {
-                this.DrawMessageLine("No targets found!");
-            }
-
-            if (count != this.targetCount)
-            {
-                this.targetCount = count;
-                this.ResizeRequested = true;
-            }
-        }
-
-        /// <summary>
-        ///     Draws targetable moons.
-        /// </summary>
-        private int DrawMoons()
-        {
-            var count = 0;
-
-            foreach (var body in FlightGlobals.Bodies)
-            {
-                if (FlightGlobals.ActiveVessel.mainBody != body.referenceBody || body == Planetarium.fetch.Sun)
-                {
-                    continue;
-                }
-
-                if (this.searchQuery.Length > 0 && !body.bodyName.ToLower().Contains(this.searchQuery))
-                {
-                    continue;
-                }
-
-                count++;
-                if (GUILayout.Button(body.bodyName, this.ButtonStyle, GUILayout.Width(this.ContentWidth)))
-                {
-                    this.SetTargetAs(body);
-                }
-            }
-            return count;
-        }
-
-        /// <summary>
-        ///     Draws the targetable planets.
-        /// </summary>
-        private int DrawPlanets()
-        {
-            var count = 0;
-            foreach (var body in FlightGlobals.Bodies)
-            {
-                if (FlightGlobals.ActiveVessel.mainBody.referenceBody != body.referenceBody || body == Planetarium.fetch.Sun || body == FlightGlobals.ActiveVessel.mainBody)
-                {
-                    continue;
-                }
-
-                if (this.searchQuery.Length > 0 && !body.bodyName.ToLower().Contains(this.searchQuery))
-                {
-                    continue;
-                }
-
-                count++;
-                if (GUILayout.Button(body.GetName(), this.ButtonStyle, GUILayout.Width(this.ContentWidth)))
-                {
-                    this.SetTargetAs(body);
-                }
-            }
-            return count;
-        }
-
-        /// <summary>
         ///     Draws targetable vessels.
         /// </summary>
         private int DrawVessels()
@@ -341,6 +354,13 @@ namespace KerbalEngineer.Flight.Readouts.Rendezvous
             return count;
         }
 
+        private void SetTargetAs(ITargetable target)
+        {
+            FlightGlobals.fetch.SetVesselTarget(target);
+            this.targetObject = target;
+            this.ResizeRequested = true;
+        }
+
         private void SetTypeAs(VesselType vesselType)
         {
             this.vesselType = vesselType;
@@ -353,12 +373,7 @@ namespace KerbalEngineer.Flight.Readouts.Rendezvous
             this.ResizeRequested = true;
         }
 
-        private void SetTargetAs(ITargetable target)
-        {
-            FlightGlobals.fetch.SetVesselTarget(target);
-            this.targetObject = target;
-            this.ResizeRequested = true;
-        }
+        #endregion
 
         #endregion
     }

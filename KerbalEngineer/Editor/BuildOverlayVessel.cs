@@ -108,17 +108,24 @@ namespace KerbalEngineer.Editor
 
         protected void Update()
         {
-            if (!Visible || EditorLogic.startPod == null)
+            try
             {
-                return;
-            }
+                if (!BuildOverlay.Visible || EditorLogic.startPod == null)
+                {
+                    return;
+                }
 
-            if (this.openPercent > 0.0)
+                if (this.openPercent > 0.0)
+                {
+                    this.SetVesselInfo();
+                }
+
+                this.SetSlidePosition();
+            }
+            catch (Exception ex)
             {
-                this.SetVesselInfo();
+                Logger.Exception(ex);
             }
-
-            this.SetSlidePosition();
         }
 
         #endregion

@@ -1,3 +1,6 @@
+1.0.9.4
+    Added: Switch to function on the Target Selector readout.
+
 1.0.9.3
     Added: Title of the build engineer in compact mode now shows if you are using atmospheric data.
     Added: New readout to the surface category:
