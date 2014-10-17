@@ -302,6 +302,7 @@ namespace KerbalEngineer.Flight
             try
             {
                 var handler = SettingHandler.Load("DisplayStack.xml");
+                this.Hidden = handler.Get("hidden", this.Hidden);
                 this.ShowControlBar = handler.Get("showControlBar", this.ShowControlBar);
                 this.windowPosition.x = handler.Get("windowPositionX", this.windowPosition.x);
                 this.windowPosition.y = handler.Get("windowPositionY", this.windowPosition.y);
@@ -326,6 +327,7 @@ namespace KerbalEngineer.Flight
             try
             {
                 var handler = new SettingHandler();
+                handler.Set("hidden", this.Hidden);
                 handler.Set("showControlBar", this.ShowControlBar);
                 handler.Set("windowPositionX", this.windowPosition.x);
                 handler.Set("windowPositionY", this.windowPosition.y);
