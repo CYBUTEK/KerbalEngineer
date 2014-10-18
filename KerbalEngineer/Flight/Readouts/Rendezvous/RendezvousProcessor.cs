@@ -206,8 +206,9 @@ namespace KerbalEngineer.Flight.Readouts.Rendezvous
 
         private double CalcInterceptAngle()
         {
-            // Only works when going into higher orbits.  Need to figure out a way for it to work with lower orbits.
-            var angle = 180.0 * (1.0 - Math.Pow((this.originOrbit.radius + this.targetOrbit.radius) / (2.0 * this.targetOrbit.radius), 1.5));
+            var originRadius = (originOrbit.semiMinorAxis + originOrbit.semiMajorAxis) * 0.5;
+            var targetRadius = (targetOrbit.semiMinorAxis + targetOrbit.semiMajorAxis) * 0.5;
+            var angle = 180.0 * (1.0 - Math.Pow((originRadius + targetRadius) / (2.0 * targetRadius), 1.5));
             angle = PhaseAngle - angle;
             return RelativeInclination < 90.0 ? AngleHelper.Clamp360(angle) : AngleHelper.Clamp360(360.0 - (180.0 - angle));
         }

@@ -57,11 +57,11 @@ namespace KerbalEngineer.Extensions
             }
 
             var angle = AngleHelper.GetAngleBetweenVectors(orbit.getRelativePositionAtUT(Planetarium.GetUniversalTime()),
-                                            Vector3d.Exclude(orbit.GetOrbitNormal(), orbit.referenceBody.orbit.getRelativePositionAtUT(Planetarium.GetUniversalTime())));
+                                                           Vector3d.Exclude(orbit.GetOrbitNormal(), orbit.referenceBody.orbit.getRelativePositionAtUT(Planetarium.GetUniversalTime())));
 
-            angle = AngleHelper.Clamp360(angle + 90.0);
+            angle = AngleHelper.Clamp360(angle - 90.0);
 
-            return orbit.inclination <= 90.0 ? angle : 360.0 - angle;
+            return orbit.inclination > 90.0 ? angle : 360.0 - angle;
         }
 
         public static double GetAngleToRetrograde(this Orbit orbit)
@@ -72,11 +72,11 @@ namespace KerbalEngineer.Extensions
             }
 
             var angle = AngleHelper.GetAngleBetweenVectors(orbit.getRelativePositionAtUT(Planetarium.GetUniversalTime()),
-                                            Vector3d.Exclude(orbit.GetOrbitNormal(), orbit.referenceBody.orbit.getRelativePositionAtUT(Planetarium.GetUniversalTime())));
+                                                           Vector3d.Exclude(orbit.GetOrbitNormal(), orbit.referenceBody.orbit.getRelativePositionAtUT(Planetarium.GetUniversalTime())));
 
-            angle = AngleHelper.Clamp360(angle - 90.0);
+            angle = AngleHelper.Clamp360(angle + 90.0);
 
-            return orbit.inclination <= 90.0 ? angle : 360.0 - angle;
+            return orbit.inclination > 90.0 ? angle : 360.0 - angle;
         }
 
         public static double GetAngleToTrueAnomaly(this Orbit orbit, double trueAnomaly)
@@ -91,9 +91,8 @@ namespace KerbalEngineer.Extensions
 
         public static double GetPhaseAngle(this Orbit orbit, Orbit target)
         {
-            return orbit.inclination <= 90.0
-                ? AngleHelper.GetAngleBetweenVectors(orbit.pos, Vector3d.Exclude(orbit.GetOrbitNormal(), target.pos))
-                : AngleHelper.GetAngleBetweenVectors(Vector3d.Exclude(orbit.GetOrbitNormal(), target.pos), orbit.pos);
+            var angle = AngleHelper.GetAngleBetweenVectors(Vector3d.Exclude(orbit.GetOrbitNormal(), target.pos), orbit.pos);
+            return (orbit.semiMajorAxis < target.semiMajorAxis) ? angle : angle - 360.0;
         }
 
         public static double GetRelativeInclination(this Orbit orbit, Orbit target)
