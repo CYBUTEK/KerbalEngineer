@@ -2,6 +2,7 @@
     Added: Switch to function on the Target Selector readout.
     Fixed: Flight Engineer not saving its hidden state.
     Fixed: Bug in the phase angle calculations.
+    Fixed: Bug where the Build Engineer would stay locked after hiding with the shortcut key.
 
 1.0.9.3
     Added: Title of the build engineer in compact mode now shows if you are using atmospheric data.

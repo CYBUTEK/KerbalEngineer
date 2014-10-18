@@ -244,6 +244,10 @@ namespace KerbalEngineer.Editor
                 if (Input.GetKeyDown(KeyBinder.EditorShowHide))
                 {
                     this.visible = !this.visible;
+                    if (!this.visible)
+                    {
+                        this.EditorLock(false);
+                    }
                 }
 
                 if (!this.visible || EditorLogic.fetch == null || EditorLogic.fetch.ship.parts.Count == 0)
@@ -284,15 +288,11 @@ namespace KerbalEngineer.Editor
         {
             if ((this.position.MouseIsOver() || this.bodiesList.Position.MouseIsOver()) && !this.isEditorLocked)
             {
-                EditorLogic.fetch.Lock(true, true, true, "KER_BuildAdvanced");
-                BuildOverlayPartInfo.Hidden = true;
-                this.isEditorLocked = true;
+                this.EditorLock(true);
             }
             else if (!this.position.MouseIsOver() && !this.bodiesList.Position.MouseIsOver() && this.isEditorLocked)
             {
-                EditorLogic.fetch.Unlock("KER_BuildAdvanced");
-                BuildOverlayPartInfo.Hidden = false;
-                this.isEditorLocked = false;
+                this.EditorLock(false);
             }
         }
 
@@ -548,6 +548,22 @@ namespace KerbalEngineer.Editor
                 }
             }
             GUILayout.EndVertical();
+        }
+
+        private void EditorLock(bool state)
+        {
+            if (state)
+            {
+                EditorLogic.fetch.Lock(true, true, true, "KER_BuildAdvanced");
+                BuildOverlayPartInfo.Hidden = true;
+                this.isEditorLocked = true;
+            }
+            else
+            {
+                EditorLogic.fetch.Unlock("KER_BuildAdvanced");
+                BuildOverlayPartInfo.Hidden = false;
+                this.isEditorLocked = false;
+            }
         }
 
         /// <summary>
