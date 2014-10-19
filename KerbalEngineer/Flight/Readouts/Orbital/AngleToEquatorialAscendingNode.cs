@@ -35,7 +35,7 @@ namespace KerbalEngineer.Flight.Readouts.Orbital
             this.Name = "Angle to Equ. AN";
             this.Category = ReadoutCategory.GetCategory("Orbital");
             this.HelpString = string.Empty;
-            this.IsDefault = true;
+            this.IsDefault = false;
         }
 
         #endregion

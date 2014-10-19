@@ -35,7 +35,7 @@ namespace KerbalEngineer.Flight.Readouts.Rendezvous
             this.Name = "Relative Velocity";
             this.Category = ReadoutCategory.GetCategory("Rendezvous");
             this.HelpString = "Shows the relative velocity between your vessel and the target object.";
-            this.IsDefault = true;
+            this.IsDefault = false;
         }
 
         #endregion

@@ -35,7 +35,7 @@ namespace KerbalEngineer.Flight.Readouts.Rendezvous
             this.Name = "Orbital Period";
             this.Category = ReadoutCategory.GetCategory("Rendezvous");
             this.HelpString = string.Empty;
-            this.IsDefault = true;
+            this.IsDefault = false;
         }
 
         #endregion

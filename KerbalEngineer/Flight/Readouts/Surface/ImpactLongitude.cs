@@ -35,7 +35,7 @@ namespace KerbalEngineer.Flight.Readouts.Surface
             this.Name = "Impact Longitude";
             this.Category = ReadoutCategory.GetCategory("Surface");
             this.HelpString = string.Empty;
-            this.IsDefault = true;
+            this.IsDefault = false;
         }
 
         #endregion

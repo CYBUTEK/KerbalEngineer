@@ -37,7 +37,7 @@ namespace KerbalEngineer.Flight.Readouts.Orbital
             this.Name = "Mean Anomaly";
             this.Category = ReadoutCategory.GetCategory("Orbital");
             this.HelpString = String.Empty;
-            this.IsDefault = true;
+            this.IsDefault = false;
         }
 
         #endregion

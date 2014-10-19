@@ -37,7 +37,7 @@ namespace KerbalEngineer.Flight.Readouts.Orbital
             this.Name = "Arg. Of Periapsis";
             this.Category = ReadoutCategory.GetCategory("Orbital");
             this.HelpString = String.Empty;
-            this.IsDefault = true;
+            this.IsDefault = false;
         }
 
         #endregion

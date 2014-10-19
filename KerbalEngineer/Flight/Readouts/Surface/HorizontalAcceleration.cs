@@ -42,7 +42,7 @@ namespace KerbalEngineer.Flight.Readouts.Surface
             this.Name = "Horizontal Acceleration";
             this.Category = ReadoutCategory.GetCategory("Surface");
             this.HelpString = "Shows the vessel's horizontal acceleration across a celestial body's surface.";
-            this.IsDefault = true;
+            this.IsDefault = false;
         }
 
         #endregion

@@ -34,7 +34,7 @@ namespace KerbalEngineer.Flight.Readouts.Vessel
             this.Name = "Specific Impulse";
             this.Category = ReadoutCategory.GetCategory("Vessel");
             this.HelpString = string.Empty;
-            this.IsDefault = true;
+            this.IsDefault = false;
         }
 
         #endregion

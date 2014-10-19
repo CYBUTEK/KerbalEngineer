@@ -35,7 +35,7 @@ namespace KerbalEngineer.Flight.Readouts.Rendezvous
             this.Name = "Relative Speed";
             this.Category = ReadoutCategory.GetCategory("Rendezvous");
             this.HelpString = "Shows the difference in orbital speed between your vessel and the target object.";
-            this.IsDefault = true;
+            this.IsDefault = false;
         }
 
         #endregion

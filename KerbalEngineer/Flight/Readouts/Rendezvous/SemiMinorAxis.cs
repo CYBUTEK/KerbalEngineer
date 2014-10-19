@@ -37,7 +37,7 @@ namespace KerbalEngineer.Flight.Readouts.Rendezvous
             this.Name = "Semi-minor Axis";
             this.Category = ReadoutCategory.GetCategory("Rendezvous");
             this.HelpString = String.Empty;
-            this.IsDefault = true;
+            this.IsDefault = false;
         }
 
         #endregion
