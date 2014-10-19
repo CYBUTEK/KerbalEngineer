@@ -120,6 +120,9 @@ namespace KerbalEngineer.Flight.Readouts
                 readouts.Add(new ThrustToWeight());
                 readouts.Add(new SurfaceThrustToWeight());
                 readouts.Add(new Acceleration());
+                readouts.Add(new SuicideBurnAltitude());
+                readouts.Add(new SuicideBurnDistance());
+                readouts.Add(new SuicideBurnDeltaV());
                 readouts.Add(new IntakeAirUsage());
                 readouts.Add(new IntakeAirDemand());
                 readouts.Add(new IntakeAirSupply());

@@ -1,4 +1,10 @@
 1.0.10.0
+    Added: New reaouts to the vessel category:
+        - Suicide Burn Altitude (height above terrain to start burn)
+        - Suicide Burn Distance (distance to suicide burn altitude)
+        - Suicide Burn DeltaV (velocity change required to zero vertical speed)
+        *** F5 for safety and use at own risk! ***
+
     Added: HUD type sections to the Flight Engineer.
     Added: Switch to function on the Target Selector readout.
     Fixed: Flight Engineer not saving its hidden state.
