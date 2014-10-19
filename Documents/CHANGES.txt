@@ -1,6 +1,6 @@
 1.0.10.0
     UPDATE NOTICE: If you are updating from a previous version of Kerbal Engineer 1.0, please
-    delete the 'Settings/SectionLibrary.xml' file, or remove the old version first.  This will
+    delete the 'Settings/SectionLibrary.xml' file, or remove the old install first.  This will
     reset the Flight Engineer sections to their default values and enable the new HUD functionality.
 
     Added: New reaouts to the vessel category:
@@ -10,6 +10,7 @@
         *** F5 for safety and use at your own risk! ***
 
     Added: HUD type sections to the Flight Engineer.
+    Added: HUD sections can have a smoked background for easy visibility.
     Added: 'Switch to Target' button on the Target Selector readout.
     Changed: The default installed readouts to reduce new user brain melt.
     Fixed: Flight Engineer not saving its hidden state.
