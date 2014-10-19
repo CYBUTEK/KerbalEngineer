@@ -39,6 +39,7 @@ namespace KerbalEngineer.Flight.Sections
         #region Fields
 
         private SectionEditor editor;
+        private bool isHud;
         private int numberOfReadouts;
 
         #endregion
@@ -134,7 +135,32 @@ namespace KerbalEngineer.Flight.Sections
         /// <summary>
         ///     Gets and sets whether the section module is a HUD.
         /// </summary>
-        public bool IsHud { get; set; }
+        public bool IsHud
+        {
+            get { return this.isHud; }
+            set
+            {
+                if (this.isHud == value)
+                {
+                    return;
+                }
+
+                this.isHud = value;
+                if (this.isHud)
+                {
+                    this.IsFloating = true;
+                }
+                if (this.Window != null)
+                {
+                    this.Window.RequestResize();
+                }
+            }
+        }
+
+        /// <summary>
+        ///     Gets and sets whether the section module has a background as a HUD.
+        /// </summary>
+        public bool IsHudBackground { get; set; }
 
         /// <summary>
         ///     Gets and sets the visibility of the section.

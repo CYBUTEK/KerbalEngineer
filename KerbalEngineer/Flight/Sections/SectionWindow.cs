@@ -20,6 +20,7 @@
 #region Using Directives
 
 using KerbalEngineer.Extensions;
+using KerbalEngineer.Helpers;
 
 using UnityEngine;
 
@@ -59,8 +60,9 @@ namespace KerbalEngineer.Flight.Sections
 
         #region Fields
 
-        private GUIStyle windowStyle;
         private GUIStyle hudWindowStyle;
+        private GUIStyle hudWindowBgStyle;
+        private GUIStyle windowStyle;
 
         #endregion
 
@@ -84,6 +86,19 @@ namespace KerbalEngineer.Flight.Sections
                 onNormal =
                 {
                     background = null
+                },
+                padding = new RectOffset(5, 5, 0, 8),
+            };
+
+            this.hudWindowBgStyle = new GUIStyle(this.hudWindowStyle)
+            {
+                normal =
+                {
+                    background = TextureHelper.CreateTextureFromColour(new Color(0.0f, 0.0f, 0.0f, 0.5f))
+                },
+                onNormal =
+                {
+                    background = TextureHelper.CreateTextureFromColour(new Color(0.0f, 0.0f, 0.0f, 0.5f))
                 }
             };
         }
@@ -115,7 +130,9 @@ namespace KerbalEngineer.Flight.Sections
                 this.resizeRequested = false;
             }
             GUI.skin = null;
-            this.windowPosition = GUILayout.Window(this.windowId, this.windowPosition, this.Window, string.Empty, (!this.ParentSection.IsHud || this.ParentSection.IsEditorVisible) ? this.windowStyle : this.hudWindowStyle).ClampToScreen();
+            this.windowPosition = GUILayout.Window(this.windowId, this.windowPosition, this.Window, string.Empty, 
+                (!this.ParentSection.IsHud || this.ParentSection.IsEditorVisible) ? this.windowStyle 
+                : this.ParentSection.IsHudBackground ? this.hudWindowBgStyle : this.hudWindowStyle).ClampToScreen();
             this.ParentSection.FloatingPositionX = this.windowPosition.x;
             this.ParentSection.FloatingPositionY = this.windowPosition.y;
         }

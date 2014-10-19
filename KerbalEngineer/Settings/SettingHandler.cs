@@ -239,6 +239,27 @@ namespace KerbalEngineer.Settings
 
         #region Methods: public
 
+        /// <summary>
+        ///     Deletes all the settings files.
+        /// </summary>
+        public static void DeleteSettings()
+        {
+            try
+            {
+                foreach (var file in Directory.GetFiles(settingsDirectory))
+                {
+                    File.Delete(file);
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.Exception(ex);
+            }
+        }
+
+        /// <summary>
+        ///     Gets whether a settings file exists.
+        /// </summary>
         public static bool Exists(string fileName)
         {
             return File.Exists(Path.Combine(settingsDirectory, fileName));

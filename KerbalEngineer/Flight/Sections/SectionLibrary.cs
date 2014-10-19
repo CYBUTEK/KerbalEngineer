@@ -77,7 +77,6 @@ namespace KerbalEngineer.Flight.Sections
                 Abbreviation = "HUD 1",
                 IsCustom = true,
                 IsVisible = true,
-                IsHud = true,
                 ReadoutModules = new List<ReadoutModule>
                 {
                     ReadoutLibrary.GetReadout("ApoapsisHeight"),
@@ -88,7 +87,7 @@ namespace KerbalEngineer.Flight.Sections
             };
             hud1.FloatingPositionX = Screen.width * 0.25f - (hud1.ReadoutModules.First().ContentWidth * 0.5f);
             hud1.FloatingPositionY = 0.0f;
-            hud1.IsFloating = true;
+            hud1.IsHud = true;
             CustomSections.Add(hud1);
 
             var hud2 = new SectionModule
@@ -97,7 +96,6 @@ namespace KerbalEngineer.Flight.Sections
                 Abbreviation = "HUD 2",
                 IsCustom = true,
                 IsVisible = true,
-                IsHud = true,
                 ReadoutModules = new List<ReadoutModule>
                 {
                     ReadoutLibrary.GetReadout("AltitudeTerrain"),
@@ -108,7 +106,7 @@ namespace KerbalEngineer.Flight.Sections
             };
             hud2.FloatingPositionX = Screen.width * 0.75f - (hud2.ReadoutModules.First().ContentWidth * 0.5f);
             hud2.FloatingPositionY = 0.0f;
-            hud2.IsFloating = true;
+            hud2.IsHud = true;
             CustomSections.Add(hud2);
         }
 
