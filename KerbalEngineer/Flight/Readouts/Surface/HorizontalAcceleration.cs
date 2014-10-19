@@ -20,6 +20,7 @@
 #region Using Directives
 
 using KerbalEngineer.Extensions;
+using KerbalEngineer.Flight.Sections;
 
 #endregion
 
@@ -27,8 +28,15 @@ namespace KerbalEngineer.Flight.Readouts.Surface
 {
     public class HorizontalAcceleration : ReadoutModule
     {
-        private double speed;
+        #region Fields
+
         private double acceleration;
+        private double speed;
+
+        #endregion
+
+        #region Constructors
+
         public HorizontalAcceleration()
         {
             this.Name = "Horizontal Acceleration";
@@ -37,15 +45,21 @@ namespace KerbalEngineer.Flight.Readouts.Surface
             this.IsDefault = true;
         }
 
+        #endregion
+
+        #region Methods: public
+
+        public override void Draw(SectionModule section)
+        {
+            this.DrawLine(this.acceleration.ToAcceleration(), section.IsHud);
+        }
+
         public override void FixedUpdate()
         {
             this.acceleration = (FlightGlobals.ActiveVessel.horizontalSrfSpeed - this.speed) / TimeWarp.fixedDeltaTime;
             this.speed = FlightGlobals.ActiveVessel.horizontalSrfSpeed;
         }
 
-        public override void Draw()
-        {
-            this.DrawLine(this.acceleration.ToAcceleration());
-        }
+        #endregion
     }
 }

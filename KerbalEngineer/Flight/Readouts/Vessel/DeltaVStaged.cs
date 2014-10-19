@@ -21,6 +21,7 @@
 
 using System.Linq;
 
+using KerbalEngineer.Flight.Sections;
 using KerbalEngineer.Helpers;
 
 #endregion
@@ -50,7 +51,7 @@ namespace KerbalEngineer.Flight.Readouts.Vessel
 
         #region Methods: public
 
-        public override void Draw()
+        public override void Draw(SectionModule section)
         {
             if (!SimulationProcessor.ShowDetails)
             {
@@ -59,7 +60,7 @@ namespace KerbalEngineer.Flight.Readouts.Vessel
 
             foreach (var stage in SimulationProcessor.Stages.Where(stage => stage.deltaV > 0 || stage.number == Staging.CurrentStage))
             {
-                this.DrawLine("DeltaV (S" + stage.number + ")", stage.deltaV.ToString("N0") + "m/s (" + TimeFormatter.ConvertToString(stage.time) + ")");
+                this.DrawLine("DeltaV (S" + stage.number + ")", stage.deltaV.ToString("N0") + "m/s (" + TimeFormatter.ConvertToString(stage.time) + ")", section.IsHud);
             }
         }
 

@@ -19,7 +19,7 @@
 
 #region Using Directives
 
-using KerbalEngineer.Extensions;
+using KerbalEngineer.Flight.Sections;
 
 #endregion
 
@@ -27,6 +27,8 @@ namespace KerbalEngineer.Flight.Readouts.Orbital
 {
     public class Eccentricity : ReadoutModule
     {
+        #region Constructors
+
         public Eccentricity()
         {
             this.Name = "Eccentricity";
@@ -35,9 +37,15 @@ namespace KerbalEngineer.Flight.Readouts.Orbital
             this.IsDefault = true;
         }
 
-        public override void Draw()
+        #endregion
+
+        #region Methods: public
+
+        public override void Draw(SectionModule section)
         {
-            this.DrawLine(FlightGlobals.ship_orbit.eccentricity.ToString("F3"));
+            this.DrawLine(FlightGlobals.ship_orbit.eccentricity.ToString("F3"), section.IsHud);
         }
+
+        #endregion
     }
 }

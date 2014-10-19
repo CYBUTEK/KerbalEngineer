@@ -20,6 +20,7 @@
 #region Using Directives
 
 using KerbalEngineer.Extensions;
+using KerbalEngineer.Flight.Sections;
 
 #endregion
 
@@ -27,6 +28,8 @@ namespace KerbalEngineer.Flight.Readouts.Orbital
 {
     public class AngleToEquatorialAscendingNode : ReadoutModule
     {
+        #region Constructors
+
         public AngleToEquatorialAscendingNode()
         {
             this.Name = "Angle to Equ. AN";
@@ -35,9 +38,15 @@ namespace KerbalEngineer.Flight.Readouts.Orbital
             this.IsDefault = true;
         }
 
-        public override void Draw()
+        #endregion
+
+        #region Methods: public
+
+        public override void Draw(SectionModule section)
         {
-            this.DrawLine(FlightGlobals.ActiveVessel.orbit.GetAngleToAscendingNode().ToAngle());
+            this.DrawLine(FlightGlobals.ActiveVessel.orbit.GetAngleToAscendingNode().ToAngle(), section.IsHud);
         }
+
+        #endregion
     }
 }

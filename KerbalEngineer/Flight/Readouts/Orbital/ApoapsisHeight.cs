@@ -17,12 +17,19 @@
 //     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // 
 
+#region Using Directives
+
 using KerbalEngineer.Extensions;
+using KerbalEngineer.Flight.Sections;
+
+#endregion
 
 namespace KerbalEngineer.Flight.Readouts.Orbital
 {
     public class ApoapsisHeight : ReadoutModule
     {
+        #region Constructors
+
         public ApoapsisHeight()
         {
             this.Name = "Apoapsis Height";
@@ -31,9 +38,15 @@ namespace KerbalEngineer.Flight.Readouts.Orbital
             this.IsDefault = true;
         }
 
-        public override void Draw()
+        #endregion
+
+        #region Methods: public
+
+        public override void Draw(SectionModule section)
         {
-            this.DrawLine(FlightGlobals.ship_orbit.ApA.ToDistance());
+            this.DrawLine(FlightGlobals.ship_orbit.ApA.ToDistance(), section.IsHud);
         }
+
+        #endregion
     }
 }

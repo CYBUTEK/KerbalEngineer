@@ -22,6 +22,7 @@
 using System;
 
 using KerbalEngineer.Extensions;
+using KerbalEngineer.Flight.Sections;
 
 #endregion
 
@@ -29,6 +30,8 @@ namespace KerbalEngineer.Flight.Readouts.Orbital
 {
     public class ArgumentOfPeriapsis : ReadoutModule
     {
+        #region Constructors
+
         public ArgumentOfPeriapsis()
         {
             this.Name = "Arg. Of Periapsis";
@@ -37,9 +40,15 @@ namespace KerbalEngineer.Flight.Readouts.Orbital
             this.IsDefault = true;
         }
 
-        public override void Draw()
+        #endregion
+
+        #region Methods: public
+
+        public override void Draw(SectionModule section)
         {
-            this.DrawLine(FlightGlobals.ship_orbit.argumentOfPeriapsis.ToAngle());
+            this.DrawLine(FlightGlobals.ship_orbit.argumentOfPeriapsis.ToAngle(), section.IsHud);
         }
+
+        #endregion
     }
 }

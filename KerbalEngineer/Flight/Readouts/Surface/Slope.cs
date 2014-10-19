@@ -21,6 +21,7 @@
 
 using System;
 
+using KerbalEngineer.Flight.Sections;
 using KerbalEngineer.Helpers;
 
 using UnityEngine;
@@ -45,9 +46,9 @@ namespace KerbalEngineer.Flight.Readouts.Surface
 
         #region Methods: public
 
-        public override void Draw()
+        public override void Draw(SectionModule section)
         {
-            this.DrawLine(this.GetSlopeAngleAndHeading());
+            this.DrawLine(this.GetSlopeAngleAndHeading(), section.IsHud);
         }
 
         #endregion

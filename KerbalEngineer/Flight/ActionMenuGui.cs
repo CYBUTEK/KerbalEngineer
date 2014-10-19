@@ -42,6 +42,7 @@ namespace KerbalEngineer.Flight
         #region Properties
 
         public bool StayOpen { get; set; }
+
         public bool Hovering { get; set; }
 
         public bool Hidden { get; set; }

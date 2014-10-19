@@ -21,10 +21,11 @@
 
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.InteropServices;
 
 using KerbalEngineer.Flight.Readouts;
 using KerbalEngineer.Settings;
+
+using UnityEngine;
 
 #endregion
 
@@ -69,6 +70,46 @@ namespace KerbalEngineer.Flight.Sections
                 Abbreviation = "RDZV",
                 ReadoutModules = ReadoutLibrary.GetCategory(ReadoutCategory.GetCategory("Rendezvous")).Where(r => r.IsDefault).ToList()
             });
+
+            var hud1 = new SectionModule
+            {
+                Name = "HUD 1",
+                Abbreviation = "HUD 1",
+                IsCustom = true,
+                IsVisible = true,
+                IsHud = true,
+                ReadoutModules = new List<ReadoutModule>
+                {
+                    ReadoutLibrary.GetReadout("ApoapsisHeight"),
+                    ReadoutLibrary.GetReadout("TimeToApoapsis"),
+                    ReadoutLibrary.GetReadout("PeriapsisHeight"),
+                    ReadoutLibrary.GetReadout("TimeToPeriapsis")
+                },
+            };
+            hud1.FloatingPositionX = Screen.width * 0.25f - (hud1.ReadoutModules.First().ContentWidth * 0.5f);
+            hud1.FloatingPositionY = 0.0f;
+            hud1.IsFloating = true;
+            CustomSections.Add(hud1);
+
+            var hud2 = new SectionModule
+            {
+                Name = "HUD 2",
+                Abbreviation = "HUD 2",
+                IsCustom = true,
+                IsVisible = true,
+                IsHud = true,
+                ReadoutModules = new List<ReadoutModule>
+                {
+                    ReadoutLibrary.GetReadout("AltitudeTerrain"),
+                    ReadoutLibrary.GetReadout("VerticalSpeed"),
+                    ReadoutLibrary.GetReadout("HorizontalSpeed"),
+                    ReadoutLibrary.GetReadout("Biome")
+                },
+            };
+            hud2.FloatingPositionX = Screen.width * 0.75f - (hud2.ReadoutModules.First().ContentWidth * 0.5f);
+            hud2.FloatingPositionY = 0.0f;
+            hud2.IsFloating = true;
+            CustomSections.Add(hud2);
         }
 
         #endregion
@@ -76,14 +117,14 @@ namespace KerbalEngineer.Flight.Sections
         #region Properties
 
         /// <summary>
-        ///     Gets and sets a list of stock sections
-        /// </summary>
-        public static List<SectionModule> StockSections { get; set; }
-
-        /// <summary>
         ///     Gets and sets a list of custom sections.
         /// </summary>
         public static List<SectionModule> CustomSections { get; set; }
+
+        /// <summary>
+        ///     Gets the number of total sections that are stored in the library.
+        /// </summary>
+        public static int NumberOfSections { get; private set; }
 
         /// <summary>
         ///     Gets the number of sections that are being drawn on the display stack.
@@ -91,13 +132,15 @@ namespace KerbalEngineer.Flight.Sections
         public static int NumberOfStackSections { get; private set; }
 
         /// <summary>
-        ///     Gets the number of total sections that are stored in the library.
+        ///     Gets and sets a list of stock sections
         /// </summary>
-        public static int NumberOfSections { get; private set; }
+        public static List<SectionModule> StockSections { get; set; }
 
         #endregion
 
         #region Updating
+
+        #region Methods: public
 
         /// <summary>
         ///     Fixed update all of the sections.
@@ -107,6 +150,22 @@ namespace KerbalEngineer.Flight.Sections
             FixedUpdateSections(StockSections);
             FixedUpdateSections(CustomSections);
         }
+
+        /// <summary>
+        ///     Update all of the sections and process section counts.
+        /// </summary>
+        public static void Update()
+        {
+            NumberOfStackSections = 0;
+            NumberOfSections = 0;
+
+            UpdateSections(StockSections);
+            UpdateSections(CustomSections);
+        }
+
+        #endregion
+
+        #region Methods: private
 
         /// <summary>
         ///     Fixed updates a list of sections.
@@ -120,18 +179,6 @@ namespace KerbalEngineer.Flight.Sections
                     section.FixedUpdate();
                 }
             }
-        }
-
-        /// <summary>
-        ///     Update all of the sections and process section counts.
-        /// </summary>
-        public static void Update()
-        {
-            NumberOfStackSections = 0;
-            NumberOfSections = 0;
-
-            UpdateSections(StockSections);
-            UpdateSections(CustomSections);
         }
 
         /// <summary>
@@ -176,7 +223,37 @@ namespace KerbalEngineer.Flight.Sections
 
         #endregion
 
+        #endregion
+
         #region Saving and Loading
+
+        /// <summary>
+        ///     Loads the state of all stored sections.
+        /// </summary>
+        public static void Load()
+        {
+            if (!SettingHandler.Exists("SectionLibrary.xml"))
+            {
+                return;
+            }
+
+            GetAllSections().ForEach(s =>
+            {
+                if (s.Window != null)
+                {
+                    Object.Destroy(s.Window);
+                }
+            });
+
+            var handler = SettingHandler.Load("SectionLibrary.xml", new[] {typeof(List<SectionModule>)});
+            StockSections = handler.Get("StockSections", StockSections);
+            CustomSections = handler.Get("CustomSections", CustomSections);
+
+            foreach (var section in GetAllSections())
+            {
+                section.ClearNullReadouts();
+            }
+        }
 
         /// <summary>
         ///     Saves the state of all the stored sections.
@@ -189,24 +266,28 @@ namespace KerbalEngineer.Flight.Sections
             handler.Save("SectionLibrary.xml");
         }
 
-        /// <summary>
-        ///     Loads the state of all stored sections.
-        /// </summary>
-        public static void Load()
-        {
-            var handler = SettingHandler.Load("SectionLibrary.xml", new[] {typeof(List<SectionModule>)});
-            StockSections = handler.Get("StockSections", StockSections);
-            CustomSections = handler.Get("CustomSections", CustomSections);
-
-            foreach (var section in StockSections)
-            {
-                section.ClearNullReadouts();
-            }
-        }
-
         #endregion
 
         #region Methods
+
+        /// <summary>
+        ///     Gets a list containing all section modules.
+        /// </summary>
+        public static List<SectionModule> GetAllSections()
+        {
+            var sections = new List<SectionModule>();
+            sections.AddRange(StockSections);
+            sections.AddRange(CustomSections);
+            return sections;
+        }
+
+        /// <summary>
+        ///     Gets a custom section that has the specified name.
+        /// </summary>
+        public static SectionModule GetCustomSection(string name)
+        {
+            return CustomSections.FirstOrDefault(s => s.Name == name);
+        }
 
         /// <summary>
         ///     Gets a section that has the specified name.
@@ -225,11 +306,11 @@ namespace KerbalEngineer.Flight.Sections
         }
 
         /// <summary>
-        ///     Gets a custom section that has the specified name.
+        ///     Removes a custom section witht he specified name.
         /// </summary>
-        public static SectionModule GetCustomSection(string name)
+        public static bool RemoveCustomSection(string name)
         {
-            return CustomSections.FirstOrDefault(s => s.Name == name);
+            return CustomSections.Remove(GetCustomSection(name));
         }
 
         /// <summary>
@@ -241,19 +322,11 @@ namespace KerbalEngineer.Flight.Sections
         }
 
         /// <summary>
-        ///     Removes as stock section with the specified name.
+        ///     Removes a stock section with the specified name.
         /// </summary>
         public static bool RemoveStockSection(string name)
         {
             return StockSections.Remove(GetStockSection(name));
-        }
-
-        /// <summary>
-        ///     Removes a custom section witht he specified name.
-        /// </summary>
-        public static bool RemoveCustomSection(string name)
-        {
-            return CustomSections.Remove(GetCustomSection(name));
         }
 
         #endregion

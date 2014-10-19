@@ -19,6 +19,8 @@
 
 #region Using Directives
 
+using KerbalEngineer.Flight.Sections;
+
 using UnityEngine;
 
 #endregion
@@ -27,7 +29,13 @@ namespace KerbalEngineer.Flight.Readouts.Miscellaneous
 {
     public class Separator : ReadoutModule
     {
+        #region Fields
+
         private readonly Texture2D texture;
+
+        #endregion
+
+        #region Constructors
 
         public Separator()
         {
@@ -42,10 +50,16 @@ namespace KerbalEngineer.Flight.Readouts.Miscellaneous
             this.texture.Apply();
         }
 
-        public override void Draw()
+        #endregion
+
+        #region Methods: public
+
+        public override void Draw(SectionModule section)
         {
             GUILayout.Box(string.Empty, GUIStyle.none, new[] {GUILayout.Width(this.ContentWidth), GUILayout.Height(1.0f)});
             GUI.DrawTexture(GUILayoutUtility.GetLastRect(), this.texture, ScaleMode.StretchToFill);
         }
+
+        #endregion
     }
 }

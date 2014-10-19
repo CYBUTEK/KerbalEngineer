@@ -19,6 +19,7 @@
 
 #region Using Directives
 
+using KerbalEngineer.Flight.Sections;
 using KerbalEngineer.VesselSimulator;
 
 using UnityEngine;
@@ -29,6 +30,8 @@ namespace KerbalEngineer.Flight.Readouts.Miscellaneous
 {
     public class SimulationDelay : ReadoutModule
     {
+        #region Constructors
+
         public SimulationDelay()
         {
             this.Name = "Minimum Simulation Delay";
@@ -37,7 +40,11 @@ namespace KerbalEngineer.Flight.Readouts.Miscellaneous
             this.IsDefault = true;
         }
 
-        public override void Draw()
+        #endregion
+
+        #region Methods: public
+
+        public override void Draw(SectionModule section)
         {
             GUILayout.BeginHorizontal();
             GUILayout.Label("Sim Delay", this.NameStyle);
@@ -46,5 +53,7 @@ namespace KerbalEngineer.Flight.Readouts.Miscellaneous
             GUI.skin = null;
             GUILayout.EndHorizontal();
         }
+
+        #endregion
     }
 }

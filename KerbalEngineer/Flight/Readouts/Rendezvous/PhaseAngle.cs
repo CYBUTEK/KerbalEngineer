@@ -20,6 +20,7 @@
 #region Using Directives
 
 using KerbalEngineer.Extensions;
+using KerbalEngineer.Flight.Sections;
 
 #endregion
 
@@ -41,11 +42,11 @@ namespace KerbalEngineer.Flight.Readouts.Rendezvous
 
         #region Methods: public
 
-        public override void Draw()
+        public override void Draw(SectionModule section)
         {
             if (RendezvousProcessor.ShowDetails)
             {
-                this.DrawLine(RendezvousProcessor.PhaseAngle.ToAngle());
+                this.DrawLine(RendezvousProcessor.PhaseAngle.ToAngle(), section.IsHud);
             }
         }
 

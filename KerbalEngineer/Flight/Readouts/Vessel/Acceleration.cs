@@ -19,6 +19,7 @@
 
 #region Using Directives
 
+using KerbalEngineer.Flight.Sections;
 using KerbalEngineer.Helpers;
 
 #endregion
@@ -41,11 +42,11 @@ namespace KerbalEngineer.Flight.Readouts.Vessel
 
         #region Methods: public
 
-        public override void Draw()
+        public override void Draw(SectionModule section)
         {
             if (SimulationProcessor.ShowDetails)
             {
-                this.DrawLine(Units.ToAcceleration(SimulationProcessor.LastStage.actualThrust / SimulationProcessor.LastStage.totalMass, SimulationProcessor.LastStage.thrust / SimulationProcessor.LastStage.totalMass));
+                this.DrawLine(Units.ToAcceleration(SimulationProcessor.LastStage.actualThrust / SimulationProcessor.LastStage.totalMass, SimulationProcessor.LastStage.thrust / SimulationProcessor.LastStage.totalMass), section.IsHud);
             }
         }
 

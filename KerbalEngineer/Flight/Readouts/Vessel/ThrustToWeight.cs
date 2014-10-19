@@ -19,6 +19,8 @@
 
 #region Using Directives
 
+using KerbalEngineer.Flight.Sections;
+
 #endregion
 
 namespace KerbalEngineer.Flight.Readouts.Vessel
@@ -47,7 +49,7 @@ namespace KerbalEngineer.Flight.Readouts.Vessel
 
         #region Methods: public
 
-        public override void Draw()
+        public override void Draw(SectionModule section)
         {
             if (!SimulationProcessor.ShowDetails)
             {
@@ -57,7 +59,7 @@ namespace KerbalEngineer.Flight.Readouts.Vessel
             this.gravity = FlightGlobals.getGeeForceAtPosition(FlightGlobals.ship_position).magnitude;
             this.actual = (SimulationProcessor.LastStage.actualThrust / (SimulationProcessor.LastStage.totalMass * this.gravity)).ToString("F2");
             this.total = (SimulationProcessor.LastStage.thrust / (SimulationProcessor.LastStage.totalMass * this.gravity)).ToString("F2");
-            this.DrawLine("TWR", this.actual + " / " + this.total);
+            this.DrawLine("TWR", this.actual + " / " + this.total, section.IsHud);
         }
 
         public override void Reset()

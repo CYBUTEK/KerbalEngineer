@@ -19,7 +19,7 @@
 
 #region Using Directives
 
-using KerbalEngineer.Helpers;
+using KerbalEngineer.Flight.Sections;
 
 #endregion
 
@@ -41,9 +41,9 @@ namespace KerbalEngineer.Flight.Readouts.Surface
 
         #region Methods: public
 
-        public override void Draw()
+        public override void Draw(SectionModule section)
         {
-            this.DrawLine(KSPUtil.PrintLatitude(FlightGlobals.ship_latitude));
+            this.DrawLine(KSPUtil.PrintLatitude(FlightGlobals.ship_latitude), section.IsHud);
         }
 
         #endregion

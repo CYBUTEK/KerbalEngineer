@@ -33,7 +33,13 @@ namespace KerbalEngineer.Flight.Readouts.Surface
     {
         #region Instance
 
+        #region Fields
+
         private static readonly AtmosphericProcessor instance = new AtmosphericProcessor();
+
+        #endregion
+
+        #region Properties
 
         /// <summary>
         ///     Gets the current instance of the atmospheric processor.
@@ -45,19 +51,26 @@ namespace KerbalEngineer.Flight.Readouts.Surface
 
         #endregion
 
+        #endregion
+
         #region Fields
 
-        private bool hasCheckedAeroMods;
         private MethodInfo farTerminalVelocity;
+        private bool hasCheckedAeroMods;
 
         #endregion
 
         #region Properties
 
         /// <summary>
-        ///     Gets whether the details are ready to be shown.
+        ///     Gets the deceleration caused by drag.
         /// </summary>
-        public static bool ShowDetails { get; private set; }
+        public static double Deceleration { get; private set; }
+
+        /// <summary>
+        ///     Gets the difference between current velocity and terminal velocity.
+        /// </summary>
+        public static double Efficiency { get; private set; }
 
         /// <summary>
         ///     Gets whether FAR is installed.
@@ -70,19 +83,14 @@ namespace KerbalEngineer.Flight.Readouts.Surface
         public static bool NearInstalled { get; private set; }
 
         /// <summary>
+        ///     Gets whether the details are ready to be shown.
+        /// </summary>
+        public static bool ShowDetails { get; private set; }
+
+        /// <summary>
         ///     Gets the terminal velocity of the active vessel.
         /// </summary>
         public static double TerminalVelocity { get; private set; }
-
-        /// <summary>
-        ///     Gets the difference between current velocity and terminal velocity.
-        /// </summary>
-        public static double Efficiency { get; private set; }
-
-        /// <summary>
-        ///     Gets the deceleration caused by drag.
-        /// </summary>
-        public static double Deceleration { get; private set; }
 
         #endregion
 
@@ -142,6 +150,8 @@ namespace KerbalEngineer.Flight.Readouts.Surface
 
         #endregion
 
+        #region Methods: public
+
         /// <summary>
         ///     Request an update to calculate the details.
         /// </summary>
@@ -149,6 +159,8 @@ namespace KerbalEngineer.Flight.Readouts.Surface
         {
             instance.UpdateRequested = true;
         }
+
+        #endregion
 
         #region Private Methods
 
@@ -163,7 +175,7 @@ namespace KerbalEngineer.Flight.Readouts.Surface
                     switch (loadedAssembly.name)
                     {
                         case "FerramAerospaceResearch":
-                            farTerminalVelocity = loadedAssembly.assembly.GetType("ferram4.FARAPI").GetMethod("GetActiveControlSys_TermVel");
+                            this.farTerminalVelocity = loadedAssembly.assembly.GetType("ferram4.FARAPI").GetMethod("GetActiveControlSys_TermVel");
                             FarInstalled = true;
                             Logger.Log("FAR detected!");
                             break;

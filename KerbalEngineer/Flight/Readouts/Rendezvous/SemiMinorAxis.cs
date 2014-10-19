@@ -21,6 +21,7 @@
 
 using System;
 
+using KerbalEngineer.Flight.Sections;
 using KerbalEngineer.Helpers;
 
 #endregion
@@ -43,11 +44,11 @@ namespace KerbalEngineer.Flight.Readouts.Rendezvous
 
         #region Methods: public
 
-        public override void Draw()
+        public override void Draw(SectionModule section)
         {
             if (RendezvousProcessor.ShowDetails)
             {
-                this.DrawLine(Units.ToDistance(RendezvousProcessor.SemiMajorAxis, 3));
+                this.DrawLine(Units.ToDistance(RendezvousProcessor.SemiMajorAxis, 3), section.IsHud);
             }
         }
 

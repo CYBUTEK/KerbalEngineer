@@ -20,6 +20,7 @@
 #region Using Directives
 
 using KerbalEngineer.Extensions;
+using KerbalEngineer.Flight.Sections;
 using KerbalEngineer.Helpers;
 
 #endregion
@@ -42,9 +43,9 @@ namespace KerbalEngineer.Flight.Readouts.Orbital
 
         #region Methods: public
 
-        public override void Draw()
+        public override void Draw(SectionModule section)
         {
-            this.DrawLine(TimeFormatter.ConvertToString(FlightGlobals.ActiveVessel.orbit.GetTimeToDescendingNode()));
+            this.DrawLine(TimeFormatter.ConvertToString(FlightGlobals.ActiveVessel.orbit.GetTimeToDescendingNode()), section.IsHud);
         }
 
         #endregion

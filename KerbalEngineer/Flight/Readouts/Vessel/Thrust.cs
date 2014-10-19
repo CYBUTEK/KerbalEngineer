@@ -19,6 +19,7 @@
 
 #region Using Directives
 
+using KerbalEngineer.Flight.Sections;
 using KerbalEngineer.Helpers;
 
 #endregion
@@ -27,8 +28,6 @@ namespace KerbalEngineer.Flight.Readouts.Vessel
 {
     public class Thrust : ReadoutModule
     {
-
-
         #region Constructors
 
         public Thrust()
@@ -43,13 +42,12 @@ namespace KerbalEngineer.Flight.Readouts.Vessel
 
         #region Methods: public
 
-        public override void Draw()
+        public override void Draw(SectionModule section)
         {
             if (SimulationProcessor.ShowDetails)
             {
-                this.DrawLine(Units.ToForce(SimulationProcessor.LastStage.actualThrust, SimulationProcessor.LastStage.thrust));
+                this.DrawLine(Units.ToForce(SimulationProcessor.LastStage.actualThrust, SimulationProcessor.LastStage.thrust), section.IsHud);
             }
-
         }
 
         public override void Reset()

@@ -20,6 +20,7 @@
 #region Using Directives
 
 using KerbalEngineer.Extensions;
+using KerbalEngineer.Flight.Sections;
 
 #endregion
 
@@ -27,6 +28,8 @@ namespace KerbalEngineer.Flight.Readouts.Surface
 {
     public class AltitudeSeaLevel : ReadoutModule
     {
+        #region Constructors
+
         public AltitudeSeaLevel()
         {
             this.Name = "Altitude (Sea Level)";
@@ -35,9 +38,15 @@ namespace KerbalEngineer.Flight.Readouts.Surface
             this.IsDefault = true;
         }
 
-        public override void Draw()
+        #endregion
+
+        #region Methods: public
+
+        public override void Draw(SectionModule section)
         {
-            this.DrawLine(FlightGlobals.ship_altitude.ToDistance());
+            this.DrawLine(FlightGlobals.ship_altitude.ToDistance(), section.IsHud);
         }
+
+        #endregion
     }
 }

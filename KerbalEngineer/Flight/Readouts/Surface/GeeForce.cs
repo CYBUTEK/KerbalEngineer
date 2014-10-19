@@ -17,13 +17,25 @@
 //     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // 
 
+#region Using Directives
+
+using KerbalEngineer.Flight.Sections;
+
 using UnityEngine;
+
+#endregion
 
 namespace KerbalEngineer.Flight.Readouts.Surface
 {
     public class GeeForce : ReadoutModule
     {
+        #region Fields
+
         private double maxGeeForce;
+
+        #endregion
+
+        #region Constructors
 
         public GeeForce()
         {
@@ -33,7 +45,11 @@ namespace KerbalEngineer.Flight.Readouts.Surface
             this.IsDefault = true;
         }
 
-        public override void Draw()
+        #endregion
+
+        #region Methods: public
+
+        public override void Draw(SectionModule section)
         {
             if (FlightGlobals.ship_geeForce > this.maxGeeForce)
             {
@@ -53,5 +69,7 @@ namespace KerbalEngineer.Flight.Readouts.Surface
         {
             this.maxGeeForce = 0;
         }
+
+        #endregion
     }
 }

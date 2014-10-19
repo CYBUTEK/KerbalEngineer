@@ -20,6 +20,7 @@
 #region Using Directives
 
 using KerbalEngineer.Extensions;
+using KerbalEngineer.Flight.Sections;
 
 #endregion
 
@@ -27,6 +28,8 @@ namespace KerbalEngineer.Flight.Readouts.Orbital
 {
     public class OrbitalSpeed : ReadoutModule
     {
+        #region Constructors
+
         public OrbitalSpeed()
         {
             this.Name = "Orbital Speed";
@@ -35,9 +38,15 @@ namespace KerbalEngineer.Flight.Readouts.Orbital
             this.IsDefault = true;
         }
 
-        public override void Draw()
+        #endregion
+
+        #region Methods: public
+
+        public override void Draw(SectionModule section)
         {
-            this.DrawLine(FlightGlobals.ship_obtSpeed.ToSpeed());
+            this.DrawLine(FlightGlobals.ship_obtSpeed.ToSpeed(), section.IsHud);
         }
+
+        #endregion
     }
 }

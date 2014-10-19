@@ -34,7 +34,7 @@ namespace KerbalEngineer.Settings
     /// </summary>
     public class SettingHandler
     {
-        #region Static Fields
+        #region Fields
 
         /// <summary>
         ///     Stores the root settings directory for where all files will be saved.
@@ -44,17 +44,6 @@ namespace KerbalEngineer.Settings
         #endregion
 
         #region Constructors
-
-        /// <summary>
-        ///     Sets the root settings directory if statically loaded.
-        /// </summary>
-        static SettingHandler()
-        {
-            if (settingsDirectory == null)
-            {
-                settingsDirectory = Path.Combine(EngineerGlobals.AssemblyPath, "Settings");
-            }
-        }
 
         /// <summary>
         ///     Creates an empty handler for managing setting items.
@@ -69,6 +58,17 @@ namespace KerbalEngineer.Settings
             this.Items = new List<SettingItem>();
         }
 
+        /// <summary>
+        ///     Sets the root settings directory if statically loaded.
+        /// </summary>
+        static SettingHandler()
+        {
+            if (settingsDirectory == null)
+            {
+                settingsDirectory = Path.Combine(EngineerGlobals.AssemblyPath, "Settings");
+            }
+        }
+
         #endregion
 
         #region Properties
@@ -76,7 +76,10 @@ namespace KerbalEngineer.Settings
         /// <summary>
         ///     Gets the directory where settings files are saved/loaded.
         /// </summary>
-        public static string SettingsDirectory { get { return settingsDirectory; } }
+        public static string SettingsDirectory
+        {
+            get { return settingsDirectory; }
+        }
 
         /// <summary>
         ///     Gets and sets the list of items.
@@ -187,6 +190,8 @@ namespace KerbalEngineer.Settings
 
         #region Saving
 
+        #region Methods: public
+
         /// <summary>
         ///     Saves all the items in the handler into the specified file.
         /// </summary>
@@ -195,6 +200,22 @@ namespace KerbalEngineer.Settings
             fileName = Path.Combine(settingsDirectory, fileName);
 
             this.Serialise(fileName);
+        }
+
+        #endregion
+
+        #region Methods: private
+
+        /// <summary>
+        ///     Creates a directory if it does not already exist.
+        /// </summary>
+        private void CreateDirectory(string fileName)
+        {
+            var filePath = new FileInfo(fileName).DirectoryName;
+            if (!Directory.Exists(filePath))
+            {
+                Directory.CreateDirectory(filePath);
+            }
         }
 
         /// <summary>
@@ -210,21 +231,18 @@ namespace KerbalEngineer.Settings
             }
         }
 
-        /// <summary>
-        ///     Creates a directory if it does not already exist.
-        /// </summary>
-        private void CreateDirectory(string fileName)
-        {
-            var filePath = new FileInfo(fileName).DirectoryName;
-            if (!Directory.Exists(filePath))
-            {
-                Directory.CreateDirectory(filePath);
-            }
-        }
+        #endregion
 
         #endregion
 
         #region Loading
+
+        #region Methods: public
+
+        public static bool Exists(string fileName)
+        {
+            return File.Exists(Path.Combine(settingsDirectory, fileName));
+        }
 
         /// <summary>
         ///     Returns a SettingHandler object created from the specified file. (Optional extra types are required for
@@ -236,6 +254,10 @@ namespace KerbalEngineer.Settings
 
             return Deserialise(fileName, extraTypes);
         }
+
+        #endregion
+
+        #region Methods: private
 
         /// <summary>
         ///     Returns a SettingHandler object containing items deserialized from the specified file.
@@ -255,6 +277,8 @@ namespace KerbalEngineer.Settings
             }
             return handler;
         }
+
+        #endregion
 
         #endregion
     }

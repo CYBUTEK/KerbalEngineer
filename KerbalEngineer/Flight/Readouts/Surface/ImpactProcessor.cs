@@ -33,7 +33,13 @@ namespace KerbalEngineer.Flight.Readouts.Surface
     {
         #region Instance
 
+        #region Fields
+
         private static readonly ImpactProcessor instance = new ImpactProcessor();
+
+        #endregion
+
+        #region Properties
 
         /// <summary>
         ///     Gets the current instance of the impact processor.
@@ -42,6 +48,8 @@ namespace KerbalEngineer.Flight.Readouts.Surface
         {
             get { return instance; }
         }
+
+        #endregion
 
         #endregion
 
@@ -58,26 +66,6 @@ namespace KerbalEngineer.Flight.Readouts.Surface
         #region Properties
 
         /// <summary>
-        ///     Gets whether the details are ready to be shown.
-        /// </summary>
-        public static bool ShowDetails { get; private set; }
-
-        /// <summary>
-        ///     Gets the time to impact.
-        /// </summary>
-        public static double Time { get; private set; }
-
-        /// <summary>
-        ///     Gets the longitude of the impact coordinates.
-        /// </summary>
-        public static double Longitude { get; private set; }
-
-        /// <summary>
-        ///     Gets the latitude of the impact coordinates.
-        /// </summary>
-        public static double Latitude { get; private set; }
-
-        /// <summary>
         ///     Gets the altitude of the impact coordinates.
         /// </summary>
         public static double Altitude { get; private set; }
@@ -86,6 +74,26 @@ namespace KerbalEngineer.Flight.Readouts.Surface
         ///     Gets the biome of the impact coordinates.
         /// </summary>
         public static string Biome { get; private set; }
+
+        /// <summary>
+        ///     Gets the latitude of the impact coordinates.
+        /// </summary>
+        public static double Latitude { get; private set; }
+
+        /// <summary>
+        ///     Gets the longitude of the impact coordinates.
+        /// </summary>
+        public static double Longitude { get; private set; }
+
+        /// <summary>
+        ///     Gets whether the details are ready to be shown.
+        /// </summary>
+        public static bool ShowDetails { get; private set; }
+
+        /// <summary>
+        ///     Gets the time to impact.
+        /// </summary>
+        public static double Time { get; private set; }
 
         #endregion
 
@@ -196,12 +204,27 @@ namespace KerbalEngineer.Flight.Readouts.Surface
 
         #endregion
 
+        #region Methods: public
+
         public static void RequestUpdate()
         {
             instance.UpdateRequested = true;
         }
 
+        #endregion
+
         #region Calculations
+
+        #region Methods: public
+
+        public static double ACosh(double x)
+        {
+            return (Math.Log(x + Math.Sqrt((x * x) - 1.0)));
+        }
+
+        #endregion
+
+        #region Methods: private
 
         private double NormAngle(double ang)
         {
@@ -239,11 +262,6 @@ namespace KerbalEngineer.Flight.Readouts.Surface
             return result;
         }
 
-        public static double ACosh(double x)
-        {
-            return (Math.Log(x + Math.Sqrt((x * x) - 1.0)));
-        }
-
         private double TimeToPeriapsis(double theta)
         {
             var e = FlightGlobals.ActiveVessel.orbit.eccentricity;
@@ -276,6 +294,8 @@ namespace KerbalEngineer.Flight.Readouts.Surface
 
             return 0;
         }
+
+        #endregion
 
         #endregion
     }

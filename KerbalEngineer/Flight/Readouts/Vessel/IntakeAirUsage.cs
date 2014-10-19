@@ -21,12 +21,10 @@
 
 using System;
 
-using KerbalEngineer.Extensions;
+using KerbalEngineer.Flight.Sections;
 using KerbalEngineer.Helpers;
 
 #endregion
-
-
 
 namespace KerbalEngineer.Flight.Readouts.Vessel
 {
@@ -52,9 +50,9 @@ namespace KerbalEngineer.Flight.Readouts.Vessel
 
         #region Methods: public
 
-        public override void Draw()
+        public override void Draw(SectionModule section)
         {
-            this.DrawLine(Units.ToPercent(this.percentage));
+            this.DrawLine(Units.ToPercent(this.percentage), section.IsHud);
         }
 
         public override void Update()

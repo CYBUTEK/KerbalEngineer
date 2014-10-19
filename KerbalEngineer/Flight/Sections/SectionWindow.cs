@@ -17,7 +17,7 @@
 //     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // 
 
-#region
+#region Using Directives
 
 using KerbalEngineer.Extensions;
 
@@ -34,21 +34,6 @@ namespace KerbalEngineer.Flight.Sections
         private bool resizeRequested;
         private int windowId;
         private Rect windowPosition;
-
-        #endregion
-
-        #region Constructors
-
-        /// <summary>
-        ///     Initialises the object's state on creation.
-        /// </summary>
-        private void Start()
-        {
-            this.windowId = this.GetHashCode();
-            this.InitialiseStyles();
-            RenderingManager.AddToPostDrawQueue(0, this.Draw);
-            GuiDisplaySize.OnSizeChanged += this.OnSizeChanged;
-        }
 
         #endregion
 
@@ -72,7 +57,12 @@ namespace KerbalEngineer.Flight.Sections
 
         #region GUIStyles
 
+        #region Fields
+
         private GUIStyle windowStyle;
+        private GUIStyle hudWindowStyle;
+
+        #endregion
 
         /// <summary>
         ///     Initialises all the styles required for this object.
@@ -83,6 +73,18 @@ namespace KerbalEngineer.Flight.Sections
             {
                 margin = new RectOffset(),
                 padding = new RectOffset(5, 5, 0, 5),
+            };
+
+            this.hudWindowStyle = new GUIStyle(this.windowStyle)
+            {
+                normal =
+                {
+                    background = null
+                },
+                onNormal =
+                {
+                    background = null
+                }
             };
         }
 
@@ -101,19 +103,21 @@ namespace KerbalEngineer.Flight.Sections
         /// </summary>
         private void Draw()
         {
-            if (!DisplayStack.Instance.Hidden && (this.ParentSection != null && this.ParentSection.IsVisible))
+            if (this.ParentSection == null || !this.ParentSection.IsVisible || (DisplayStack.Instance.Hidden && !this.ParentSection.IsHud))
             {
-                if (this.resizeRequested)
-                {
-                    this.windowPosition.width = 0;
-                    this.windowPosition.height = 0;
-                    this.resizeRequested = false;
-                }
-                GUI.skin = null;
-                this.windowPosition = GUILayout.Window(this.windowId, this.windowPosition, this.Window, string.Empty, this.windowStyle).ClampToScreen();
-                this.ParentSection.FloatingPositionX = this.windowPosition.x;
-                this.ParentSection.FloatingPositionY = this.windowPosition.y;
+                return;
             }
+
+            if (this.resizeRequested)
+            {
+                this.windowPosition.width = 0;
+                this.windowPosition.height = 0;
+                this.resizeRequested = false;
+            }
+            GUI.skin = null;
+            this.windowPosition = GUILayout.Window(this.windowId, this.windowPosition, this.Window, string.Empty, (!this.ParentSection.IsHud || this.ParentSection.IsEditorVisible) ? this.windowStyle : this.hudWindowStyle).ClampToScreen();
+            this.ParentSection.FloatingPositionX = this.windowPosition.x;
+            this.ParentSection.FloatingPositionY = this.windowPosition.y;
         }
 
         /// <summary>
@@ -123,7 +127,10 @@ namespace KerbalEngineer.Flight.Sections
         {
             this.ParentSection.Draw();
 
-            GUI.DragWindow();
+            if (!this.ParentSection.IsHud || this.ParentSection.IsEditorVisible)
+            {
+                GUI.DragWindow();
+            }
         }
 
         #endregion
@@ -149,6 +156,21 @@ namespace KerbalEngineer.Flight.Sections
         public void RequestResize()
         {
             this.resizeRequested = true;
+        }
+
+        #endregion
+
+        #region Methods: private
+
+        /// <summary>
+        ///     Initialises the object's state on creation.
+        /// </summary>
+        private void Start()
+        {
+            this.windowId = this.GetHashCode();
+            this.InitialiseStyles();
+            RenderingManager.AddToPostDrawQueue(0, this.Draw);
+            GuiDisplaySize.OnSizeChanged += this.OnSizeChanged;
         }
 
         #endregion

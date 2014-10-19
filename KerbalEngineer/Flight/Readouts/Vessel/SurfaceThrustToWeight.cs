@@ -21,6 +21,8 @@
 
 using System;
 
+using KerbalEngineer.Flight.Sections;
+
 #endregion
 
 namespace KerbalEngineer.Flight.Readouts.Vessel
@@ -49,7 +51,7 @@ namespace KerbalEngineer.Flight.Readouts.Vessel
 
         #region Methods: public
 
-        public override void Draw()
+        public override void Draw(SectionModule section)
         {
             if (!SimulationProcessor.ShowDetails)
             {
@@ -58,7 +60,7 @@ namespace KerbalEngineer.Flight.Readouts.Vessel
             this.gravity = FlightGlobals.currentMainBody.gravParameter / Math.Pow(FlightGlobals.currentMainBody.Radius, 2);
             this.actual = (SimulationProcessor.LastStage.actualThrust / (SimulationProcessor.LastStage.totalMass * this.gravity)).ToString("F2");
             this.total = (SimulationProcessor.LastStage.thrust / (SimulationProcessor.LastStage.totalMass * this.gravity)).ToString("F2");
-            this.DrawLine("TWR (Surface)", this.actual + " / " + this.total);
+            this.DrawLine("TWR (Surface)", this.actual + " / " + this.total, section.IsHud);
         }
 
         public override void Reset()

@@ -64,24 +64,19 @@ namespace KerbalEngineer.Flight.Sections
         #region Properties
 
         /// <summary>
-        ///     Gets and sets the name of the section.
-        /// </summary>
-        public string Name { get; set; }
-
-        /// <summary>
         ///     Gets and sets the abbreviation of the section.
         /// </summary>
         public string Abbreviation { get; set; }
 
         /// <summary>
-        ///     Gets and sets the visibility of the section.
+        ///     Gets and sets the X position of the editor window. (Only used for serialisation.)
         /// </summary>
-        public bool IsVisible { get; set; }
+        public float EditorPositionX { get; set; }
 
         /// <summary>
-        ///     Gets and sets whether the section is custom.
+        ///     Gets and sets the Y position of the editor window. (Only used for serialisation.)
         /// </summary>
-        public bool IsCustom { get; set; }
+        public float EditorPositionY { get; set; }
 
         /// <summary>
         ///     Gets and sets the X position of the floating window. (Only used for serialisation.)
@@ -94,33 +89,9 @@ namespace KerbalEngineer.Flight.Sections
         public float FloatingPositionY { get; set; }
 
         /// <summary>
-        ///     Gets and sets whether the section is in a floating state.
+        ///     Gets and sets whether the section is custom.
         /// </summary>
-        public bool IsFloating
-        {
-            get { return this.Window != null; }
-            set
-            {
-                if (value && this.Window == null)
-                {
-                    this.Window = FlightEngineerCore.Instance.AddSectionWindow(this);
-                }
-                else if (!value && this.Window != null)
-                {
-                    Object.Destroy(this.Window);
-                }
-            }
-        }
-
-        /// <summary>
-        ///     Gets and sets the X position of the editor window. (Only used for serialisation.)
-        /// </summary>
-        public float EditorPositionX { get; set; }
-
-        /// <summary>
-        ///     Gets and sets the Y position of the editor window. (Only used for serialisation.)
-        /// </summary>
-        public float EditorPositionY { get; set; }
+        public bool IsCustom { get; set; }
 
         /// <summary>
         ///     Gets and sets whether the section editor is visible.
@@ -142,6 +113,40 @@ namespace KerbalEngineer.Flight.Sections
         }
 
         /// <summary>
+        ///     Gets and sets whether the section is in a floating state.
+        /// </summary>
+        public bool IsFloating
+        {
+            get { return this.Window != null; }
+            set
+            {
+                if (value && this.Window == null)
+                {
+                    this.Window = FlightEngineerCore.Instance.AddSectionWindow(this);
+                }
+                else if (!value && this.Window != null)
+                {
+                    Object.Destroy(this.Window);
+                }
+            }
+        }
+
+        /// <summary>
+        ///     Gets and sets whether the section module is a HUD.
+        /// </summary>
+        public bool IsHud { get; set; }
+
+        /// <summary>
+        ///     Gets and sets the visibility of the section.
+        /// </summary>
+        public bool IsVisible { get; set; }
+
+        /// <summary>
+        ///     Gets and sets the name of the section.
+        /// </summary>
+        public string Name { get; set; }
+
+        /// <summary>
         ///     Gets and sets the names of the installed readout modules. (Only used with serialisation.)
         /// </summary>
         public string[] ReadoutModuleNames
@@ -153,21 +158,27 @@ namespace KerbalEngineer.Flight.Sections
         /// <summary>
         ///     Gets and sets the list of readout modules.
         /// </summary>
-        [XmlIgnore] public List<ReadoutModule> ReadoutModules { get; set; }
+        [XmlIgnore]
+        public List<ReadoutModule> ReadoutModules { get; set; }
 
         /// <summary>
         ///     Gets and sets the floating window.
         /// </summary>
-        [XmlIgnore] public SectionWindow Window { get; set; }
+        [XmlIgnore]
+        public SectionWindow Window { get; set; }
 
         #endregion
 
         #region GUIStyles
 
+        #region Fields
+
         private GUIStyle boxStyle;
         private GUIStyle buttonStyle;
         private GUIStyle messageStyle;
         private GUIStyle titleStyle;
+
+        #endregion
 
         /// <summary>
         ///     Initialises all the styles required for this object.
@@ -280,6 +291,8 @@ namespace KerbalEngineer.Flight.Sections
 
         #region Drawing
 
+        #region Methods: public
+
         /// <summary>
         ///     Draws the section and all of the internal readout modules.
         /// </summary>
@@ -290,8 +303,46 @@ namespace KerbalEngineer.Flight.Sections
                 return;
             }
 
-            this.DrawSectionTitleBar();
+            if (!this.IsHud)
+            {
+                this.DrawSectionTitleBar();
+            }
+
             this.DrawReadoutModules();
+        }
+
+        #endregion
+
+        #region Methods: private
+
+        /// <summary>
+        ///     Draws all the readout modules.
+        /// </summary>
+        private void DrawReadoutModules()
+        {
+            if (!this.IsHud)
+            {
+                GUILayout.BeginVertical(this.boxStyle);
+            }
+
+            if (this.ReadoutModules.Count > 0)
+            {
+                foreach (var readout in this.ReadoutModules)
+                {
+                    readout.LineCountStart();
+                    readout.Draw(this);
+                    readout.LineCountEnd();
+                }
+            }
+            else
+            {
+                GUILayout.Label("No readouts are installed.", this.messageStyle);
+            }
+
+            if (!this.IsHud)
+            {
+                GUILayout.EndVertical();
+            }
         }
 
         /// <summary>
@@ -306,27 +357,7 @@ namespace KerbalEngineer.Flight.Sections
             GUILayout.EndHorizontal();
         }
 
-        /// <summary>
-        ///     Draws all the readout modules.
-        /// </summary>
-        private void DrawReadoutModules()
-        {
-            GUILayout.BeginVertical(this.boxStyle);
-            if (this.ReadoutModules.Count > 0)
-            {
-                foreach (var readout in this.ReadoutModules)
-                {
-                    readout.LineCountStart();
-                    readout.Draw();
-                    readout.LineCountEnd();
-                }
-            }
-            else
-            {
-                GUILayout.Label("No readouts are installed.", this.messageStyle);
-            }
-            GUILayout.EndVertical();
-        }
+        #endregion
 
         #endregion
 

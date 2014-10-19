@@ -21,6 +21,7 @@
 
 using System;
 
+using KerbalEngineer.Flight.Sections;
 using KerbalEngineer.Helpers;
 
 using UnityEngine;
@@ -45,7 +46,7 @@ namespace KerbalEngineer.Flight.Readouts.Miscellaneous
 
         #region Methods: public
 
-        public override void Draw()
+        public override void Draw(SectionModule section)
         {
             GUILayout.BeginHorizontal();
             GUILayout.Label("Time Ref.: " + TimeFormatter.Reference, this.NameStyle);

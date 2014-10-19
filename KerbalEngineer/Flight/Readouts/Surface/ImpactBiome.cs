@@ -19,7 +19,7 @@
 
 #region Using Directives
 
-
+using KerbalEngineer.Flight.Sections;
 
 #endregion
 
@@ -41,11 +41,11 @@ namespace KerbalEngineer.Flight.Readouts.Surface
 
         #region Methods: public
 
-        public override void Draw()
+        public override void Draw(SectionModule section)
         {
             if (ImpactProcessor.ShowDetails)
             {
-                this.DrawLine(ImpactProcessor.Biome);
+                this.DrawLine(ImpactProcessor.Biome, section.IsHud);
             }
         }
 

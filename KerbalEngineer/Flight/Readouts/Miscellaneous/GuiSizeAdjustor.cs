@@ -17,12 +17,20 @@
 //     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // 
 
+#region Using Directives
+
+using KerbalEngineer.Flight.Sections;
+
 using UnityEngine;
+
+#endregion
 
 namespace KerbalEngineer.Flight.Readouts.Miscellaneous
 {
     public class GuiSizeAdjustor : ReadoutModule
     {
+        #region Constructors
+
         public GuiSizeAdjustor()
         {
             this.Name = "GUI Size Adjustor";
@@ -31,7 +39,11 @@ namespace KerbalEngineer.Flight.Readouts.Miscellaneous
             this.IsDefault = false;
         }
 
-        public override void Draw()
+        #endregion
+
+        #region Methods: public
+
+        public override void Draw(SectionModule section)
         {
             GUILayout.BeginHorizontal();
             GUILayout.Label("GUI Size: " + GuiDisplaySize.Increment, this.NameStyle);
@@ -45,5 +57,7 @@ namespace KerbalEngineer.Flight.Readouts.Miscellaneous
             }
             GUILayout.EndHorizontal();
         }
+
+        #endregion
     }
 }

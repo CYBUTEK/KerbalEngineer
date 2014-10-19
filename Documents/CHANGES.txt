@@ -1,4 +1,5 @@
-1.0.9.4
+1.0.10.0
+    Added: HUD type sections to the Flight Engineer.
     Added: Switch to function on the Target Selector readout.
     Fixed: Flight Engineer not saving its hidden state.
     Fixed: Bug in the phase angle calculations.

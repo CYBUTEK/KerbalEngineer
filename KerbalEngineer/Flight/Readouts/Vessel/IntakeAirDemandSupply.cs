@@ -21,6 +21,8 @@
 
 using System.Linq;
 
+using KerbalEngineer.Flight.Sections;
+
 #endregion
 
 namespace KerbalEngineer.Flight.Readouts.Vessel
@@ -84,9 +86,9 @@ namespace KerbalEngineer.Flight.Readouts.Vessel
                 .Sum(p => p.Resources["IntakeAir"].amount);
         }
 
-        public override void Draw()
+        public override void Draw(SectionModule section)
         {
-            this.DrawLine(this.demand.ToString("F4") + " / " + this.supply.ToString("F4"));
+            this.DrawLine(this.demand.ToString("F4") + " / " + this.supply.ToString("F4"), section.IsHud);
         }
 
         public override void Update()

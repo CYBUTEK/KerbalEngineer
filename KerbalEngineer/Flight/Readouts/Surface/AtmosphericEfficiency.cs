@@ -17,7 +17,12 @@
 //     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // 
 
+#region Using Directives
+
 using KerbalEngineer.Extensions;
+using KerbalEngineer.Flight.Sections;
+
+#endregion
 
 namespace KerbalEngineer.Flight.Readouts.Surface
 {
@@ -37,11 +42,11 @@ namespace KerbalEngineer.Flight.Readouts.Surface
 
         #region Methods: public
 
-        public override void Draw()
+        public override void Draw(SectionModule section)
         {
             if (AtmosphericProcessor.ShowDetails)
             {
-                this.DrawLine(AtmosphericProcessor.Efficiency.ToPercent());
+                this.DrawLine(AtmosphericProcessor.Efficiency.ToPercent(), section.IsHud);
             }
         }
 

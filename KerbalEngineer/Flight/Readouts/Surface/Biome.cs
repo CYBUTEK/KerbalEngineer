@@ -19,7 +19,7 @@
 
 #region Using Directives
 
-using KerbalEngineer.Extensions;
+using KerbalEngineer.Flight.Sections;
 
 #endregion
 
@@ -27,6 +27,8 @@ namespace KerbalEngineer.Flight.Readouts.Surface
 {
     public class Biome : ReadoutModule
     {
+        #region Constructors
+
         public Biome()
         {
             this.Name = "Biome";
@@ -35,9 +37,15 @@ namespace KerbalEngineer.Flight.Readouts.Surface
             this.IsDefault = true;
         }
 
-        public override void Draw()
+        #endregion
+
+        #region Methods: public
+
+        public override void Draw(SectionModule section)
         {
-            this.DrawLine(ScienceUtil.GetExperimentBiome(FlightGlobals.ActiveVessel.mainBody, FlightGlobals.ActiveVessel.latitude, FlightGlobals.ActiveVessel.longitude));
+            this.DrawLine(ScienceUtil.GetExperimentBiome(FlightGlobals.ActiveVessel.mainBody, FlightGlobals.ActiveVessel.latitude, FlightGlobals.ActiveVessel.longitude), section.IsHud);
         }
+
+        #endregion
     }
 }

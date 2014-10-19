@@ -221,6 +221,14 @@ namespace KerbalEngineer.Flight.Sections
                 {
                     DisplayStack.Instance.RequestResize();
                 }
+                if (GUILayout.Toggle(this.ParentSection.IsHud, "HUD", this.readoutButtonStyle, GUILayout.Width(50.0f)) != this.ParentSection.IsHud)
+                {
+                    this.ParentSection.IsHud = !this.ParentSection.IsHud;
+                    if (this.ParentSection.IsHud)
+                    {
+                        this.ParentSection.IsFloating = true;
+                    }
+                }
                 if (GUILayout.Button("DELETE SECTION", this.readoutButtonStyle, GUILayout.Width(150.0f)))
                 {
                     this.ParentSection.IsFloating = false;

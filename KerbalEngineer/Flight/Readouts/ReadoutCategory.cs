@@ -31,11 +31,6 @@ namespace KerbalEngineer.Flight.Readouts
     {
         #region Constructors
 
-        static ReadoutCategory()
-        {
-            Categories = new List<ReadoutCategory>();
-        }
-
         public ReadoutCategory(string name)
         {
             this.Name = name;
@@ -47,6 +42,11 @@ namespace KerbalEngineer.Flight.Readouts
             this.Description = description;
         }
 
+        static ReadoutCategory()
+        {
+            Categories = new List<ReadoutCategory>();
+        }
+
         #endregion
 
         #region Properties
@@ -55,9 +55,8 @@ namespace KerbalEngineer.Flight.Readouts
 
         public static ReadoutCategory Selected { get; set; }
 
-        public string Name { get; set; }
-
         public string Description { get; set; }
+        public string Name { get; set; }
 
         #endregion
 

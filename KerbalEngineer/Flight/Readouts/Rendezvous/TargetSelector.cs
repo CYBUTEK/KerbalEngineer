@@ -19,6 +19,8 @@
 
 #region Using Directives
 
+using KerbalEngineer.Flight.Sections;
+
 using UnityEngine;
 
 #endregion
@@ -59,7 +61,7 @@ namespace KerbalEngineer.Flight.Readouts.Rendezvous
         /// <summary>
         ///     Draws the target selector structure.
         /// </summary>
-        public override void Draw()
+        public override void Draw(SectionModule section)
         {
             if (FlightGlobals.fetch.VesselTarget == null)
             {
@@ -83,7 +85,7 @@ namespace KerbalEngineer.Flight.Readouts.Rendezvous
             }
             else
             {
-                this.DrawTarget();
+                this.DrawTarget(section);
             }
 
             if (this.targetObject != FlightGlobals.fetch.VesselTarget)
@@ -199,7 +201,7 @@ namespace KerbalEngineer.Flight.Readouts.Rendezvous
         /// <summary>
         ///     Draws the target information when selected.
         /// </summary>
-        private void DrawTarget()
+        private void DrawTarget(SectionModule section)
         {
             if (GUILayout.Button("Go Back to Target Selection", this.ButtonStyle, GUILayout.Width(this.ContentWidth)))
             {
@@ -215,7 +217,7 @@ namespace KerbalEngineer.Flight.Readouts.Rendezvous
 
             GUILayout.Space(3f);
 
-            this.DrawLine("Selected Target", FlightGlobals.fetch.VesselTarget.GetName());
+            this.DrawLine("Selected Target", FlightGlobals.fetch.VesselTarget.GetName(), section.IsHud);
         }
 
         /// <summary>

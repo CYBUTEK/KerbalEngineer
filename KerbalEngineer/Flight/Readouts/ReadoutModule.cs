@@ -21,6 +21,8 @@
 
 using System;
 
+using KerbalEngineer.Flight.Sections;
+
 using UnityEngine;
 
 #endregion
@@ -128,7 +130,7 @@ namespace KerbalEngineer.Flight.Readouts
         /// <summary>
         ///     Called when a readout is asked to draw its self.
         /// </summary>
-        public virtual void Draw() { }
+        public virtual void Draw(SectionModule section) { }
 
         /// <summary>
         ///     Called on each fixed update frame where the readout is visible.
@@ -163,32 +165,59 @@ namespace KerbalEngineer.Flight.Readouts
 
         #region Methods: protected
 
-        protected void DrawLine(string name, string value)
+        protected void DrawLine(string value, bool compact = false)
         {
             GUILayout.BeginHorizontal(GUILayout.Width(this.ContentWidth));
-            GUILayout.Label(name, this.NameStyle);
-            GUILayout.FlexibleSpace();
-            GUILayout.Label(value, this.ValueStyle);
+            if (!compact)
+            {
+                GUILayout.Label(this.Name, this.NameStyle);
+                GUILayout.FlexibleSpace();
+                GUILayout.Label(value, this.ValueStyle);
+            }
+            else
+            {
+                GUILayout.Label(this.Name, this.NameStyle, GUILayout.Height(this.NameStyle.fontSize * 1.2f));
+                GUILayout.FlexibleSpace();
+                GUILayout.Label(value, this.ValueStyle, GUILayout.Height(this.ValueStyle.fontSize * 1.2f));
+            }
             GUILayout.EndHorizontal();
+
             this.lineCountEnd++;
         }
 
-        protected void DrawLine(string value)
+        protected void DrawLine(string name, string value, bool compact = false)
         {
             GUILayout.BeginHorizontal(GUILayout.Width(this.ContentWidth));
-            GUILayout.Label(this.Name, this.NameStyle);
-            GUILayout.FlexibleSpace();
-            GUILayout.Label(value, this.ValueStyle);
+            if (!compact)
+            {
+                GUILayout.Label(name, this.NameStyle);
+                GUILayout.FlexibleSpace();
+                GUILayout.Label(value, this.ValueStyle);
+            }
+            else
+            {
+                GUILayout.Label(name, this.NameStyle, GUILayout.Height(this.NameStyle.fontSize * 1.2f));
+                GUILayout.FlexibleSpace();
+                GUILayout.Label(value, this.ValueStyle, GUILayout.Height(this.ValueStyle.fontSize * 1.2f));
+            }
             GUILayout.EndHorizontal();
+
             this.lineCountEnd++;
         }
 
-        protected void DrawLine(Action drawAction, bool showName = true)
+        protected void DrawLine(Action drawAction, bool showName = true, bool compact = false)
         {
             GUILayout.BeginHorizontal(GUILayout.Width(this.ContentWidth));
             if (showName)
             {
-                GUILayout.Label(this.Name, this.NameStyle);
+                if (!compact)
+                {
+                    GUILayout.Label(this.Name, this.NameStyle);
+                }
+                else
+                {
+                    GUILayout.Label(this.Name, this.NameStyle, GUILayout.Height(this.NameStyle.fontSize * 1.2f));
+                }
                 GUILayout.FlexibleSpace();
             }
             drawAction();
@@ -196,10 +225,17 @@ namespace KerbalEngineer.Flight.Readouts
             this.lineCountEnd++;
         }
 
-        protected void DrawMessageLine(string value)
+        protected void DrawMessageLine(string value, bool compact = false)
         {
             GUILayout.BeginHorizontal(GUILayout.Width(this.ContentWidth));
-            GUILayout.Label(value, this.MessageStyle);
+            if (!compact)
+            {
+                GUILayout.Label(value, this.MessageStyle);
+            }
+            else
+            {
+                GUILayout.Label(value, this.MessageStyle, GUILayout.Height(this.MessageStyle.fontSize * 1.2f));
+            }
             GUILayout.EndHorizontal();
             this.lineCountEnd++;
         }

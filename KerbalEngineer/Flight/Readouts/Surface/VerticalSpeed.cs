@@ -20,6 +20,7 @@
 #region Using Directives
 
 using KerbalEngineer.Extensions;
+using KerbalEngineer.Flight.Sections;
 
 #endregion
 
@@ -27,6 +28,8 @@ namespace KerbalEngineer.Flight.Readouts.Surface
 {
     public class VerticalSpeed : ReadoutModule
     {
+        #region Constructors
+
         public VerticalSpeed()
         {
             this.Name = "Vertical Speed";
@@ -35,9 +38,15 @@ namespace KerbalEngineer.Flight.Readouts.Surface
             this.IsDefault = true;
         }
 
-        public override void Draw()
+        #endregion
+
+        #region Methods: public
+
+        public override void Draw(SectionModule section)
         {
-            this.DrawLine(FlightGlobals.ship_verticalSpeed.ToSpeed());
+            this.DrawLine(FlightGlobals.ship_verticalSpeed.ToSpeed(), section.IsHud);
         }
+
+        #endregion
     }
 }
