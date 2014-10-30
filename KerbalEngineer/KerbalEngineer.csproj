@@ -61,6 +61,7 @@
     <Compile Include="Flight\Readouts\Orbital\MeanAnomaly.cs" />
     <Compile Include="Flight\Readouts\Orbital\EccentricAnomaly.cs" />
     <Compile Include="Flight\Readouts\Orbital\ArgumentOfPeriapsis.cs" />
+    <Compile Include="Flight\Readouts\Orbital\CurrentSoi.cs" />
     <Compile Include="Flight\Readouts\Orbital\TrueAnomaly.cs" />
     <Compile Include="Flight\Readouts\Orbital\TimeToEquatorialAscendingNode.cs" />
     <Compile Include="Flight\Readouts\Orbital\TimeToEquatorialDescendingNode.cs" />

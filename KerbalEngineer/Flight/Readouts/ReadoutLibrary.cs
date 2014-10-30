@@ -79,6 +79,7 @@ namespace KerbalEngineer.Flight.Readouts
                 readouts.Add(new Eccentricity());
                 readouts.Add(new OrbitalSpeed());
                 readouts.Add(new OrbitalPeriod());
+                readouts.Add(new CurrentSoi());
                 readouts.Add(new LongitudeOfAscendingNode());
                 readouts.Add(new LongitudeOfPeriapsis());
                 readouts.Add(new ArgumentOfPeriapsis());
