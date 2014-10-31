@@ -77,8 +77,6 @@ namespace KerbalEngineer.Flight.Readouts.Vessel
                 return;
             }
 
-            ShowDetails = true;
-
             this.gravity = FlightGlobals.currentMainBody.gravParameter / Math.Pow(FlightGlobals.currentMainBody.Radius, 2.0);
             this.acceleration = SimulationProcessor.LastStage.thrust / SimulationProcessor.LastStage.totalMass;
             this.radarAltitude = FlightGlobals.ship_altitude - FlightGlobals.ActiveVessel.terrainAltitude;
@@ -86,6 +84,8 @@ namespace KerbalEngineer.Flight.Readouts.Vessel
             DeltaV = Math.Sqrt((2 * this.gravity * this.radarAltitude) + Math.Pow(FlightGlobals.ship_verticalSpeed, 2.0));
             Altitude = Math.Pow(DeltaV, 2.0) / (2.0 * this.acceleration);
             Distance = this.radarAltitude - Altitude;
+
+            ShowDetails = !Double.IsInfinity(Distance);
         }
 
         #endregion

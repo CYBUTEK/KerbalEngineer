@@ -46,7 +46,7 @@ namespace KerbalEngineer.Flight.Readouts.Vessel
 
         public override void Draw(SectionModule section)
         {
-            if (!SimulationProcessor.ShowDetails)
+            if (!SuicideBurnProcessor.ShowDetails)
             {
                 return;
             }
