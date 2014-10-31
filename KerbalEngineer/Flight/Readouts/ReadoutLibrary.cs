@@ -104,6 +104,7 @@ namespace KerbalEngineer.Flight.Readouts
                 readouts.Add(new TerminalVelocity());
                 readouts.Add(new AtmosphericEfficiency());
                 readouts.Add(new Biome());
+                readouts.Add(new Situation());
                 readouts.Add(new Slope());
                 readouts.Add(new ImpactTime());
                 readouts.Add(new ImpactLongitude());
