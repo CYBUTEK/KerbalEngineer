@@ -76,6 +76,7 @@
     <Compile Include="Flight\Readouts\Surface\Biome.cs" />
     <Compile Include="Flight\Readouts\Surface\HorizontalAcceleration.cs" />
     <Compile Include="Flight\Readouts\Surface\VerticalAcceleration.cs" />
+    <Compile Include="Flight\Readouts\Vessel\DeltaVCurrentTotal.cs" />
     <Compile Include="Flight\Readouts\Vessel\SuicideBurnDeltaV.cs" />
     <Compile Include="Flight\Readouts\Vessel\SuicideBurnAltitude.cs" />
     <Compile Include="Flight\Readouts\Vessel\SuicideBurnDistance.cs" />

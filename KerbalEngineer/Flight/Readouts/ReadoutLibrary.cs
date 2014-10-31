@@ -116,6 +116,7 @@ namespace KerbalEngineer.Flight.Readouts
                 readouts.Add(new DeltaVStaged());
                 readouts.Add(new DeltaVCurrent());
                 readouts.Add(new DeltaVTotal());
+                readouts.Add(new DeltaVCurrentTotal());
                 readouts.Add(new SpecificImpulse());
                 readouts.Add(new Mass());
                 readouts.Add(new Thrust());
