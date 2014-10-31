@@ -19,6 +19,8 @@
 
 #region Using Directives
 
+using System;
+
 using KerbalEngineer.Extensions;
 using KerbalEngineer.Flight.Sections;
 
@@ -44,7 +46,10 @@ namespace KerbalEngineer.Flight.Readouts.Orbital
 
         public override void Draw(SectionModule section)
         {
-            this.DrawLine(FlightGlobals.currentMainBody.sphereOfInfluence.ToDistance(), section.IsHud);
+            if (!Double.IsInfinity(FlightGlobals.currentMainBody.sphereOfInfluence))
+            {
+                this.DrawLine(FlightGlobals.currentMainBody.sphereOfInfluence.ToDistance(), section.IsHud);
+            }
         }
 
         #endregion

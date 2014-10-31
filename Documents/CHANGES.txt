@@ -1,3 +1,11 @@
+1.0.11.0
+    Added: New readouts to the orbital category:
+        - Current SOI
+
+    Padishar's Fixes:
+        Fixed: Issue with multicouplers when attached to parent by bottom node.
+        Fixed: Issue with sepratrons on solid rocket boosters.
+
 1.0.10.0
     UPDATE NOTICE: If you are updating from a previous version of Kerbal Engineer 1.0, please
     delete the 'Settings/SectionLibrary.xml' file, or remove the old install first.  This will
