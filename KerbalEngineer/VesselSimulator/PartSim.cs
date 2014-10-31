@@ -58,6 +58,7 @@ namespace KerbalEngineer.VesselSimulator
         public String name;
         public String noCrossFeedNodeKey;
         public PartSim parent;
+        public AttachModes parentAttach;
         public Part part; // This is only set while the data structures are being initialised
         public int partId = 0;
         public ResourceContainer resourceDrains = new ResourceContainer();
@@ -79,6 +80,7 @@ namespace KerbalEngineer.VesselSimulator
             }
 
             this.parent = null;
+            this.parentAttach = part.attachMode;
             this.fuelCrossFeed = this.part.fuelCrossFeed;
             this.noCrossFeedNodeKey = this.part.NoCrossFeedNodeKey;
             this.decoupledInStage = this.DecoupledInStage(this.part);
@@ -486,7 +488,8 @@ namespace KerbalEngineer.VesselSimulator
 
             visited.Add(this);
 
-            // Rule 2: Part performs scan on start of every fuel pipe ending in it. This scan is done in order in which pipes were installed. Then it makes an union of fuel tank sets each pipe scan returned. If the resulting list is not empty, it is returned as result.
+            // Rule 2: Part performs scan on start of every fuel pipe ending in it. This scan is done in order in which pipes were installed.
+            // Then it makes an union of fuel tank sets each pipe scan returned. If the resulting list is not empty, it is returned as result.
             //MonoBehaviour.print("foreach fuel line");
 
             foreach (PartSim partSim in this.fuelTargets)
@@ -523,7 +526,8 @@ namespace KerbalEngineer.VesselSimulator
             // Rule 3: This rule has been removed and merged with rules 4 and 7 to fix issue with fuel tanks with disabled crossfeed
 
             // Rule 4: Part performs scan on each of its axially mounted neighbors. 
-            //  Couplers (bicoupler, tricoupler, ...) are an exception, they only scan one attach point on the single attachment side, skip the points on the side where multiple points are. [Experiment]
+            //  Couplers (bicoupler, tricoupler, ...) are an exception, they only scan one attach point on the single attachment side,
+            //  skip the points on the side where multiple points are. [Experiment]
             //  Again, the part creates union of scan lists from each of its neighbor and if it is not empty, returns this list. 
             //  The order in which mount points of a part are scanned appears to be fixed and defined by the part specification file. [Experiment]
             if (this.fuelCrossFeed)
@@ -533,24 +537,26 @@ namespace KerbalEngineer.VesselSimulator
                 {
                     if (attachSim.attachedPartSim != null)
                     {
-                        if ( /*attachSim.nodeType != AttachNode.NodeType.Surface &&*/
-                            !(this.noCrossFeedNodeKey != null && this.noCrossFeedNodeKey.Length > 0 && attachSim.id.Contains(this.noCrossFeedNodeKey)))
+                        if (attachSim.nodeType == AttachNode.NodeType.Stack)
                         {
-                            if (visited.Contains(attachSim.attachedPartSim))
+                            if (!(this.noCrossFeedNodeKey != null && this.noCrossFeedNodeKey.Length > 0 && attachSim.id.Contains(this.noCrossFeedNodeKey)))
                             {
-                                //if (log != null)
-                                //    log.buf.AppendLine(indent + "Attached part already visited, skipping (" + attachSim.attachedPartSim.name + ":" + attachSim.attachedPartSim.partId + ")");
-                            }
-                            else
-                            {
-                                //if (log != null)
-                                //    log.buf.AppendLine(indent + "Adding attached part as source (" + attachSim.attachedPartSim.name + ":" + attachSim.attachedPartSim.partId + ")");
-
-                                partSources = attachSim.attachedPartSim.GetSourceSet(type, allParts, visited, log, indent);
-                                if (partSources.Count > 0)
+                                if (visited.Contains(attachSim.attachedPartSim))
                                 {
-                                    allSources.UnionWith(partSources);
-                                    partSources.Clear();
+                                    //if (log != null)
+                                    //    log.buf.AppendLine(indent + "Attached part already visited, skipping (" + attachSim.attachedPartSim.name + ":" + attachSim.attachedPartSim.partId + ")");
+                                }
+                                else
+                                {
+                                    //if (log != null)
+                                    //    log.buf.AppendLine(indent + "Adding attached part as source (" + attachSim.attachedPartSim.name + ":" + attachSim.attachedPartSim.partId + ")");
+
+                                    partSources = attachSim.attachedPartSim.GetSourceSet(type, allParts, visited, log, indent);
+                                    if (partSources.Count > 0)
+                                    {
+                                        allSources.UnionWith(partSources);
+                                        partSources.Clear();
+                                    }
                                 }
                             }
                         }
@@ -568,8 +574,10 @@ namespace KerbalEngineer.VesselSimulator
                 }
             }
 
-            // Rule 5: If the part is fuel container for searched type of fuel (i.e. it has capability to contain that type of fuel and the fuel type was not disabled [Experiment]) and it contains fuel, it returns itself.
-            // Rule 6: If the part is fuel container for searched type of fuel (i.e. it has capability to contain that type of fuel and the fuel type was not disabled) but it does not contain the requested fuel, it returns empty list. [Experiment]
+            // Rule 5: If the part is fuel container for searched type of fuel (i.e. it has capability to contain that type of fuel and the fuel 
+            // type was not disabled [Experiment]) and it contains fuel, it returns itself.
+            // Rule 6: If the part is fuel container for searched type of fuel (i.e. it has capability to contain that type of fuel and the fuel 
+            // type was not disabled) but it does not contain the requested fuel, it returns empty list. [Experiment]
             if (this.resources.HasType(type) && this.resourceFlowStates[type] != 0)
             {
                 if (this.resources[type] > SimManager.RESOURCE_MIN)
@@ -585,8 +593,9 @@ namespace KerbalEngineer.VesselSimulator
                 return allSources;
             }
 
-            // Rule 7: If the part is radially attached to another part and it is child of that part in the ship's tree structure, it scans its parent and returns whatever the parent scan returned. [Experiment] [Experiment]
-            if (this.parent != null)
+            // Rule 7: If the part is radially attached to another part and it is child of that part in the ship's tree structure, it scans its 
+            // parent and returns whatever the parent scan returned. [Experiment] [Experiment]
+            if (this.parent != null && parentAttach == AttachModes.SRF_ATTACH)
             {
                 if (this.fuelCrossFeed)
                 {
