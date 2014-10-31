@@ -595,7 +595,7 @@ namespace KerbalEngineer.VesselSimulator
 
             // Rule 7: If the part is radially attached to another part and it is child of that part in the ship's tree structure, it scans its 
             // parent and returns whatever the parent scan returned. [Experiment] [Experiment]
-            if (this.parent != null && parentAttach == AttachModes.SRF_ATTACH)
+            if (this.parent != null && this.parentAttach == AttachModes.SRF_ATTACH)
             {
                 if (this.fuelCrossFeed)
                 {
