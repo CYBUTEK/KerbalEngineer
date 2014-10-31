@@ -37,6 +37,10 @@ namespace KerbalEngineer.Flight.Presets
             get { return Regex.Replace(this.Name, @"[^\d\w]", string.Empty) + ".xml"; }
         }
 
+        public bool IsHud { get; set; }
+
+        public bool IsHudBackground { get; set; }
+
         public string Name { get; set; }
 
         public string[] ReadoutNames { get; set; }

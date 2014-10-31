@@ -301,6 +301,8 @@ namespace KerbalEngineer.Flight.Sections
             this.ParentSection.Name = preset.Name;
             this.ParentSection.Abbreviation = preset.Abbreviation;
             this.ParentSection.ReadoutModuleNames = preset.ReadoutNames;
+            this.ParentSection.IsHud = preset.IsHud;
+            this.ParentSection.IsHudBackground = preset.IsHudBackground;
             this.presetList.enabled = false;
         }
 
@@ -467,6 +469,8 @@ namespace KerbalEngineer.Flight.Sections
             preset.Name = this.ParentSection.Name;
             preset.Abbreviation = this.ParentSection.Abbreviation;
             preset.ReadoutNames = this.ParentSection.ReadoutModuleNames;
+            preset.IsHud = this.ParentSection.IsHud;
+            preset.IsHudBackground = this.ParentSection.IsHudBackground;
 
             PresetLibrary.Save(preset);
         }
