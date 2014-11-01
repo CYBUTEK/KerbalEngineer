@@ -17,7 +17,13 @@
 //     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // 
 
-namespace KerbalEngineer.Flight.Readouts.Orbital.Manoeuver
+#region Using Directives
+
+using KerbalEngineer.Extensions;
+
+#endregion
+
+namespace KerbalEngineer.Flight.Readouts.Orbital.ManoeuverNode
 {
     public class ManoeuverProcessor : IUpdatable, IUpdateRequest
     {
@@ -29,17 +35,26 @@ namespace KerbalEngineer.Flight.Readouts.Orbital.Manoeuver
 
         #region Properties
 
+        public static double AngleToPrograde { get; private set; }
+
+        public static double AngleToRetrograde { get; private set; }
+
         public static ManoeuverProcessor Instance
         {
             get { return instance; }
         }
 
-        public static double Prograde { get; private set; }
+        public static double NormalDeltaV { get; private set; }
 
-        public static double Radial { get; private set; }
+        public static double ProgradeDeltaV { get; private set; }
+
+        public static double RadialDeltaV { get; private set; }
 
         public static bool ShowDetails { get; set; }
 
+        public static double TotalDeltaV { get; private set; }
+
+        public static double UniversalTime { get; private set; }
         public bool UpdateRequested { get; set; }
 
         #endregion
@@ -59,9 +74,16 @@ namespace KerbalEngineer.Flight.Readouts.Orbital.Manoeuver
                 return;
             }
 
-            var node = FlightGlobals.ActiveVessel.patchedConicSolver.maneuverNodes[0].GetBurnVector(FlightGlobals.ActiveVessel.orbit);
+            var node = FlightGlobals.ActiveVessel.patchedConicSolver.maneuverNodes[0].DeltaV;
 
-            Radial = -node.x;
+            ProgradeDeltaV = node.z;
+            NormalDeltaV = node.y;
+            RadialDeltaV = node.x;
+            TotalDeltaV = node.magnitude;
+
+            UniversalTime = FlightGlobals.ActiveVessel.patchedConicSolver.maneuverNodes[0].UT;
+            AngleToPrograde = FlightGlobals.ActiveVessel.patchedConicSolver.maneuverNodes[0].patch.GetAngleToPrograde(UniversalTime);
+            AngleToRetrograde = FlightGlobals.ActiveVessel.patchedConicSolver.maneuverNodes[0].patch.GetAngleToRetrograde(UniversalTime);
 
             ShowDetails = true;
         }

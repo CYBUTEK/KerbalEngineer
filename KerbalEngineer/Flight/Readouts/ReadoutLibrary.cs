@@ -25,7 +25,7 @@ using System.Linq;
 
 using KerbalEngineer.Flight.Readouts.Miscellaneous;
 using KerbalEngineer.Flight.Readouts.Orbital;
-using KerbalEngineer.Flight.Readouts.Orbital.Manoeuver;
+using KerbalEngineer.Flight.Readouts.Orbital.ManoeuverNode;
 using KerbalEngineer.Flight.Readouts.Rendezvous;
 using KerbalEngineer.Flight.Readouts.Surface;
 using KerbalEngineer.Flight.Readouts.Vessel;
@@ -92,6 +92,11 @@ namespace KerbalEngineer.Flight.Readouts
                 readouts.Add(new AngleToPrograde());
                 readouts.Add(new AngleToRetrograde());
                 readouts.Add(new NodeProgradeDeltaV());
+                readouts.Add(new NodeNormalDeltaV());
+                readouts.Add(new NodeRadialDeltaV());
+                readouts.Add(new NodeTotalDeltaV());
+                readouts.Add(new NodeAngleToPrograde());
+                readouts.Add(new NodeAngleToRetrograde());
 
                 // Surface
                 readouts.Add(new AltitudeSeaLevel());

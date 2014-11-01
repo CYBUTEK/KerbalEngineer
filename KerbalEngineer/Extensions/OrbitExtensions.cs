@@ -51,13 +51,18 @@ namespace KerbalEngineer.Extensions
 
         public static double GetAngleToPrograde(this Orbit orbit)
         {
+            return GetAngleToPrograde(orbit, Planetarium.GetUniversalTime());
+        }
+
+        public static double GetAngleToPrograde(this Orbit orbit, double universalTime)
+        {
             if (orbit.referenceBody == CelestialBodies.SystemBody.CelestialBody)
             {
                 return 0.0;
             }
 
-            var angle = AngleHelper.GetAngleBetweenVectors(orbit.getRelativePositionAtUT(Planetarium.GetUniversalTime()),
-                                                           Vector3d.Exclude(orbit.GetOrbitNormal(), orbit.referenceBody.orbit.getRelativePositionAtUT(Planetarium.GetUniversalTime())));
+            var angle = AngleHelper.GetAngleBetweenVectors(orbit.getRelativePositionAtUT(universalTime),
+                                                           Vector3d.Exclude(orbit.GetOrbitNormal(), orbit.referenceBody.orbit.getRelativePositionAtUT(universalTime)));
 
             angle = AngleHelper.Clamp360(angle - 90.0);
 
@@ -66,13 +71,18 @@ namespace KerbalEngineer.Extensions
 
         public static double GetAngleToRetrograde(this Orbit orbit)
         {
+            return GetAngleToRetrograde(orbit, Planetarium.GetUniversalTime());
+        }
+
+        public static double GetAngleToRetrograde(this Orbit orbit, double universalTime)
+        {
             if (orbit.referenceBody == CelestialBodies.SystemBody.CelestialBody)
             {
                 return 0.0;
             }
 
-            var angle = AngleHelper.GetAngleBetweenVectors(orbit.getRelativePositionAtUT(Planetarium.GetUniversalTime()),
-                                                           Vector3d.Exclude(orbit.GetOrbitNormal(), orbit.referenceBody.orbit.getRelativePositionAtUT(Planetarium.GetUniversalTime())));
+            var angle = AngleHelper.GetAngleBetweenVectors(orbit.getRelativePositionAtUT(universalTime),
+                                                           Vector3d.Exclude(orbit.GetOrbitNormal(), orbit.referenceBody.orbit.getRelativePositionAtUT(universalTime)));
 
             angle = AngleHelper.Clamp360(angle + 90.0);
 

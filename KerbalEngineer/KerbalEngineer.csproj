@@ -58,8 +58,13 @@
     <Compile Include="Flight\Readouts\Orbital\AngleToEquatorialAscendingNode.cs" />
     <Compile Include="Flight\Readouts\Orbital\AngleToRetrograde.cs" />
     <Compile Include="Flight\Readouts\Orbital\AngleToPrograde.cs" />
-    <Compile Include="Flight\Readouts\Orbital\Manoeuver\ManoeuverProcessor.cs" />
-    <Compile Include="Flight\Readouts\Orbital\Manoeuver\NodeProgradeDeltaV.cs" />
+    <Compile Include="Flight\Readouts\Orbital\ManoeuverNode\ManoeuverProcessor.cs" />
+    <Compile Include="Flight\Readouts\Orbital\ManoeuverNode\NodeAngleToRetrograde.cs" />
+    <Compile Include="Flight\Readouts\Orbital\ManoeuverNode\NodeNormalDeltaV.cs" />
+    <Compile Include="Flight\Readouts\Orbital\ManoeuverNode\NodeAngleToPrograde.cs" />
+    <Compile Include="Flight\Readouts\Orbital\ManoeuverNode\NodeTotalDeltaV.cs" />
+    <Compile Include="Flight\Readouts\Orbital\ManoeuverNode\NodeRadialDeltaV.cs" />
+    <Compile Include="Flight\Readouts\Orbital\ManoeuverNode\NodeProgradeDeltaV.cs" />
     <Compile Include="Flight\Readouts\Orbital\MeanAnomaly.cs" />
     <Compile Include="Flight\Readouts\Orbital\EccentricAnomaly.cs" />
     <Compile Include="Flight\Readouts\Orbital\ArgumentOfPeriapsis.cs" />

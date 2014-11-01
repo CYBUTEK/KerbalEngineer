@@ -1,12 +1,16 @@
 1.0.11.0
     Added: New readouts to the orbital category:
         - Current SOI
+        - Manoeuver Node DeltaV (Prograde)
+        - Manoeuver Node DeltaV (Normal)
+        - Manoeuver Node DeltaV (Radial)
+        - Manoeuver Node DeltaV (Total)
 
     Padishar's Fixes:
         Fixed: Issue with multicouplers when attached to parent by bottom node.
         Fixed: Issue with sepratrons on solid rocket boosters.
 
-1.0.10.0
+1.0.10.0, 19-10-2014
     UPDATE NOTICE: If you are updating from a previous version of Kerbal Engineer 1.0, please
     delete the 'Settings/SectionLibrary.xml' file, or remove the old install first.  This will
     reset the Flight Engineer sections to their default values and enable the new HUD functionality.
@@ -25,7 +29,7 @@
     Fixed: Bug in the phase angle calculations.
     Fixed: Bug where the Build Engineer would stay locked after hiding with the shortcut key.
 
-1.0.9.3
+1.0.9.3, 08-10-2014
     Added: Title of the build engineer in compact mode now shows if you are using atmospheric data.
     Added: New readout to the surface category:
         - Vertical Acceleration
@@ -35,16 +39,16 @@
     Changed: Atmospheric settings (pressure/velocity) in the editor condensed onto a single line.
     Fixed: Bug where the overlays in the editor would stay open outside of parts screen.
 
-1.0.9.2
+1.0.9.2, 07-10-2014
     Updated for KSP v0.25.0
     Changed: Prettyfied Latitude and Longitude readouts.
     Changed: ModuleLandingGear now uses the physical significance flag.
     Changed: Updated MiniAVC to 1.0.2.4.
 
-1.0.9.1
+1.0.9.1, 17-09-2014
     Fixed: Part size bug caused by TweakScale's cost calculator.
 
-1.0.9.0
+1.0.9.0, 15-09-2014
     Added: Build Engineer now also implements the '\' backslash show/hide shortcut.
     Added: New readouts to the vessel category:
         - Current Stage DeltaV
@@ -62,10 +66,10 @@
 
     Fixed: Cost calculation now works with mods implementing IPartCostModifier.
 
-1.0.8.1
+1.0.8.1, 06-09-2014
     Fixed: Bug which caused rendezvous readouts to freeze the game or show all zeros.
 
-1.0.8.0
+1.0.8.0, 06-09-2014
     Added: New readouts to the vessel category:
         - Intake Air (Usage)
 
@@ -76,14 +80,14 @@
     Fixed: An issue where deltaV would not be calculated whilst flying.
     Fixed: NullRef whilst loading the in flight Action Menu.
 
-1.0.7.1
+1.0.7.1, 02-09-2014
     Changed: Reversed Intake Air readout from 'S/D' to 'D/S' for easier reading.
     Changed: Increased Intake Air readout precision to 4 decimal places.
     Fixed: Issue where Intake Air supply was not representative of total supply.
     Fixed: Bug where actual thrust does not reset to zero on deactivated engines.
     Fixed: Thrust now scales with velocity for atmospheric engines. (Padishar's fix)
 
-1.0.7.0
+1.0.7.0, 01-09-2014
     Added: Part count information to the Build Engineer.
     Added: Reset button to the G-Force readout.
     Added: Preset system to the Flight Engineer.
@@ -119,7 +123,7 @@
     Fixed: Issues with large value wrap around in the Flight Engineer.
     Fixed: Bug in the phase angle calculation.
 
-1.0.6.0
+1.0.6.0, 23-08-2014
     Added: Time and Angle to equatorial ascending/descending nodes in the orbital display.
     Added: Time and Angle to relative ascending/descending nodes in the rendezvous display.
     Added: Overlay tooltip information delay adjustment slider to the Build Engineer settings.
@@ -129,7 +133,7 @@
     Changed: Licensing and readme structures are now more verbose to satisfy the new add-on rules.
     Fixed: Updated MiniAVC to v1.0.2.1 (fixes remote check bug as well as other minor bugs).
 
-1.0.5.0
+1.0.5.0, 13-08-2014
     Added: Acceleration readout to the Vessel category (current / maximum).
     Added: Category library system for the Flight Engineer readouts.
     Added: Drop-down category selection to better support the new system.
@@ -139,7 +143,7 @@
     Fixed: Flight Engineer toolbar menu now hides when hiding the GUI with F2.
     Fixed: Flight Engineer toolbar button now disables when in module mode and no engineer is running.
 
-1.0.4.0
+1.0.4.0, 12-08-2014
     Added: Better stock toolbar support in the flight engineer.
     Added: Dynamically generated celestial body library for supporting add-ons that modify the star system.
     Changed: Reference bodies are now listed with a nestable menu system.
@@ -149,7 +153,7 @@
     Changed: Increased Semi-major/minor axis precision to 3 decimal places.
     Fixed: Impact altitude was mistakenly formatted as an angle, it is now formatted correctly as a distance.
 
-1.0.3.0
+1.0.3.0, 30-07-2014
     Added: Integrated KSP-AVC support with MiniAVC.
     Added: Setting to change the simulation delay in the Build Engineer.
     Added: Setting to enable and disable the build overlay system.
@@ -160,7 +164,7 @@
     Fixed: Flickering in VAB and Vessel display.
     Fixed: Bug saving the GUI display size.
 
-1.0.2.0
+1.0.2.0, 27-07-2014
     Added: Separator readout module under Misc in the Flight Engineer.
     Added: Adjustable GUI display size.
     Added: Display size can be adjusted in the Build Engineer settings.
@@ -170,7 +174,7 @@
     Fixed: Engines that have a minimum thrust are now calculated properly. (Thanks to nosscire.)
     Fixed: Compact collapse mode is now saved in the Build Engineer.
 
-1.0.1.0
+1.0.1.0, 26-07-2014
     Added: Part-less Flight Engineer.
     Added: Ability to collapse the Build Engineer into compact mode from left or right.
     Added: Settings in Build Engineer for compact collapse mode and partless/module Flight Engineer.
@@ -183,10 +187,10 @@
     Changed: ER7500 part has no physical significance.
     Fixed: ActionMenu and DisplayStack destruction bug.
 
-1.0.0.1
+1.0.0.1, 24-07-2014
     Added: Stock toolbar support in the Flight Engineer.
     Changed: Orbital Period has higher precision.
     Fixed: Various NullRefs in editor window and overlay.
     
-1.0.0.0
+1.0.0.0, 24-07-2014
     Initial release for public testing.
