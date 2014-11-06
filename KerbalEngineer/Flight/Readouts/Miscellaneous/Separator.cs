@@ -19,7 +19,10 @@
 
 #region Using Directives
 
+using System;
+
 using KerbalEngineer.Flight.Sections;
+using KerbalEngineer.Helpers;
 
 using UnityEngine;
 
@@ -31,7 +34,7 @@ namespace KerbalEngineer.Flight.Readouts.Miscellaneous
     {
         #region Fields
 
-        private readonly Texture2D texture;
+        private readonly GUIStyle boxStyle;
 
         #endregion
 
@@ -41,13 +44,19 @@ namespace KerbalEngineer.Flight.Readouts.Miscellaneous
         {
             this.Name = "Separator";
             this.Category = ReadoutCategory.GetCategory("Miscellaneous");
-            this.HelpString = string.Empty;
+            this.HelpString = String.Empty;
             this.IsDefault = false;
             this.Cloneable = true;
 
-            this.texture = new Texture2D(1, 1, TextureFormat.RGBA32, false);
-            this.texture.SetPixel(0, 0, new Color(1.0f, 1.0f, 1.0f, 0.5f));
-            this.texture.Apply();
+            this.boxStyle = new GUIStyle
+            {
+                normal =
+                {
+                    background = TextureHelper.CreateTextureFromColour(new Color(1.0f, 1.0f, 1.0f, 0.5f))
+                },
+                fixedHeight = 1.0f,
+                stretchWidth = true
+            };
         }
 
         #endregion
@@ -56,8 +65,8 @@ namespace KerbalEngineer.Flight.Readouts.Miscellaneous
 
         public override void Draw(SectionModule section)
         {
-            GUILayout.Box(string.Empty, GUIStyle.none, new[] {GUILayout.Width(this.ContentWidth), GUILayout.Height(1.0f)});
-            GUI.DrawTexture(GUILayoutUtility.GetLastRect(), this.texture, ScaleMode.StretchToFill);
+            GUILayout.Box(String.Empty, this.boxStyle);
+            //GUI.DrawTexture(GUILayoutUtility.GetLastRect(), this.texture, ScaleMode.StretchToFill);
         }
 
         #endregion

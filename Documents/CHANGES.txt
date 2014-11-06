@@ -14,6 +14,8 @@
 
     Added: Readout help strings by ClassyJakey.
 
+    Fixed: Issue with separators in HUDs.
+
     Padishar's Fixes:
         Fixed: Issue with multicouplers when attached to parent by bottom node.
         Fixed: Issue with sepratrons on solid rocket boosters.
