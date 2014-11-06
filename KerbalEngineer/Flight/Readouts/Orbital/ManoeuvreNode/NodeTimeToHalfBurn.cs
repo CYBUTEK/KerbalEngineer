@@ -21,20 +21,20 @@
 
 using System;
 
-using KerbalEngineer.Extensions;
 using KerbalEngineer.Flight.Sections;
+using KerbalEngineer.Helpers;
 
 #endregion
 
-namespace KerbalEngineer.Flight.Readouts.Orbital.ManoeuverNode
+namespace KerbalEngineer.Flight.Readouts.Orbital.ManoeuvreNode
 {
-    public class NodeProgradeDeltaV : ReadoutModule
+    public class NodeTimeToHalfBurn : ReadoutModule
     {
         #region Constructors
 
-        public NodeProgradeDeltaV()
+        public NodeTimeToHalfBurn()
         {
-            this.Name = "Manoeuver Node DeltaV (Prograde)";
+            this.Name = "Time to Manoeuvre Burn";
             this.Category = ReadoutCategory.GetCategory("Orbital");
             this.HelpString = String.Empty;
             this.IsDefault = true;
@@ -46,22 +46,22 @@ namespace KerbalEngineer.Flight.Readouts.Orbital.ManoeuverNode
 
         public override void Draw(SectionModule section)
         {
-            if (!ManoeuverProcessor.ShowDetails)
+            if (!ManoeuvreProcessor.ShowDetails)
             {
                 return;
             }
 
-            this.DrawLine("Node DeltaV (Prograde)", ManoeuverProcessor.ProgradeDeltaV.ToSpeed());
+            this.DrawLine("Time to Node Burn", TimeFormatter.ConvertToString(ManoeuvreProcessor.UniversalTime - ManoeuvreProcessor.HalfBurnTime - Planetarium.GetUniversalTime()));
         }
 
         public override void Reset()
         {
-            FlightEngineerCore.Instance.AddUpdatable(ManoeuverProcessor.Instance);
+            ManoeuvreProcessor.Reset();
         }
 
         public override void Update()
         {
-            ManoeuverProcessor.RequestUpdate();
+            ManoeuvreProcessor.RequestUpdate();
         }
 
         #endregion

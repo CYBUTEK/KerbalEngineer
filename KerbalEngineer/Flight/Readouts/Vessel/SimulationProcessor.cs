@@ -82,6 +82,7 @@ namespace KerbalEngineer.Flight.Readouts.Vessel
         public void Update()
         {
             SimManager.RequestSimulation();
+            SimManager.TryStartSimulation();
 
             if (!SimManager.ResultsReady())
             {
@@ -103,9 +104,9 @@ namespace KerbalEngineer.Flight.Readouts.Vessel
                                               FlightGlobals.ActiveVessel.mainBody.GetAltitude(FlightGlobals.ActiveVessel.CoM), 2);
                 SimManager.Velocity = FlightGlobals.ActiveVessel.srfSpeed;
             }
+
             // Cybutek: We should be allowing this to be set too but not sure where you want to put the control
             //SimManager.vectoredThrust = vectoredThrust; 
-            SimManager.TryStartSimulation();
         }
 
         #endregion

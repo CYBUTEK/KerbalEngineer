@@ -26,15 +26,15 @@ using KerbalEngineer.Flight.Sections;
 
 #endregion
 
-namespace KerbalEngineer.Flight.Readouts.Orbital.ManoeuverNode
+namespace KerbalEngineer.Flight.Readouts.Orbital.ManoeuvreNode
 {
-    public class NodeAngleToRetrograde : ReadoutModule
+    public class NodeNormalDeltaV : ReadoutModule
     {
         #region Constructors
 
-        public NodeAngleToRetrograde()
+        public NodeNormalDeltaV()
         {
-            this.Name = "Manoeuver Node Angle to Retrograde";
+            this.Name = "Manoeuvre Node DeltaV (Normal)";
             this.Category = ReadoutCategory.GetCategory("Orbital");
             this.HelpString = String.Empty;
             this.IsDefault = true;
@@ -46,22 +46,22 @@ namespace KerbalEngineer.Flight.Readouts.Orbital.ManoeuverNode
 
         public override void Draw(SectionModule section)
         {
-            if (!ManoeuverProcessor.ShowDetails)
+            if (!ManoeuvreProcessor.ShowDetails)
             {
                 return;
             }
 
-            this.DrawLine("Node Angle to Retrograde", ManoeuverProcessor.AngleToRetrograde.ToAngle());
+            this.DrawLine("Node DeltaV (Normal)", ManoeuvreProcessor.NormalDeltaV.ToSpeed());
         }
 
         public override void Reset()
         {
-            FlightEngineerCore.Instance.AddUpdatable(ManoeuverProcessor.Instance);
+            ManoeuvreProcessor.Reset();
         }
 
         public override void Update()
         {
-            ManoeuverProcessor.RequestUpdate();
+            ManoeuvreProcessor.RequestUpdate();
         }
 
         #endregion

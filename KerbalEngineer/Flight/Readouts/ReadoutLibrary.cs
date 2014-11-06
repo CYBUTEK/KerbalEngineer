@@ -25,7 +25,7 @@ using System.Linq;
 
 using KerbalEngineer.Flight.Readouts.Miscellaneous;
 using KerbalEngineer.Flight.Readouts.Orbital;
-using KerbalEngineer.Flight.Readouts.Orbital.ManoeuverNode;
+using KerbalEngineer.Flight.Readouts.Orbital.ManoeuvreNode;
 using KerbalEngineer.Flight.Readouts.Rendezvous;
 using KerbalEngineer.Flight.Readouts.Surface;
 using KerbalEngineer.Flight.Readouts.Vessel;
@@ -95,6 +95,10 @@ namespace KerbalEngineer.Flight.Readouts
                 readouts.Add(new NodeNormalDeltaV());
                 readouts.Add(new NodeRadialDeltaV());
                 readouts.Add(new NodeTotalDeltaV());
+                readouts.Add(new NodeBurnTime());
+                readouts.Add(new NodeHalfBurnTime());
+                readouts.Add(new NodeTimeToManoeuvre());
+                readouts.Add(new NodeTimeToHalfBurn());
                 readouts.Add(new NodeAngleToPrograde());
                 readouts.Add(new NodeAngleToRetrograde());
 

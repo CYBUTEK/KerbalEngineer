@@ -1,0 +1,319 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ArrayOfSettingItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <SettingItem>
+    <Name>Orbital.ApoapsisHeight</Name>
+    <Value xsi:type="string">Shows the vessel's apoapsis height relative to sea level.  (Apoapsis is the highest point of an orbit.)</Value>
+  </SettingItem>
+  <SettingItem>
+    <Name>Orbital.PeriapsisHeight</Name>
+    <Value xsi:type="string">Shows the vessel's periapsis height relative to sea level. (Periapsis is the lowest point of an orbit.</Value>
+  </SettingItem>
+  <SettingItem>
+    <Name>Orbital.TimeToApoapsis</Name>
+    <Value xsi:type="string">Shows the time until the vessel reaches apoapsis, the highest point of the orbit.</Value>
+  </SettingItem>
+  <SettingItem>
+    <Name>Orbital.TimeToPeriapsis</Name>
+    <Value xsi:type="string">Shows the time until the vessel reaches periapsis, the lowest point of the orbit.</Value>
+  </SettingItem>
+  <SettingItem>
+    <Name>Orbital.Inclination</Name>
+    <Value xsi:type="string">Shows the vessel's orbital inclination.</Value>
+  </SettingItem>
+  <SettingItem>
+    <Name>Orbital.TimeToEquatorialAscendingNode</Name>
+    <Value xsi:type="string"></Value>
+  </SettingItem>
+  <SettingItem>
+    <Name>Orbital.TimeToEquatorialDescendingNode</Name>
+    <Value xsi:type="string"></Value>
+  </SettingItem>
+  <SettingItem>
+    <Name>Orbital.AngleToEquatorialAscendingNode</Name>
+    <Value xsi:type="string"></Value>
+  </SettingItem>
+  <SettingItem>
+    <Name>Orbital.AngleToEquatorialDescendingNode</Name>
+    <Value xsi:type="string"></Value>
+  </SettingItem>
+  <SettingItem>
+    <Name>Orbital.Eccentricity</Name>
+    <Value xsi:type="string">Shows the vessel's orbital eccentricity.</Value>
+  </SettingItem>
+  <SettingItem>
+    <Name>Orbital.OrbitalSpeed</Name>
+    <Value xsi:type="string">Shows the vessel's orbital speed.</Value>
+  </SettingItem>
+  <SettingItem>
+    <Name>Orbital.OrbitalPeriod</Name>
+    <Value xsi:type="string">Shows the amount of time it will take to complete a full orbit.</Value>
+  </SettingItem>
+  <SettingItem>
+    <Name>Orbital.LongitudeOfAscendingNode</Name>
+    <Value xsi:type="string">Shows the vessel's longitude of the ascending node.</Value>
+  </SettingItem>
+  <SettingItem>
+    <Name>Orbital.LongitudeOfPeriapsis</Name>
+    <Value xsi:type="string">Shows the vessel's longitude of periapsis.</Value>
+  </SettingItem>
+  <SettingItem>
+    <Name>Orbital.ArgumentOfPeriapsis</Name>
+    <Value xsi:type="string"></Value>
+  </SettingItem>
+  <SettingItem>
+    <Name>Orbital.TrueAnomaly</Name>
+    <Value xsi:type="string"></Value>
+  </SettingItem>
+  <SettingItem>
+    <Name>Orbital.MeanAnomaly</Name>
+    <Value xsi:type="string"></Value>
+  </SettingItem>
+  <SettingItem>
+    <Name>Orbital.EccentricAnomaly</Name>
+    <Value xsi:type="string"></Value>
+  </SettingItem>
+  <SettingItem>
+    <Name>Orbital.SemiMajorAxis</Name>
+    <Value xsi:type="string">Shows the distance from the centre of an orbit to the farthest edge.</Value>
+  </SettingItem>
+  <SettingItem>
+    <Name>Orbital.SemiMinorAxis</Name>
+    <Value xsi:type="string">Shows the distance from the centre of an orbit to the nearest edge.</Value>
+  </SettingItem>
+  <SettingItem>
+    <Name>Orbital.AngleToPrograde</Name>
+    <Value xsi:type="string"></Value>
+  </SettingItem>
+  <SettingItem>
+    <Name>Orbital.AngleToRetrograde</Name>
+    <Value xsi:type="string"></Value>
+  </SettingItem>
+  <SettingItem>
+    <Name>Surface.AltitudeSeaLevel</Name>
+    <Value xsi:type="string">Shows the vessel's altitude above sea level.</Value>
+  </SettingItem>
+  <SettingItem>
+    <Name>Surface.AltitudeTerrain</Name>
+    <Value xsi:type="string">Shows the vessel's altitude above the terrain.</Value>
+  </SettingItem>
+  <SettingItem>
+    <Name>Surface.VerticalSpeed</Name>
+    <Value xsi:type="string">Shows the vessel's vertical speed up and down.</Value>
+  </SettingItem>
+  <SettingItem>
+    <Name>Surface.VerticalAcceleration</Name>
+    <Value xsi:type="string">Shows the vessel's vertical acceleration up and down.</Value>
+  </SettingItem>
+  <SettingItem>
+    <Name>Surface.HorizontalSpeed</Name>
+    <Value xsi:type="string">Shows the vessel's horizontal speed across a celestial body's surface.</Value>
+  </SettingItem>
+  <SettingItem>
+    <Name>Surface.HorizontalAcceleration</Name>
+    <Value xsi:type="string">Shows the vessel's horizontal acceleration across a celestial body's surface.</Value>
+  </SettingItem>
+  <SettingItem>
+    <Name>Surface.Latitude</Name>
+    <Value xsi:type="string">Shows the vessel's latitude position around the celestial body.  Latitude is the angle from the equator to poles.</Value>
+  </SettingItem>
+  <SettingItem>
+    <Name>Surface.Longitude</Name>
+    <Value xsi:type="string">Shows the vessel's longitude around a celestial body.  Longitude is the angle from the bodies prime meridian.</Value>
+  </SettingItem>
+  <SettingItem>
+    <Name>Surface.GeeForce</Name>
+    <Value xsi:type="string">Shows the current g-force and maximum g-force experienced.</Value>
+  </SettingItem>
+  <SettingItem>
+    <Name>Surface.TerminalVelocity</Name>
+    <Value xsi:type="string">Shows the velocity where the efforts of thrust and drag are equalled out.</Value>
+  </SettingItem>
+  <SettingItem>
+    <Name>Surface.AtmosphericEfficiency</Name>
+    <Value xsi:type="string">Shows you vessel's efficiency as a ratio of the current velocity and terminal velocity.  Less than 1 means that you are losing efficiency due to gravity and greater than 1 is due to drag.</Value>
+  </SettingItem>
+  <SettingItem>
+    <Name>Surface.Biome</Name>
+    <Value xsi:type="string">Shows the biome which the vessel is currently flying over.</Value>
+  </SettingItem>
+  <SettingItem>
+    <Name>Surface.Slope</Name>
+    <Value xsi:type="string">Shows the slope of the terrain below your vessel.</Value>
+  </SettingItem>
+  <SettingItem>
+    <Name>Surface.ImpactTime</Name>
+    <Value xsi:type="string">Shows how much time until your ship impacts the surface.</Value>
+  </SettingItem>
+  <SettingItem>
+    <Name>Surface.ImpactLongitude</Name>
+    <Value xsi:type="string"></Value>
+  </SettingItem>
+  <SettingItem>
+    <Name>Surface.ImpactLatitude</Name>
+    <Value xsi:type="string"></Value>
+  </SettingItem>
+  <SettingItem>
+    <Name>Surface.ImpactAltitude</Name>
+    <Value xsi:type="string">The altitude of which you will impact the surface.</Value>
+  </SettingItem>
+  <SettingItem>
+    <Name>Surface.ImpactBiome</Name>
+    <Value xsi:type="string">Shows the biome you will impact in.</Value>
+  </SettingItem>
+  <SettingItem>
+    <Name>Vessel.DeltaVStaged</Name>
+    <Value xsi:type="string">Shows the vessel's delta velocity for each stage.</Value>
+  </SettingItem>
+  <SettingItem>
+    <Name>Vessel.DeltaVCurrent</Name>
+    <Value xsi:type="string">Shows the vessel's current stage delta velocity.</Value>
+  </SettingItem>
+  <SettingItem>
+    <Name>Vessel.DeltaVTotal</Name>
+    <Value xsi:type="string">Shows the vessel's total delta velocity.</Value>
+  </SettingItem>
+  <SettingItem>
+    <Name>Vessel.SpecificImpulse</Name>
+    <Value xsi:type="string">The ISP of your vessel.</Value>
+  </SettingItem>
+  <SettingItem>
+    <Name>Vessel.Mass</Name>
+    <Value xsi:type="string">The total mass of your vessel.</Value>
+  </SettingItem>
+  <SettingItem>
+    <Name>Vessel.Thrust</Name>
+    <Value xsi:type="string">The thrust of your vessel.</Value>
+  </SettingItem>
+  <SettingItem>
+    <Name>Vessel.ThrustToWeight</Name>
+    <Value xsi:type="string">Shows the vessel's actual and total thrust to weight ratio.</Value>
+  </SettingItem>
+  <SettingItem>
+    <Name>Vessel.SurfaceThrustToWeight</Name>
+    <Value xsi:type="string">Shows the vessel's surface thrust to weight ratio.</Value>
+  </SettingItem>
+  <SettingItem>
+    <Name>Vessel.Acceleration</Name>
+    <Value xsi:type="string"></Value>
+  </SettingItem>
+  <SettingItem>
+    <Name>Vessel.SuicideBurnAltitude</Name>
+    <Value xsi:type="string">Shows the altitude when to start a suicide burn.</Value>
+  </SettingItem>
+  <SettingItem>
+    <Name>Vessel.SuicideBurnDistance</Name>
+    <Value xsi:type="string">Shows the distance to the point at which to start a suicide burn.</Value>
+  </SettingItem>
+  <SettingItem>
+    <Name>Vessel.SuicideBurnDeltaV</Name>
+    <Value xsi:type="string">Shows the DeltaV of a suicide burn.</Value>
+  </SettingItem>
+  <SettingItem>
+    <Name>Vessel.IntakeAirUsage</Name>
+    <Value xsi:type="string"></Value>
+  </SettingItem>
+  <SettingItem>
+    <Name>Vessel.IntakeAirDemand</Name>
+    <Value xsi:type="string"></Value>
+  </SettingItem>
+  <SettingItem>
+    <Name>Vessel.IntakeAirSupply</Name>
+    <Value xsi:type="string"></Value>
+  </SettingItem>
+  <SettingItem>
+    <Name>Vessel.IntakeAirDemandSupply</Name>
+    <Value xsi:type="string"></Value>
+  </SettingItem>
+  <SettingItem>
+    <Name>Rendezvous.TargetSelector</Name>
+    <Value xsi:type="string">A tool to allow easy browsing, searching and selection of targets.</Value>
+  </SettingItem>
+  <SettingItem>
+    <Name>Rendezvous.PhaseAngle</Name>
+    <Value xsi:type="string"></Value>
+  </SettingItem>
+  <SettingItem>
+    <Name>Rendezvous.InterceptAngle</Name>
+    <Value xsi:type="string"></Value>
+  </SettingItem>
+  <SettingItem>
+    <Name>Rendezvous.RelativeVelocity</Name>
+    <Value xsi:type="string">Shows the relative velocity between your vessel and the target object.</Value>
+  </SettingItem>
+  <SettingItem>
+    <Name>Rendezvous.RelativeSpeed</Name>
+    <Value xsi:type="string">Shows the difference in orbital speed between your vessel and the target object.</Value>
+  </SettingItem>
+  <SettingItem>
+    <Name>Rendezvous.RelativeInclination</Name>
+    <Value xsi:type="string">Shows the relative inclination between your vessel and the target object.</Value>
+  </SettingItem>
+  <SettingItem>
+    <Name>Rendezvous.TimeToRelativeAscendingNode</Name>
+    <Value xsi:type="string"></Value>
+  </SettingItem>
+  <SettingItem>
+    <Name>Rendezvous.TimeToRelativeDescendingNode</Name>
+    <Value xsi:type="string"></Value>
+  </SettingItem>
+  <SettingItem>
+    <Name>Rendezvous.AngleToRelativeAscendingNode</Name>
+    <Value xsi:type="string"></Value>
+  </SettingItem>
+  <SettingItem>
+    <Name>Rendezvous.AngleToRelativeDescendingNode</Name>
+    <Value xsi:type="string"></Value>
+  </SettingItem>
+  <SettingItem>
+    <Name>Rendezvous.AltitudeSeaLevel</Name>
+    <Value xsi:type="string"></Value>
+  </SettingItem>
+  <SettingItem>
+    <Name>Rendezvous.ApoapsisHeight</Name>
+    <Value xsi:type="string">Shows the altitude of your apoapsis</Value>
+  </SettingItem>
+  <SettingItem>
+    <Name>Rendezvous.PeriapsisHeight</Name>
+    <Value xsi:type="string">Shows the altitude of your periapsis</Value>
+  </SettingItem>
+  <SettingItem>
+    <Name>Rendezvous.TimeToApoapsis</Name>
+    <Value xsi:type="string">The time until you reach your apoapsis</Value>
+  </SettingItem>
+  <SettingItem>
+    <Name>Rendezvous.TimeToPeriapsis</Name>
+    <Value xsi:type="string">The time until you reach your periapsis</Value>
+  </SettingItem>
+  <SettingItem>
+    <Name>Rendezvous.Distance</Name>
+    <Value xsi:type="string"></Value>
+  </SettingItem>
+  <SettingItem>
+    <Name>Rendezvous.OrbitalPeriod</Name>
+    <Value xsi:type="string"></Value>
+  </SettingItem>
+  <SettingItem>
+    <Name>Rendezvous.SemiMajorAxis</Name>
+    <Value xsi:type="string"></Value>
+  </SettingItem>
+  <SettingItem>
+    <Name>Rendezvous.SemiMinorAxis</Name>
+    <Value xsi:type="string"></Value>
+  </SettingItem>
+  <SettingItem>
+    <Name>Miscellaneous.Separator</Name>
+    <Value xsi:type="string"></Value>
+  </SettingItem>
+  <SettingItem>
+    <Name>Miscellaneous.GuiSizeAdjustor</Name>
+    <Value xsi:type="string">Shows a control that will allow you to adjust the GUI size.</Value>
+  </SettingItem>
+  <SettingItem>
+    <Name>Miscellaneous.SimulationDelay</Name>
+    <Value xsi:type="string">Controls the minimum delay between processing vessel simulations.</Value>
+  </SettingItem>
+  <SettingItem>
+    <Name>Miscellaneous.TimeReference</Name>
+    <Value xsi:type="string"></Value>
+  </SettingItem>
+</ArrayOfSettingItem>

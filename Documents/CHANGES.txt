@@ -1,10 +1,18 @@
 1.0.11.0
     Added: New readouts to the orbital category:
         - Current SOI
-        - Manoeuver Node DeltaV (Prograde)
-        - Manoeuver Node DeltaV (Normal)
-        - Manoeuver Node DeltaV (Radial)
-        - Manoeuver Node DeltaV (Total)
+        - Manoeuvre Node DeltaV (Prograde)
+        - Manoeuvre Node DeltaV (Normal)
+        - Manoeuvre Node DeltaV (Radial)
+        - Manoeuvre Node DeltaV (Total)
+        - Manoeuvre Node Burn Time
+        - Manoeuvre Node Half Burn Time
+        - Manoeuvre Node Angle to Prograde
+        - Manoeuvre Node Angle to Retrograde
+        - Time to Manoeuvre Node
+        - Time to Manoeuvre Burn
+
+    Added: Readout help strings by ClassyJakey.
 
     Padishar's Fixes:
         Fixed: Issue with multicouplers when attached to parent by bottom node.

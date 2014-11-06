@@ -344,6 +344,7 @@ namespace KerbalEngineer.VesselSimulator
             // Create the array of stages that will be returned
             Stage[] stages = new Stage[this.currentStage + 1];
 
+
             // Loop through the stages
             while (this.currentStage >= 0)
             {
@@ -495,6 +496,7 @@ namespace KerbalEngineer.VesselSimulator
 
                 // Store the magnitude of the deltaV vector
                 stage.deltaV = this.vecStageDeltaV.magnitude;
+                stage.resourceMass = this.stepStartMass - this.stepEndMass;
 
                 // Recalculate effective stage isp from the stage deltaV (flip the standard deltaV calculation around)
                 // Note: If the mass doesn't change then this is a divide by zero
