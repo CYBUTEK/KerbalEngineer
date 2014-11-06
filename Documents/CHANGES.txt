@@ -15,6 +15,7 @@
     Added: Readout help strings by ClassyJakey.
 
     Fixed: Issue with separators in HUDs.
+    Fixed: Issue with HUDs with backgrounds that have no displayed lines.
 
     Padishar's Fixes:
         Fixed: Issue with multicouplers when attached to parent by bottom node.

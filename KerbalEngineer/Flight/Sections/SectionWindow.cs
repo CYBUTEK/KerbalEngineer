@@ -60,8 +60,8 @@ namespace KerbalEngineer.Flight.Sections
 
         #region Fields
 
-        private GUIStyle hudWindowStyle;
         private GUIStyle hudWindowBgStyle;
+        private GUIStyle hudWindowStyle;
         private GUIStyle windowStyle;
 
         #endregion
@@ -130,9 +130,11 @@ namespace KerbalEngineer.Flight.Sections
                 this.resizeRequested = false;
             }
             GUI.skin = null;
-            this.windowPosition = GUILayout.Window(this.windowId, this.windowPosition, this.Window, string.Empty, 
-                (!this.ParentSection.IsHud || this.ParentSection.IsEditorVisible) ? this.windowStyle 
-                : this.ParentSection.IsHudBackground ? this.hudWindowBgStyle : this.hudWindowStyle).ClampToScreen();
+            this.windowPosition = GUILayout.Window(this.windowId, this.windowPosition, this.Window, string.Empty,
+                                                   (!this.ParentSection.IsHud || this.ParentSection.IsEditorVisible) ? this.windowStyle
+                                                       : this.ParentSection.IsHudBackground && this.ParentSection.LineCount > 0
+                                                           ? this.hudWindowBgStyle
+                                                           : this.hudWindowStyle).ClampToScreen();
             this.ParentSection.FloatingPositionX = this.windowPosition.x;
             this.ParentSection.FloatingPositionY = this.windowPosition.y;
         }

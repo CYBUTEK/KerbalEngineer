@@ -168,6 +168,11 @@ namespace KerbalEngineer.Flight.Sections
         public bool IsVisible { get; set; }
 
         /// <summary>
+        ///     Gets the number of drawn readout lines.
+        /// </summary>
+        public int LineCount { get; private set; }
+
+        /// <summary>
         ///     Gets and sets the name of the section.
         /// </summary>
         public string Name { get; set; }
@@ -351,6 +356,7 @@ namespace KerbalEngineer.Flight.Sections
                 GUILayout.BeginVertical(this.boxStyle);
             }
 
+            this.LineCount = 0;
             if (this.ReadoutModules.Count > 0)
             {
                 foreach (var readout in this.ReadoutModules)
@@ -358,11 +364,13 @@ namespace KerbalEngineer.Flight.Sections
                     readout.LineCountStart();
                     readout.Draw(this);
                     readout.LineCountEnd();
+                    this.LineCount += readout.LineCount;
                 }
             }
             else
             {
                 GUILayout.Label("No readouts are installed.", this.messageStyle);
+                this.LineCount = 1;
             }
 
             if (!this.IsHud)

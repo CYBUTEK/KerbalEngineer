@@ -89,6 +89,11 @@ namespace KerbalEngineer.Flight.Readouts
         public bool IsDefault { get; set; }
 
         /// <summary>
+        ///     Gets the number of drawn lines.
+        /// </summary>
+        public int LineCount { get; private set; }
+
+        /// <summary>
         ///     Gets and sets the message style.
         /// </summary>
         public GUIStyle MessageStyle { get; set; }
@@ -139,6 +144,7 @@ namespace KerbalEngineer.Flight.Readouts
 
         public void LineCountEnd()
         {
+            this.LineCount = this.lineCountEnd;
             if (this.lineCountEnd.CompareTo(this.lineCountStart) < 0)
             {
                 this.ResizeRequested = true;
