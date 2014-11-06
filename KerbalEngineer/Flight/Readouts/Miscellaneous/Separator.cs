@@ -34,7 +34,8 @@ namespace KerbalEngineer.Flight.Readouts.Miscellaneous
     {
         #region Fields
 
-        private readonly GUIStyle boxStyle;
+        private GUIStyle boxStyle;
+        private GUIStyle boxStyleHud;
 
         #endregion
 
@@ -48,6 +49,26 @@ namespace KerbalEngineer.Flight.Readouts.Miscellaneous
             this.IsDefault = false;
             this.Cloneable = true;
 
+            this.InitialiseStyles();
+
+            GuiDisplaySize.OnSizeChanged += this.InitialiseStyles;
+        }
+
+        #endregion
+
+        #region Methods: public
+
+        public override void Draw(SectionModule section)
+        {
+            GUILayout.Box(String.Empty, section.IsHud ? this.boxStyleHud : this.boxStyle);
+        }
+
+        #endregion
+
+        #region Methods: private
+
+        private void InitialiseStyles()
+        {
             this.boxStyle = new GUIStyle
             {
                 normal =
@@ -57,15 +78,11 @@ namespace KerbalEngineer.Flight.Readouts.Miscellaneous
                 fixedHeight = 1.0f,
                 stretchWidth = true
             };
-        }
 
-        #endregion
-
-        #region Methods: public
-
-        public override void Draw(SectionModule section)
-        {
-            GUILayout.Box(String.Empty, this.boxStyle);
+            this.boxStyleHud = new GUIStyle(this.boxStyle)
+            {
+                margin = new RectOffset(0, 0, (int)(8 * GuiDisplaySize.Offset), 0)
+            };
         }
 
         #endregion
