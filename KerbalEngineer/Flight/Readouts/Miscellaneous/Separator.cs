@@ -66,7 +66,6 @@ namespace KerbalEngineer.Flight.Readouts.Miscellaneous
         public override void Draw(SectionModule section)
         {
             GUILayout.Box(String.Empty, this.boxStyle);
-            //GUI.DrawTexture(GUILayoutUtility.GetLastRect(), this.texture, ScaleMode.StretchToFill);
         }
 
         #endregion
