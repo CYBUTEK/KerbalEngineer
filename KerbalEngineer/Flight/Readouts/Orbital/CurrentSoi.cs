@@ -31,7 +31,7 @@ namespace KerbalEngineer.Flight.Readouts.Orbital
     public class CurrentSoi : ReadoutModule
     {
         #region Constructors
-
+        
         public CurrentSoi()
         {
             this.Name = "Current SOI";
