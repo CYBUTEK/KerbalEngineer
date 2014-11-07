@@ -35,7 +35,7 @@ namespace KerbalEngineer.Editor
     {
         #region Constants
 
-        private const float Width = 150.0f;
+        private const float Width = 175.0f;
 
         #endregion
 
