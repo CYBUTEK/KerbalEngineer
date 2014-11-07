@@ -1,4 +1,7 @@
-1.0.11.0
+1.0.11.1, 07-11-2014
+    Fixed: Issue with the vessel tab vanishing from the editor.
+
+1.0.11.0, 06-11-2014
     Added: New readouts to the orbital category:
         - Current SOI
         - Manoeuvre Node DeltaV (Prograde)

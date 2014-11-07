@@ -33,6 +33,12 @@ namespace KerbalEngineer.Editor
 {
     public class BuildOverlayVessel : MonoBehaviour
     {
+        #region Constants
+
+        private const float Width = 150.0f;
+
+        #endregion
+
         #region Fields
 
         private static bool visible = true;
@@ -45,7 +51,7 @@ namespace KerbalEngineer.Editor
         private GUIContent tabContent;
         private Rect tabPosition;
         private Vector2 tabSize;
-        private Rect windowPosition = new Rect(300.0f, 0.0f, BuildOverlay.MinimumWidth, 0.0f);
+        private Rect windowPosition = new Rect(300.0f, 0.0f, Width, 0.0f);
 
         #endregion
 
@@ -76,7 +82,7 @@ namespace KerbalEngineer.Editor
         {
             try
             {
-                if (!Visible || EditorLogic.startPod == null || this.lastStage == null || EditorLogic.fetch.editorScreen != EditorLogic.EditorScreen.Parts)
+                if (!Visible || EditorLogic.startPod == null || EditorLogic.fetch.editorScreen != EditorLogic.EditorScreen.Parts)
                 {
                     return;
                 }
@@ -110,7 +116,7 @@ namespace KerbalEngineer.Editor
         {
             try
             {
-                if (!BuildOverlay.Visible || EditorLogic.startPod == null)
+                if (!Visible || EditorLogic.startPod == null)
                 {
                     return;
                 }
@@ -144,6 +150,7 @@ namespace KerbalEngineer.Editor
             }
 
             this.windowPosition.y = Mathf.Lerp(Screen.height, Screen.height - this.windowPosition.height, this.openPercent);
+            this.windowPosition.width = Width;
             this.tabPosition.width = this.tabSize.x;
             this.tabPosition.height = this.tabSize.y;
             this.tabPosition.x = this.windowPosition.x;
@@ -198,7 +205,7 @@ namespace KerbalEngineer.Editor
                     if (item.Value != null)
                     {
                         GUILayout.Label(item.Name + ":", BuildOverlay.NameStyle);
-                        GUILayout.Space(50.0f);
+                        GUILayout.FlexibleSpace();
                         GUILayout.Label(item.Value, BuildOverlay.ValueStyle);
                     }
                     else
