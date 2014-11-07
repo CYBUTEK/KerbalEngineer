@@ -512,7 +512,7 @@ namespace KerbalEngineer.VesselSimulator
                 // Zero stage time if more than a day (this should be moved into the window code)
                 stage.time = (this.stageTime < SECONDS_PER_DAY) ? this.stageTime : 0d;
                 stage.number = this.doingCurrent ? -1 : this.currentStage; // Set the stage number to -1 if doing current engines
-                stage.partCount = this.allParts.Count;
+                stage.totalPartCount = this.allParts.Count;
                 stages[this.currentStage] = stage;
 
                 // Now activate the next stage
@@ -550,6 +550,7 @@ namespace KerbalEngineer.VesselSimulator
                     stages[i].totalMass += stages[j].mass;
                     stages[i].totalDeltaV += stages[j].deltaV;
                     stages[i].totalTime += stages[j].time;
+                    stages[i].partCount = i > 0 ? stages[i].totalPartCount - stages[i - 1].totalPartCount : stages[i].totalPartCount;
                 }
                 // We also total up the deltaV for stage and all stages below
                 for (int j = i; j < stages.Length; j++)

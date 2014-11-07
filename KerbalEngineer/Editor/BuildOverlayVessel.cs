@@ -22,7 +22,7 @@
 using System;
 using System.Collections.Generic;
 
-using KerbalEngineer.Extensions;
+using KerbalEngineer.Helpers;
 using KerbalEngineer.VesselSimulator;
 
 using UnityEngine;
@@ -150,7 +150,10 @@ namespace KerbalEngineer.Editor
             }
 
             this.windowPosition.y = Mathf.Lerp(Screen.height, Screen.height - this.windowPosition.height, this.openPercent);
-            this.windowPosition.width = Width;
+            if (this.windowPosition.width < Width)
+            {
+                this.windowPosition.width = Width;
+            }
             this.tabPosition.width = this.tabSize.x;
             this.tabPosition.height = this.tabSize.y;
             this.tabPosition.x = this.windowPosition.x;
@@ -181,10 +184,10 @@ namespace KerbalEngineer.Editor
             if (this.lastStage != null)
             {
                 this.infoItems.Clear();
-                this.infoItems.Add(new PartInfoItem("Delta-V", this.lastStage.totalDeltaV.ToString("N0") + "m/s"));
-                this.infoItems.Add(new PartInfoItem("Mass", this.lastStage.totalMass.ToMass()));
-                this.infoItems.Add(new PartInfoItem("TWR", this.lastStage.thrustToWeight.ToString("F2")));
-                this.infoItems.Add(new PartInfoItem("Parts", this.lastStage.partCount.ToString("N0")));
+                this.infoItems.Add(new PartInfoItem("Delta-V", this.lastStage.deltaV.ToString("N0") + " / " + this.lastStage.totalDeltaV.ToString("N0") + "m/s"));
+                this.infoItems.Add(new PartInfoItem("Mass", Units.ToMass(this.lastStage.mass, this.lastStage.totalMass)));
+                this.infoItems.Add(new PartInfoItem("TWR", this.lastStage.thrustToWeight.ToString("F2") + " (" + this.lastStage.maxThrustToWeight.ToString("F2") + ")"));
+                this.infoItems.Add(new PartInfoItem("Parts", this.lastStage.partCount + " / " + this.lastStage.totalPartCount));
             }
         }
 

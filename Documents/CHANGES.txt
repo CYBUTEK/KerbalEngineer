@@ -1,4 +1,11 @@
 1.0.11.1, 07-11-2014
+    Changed: Build Engineer now shows stage part count as well as total.
+    Changed: Build Overlay Vessel tab data:
+        DeltaV: stage / total
+        Mass:   stage / total
+        TWR:    start (max)   <- shows for bottom stage only.
+        Parts:  stage / total
+
     Fixed: Issue with the vessel tab vanishing from the editor.
 
 1.0.11.0, 06-11-2014

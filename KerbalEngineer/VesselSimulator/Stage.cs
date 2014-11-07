@@ -45,6 +45,7 @@ namespace KerbalEngineer.VesselSimulator
         public double totalDeltaV = 0f;
         public double totalMass = 0f;
         public double totalTime = 0f;
+        public int totalPartCount = 0;
         public int partCount = 0;
         public double resourceMass = 0.0;
 
