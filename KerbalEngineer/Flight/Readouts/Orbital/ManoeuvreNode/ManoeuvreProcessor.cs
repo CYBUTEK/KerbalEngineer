@@ -47,6 +47,7 @@ namespace KerbalEngineer.Flight.Readouts.Orbital.ManoeuvreNode
         public static double AvailableDeltaV { get; private set; }
 
         public static double BurnTime { get; private set; }
+
         public static int FinalStage { get; private set; }
 
         public static double HalfBurnTime { get; private set; }
@@ -110,7 +111,7 @@ namespace KerbalEngineer.Flight.Readouts.Orbital.ManoeuvreNode
 
             var burnTime = 0.0;
             var midPointTime = 0.0;
-            HasDeltaV = GetBurnTime((float)TotalDeltaV, ref burnTime, ref midPointTime);
+            HasDeltaV = GetBurnTime(TotalDeltaV, ref burnTime, ref midPointTime);
             AvailableDeltaV = SimulationProcessor.LastStage.totalDeltaV;
 
             BurnTime = burnTime;
@@ -123,47 +124,50 @@ namespace KerbalEngineer.Flight.Readouts.Orbital.ManoeuvreNode
 
         #region Methods: private
 
-        private static bool GetBurnTime(float deltaV, ref double burnTime, ref double midPointTime)
+        private static bool GetBurnTime(double deltaV, ref double burnTime, ref double midPointTime)
         {
             var setMidPoint = false;
-            var deltaVMidPoint = deltaV * 0.5f;
+            var deltaVMidPoint = deltaV * 0.5;
 
-            for (var i = SimulationProcessor.Stages.Length - 1; i >= 0; i--)
+            for (var i = SimulationProcessor.Stages.Length - 1; i > -1; i--)
             {
                 var stage = SimulationProcessor.Stages[i];
-                var stageDeltaV = (float)stage.deltaV;
+                var stageDeltaV = stage.deltaV;
+                var startMass = stage.totalMass;
 
                 ProcessStageDrain:
-                if (deltaV <= Single.Epsilon)
+                if (deltaV <= Double.Epsilon)
                 {
-                    FinalStage = ++i;
-                    return true;
+                    break;
                 }
-                if (stageDeltaV <= Single.Epsilon)
+                if (stageDeltaV <= Double.Epsilon)
                 {
                     continue;
                 }
 
-                float deltaVDrain;
+                FinalStage = i;
+
+                double deltaVDrain;
                 if (deltaVMidPoint > 0.0)
                 {
-                    deltaVDrain = Mathf.Clamp(deltaV, 0.0f, Mathf.Clamp(deltaVMidPoint, 0.0f, stageDeltaV));
+                    deltaVDrain = deltaV.Clamp(0.0, stageDeltaV.Clamp(0.0, deltaVMidPoint));
                     deltaVMidPoint -= deltaVDrain;
-                    setMidPoint = deltaVMidPoint <= Single.Epsilon;
+                    setMidPoint = deltaVMidPoint <= Double.Epsilon;
                 }
                 else
                 {
-                    deltaVDrain = Mathf.Clamp(deltaV, 0.0f, stageDeltaV);
+                    deltaVDrain = deltaV.Clamp(0.0, stageDeltaV);
                 }
 
-                var startMass = stage.totalMass - (stage.resourceMass * (1.0f - (stageDeltaV / stage.deltaV)));
-                var endMass = startMass - (stage.resourceMass * (deltaVDrain / stageDeltaV));
-                var minimumAcceleration = stage.thrust / startMass;
-                var maximumAcceleration = stage.thrust / endMass;
+                var exhaustVelocity = stage.isp * 9.8066;
+                var flowRate = stage.thrust / exhaustVelocity;
+                var endMass = Math.Exp(Math.Log(startMass) - deltaVDrain / exhaustVelocity);
+                var deltaMass = (startMass - endMass) * Math.Exp(-(deltaVDrain * 0.001) / exhaustVelocity);
+                burnTime += deltaMass / flowRate;
 
-                burnTime += deltaVDrain / ((minimumAcceleration + maximumAcceleration) * 0.5);
                 deltaV -= deltaVDrain;
                 stageDeltaV -= deltaVDrain;
+                startMass -= deltaMass;
 
                 if (setMidPoint)
                 {
@@ -172,7 +176,7 @@ namespace KerbalEngineer.Flight.Readouts.Orbital.ManoeuvreNode
                     goto ProcessStageDrain;
                 }
             }
-            return false;
+            return deltaV <= Double.Epsilon;
         }
 
         #endregion

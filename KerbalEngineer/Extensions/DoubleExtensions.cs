@@ -29,6 +29,11 @@ namespace KerbalEngineer.Extensions
     {
         #region Methods: public
 
+        public static double Clamp(this double value, double lower, double higher)
+        {
+            return value < lower ? lower : value > higher ? higher : value;
+        }
+
         public static string ToAcceleration(this double value)
         {
             return Units.ToAcceleration(value);
