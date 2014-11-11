@@ -1,3 +1,6 @@
+1.0.11.3, 11-11-2014
+    Changed: Gravity measurements for Isp to 9.82.
+
 1.0.11.2, 10-11-2014
     Changed: Gravity measurements for Isp calculations from 9.81 to 9.8066 for accuracy.
     Changed: Manoeuvre node burn times are now more accurate.

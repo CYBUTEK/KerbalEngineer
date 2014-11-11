@@ -32,7 +32,7 @@ namespace KerbalEngineer.VesselSimulator
 {
     public class Simulation
     {
-        private const double STD_GRAVITY = 9.8066;
+        private const double STD_GRAVITY = 9.82;
         private const double SECONDS_PER_DAY = 86400;
         private readonly Stopwatch _timer = new Stopwatch();
         private List<EngineSim> activeEngines;

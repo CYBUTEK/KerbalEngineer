@@ -116,14 +116,14 @@ namespace KerbalEngineer.VesselSimulator
                 if (throttleLocked)
                 {
                     //MonoBehaviour.print("throttleLocked is true");
-                    flowRate = this.thrust / (this.isp * 9.81d);
+                    flowRate = this.thrust / (this.isp * 9.82);
                 }
                 else
                 {
                     if (this.partSim.isLanded)
                     {
                         //MonoBehaviour.print("partSim.isLanded is true, mainThrottle = " + FlightInputHandler.state.mainThrottle);
-                        flowRate = Math.Max(0.000001d, this.thrust * FlightInputHandler.state.mainThrottle) / (this.isp * 9.8066);
+                        flowRate = Math.Max(0.000001d, this.thrust * FlightInputHandler.state.mainThrottle) / (this.isp * 9.82);
                     }
                     else
                     {
@@ -136,12 +136,12 @@ namespace KerbalEngineer.VesselSimulator
                             }
 
                             //MonoBehaviour.print("requestedThrust > 0");
-                            flowRate = requestedThrust / (this.isp * 9.8066);
+                            flowRate = requestedThrust / (this.isp * 9.82);
                         }
                         else
                         {
                             //MonoBehaviour.print("requestedThrust <= 0");
-                            flowRate = this.thrust / (this.isp * 9.8066);
+                            flowRate = this.thrust / (this.isp * 9.82);
                         }
                     }
                 }
@@ -174,7 +174,7 @@ namespace KerbalEngineer.VesselSimulator
                     //MonoBehaviour.print("thrust at velocity = " + thrust);
                 }
 
-                flowRate = this.thrust / (this.isp * 9.8066);
+                flowRate = this.thrust / (this.isp * 9.82);
             }
 
             if (SimManager.logOutput)
