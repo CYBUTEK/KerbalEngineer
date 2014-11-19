@@ -49,6 +49,11 @@ namespace KerbalEngineer.Extensions
             return Units.ToForce(value);
         }
 
+        public static string ToTorque(this float value)
+        {
+            return Units.ToTorque(value);
+        }
+
         public static string ToMass(this float value)
         {
             return Units.ToMass(value);
