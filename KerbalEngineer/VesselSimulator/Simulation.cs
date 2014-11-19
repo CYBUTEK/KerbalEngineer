@@ -76,21 +76,6 @@ namespace KerbalEngineer.VesselSimulator
             }
         }
 
-        private double ShipStartMass
-        {
-            get
-            {
-                double mass = 0d;
-
-                foreach (PartSim partSim in this.allParts)
-                {
-                    mass += partSim.GetStartMass();
-                }
-
-                return mass;
-            }
-        }
-
         private double ShipMass
         {
             get
