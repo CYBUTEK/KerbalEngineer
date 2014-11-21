@@ -38,6 +38,7 @@ namespace KerbalEngineer.VesselSimulator
         public bool isActive = false;
         public double isp = 0;
         public PartSim partSim;
+        public List<AppliedForce> appliedForces;
 
         public double thrust = 0;
 
@@ -58,7 +59,8 @@ namespace KerbalEngineer.VesselSimulator
                          bool throttleLocked,
                          List<Propellant> propellants,
                          bool active,
-                         bool correctThrust)
+                         bool correctThrust,
+                         List<Transform> thrustTransforms)
         {
             StringBuilder buffer = null;
             //MonoBehaviour.print("Create EngineSim for " + theEngine.name);
@@ -212,6 +214,14 @@ namespace KerbalEngineer.VesselSimulator
             if (SimManager.logOutput)
             {
                 MonoBehaviour.print(buffer);
+            }
+
+            appliedForces = new List<AppliedForce>();
+            double thrustPerThrustTransform = thrust / thrustTransforms.Count;
+            foreach (Transform thrustTransform in thrustTransforms) {
+                Vector3d direction = thrustTransform.forward.normalized;
+                Vector3d position = thrustTransform.position;
+                appliedForces.Add(new AppliedForce(direction * thrustPerThrustTransform, position));
             }
         }
 

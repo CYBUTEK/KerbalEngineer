@@ -49,6 +49,11 @@ namespace KerbalEngineer.Extensions
             return Units.ToDistance(value);
         }
 
+        public static string ToTorque(this double value)
+        {
+            return Units.ToTorque(value);
+        }
+
         public static string ToForce(this double value)
         {
             return Units.ToForce(value);

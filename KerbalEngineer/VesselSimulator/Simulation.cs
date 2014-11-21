@@ -52,6 +52,7 @@ namespace KerbalEngineer.VesselSimulator
         private List<Part> partList;
         private double simpleTotalThrust;
         private double stageStartMass;
+        private Vector3d stageStartCom;
         private double stageTime;
         private double stepEndMass;
         private double stepStartMass;
@@ -59,6 +60,7 @@ namespace KerbalEngineer.VesselSimulator
         private double totalStageFlowRate;
         private double totalStageIspFlowRate;
         private double totalStageThrust;
+        private ForceAccumulator totalStageThrustForce;
         private Vector3 vecActualThrust;
         private Vector3 vecStageDeltaV;
         private Vector3 vecThrust;
@@ -74,21 +76,6 @@ namespace KerbalEngineer.VesselSimulator
             }
         }
 
-        private double ShipStartMass
-        {
-            get
-            {
-                double mass = 0d;
-
-                foreach (PartSim partSim in this.allParts)
-                {
-                    mass += partSim.GetStartMass();
-                }
-
-                return mass;
-            }
-        }
-
         private double ShipMass
         {
             get
@@ -101,6 +88,21 @@ namespace KerbalEngineer.VesselSimulator
                 }
 
                 return mass;
+            }
+        }
+
+        private Vector3d ShipCom
+        {
+            get
+            {
+                WeightedVectorAverager averager = new WeightedVectorAverager();
+
+                foreach (PartSim partSim in this.allParts)
+                {
+                    averager.Add(partSim.centerOfMass, partSim.GetMass());
+                }
+
+                return averager.Get();
             }
         }
 
@@ -262,6 +264,7 @@ namespace KerbalEngineer.VesselSimulator
             {
                 MonoBehaviour.print("RunSimulation started");
             }
+
             this._timer.Start();
 
             LogMsg log = null;
@@ -365,7 +368,10 @@ namespace KerbalEngineer.VesselSimulator
 
                 this.stageTime = 0d;
                 this.vecStageDeltaV = Vector3.zero;
+
                 this.stageStartMass = this.ShipMass;
+                this.stageStartCom = this.ShipCom;
+
                 this.stepStartMass = this.stageStartMass;
                 this.stepEndMass = 0;
 
@@ -380,6 +386,27 @@ namespace KerbalEngineer.VesselSimulator
                 //MonoBehaviour.print("Initial maxTWR = " + stage.maxThrustToWeight);
                 stage.actualThrust = this.totalStageActualThrust;
                 stage.actualThrustToWeight = this.totalStageActualThrust / (this.stageStartMass * this.gravity);
+
+                // calculate torque and associates
+                stage.maxThrustTorque = this.totalStageThrustForce.TorqueAt(this.stageStartCom).magnitude;
+
+                // torque divided by thrust. imagine that all engines are at the end of a lever that tries to turn the ship.
+                // this numerical value, in meters, would represent the length of that lever.
+                double torqueLeverArmLength = (stage.thrust <= 0) ? 0 : stage.maxThrustTorque / stage.thrust;
+
+                // how far away are the engines from the CoM, actually?
+                double thrustDistance = (this.stageStartCom - this.totalStageThrustForce.GetAverageForceApplicationPoint()).magnitude;
+
+                // the combination of the above two values gives an approximation of the offset angle.
+                double sinThrustOffsetAngle = 0;
+                if (thrustDistance > 1e-7) {
+                    sinThrustOffsetAngle = torqueLeverArmLength / thrustDistance;
+                    if (sinThrustOffsetAngle > 1) {
+                        sinThrustOffsetAngle = 1;
+                    }
+                }
+
+                stage.thrustOffsetAngle = Math.Asin(sinThrustOffsetAngle) * 180 / Math.PI;
 
                 // Calculate the cost and mass of this stage and add all engines and tanks that are decoupled
                 // in the next stage to the dontStageParts list
@@ -644,6 +671,7 @@ namespace KerbalEngineer.VesselSimulator
             this.totalStageActualThrust = 0d;
             this.totalStageFlowRate = 0d;
             this.totalStageIspFlowRate = 0d;
+            this.totalStageThrustForce = new ForceAccumulator();
 
             // Loop through all the active engines totalling the thrust, actual thrust and mass flow rates
             // The thrust is totalled as vectors
@@ -655,6 +683,10 @@ namespace KerbalEngineer.VesselSimulator
 
                 this.totalStageFlowRate += engine.ResourceConsumptions.Mass;
                 this.totalStageIspFlowRate += engine.ResourceConsumptions.Mass * engine.isp;
+
+                foreach (AppliedForce f in engine.appliedForces) {
+                    this.totalStageThrustForce.AddForce(f);
+                }
             }
 
             //MonoBehaviour.print("vecThrust = " + vecThrust.ToString() + "   magnitude = " + vecThrust.magnitude);
