@@ -534,23 +534,6 @@ namespace KerbalEngineer.Editor
         }
 
         /// <summary>
-        ///     Draws the torque column.
-        /// </summary>
-        private void DrawTorque()
-        {
-            GUILayout.BeginVertical(GUILayout.Width(75.0f * GuiDisplaySize.Offset));
-            GUILayout.Label("TORQUE", this.titleStyle);
-            foreach (var stage in this.stages)
-            {
-                if (this.showAllStages || stage.deltaV > 0)
-                {
-                    GUILayout.Label(stage.maxThrustTorque.ToTorque(), this.infoStyle);
-                }
-            }
-            GUILayout.EndVertical();
-        }
-
-        /// <summary>
         ///     Drwas the thrust to weight ratio column.
         /// </summary>
         private void DrawTwr()
@@ -755,7 +738,6 @@ namespace KerbalEngineer.Editor
                     this.DrawMass();
                     this.DrawIsp();
                     this.DrawThrust();
-                    this.DrawTorque();
                     this.DrawTwr();
                     this.DrawDeltaV();
                     this.DrawBurnTime();

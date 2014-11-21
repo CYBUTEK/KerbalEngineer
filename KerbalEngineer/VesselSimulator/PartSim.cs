@@ -35,7 +35,6 @@ namespace KerbalEngineer.VesselSimulator
     public class PartSim
     {
         private readonly List<AttachNodeSim> attachNodes = new List<AttachNodeSim>();
-        public Vector3d centerOfMass;
         public double baseMass = 0d;
         public double cost;
         public int decoupledInStage;
@@ -72,7 +71,6 @@ namespace KerbalEngineer.VesselSimulator
         public PartSim(Part thePart, int id, double atmosphere, LogMsg log)
         {
             this.part = thePart;
-            this.centerOfMass = thePart.transform.TransformPoint(thePart.CoMOffset);
             this.partId = id;
             this.name = this.part.partInfo.name;
 
@@ -208,8 +206,7 @@ namespace KerbalEngineer.VesselSimulator
                                                             engine.throttleLocked,
                                                             engine.propellants,
                                                             engine.isOperational,
-                                                            correctThrust,
-                                                            engine.thrustTransforms);
+                                                            correctThrust);
                         allEngines.Add(engineSim);
                     }
                 }
@@ -241,8 +238,7 @@ namespace KerbalEngineer.VesselSimulator
                                                             engine.throttleLocked,
                                                             engine.propellants,
                                                             engine.isOperational,
-                                                            correctThrust,
-                                                            engine.thrustTransforms);
+                                                            correctThrust);
                         allEngines.Add(engineSim);
                     }
                 }
@@ -272,8 +268,7 @@ namespace KerbalEngineer.VesselSimulator
                                                             engine.throttleLocked,
                                                             engine.propellants,
                                                             engine.isOperational,
-                                                            correctThrust,
-                                                            engine.thrustTransforms);
+                                                            correctThrust);
                         allEngines.Add(engineSim);
                     }
                 }

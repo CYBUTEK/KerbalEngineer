@@ -48,8 +48,6 @@ namespace KerbalEngineer.VesselSimulator
         public int totalPartCount = 0;
         public int partCount = 0;
         public double resourceMass = 0.0;
-        public double maxThrustTorque = 0f;
-        public double thrustOffsetAngle = 0f;
 
         public void Dump()
         {
@@ -67,8 +65,6 @@ namespace KerbalEngineer.VesselSimulator
             str.AppendFormat("thrustToWeight: {0:g6}\n", this.thrustToWeight);
             str.AppendFormat("maxTWR        : {0:g6}\n", this.maxThrustToWeight);
             str.AppendFormat("actualTWR     : {0:g6}\n", this.actualThrustToWeight);
-            str.AppendFormat("ThrustTorque  : {0:g6}\n", this.maxThrustTorque);
-            str.AppendFormat("ThrustOffset  : {0:g6}\n", this.thrustOffsetAngle);
             str.AppendFormat("deltaV        : {0:g6}\n", this.deltaV);
             str.AppendFormat("totalDeltaV   : {0:g6}\n", this.totalDeltaV);
             str.AppendFormat("invTotDeltaV  : {0:g6}\n", this.inverseTotalDeltaV);

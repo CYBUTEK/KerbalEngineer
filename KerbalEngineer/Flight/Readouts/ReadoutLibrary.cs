@@ -132,8 +132,6 @@ namespace KerbalEngineer.Flight.Readouts
                 readouts.Add(new Mass());
                 readouts.Add(new Thrust());
                 readouts.Add(new ThrustToWeight());
-                readouts.Add(new ThrustOffsetAngle());
-                readouts.Add(new ThrustTorque());
                 readouts.Add(new SurfaceThrustToWeight());
                 readouts.Add(new Acceleration());
                 readouts.Add(new SuicideBurnAltitude());

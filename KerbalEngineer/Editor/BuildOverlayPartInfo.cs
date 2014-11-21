@@ -317,9 +317,9 @@ namespace KerbalEngineer.Editor
 
             var reactionWheel = this.selectedPart.GetModule<ModuleReactionWheel>();
             this.infoItems.Add(new PartInfoItem("Reaction Wheel Torque"));
-            this.infoItems.Add(new PartInfoItem("\tPitch", reactionWheel.PitchTorque.ToTorque()));
-            this.infoItems.Add(new PartInfoItem("\tRoll", reactionWheel.RollTorque.ToTorque()));
-            this.infoItems.Add(new PartInfoItem("\tYaw", reactionWheel.YawTorque.ToTorque()));
+            this.infoItems.Add(new PartInfoItem("\tPitch", reactionWheel.PitchTorque.ToForce()));
+            this.infoItems.Add(new PartInfoItem("\tRoll", reactionWheel.RollTorque.ToForce()));
+            this.infoItems.Add(new PartInfoItem("\tYaw", reactionWheel.YawTorque.ToForce()));
             foreach (var resource in reactionWheel.inputResources)
             {
                 this.infoItems.Add(new PartInfoItem("\t" + resource.name, resource.rate.ToRate()));

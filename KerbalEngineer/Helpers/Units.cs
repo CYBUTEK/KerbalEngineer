@@ -83,11 +83,6 @@ namespace KerbalEngineer.Helpers
             return value.ToString("N" + decimals) + "Mm";
         }
 
-        public static string ToTorque(double value)
-        {
-            return value.ToString((value < 100.0) ? (Math.Abs(value) < Double.Epsilon) ? "N0" : "N1" : "N0") + "kNm";
-        }
-
         public static string ToForce(double value)
         {
             return value.ToString((value < 100000.0) ? (value < 10000.0) ? (value < 100.0) ? (Math.Abs(value) < Double.Epsilon) ? "N0" : "N3" : "N2" : "N1" : "N0") + "kN";
