@@ -103,8 +103,12 @@
     <Compile Include="Flight\Readouts\Vessel\SuicideBurnProcessor.cs" />
     <Compile Include="Flight\Readouts\Vessel\SurfaceThrustToWeight.cs" />
     <Compile Include="Flight\Readouts\Surface\Situation.cs" />
+    <Compile Include="Flight\Readouts\Vessel\ThrustOffsetAngle.cs" />
+    <Compile Include="Flight\Readouts\Vessel\ThrustTorque.cs" />
     <Compile Include="GuiDisplaySize.cs" />
     <Compile Include="Helpers\AngleHelper.cs" />
+    <Compile Include="Helpers\Averager.cs" />
+    <Compile Include="Helpers\ForceAccumulator.cs" />
     <Compile Include="Helpers\TextureHelper.cs" />
     <Compile Include="Helpers\Units.cs" />
     <Compile Include="Helpers\TimeFormatter.cs" />
