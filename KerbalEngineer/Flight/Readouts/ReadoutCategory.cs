@@ -56,6 +56,7 @@ namespace KerbalEngineer.Flight.Readouts
         public static ReadoutCategory Selected { get; set; }
 
         public string Description { get; set; }
+
         public string Name { get; set; }
 
         #endregion

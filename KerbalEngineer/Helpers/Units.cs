@@ -17,17 +17,22 @@
 //     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // 
 
-#region Using Directives
-
-using System;
-
-#endregion
-
 namespace KerbalEngineer.Helpers
 {
+    #region Using Directives
+
+    using System;
+
+    #endregion
+
     public static class Units
     {
-        #region Methods: public
+        #region Methods
+
+        public static string Concat(int value1, int value2)
+        {
+            return value1 + " / " + value2;
+        }
 
         public static string Concat(double value1, double value2, int decimals = 1)
         {
@@ -83,11 +88,6 @@ namespace KerbalEngineer.Helpers
             return value.ToString("N" + decimals) + "Mm";
         }
 
-        public static string ToTorque(double value)
-        {
-            return value.ToString((value < 100.0) ? (Math.Abs(value) < Double.Epsilon) ? "N0" : "N1" : "N0") + "kNm";
-        }
-
         public static string ToForce(double value)
         {
             return value.ToString((value < 100000.0) ? (value < 10000.0) ? (value < 100.0) ? (Math.Abs(value) < Double.Epsilon) ? "N0" : "N3" : "N2" : "N1" : "N0") + "kN";
@@ -136,6 +136,11 @@ namespace KerbalEngineer.Helpers
         public static string ToTime(double value)
         {
             return TimeFormatter.ConvertToString(value);
+        }
+
+        public static string ToTorque(double value)
+        {
+            return value.ToString((value < 100.0) ? (Math.Abs(value) < Double.Epsilon) ? "N0" : "N1" : "N0") + "kNm";
         }
 
         #endregion

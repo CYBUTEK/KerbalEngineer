@@ -51,6 +51,7 @@
     <Compile Include="Flight\ActionMenuGui.cs" />
     <Compile Include="Flight\FlightEngineerPartless.cs" />
     <Compile Include="Flight\Presets\Preset.cs" />
+    <Compile Include="Flight\Readouts\Miscellaneous\VectoredThrustToggle.cs" />
     <Compile Include="Flight\Readouts\Miscellaneous\TimeReference.cs" />
     <Compile Include="Flight\Readouts\Miscellaneous\Separator.cs" />
     <Compile Include="Flight\Readouts\Miscellaneous\GuiSizeAdjustor.cs" />
@@ -87,7 +88,12 @@
     <Compile Include="Flight\Readouts\Surface\Biome.cs" />
     <Compile Include="Flight\Readouts\Surface\HorizontalAcceleration.cs" />
     <Compile Include="Flight\Readouts\Surface\VerticalAcceleration.cs" />
+    <Compile Include="Flight\Readouts\Vessel\AttitudeProcessor.cs" />
     <Compile Include="Flight\Readouts\Vessel\DeltaVCurrentTotal.cs" />
+    <Compile Include="Flight\Readouts\Vessel\Roll.cs" />
+    <Compile Include="Flight\Readouts\Vessel\Pitch.cs" />
+    <Compile Include="Flight\Readouts\Vessel\Heading.cs" />
+    <Compile Include="Flight\Readouts\Vessel\PartCount.cs" />
     <Compile Include="Flight\Readouts\Vessel\SuicideBurnDeltaV.cs" />
     <Compile Include="Flight\Readouts\Vessel\SuicideBurnAltitude.cs" />
     <Compile Include="Flight\Readouts\Vessel\SuicideBurnDistance.cs" />

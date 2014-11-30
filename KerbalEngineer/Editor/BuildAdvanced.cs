@@ -17,24 +17,22 @@
 //     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // 
 
-#region Using Directives
-
-using System;
-using System.Linq;
-
-using KerbalEngineer.Extensions;
-using KerbalEngineer.Flight;
-using KerbalEngineer.Helpers;
-using KerbalEngineer.Settings;
-using KerbalEngineer.UIControls;
-using KerbalEngineer.VesselSimulator;
-
-using UnityEngine;
-
-#endregion
-
 namespace KerbalEngineer.Editor
 {
+    #region Using Directives
+
+    using System;
+    using System.Linq;
+    using Extensions;
+    using Flight;
+    using Helpers;
+    using Settings;
+    using UIControls;
+    using UnityEngine;
+    using VesselSimulator;
+
+    #endregion
+
     [KSPAddon(KSPAddon.Startup.EditorAny, false)]
     public class BuildAdvanced : MonoBehaviour
     {
@@ -124,7 +122,7 @@ namespace KerbalEngineer.Editor
 
         #endregion
 
-        #region Methods: protected
+        #region Methods
 
         protected void Awake()
         {
@@ -276,10 +274,6 @@ namespace KerbalEngineer.Editor
                 Logger.Exception(ex, "BuildAdvanced->Update");
             }
         }
-
-        #endregion
-
-        #region Methods: private
 
         /// <summary>
         ///     Checks whether the editor should be locked to stop click-through.
@@ -466,6 +460,11 @@ namespace KerbalEngineer.Editor
             GUILayout.Label("Compact mode collapses to the:", this.settingStyle);
             this.compactCollapseRight = !GUILayout.Toggle(!this.compactCollapseRight, "LEFT", this.buttonStyle, GUILayout.Width(100.0f * GuiDisplaySize.Offset));
             this.compactCollapseRight = GUILayout.Toggle(this.compactCollapseRight, "RIGHT", this.buttonStyle, GUILayout.Width(100.0f * GuiDisplaySize.Offset));
+            GUILayout.EndHorizontal();
+
+            GUILayout.BeginHorizontal();
+            GUILayout.Label("Simulate using vectored thrust values:");
+            SimManager.vectoredThrust = GUILayout.Toggle(SimManager.vectoredThrust, "ENABLED", this.buttonStyle, GUILayout.Width(100.0f * GuiDisplaySize.Offset));
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();

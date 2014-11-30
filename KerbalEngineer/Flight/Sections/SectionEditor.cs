@@ -119,7 +119,7 @@ namespace KerbalEngineer.Flight.Sections
             try
             {
                 this.InitialiseStyles();
-                ReadoutCategory.Selected = ReadoutCategory.GetCategory("Orbital");
+                //ReadoutCategory.Selected = ReadoutCategory.GetCategory("Orbital");
                 RenderingManager.AddToPostDrawQueue(0, this.Draw);
             }
             catch (Exception ex)

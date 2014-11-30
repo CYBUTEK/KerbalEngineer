@@ -17,33 +17,31 @@
 //     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // 
 
-#region Using Directives
-
-using System;
-using System.Collections.Generic;
-using System.Linq;
-
-using KerbalEngineer.Flight.Readouts.Miscellaneous;
-using KerbalEngineer.Flight.Readouts.Orbital;
-using KerbalEngineer.Flight.Readouts.Orbital.ManoeuvreNode;
-using KerbalEngineer.Flight.Readouts.Rendezvous;
-using KerbalEngineer.Flight.Readouts.Surface;
-using KerbalEngineer.Flight.Readouts.Vessel;
-using KerbalEngineer.Settings;
-
-using AltitudeSeaLevel = KerbalEngineer.Flight.Readouts.Surface.AltitudeSeaLevel;
-using ApoapsisHeight = KerbalEngineer.Flight.Readouts.Orbital.ApoapsisHeight;
-using OrbitalPeriod = KerbalEngineer.Flight.Readouts.Orbital.OrbitalPeriod;
-using PeriapsisHeight = KerbalEngineer.Flight.Readouts.Orbital.PeriapsisHeight;
-using SemiMajorAxis = KerbalEngineer.Flight.Readouts.Orbital.SemiMajorAxis;
-using SemiMinorAxis = KerbalEngineer.Flight.Readouts.Orbital.SemiMinorAxis;
-using TimeToApoapsis = KerbalEngineer.Flight.Readouts.Orbital.TimeToApoapsis;
-using TimeToPeriapsis = KerbalEngineer.Flight.Readouts.Orbital.TimeToPeriapsis;
-
-#endregion
-
 namespace KerbalEngineer.Flight.Readouts
 {
+    #region Using Directives
+
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using Miscellaneous;
+    using Orbital;
+    using Orbital.ManoeuvreNode;
+    using Rendezvous;
+    using Settings;
+    using Surface;
+    using Vessel;
+    using AltitudeSeaLevel = Surface.AltitudeSeaLevel;
+    using ApoapsisHeight = Orbital.ApoapsisHeight;
+    using OrbitalPeriod = Orbital.OrbitalPeriod;
+    using PeriapsisHeight = Orbital.PeriapsisHeight;
+    using SemiMajorAxis = Orbital.SemiMajorAxis;
+    using SemiMinorAxis = Orbital.SemiMinorAxis;
+    using TimeToApoapsis = Orbital.TimeToApoapsis;
+    using TimeToPeriapsis = Orbital.TimeToPeriapsis;
+
+    #endregion
+
     public static class ReadoutLibrary
     {
         #region Fields
@@ -66,6 +64,7 @@ namespace KerbalEngineer.Flight.Readouts
                 ReadoutCategory.SetCategory("Vessel", "Vessel performance statistics.");
                 ReadoutCategory.SetCategory("Rendezvous", "Readouts for rendezvous manovoeures.");
                 ReadoutCategory.SetCategory("Miscellaneous", "Miscellaneous readouts.");
+                ReadoutCategory.Selected = ReadoutCategory.GetCategory("Orbital");
 
                 // Orbital
                 readouts.Add(new ApoapsisHeight());
@@ -109,6 +108,9 @@ namespace KerbalEngineer.Flight.Readouts
                 readouts.Add(new VerticalAcceleration());
                 readouts.Add(new HorizontalSpeed());
                 readouts.Add(new HorizontalAcceleration());
+                readouts.Add(new Heading());
+                readouts.Add(new Pitch());
+                readouts.Add(new Roll());
                 readouts.Add(new Latitude());
                 readouts.Add(new Longitude());
                 readouts.Add(new GeeForce());
@@ -143,6 +145,7 @@ namespace KerbalEngineer.Flight.Readouts
                 readouts.Add(new IntakeAirDemand());
                 readouts.Add(new IntakeAirSupply());
                 readouts.Add(new IntakeAirDemandSupply());
+                readouts.Add(new PartCount());
 
                 // Rendezvous
                 readouts.Add(new TargetSelector());
@@ -170,6 +173,7 @@ namespace KerbalEngineer.Flight.Readouts
                 readouts.Add(new GuiSizeAdjustor());
                 readouts.Add(new SimulationDelay());
                 readouts.Add(new TimeReference());
+                readouts.Add(new VectoredThrustToggle());
 
                 LoadHelpStrings();
             }
@@ -194,7 +198,7 @@ namespace KerbalEngineer.Flight.Readouts
 
         #endregion
 
-        #region Methods: public
+        #region Methods
 
         /// <summary>
         ///     Gets a list of readout modules which are associated with the specified category.
@@ -222,10 +226,6 @@ namespace KerbalEngineer.Flight.Readouts
                 readout.Reset();
             }
         }
-
-        #endregion
-
-        #region Methods: private
 
         /// <summary>
         ///     Loads the help strings from file.

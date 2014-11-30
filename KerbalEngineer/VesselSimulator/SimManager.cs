@@ -43,7 +43,7 @@ namespace KerbalEngineer.VesselSimulator
 
         public static bool dumpTree = false;
         public static bool logOutput = false;
-        public static bool vectoredThrust = false;
+        public static bool vectoredThrust = true;
         public static long minSimTime = 150;
 
         // Support for RealFuels using reflection to check localCorrectThrust without dependency
