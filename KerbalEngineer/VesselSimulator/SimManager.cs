@@ -42,7 +42,7 @@ namespace KerbalEngineer.VesselSimulator
         public static bool dumpTree = false;
         public static bool logOutput = false;
         public static TimeSpan minSimTime = new TimeSpan(0, 0, 0, 0, 150);
-        public static bool vectoredThrust = true;
+        public static bool vectoredThrust = false;
         private static readonly object locker = new object();
         private static readonly Stopwatch timer = new Stopwatch();
 

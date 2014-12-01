@@ -15,7 +15,7 @@
 	Added: New readouts to the miscellaneous category:
 		- Vectored Thrust Toggle
 
-	Fixed: The category selection within the section editors to not always reset back to 'Orbital'.
+	Fixed: The category selection within the section editors now do not always reset back to 'Orbital'.
 	Fixed: Issue where the vessel simulation can sometimes permanently freeze.
 	Fixed: Issue where the vessel simulation would not show updates when the delay was set lower than the frame rate.
 
