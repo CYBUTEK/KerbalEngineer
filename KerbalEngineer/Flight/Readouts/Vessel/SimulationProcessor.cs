@@ -19,14 +19,19 @@
 
 #region Using Directives
 
-using System;
 
-using KerbalEngineer.VesselSimulator;
 
 #endregion
 
 namespace KerbalEngineer.Flight.Readouts.Vessel
 {
+    #region Using Directives
+
+    using System;
+    using VesselSimulator;
+
+    #endregion
+
     public class SimulationProcessor : IUpdatable, IUpdateRequest
     {
         #region Instance
@@ -34,6 +39,15 @@ namespace KerbalEngineer.Flight.Readouts.Vessel
         #region Fields
 
         private static readonly SimulationProcessor instance = new SimulationProcessor();
+
+        #endregion
+
+        #region Constructors
+
+        static SimulationProcessor()
+        {
+            SimManager.OnReady += GetStageInfo;
+        }
 
         #endregion
 
@@ -72,7 +86,13 @@ namespace KerbalEngineer.Flight.Readouts.Vessel
 
         #endregion
 
-        #region Methods: public
+        #region Methods
+
+        private static void GetStageInfo()
+        {
+            Stages = SimManager.Stages;
+            LastStage = SimManager.LastStage;
+        }
 
         public static void RequestUpdate()
         {
@@ -89,9 +109,6 @@ namespace KerbalEngineer.Flight.Readouts.Vessel
                 return;
             }
 
-            Stages = SimManager.Stages;
-            LastStage = SimManager.LastStage;
-
             if (Stages != null && LastStage != null)
             {
                 ShowDetails = true;
@@ -104,9 +121,6 @@ namespace KerbalEngineer.Flight.Readouts.Vessel
                                               FlightGlobals.ActiveVessel.mainBody.GetAltitude(FlightGlobals.ActiveVessel.CoM), 2);
                 SimManager.Velocity = FlightGlobals.ActiveVessel.srfSpeed;
             }
-
-            // Cybutek: We should be allowing this to be set too but not sure where you want to put the control
-            //SimManager.vectoredThrust = vectoredThrust; 
         }
 
         #endregion

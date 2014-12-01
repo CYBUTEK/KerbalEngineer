@@ -17,84 +17,77 @@
 //     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // 
 
-#region Using Directives
-
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Reflection;
-using System.Threading;
-
-using UnityEngine;
-
-#endregion
-
 namespace KerbalEngineer.VesselSimulator
 {
+    #region Using Directives
+
+    using System;
+    using System.Diagnostics;
+    using System.Reflection;
+    using System.Threading;
+    using UnityEngine;
+
+    #endregion
+
     public class SimManager
     {
+        #region Constants
+
         public const double RESOURCE_MIN = 0.0001;
 
-        private static bool bRequested;
-        private static bool bRunning;
-        private static readonly Stopwatch timer = new Stopwatch();
-        private static long delayBetweenSims;
+        #endregion
+
+        #region Fields
 
         public static bool dumpTree = false;
         public static bool logOutput = false;
+        public static TimeSpan minSimTime = new TimeSpan(0, 0, 0, 0, 150);
         public static bool vectoredThrust = true;
-        public static long minSimTime = 150;
+        private static readonly object locker = new object();
+        private static readonly Stopwatch timer = new Stopwatch();
 
         // Support for RealFuels using reflection to check localCorrectThrust without dependency
-        private static bool hasCheckedForRealFuels;
-        private static bool hasInstalledRealFuels;
 
         private static FieldInfo RF_ModuleEngineConfigs_locaCorrectThrust;
         private static FieldInfo RF_ModuleHybridEngine_locaCorrectThrust;
         private static FieldInfo RF_ModuleHybridEngines_locaCorrectThrust;
-        public static Stage[] Stages { get; private set; }
-        public static Stage LastStage { get; private set; }
-        public static String failMessage { get; private set; }
-        public static double Gravity { get; set; }
+        private static bool bRequested;
+        private static bool bRunning;
+        private static TimeSpan delayBetweenSims;
+        private static bool hasCheckedForRealFuels;
+        private static bool hasInstalledRealFuels;
+
+        #endregion
+
+        #region Delegates
+
+        public delegate void ReadyEvent();
+
+        #endregion
+
+        #region Events
+
+        public static event ReadyEvent OnReady;
+
+        #endregion
+
+        #region Properties
+
         public static double Atmosphere { get; set; }
+
+        public static double Gravity { get; set; }
+
+        public static Stage LastStage { get; private set; }
+
+        public static Stage[] Stages { get; private set; }
+
         public static double Velocity { get; set; }
 
-        private static void GetRealFuelsTypes()
-        {
-            hasCheckedForRealFuels = true;
+        public static String failMessage { get; private set; }
 
-            foreach (AssemblyLoader.LoadedAssembly assembly in AssemblyLoader.loadedAssemblies)
-            {
-                MonoBehaviour.print("Assembly:" + assembly.assembly);
+        #endregion
 
-                if (assembly.assembly.ToString().Split(',')[0] == "RealFuels")
-                {
-                    MonoBehaviour.print("Found RealFuels mod");
-
-                    Type RF_ModuleEngineConfigs_Type = assembly.assembly.GetType("RealFuels.ModuleEngineConfigs");
-                    if (RF_ModuleEngineConfigs_Type != null)
-                    {
-                        RF_ModuleEngineConfigs_locaCorrectThrust = RF_ModuleEngineConfigs_Type.GetField("localCorrectThrust");
-                    }
-
-                    Type RF_ModuleHybridEngine_Type = assembly.assembly.GetType("RealFuels.ModuleHybridEngine");
-                    if (RF_ModuleHybridEngine_Type != null)
-                    {
-                        RF_ModuleHybridEngine_locaCorrectThrust = RF_ModuleHybridEngine_Type.GetField("localCorrectThrust");
-                    }
-
-                    Type RF_ModuleHybridEngines_Type = assembly.assembly.GetType("RealFuels.ModuleHybridEngines");
-                    if (RF_ModuleHybridEngines_Type != null)
-                    {
-                        RF_ModuleHybridEngines_locaCorrectThrust = RF_ModuleHybridEngines_Type.GetField("localCorrectThrust");
-                    }
-
-                    hasInstalledRealFuels = true;
-                    break;
-                }
-            }
-        }
+        #region Methods
 
         public static bool DoesEngineUseCorrectedThrust(Part theEngine)
         {
@@ -106,7 +99,7 @@ namespace KerbalEngineer.VesselSimulator
             // Look for any of the Real Fuels engine modules and call the relevant method to find out
             if (RF_ModuleEngineConfigs_locaCorrectThrust != null && theEngine.Modules.Contains("ModuleEngineConfigs"))
             {
-                PartModule modEngineConfigs = theEngine.Modules["ModuleEngineConfigs"];
+                var modEngineConfigs = theEngine.Modules["ModuleEngineConfigs"];
                 if (modEngineConfigs != null)
                 {
                     // Check the localCorrectThrust
@@ -119,7 +112,7 @@ namespace KerbalEngineer.VesselSimulator
 
             if (RF_ModuleHybridEngine_locaCorrectThrust != null && theEngine.Modules.Contains("ModuleHybridEngine"))
             {
-                PartModule modHybridEngine = theEngine.Modules["ModuleHybridEngine"];
+                var modHybridEngine = theEngine.Modules["ModuleHybridEngine"];
                 if (modHybridEngine != null)
                 {
                     // Check the localCorrectThrust
@@ -132,7 +125,7 @@ namespace KerbalEngineer.VesselSimulator
 
             if (RF_ModuleHybridEngines_locaCorrectThrust != null && theEngine.Modules.Contains("ModuleHybridEngines"))
             {
-                PartModule modHybridEngines = theEngine.Modules["ModuleHybridEngines"];
+                var modHybridEngines = theEngine.Modules["ModuleHybridEngines"];
                 if (modHybridEngines != null)
                 {
                     // Check the localCorrectThrust
@@ -144,124 +137,6 @@ namespace KerbalEngineer.VesselSimulator
             }
 
             return false;
-        }
-
-        public static void RequestSimulation()
-        {
-            if (!hasCheckedForRealFuels)
-            {
-                GetRealFuelsTypes();
-            }
-
-            bRequested = true;
-            if (!timer.IsRunning)
-            {
-                timer.Start();
-            }
-        }
-
-        public static void TryStartSimulation()
-        {
-            if (bRequested && !bRunning && (HighLogic.LoadedSceneIsEditor || FlightGlobals.ActiveVessel != null) && timer.ElapsedMilliseconds > delayBetweenSims)
-            {
-                bRequested = false;
-                timer.Reset();
-                StartSimulation();
-            }
-        }
-
-        public static bool ResultsReady()
-        {
-            return !bRunning;
-        }
-
-        private static void ClearResults()
-        {
-            failMessage = "";
-            Stages = null;
-            LastStage = null;
-        }
-
-        private static void StartSimulation()
-        {
-            try
-            {
-                bRunning = true;
-                ClearResults();
-                timer.Start();
-
-                List<Part> parts = HighLogic.LoadedSceneIsEditor ? EditorLogic.SortedShipList : FlightGlobals.ActiveVessel.Parts;
-
-                // Create the Simulation object in this thread
-                Simulation sim = new Simulation();
-
-                // This call doesn't ever fail at the moment but we'll check and return a sensible error for display
-                if (sim.PrepareSimulation(parts, Gravity, Atmosphere, Velocity, dumpTree, vectoredThrust))
-                {
-                    ThreadPool.QueueUserWorkItem(RunSimulation, sim);
-                }
-                else
-                {
-                    failMessage = "PrepareSimulation failed";
-                    bRunning = false;
-                    logOutput = false;
-                }
-            }
-            catch (Exception e)
-            {
-                MonoBehaviour.print("Exception in StartSimulation: " + e);
-                failMessage = e.ToString();
-                bRunning = false;
-                logOutput = false;
-            }
-            dumpTree = false;
-        }
-
-        private static void RunSimulation(object simObject)
-        {
-            try
-            {
-                Stages = (simObject as Simulation).RunSimulation();
-                if (Stages != null)
-                {
-                    if (logOutput)
-                    {
-                        foreach (Stage stage in Stages)
-                        {
-                            stage.Dump();
-                        }
-                    }
-                    LastStage = Stages.Last();
-                }
-            }
-            catch (Exception e)
-            {
-                MonoBehaviour.print("Exception in RunSimulation: " + e);
-                Stages = null;
-                LastStage = null;
-                failMessage = e.ToString();
-            }
-
-            timer.Stop();
-#if TIMERS
-            MonoBehaviour.print("Total simulation time: " + timer.ElapsedMilliseconds + "ms");
-#else
-            if (logOutput)
-            {
-                MonoBehaviour.print("Total simulation time: " + timer.ElapsedMilliseconds + "ms");
-            }
-#endif
-            delayBetweenSims = minSimTime - timer.ElapsedMilliseconds;
-            if (delayBetweenSims < 0)
-            {
-                delayBetweenSims = 0;
-            }
-
-            timer.Reset();
-            timer.Start();
-
-            bRunning = false;
-            logOutput = false;
         }
 
         public static String GetVesselTypeString(VesselType vesselType)
@@ -293,5 +168,197 @@ namespace KerbalEngineer.VesselSimulator
             }
             return "Undefined";
         }
+
+        public static void RequestSimulation()
+        {
+            if (!hasCheckedForRealFuels)
+            {
+                GetRealFuelsTypes();
+            }
+
+            lock (locker)
+            {
+                bRequested = true;
+                if (!timer.IsRunning)
+                {
+                    timer.Start();
+                }
+            }
+        }
+
+        public static bool ResultsReady()
+        {
+            lock (locker)
+            {
+                return !bRunning;
+            }
+        }
+
+        public static void TryStartSimulation()
+        {
+            lock (locker)
+            {
+                if (!bRequested || bRunning || (timer.Elapsed < delayBetweenSims && timer.Elapsed >= TimeSpan.Zero) || (!HighLogic.LoadedSceneIsEditor && FlightGlobals.ActiveVessel == null))
+                {
+                    return;
+                }
+
+                bRequested = false;
+                timer.Reset();
+            }
+
+            StartSimulation();
+        }
+
+        private static void ClearResults()
+        {
+            failMessage = "";
+            Stages = null;
+            LastStage = null;
+        }
+
+        private static void GetRealFuelsTypes()
+        {
+            hasCheckedForRealFuels = true;
+
+            foreach (var assembly in AssemblyLoader.loadedAssemblies)
+            {
+                MonoBehaviour.print("Assembly:" + assembly.assembly);
+
+                if (assembly.assembly.ToString().Split(',')[0] == "RealFuels")
+                {
+                    MonoBehaviour.print("Found RealFuels mod");
+
+                    var RF_ModuleEngineConfigs_Type = assembly.assembly.GetType("RealFuels.ModuleEngineConfigs");
+                    if (RF_ModuleEngineConfigs_Type != null)
+                    {
+                        RF_ModuleEngineConfigs_locaCorrectThrust = RF_ModuleEngineConfigs_Type.GetField("localCorrectThrust");
+                    }
+
+                    var RF_ModuleHybridEngine_Type = assembly.assembly.GetType("RealFuels.ModuleHybridEngine");
+                    if (RF_ModuleHybridEngine_Type != null)
+                    {
+                        RF_ModuleHybridEngine_locaCorrectThrust = RF_ModuleHybridEngine_Type.GetField("localCorrectThrust");
+                    }
+
+                    var RF_ModuleHybridEngines_Type = assembly.assembly.GetType("RealFuels.ModuleHybridEngines");
+                    if (RF_ModuleHybridEngines_Type != null)
+                    {
+                        RF_ModuleHybridEngines_locaCorrectThrust = RF_ModuleHybridEngines_Type.GetField("localCorrectThrust");
+                    }
+
+                    hasInstalledRealFuels = true;
+                    break;
+                }
+            }
+        }
+
+        private static void RunSimulation(object simObject)
+        {
+            try
+            {
+                Stages = (simObject as Simulation).RunSimulation();
+                if (Stages != null && Stages.Length > 0)
+                {
+                    if (logOutput)
+                    {
+                        foreach (var stage in Stages)
+                        {
+                            stage.Dump();
+                        }
+                    }
+                    LastStage = Stages[Stages.Length - 1];
+                }
+            }
+            catch (Exception e)
+            {
+                MonoBehaviour.print("Exception in RunSimulation: " + e);
+                Logger.Exception(e);
+                Stages = null;
+                LastStage = null;
+                failMessage = e.ToString();
+            }
+            lock (locker)
+            {
+                timer.Stop();
+#if TIMERS
+            MonoBehaviour.print("Total simulation time: " + timer.ElapsedMilliseconds + "ms");
+#else
+                if (logOutput)
+                {
+                    MonoBehaviour.print("Total simulation time: " + timer.ElapsedMilliseconds + "ms");
+                }
+#endif
+
+                delayBetweenSims = minSimTime - timer.Elapsed;
+                if (delayBetweenSims < TimeSpan.Zero)
+                {
+                    delayBetweenSims = TimeSpan.Zero;
+                }
+
+                timer.Reset();
+                timer.Start();
+
+                bRunning = false;
+                if (OnReady != null)
+                {
+                    OnReady();
+                }
+            }
+
+            logOutput = false;
+        }
+
+        private static void StartSimulation()
+        {
+            try
+            {
+                lock (locker)
+                {
+                    bRunning = true;
+                }
+
+                ClearResults();
+
+                lock (locker)
+                {
+                    timer.Start();
+                }
+
+                var parts = HighLogic.LoadedSceneIsEditor ? EditorLogic.SortedShipList : FlightGlobals.ActiveVessel.Parts;
+
+                // Create the Simulation object in this thread
+                var sim = new Simulation();
+
+                // This call doesn't ever fail at the moment but we'll check and return a sensible error for display
+                if (sim.PrepareSimulation(parts, Gravity, Atmosphere, Velocity, dumpTree, vectoredThrust))
+                {
+                    ThreadPool.QueueUserWorkItem(RunSimulation, sim);
+                }
+                else
+                {
+                    failMessage = "PrepareSimulation failed";
+                    lock (locker)
+                    {
+                        bRunning = false;
+                    }
+                    logOutput = false;
+                }
+            }
+            catch (Exception e)
+            {
+                MonoBehaviour.print("Exception in StartSimulation: " + e);
+                Logger.Exception(e);
+                failMessage = e.ToString();
+                lock (locker)
+                {
+                    bRunning = false;
+                }
+                logOutput = false;
+            }
+            dumpTree = false;
+        }
+
+        #endregion
     }
 }

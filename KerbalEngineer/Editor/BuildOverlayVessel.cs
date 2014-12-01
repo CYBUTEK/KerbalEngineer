@@ -99,6 +99,19 @@ namespace KerbalEngineer.Editor
             }
         }
 
+        protected void Awake()
+        {
+            try
+            {
+                SimManager.OnReady -= this.GetStageInfo;
+                SimManager.OnReady += this.GetStageInfo;
+            }
+            catch (Exception ex)
+            {
+                Logger.Exception(ex);
+            }
+        }
+
         protected void Start()
         {
             try
@@ -160,6 +173,11 @@ namespace KerbalEngineer.Editor
             this.tabPosition.y = this.windowPosition.y - this.tabPosition.height;
         }
 
+        private void GetStageInfo()
+        {
+            this.lastStage = SimManager.LastStage;
+        }
+
         private void SetVesselInfo()
         {
             SimManager.Gravity = CelestialBodies.SelectedBody.Gravity;
@@ -175,11 +193,6 @@ namespace KerbalEngineer.Editor
 
             SimManager.RequestSimulation();
             SimManager.TryStartSimulation();
-
-            if (SimManager.ResultsReady())
-            {
-                this.lastStage = SimManager.LastStage;
-            }
 
             if (this.lastStage != null)
             {

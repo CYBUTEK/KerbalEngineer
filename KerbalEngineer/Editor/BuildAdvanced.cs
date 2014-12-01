@@ -132,6 +132,9 @@ namespace KerbalEngineer.Editor
                 this.bodiesList = this.gameObject.AddComponent<DropDown>();
                 this.bodiesList.DrawCallback = this.DrawBodiesList;
                 this.Load();
+
+                SimManager.OnReady -= this.GetStageInfo;
+                SimManager.OnReady += this.GetStageInfo;
             }
             catch (Exception ex)
             {
@@ -165,6 +168,11 @@ namespace KerbalEngineer.Editor
             }
         }
 
+        private void GetStageInfo()
+        {
+            this.stages = SimManager.Stages;
+        }
+
         protected void OnGUI()
         {
             try
@@ -173,13 +181,6 @@ namespace KerbalEngineer.Editor
                 {
                     return;
                 }
-
-                if (SimManager.ResultsReady())
-                {
-                    this.stages = SimManager.Stages;
-                }
-
-                SimManager.RequestSimulation();
 
                 if (this.stages == null)
                 {
@@ -267,6 +268,8 @@ namespace KerbalEngineer.Editor
                 }
 
                 SimManager.Velocity = this.atmosphericVelocity;
+
+                SimManager.RequestSimulation();
                 SimManager.TryStartSimulation();
             }
             catch (Exception ex)
@@ -492,9 +495,9 @@ namespace KerbalEngineer.Editor
             }
             GUILayout.EndHorizontal();
 
-            GUILayout.Label("Minimum delay between simulations: " + SimManager.minSimTime + "ms", this.settingStyle);
+            GUILayout.Label("Minimum delay between simulations: " + SimManager.minSimTime.Milliseconds + "ms", this.settingStyle);
             GUI.skin = HighLogic.Skin;
-            SimManager.minSimTime = (long)GUILayout.HorizontalSlider(SimManager.minSimTime, 0, 2000.0f);
+            SimManager.minSimTime = new TimeSpan(0, 0, 0, 0, (int)GUILayout.HorizontalSlider(SimManager.minSimTime.Milliseconds, 0, 2000.0f));
             GUI.skin = null;
         }
 

@@ -512,6 +512,10 @@ namespace KerbalEngineer.VesselSimulator
                         MonoBehaviour.print("stageStartMass = " + this.stageStartMass);
                         MonoBehaviour.print("stepStartMass = " + this.stepStartMass);
                         MonoBehaviour.print("StepEndMass   = " + this.stepEndMass);
+                        Logger.Log("exceeded loop count");
+                        Logger.Log("stageStartMass = " + this.stageStartMass);
+                        Logger.Log("stepStartMass = " + this.stepStartMass);
+                        Logger.Log("StepEndMass   = " + this.stepEndMass);
                         break;
                     }
 

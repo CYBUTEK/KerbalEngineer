@@ -1,4 +1,4 @@
-1.0.12.0
+1.0.12.0, 01-12-2014
 	Added: Setting in Build Engineer to enable/disable vectored thrust calculations.
 	Added: Thrust torque field in Build Engineer (courtesy of mic_e).
 	Added: New readouts to the vessel category:
@@ -16,6 +16,8 @@
 		- Vectored Thrust Toggle
 
 	Fixed: The category selection within the section editors to not always reset back to 'Orbital'.
+	Fixed: Issue where the vessel simulation can sometimes permanently freeze.
+	Fixed: Issue where the vessel simulation would not show updates when the delay was set lower than the frame rate.
 
 1.0.11.3, 11-11-2014
     Changed: Gravity measurements for Isp to 9.82.
