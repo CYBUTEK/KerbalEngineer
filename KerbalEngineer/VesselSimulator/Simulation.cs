@@ -786,7 +786,6 @@ namespace KerbalEngineer.VesselSimulator
                             partSim.DumpPartToBuffer(buffer, "Decoupled part not empty => false: ");
                             MonoBehaviour.print(buffer);
                         }
-
                         return false;
                     }
 

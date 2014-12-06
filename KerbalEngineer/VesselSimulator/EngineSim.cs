@@ -267,46 +267,36 @@ namespace KerbalEngineer.VesselSimulator
                         break;
 
                     case ResourceFlowMode.STAGE_PRIORITY_FLOW:
-                    {
-                        Dictionary<int, HashSet<PartSim>> stagePartSets = new Dictionary<int, HashSet<PartSim>>();
-                        int maxStage = -1;
-                        foreach (PartSim aPartSim in allParts)
-                        {
-                            if (aPartSim.resources[type] > SimManager.RESOURCE_MIN)
-                            {
-                                //int stage = aPartSim.decoupledInStage;            // Use the number of the stage the tank is decoupled in
-                                int stage = aPartSim.DecouplerCount(); // Use the count of decouplers between tank and root
-                                if (stage > maxStage)
-                                {
-                                    maxStage = stage;
-                                }
-                                if (stagePartSets.ContainsKey(stage))
-                                {
-                                    sourcePartSet = stagePartSets[stage];
-                                }
-                                else
-                                {
-                                    sourcePartSet = new HashSet<PartSim>();
-                                    stagePartSets.Add(stage, sourcePartSet);
-                                }
+                        var stagePartSets = new Dictionary<int, HashSet<PartSim>>();
+                        var maxStage = -1;
 
-                                sourcePartSet.Add(aPartSim);
+                        Logger.Log(type);
+                        foreach (var aPartSim in allParts)
+                        {
+                            if (aPartSim.resources[type] <= SimManager.RESOURCE_MIN) continue;
+
+                            var stage = aPartSim.DecouplerCount();
+                            if (stage > maxStage)
+                            {
+                                maxStage = stage;
                             }
+
+                            if (!stagePartSets.TryGetValue(stage, out sourcePartSet))
+                            {
+                                sourcePartSet = new HashSet<PartSim>();
+                                stagePartSets.Add(stage, sourcePartSet);
+                            }
+                            sourcePartSet.Add(aPartSim);
                         }
 
-                        while (maxStage >= 0)
+                        for (var i = 0; i <= maxStage; i++)
                         {
-                            if (stagePartSets.ContainsKey(maxStage))
+                            HashSet<PartSim> stagePartSet;
+                            if (stagePartSets.TryGetValue(i, out stagePartSet) && stagePartSet.Count > 0)
                             {
-                                if (stagePartSets[maxStage].Count() > 0)
-                                {
-                                    sourcePartSet = stagePartSets[maxStage];
-                                    break;
-                                }
+                                sourcePartSet = stagePartSet;
                             }
-                            maxStage--;
                         }
-                    }
                         break;
 
                     case ResourceFlowMode.STACK_PRIORITY_SEARCH:

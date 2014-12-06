@@ -90,6 +90,9 @@
     <Compile Include="Flight\Readouts\Surface\VerticalAcceleration.cs" />
     <Compile Include="Flight\Readouts\Vessel\AttitudeProcessor.cs" />
     <Compile Include="Flight\Readouts\Vessel\DeltaVCurrentTotal.cs" />
+    <Compile Include="Flight\Readouts\Vessel\PitchRate.cs" />
+    <Compile Include="Flight\Readouts\Vessel\HeadingRate.cs" />
+    <Compile Include="Flight\Readouts\Vessel\RollRate.cs" />
     <Compile Include="Flight\Readouts\Vessel\Roll.cs" />
     <Compile Include="Flight\Readouts\Vessel\Pitch.cs" />
     <Compile Include="Flight\Readouts\Vessel\Heading.cs" />

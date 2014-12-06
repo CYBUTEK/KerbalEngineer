@@ -34,9 +34,15 @@ namespace KerbalEngineer.Flight.Readouts.Vessel
         private Vector3 centreOfMass = Vector3.zero;
 
         private double heading;
+        private double headingRate;
         private Vector3 north = Vector3.zero;
         private double pitch;
+        private double pitchRate;
+        private double previousHeading;
+        private double previousPitch;
+        private double previousRoll;
         private double roll;
+        private double rollRate;
         private Quaternion surfaceRotation;
         private Vector3 up = Vector3.zero;
 
@@ -49,6 +55,11 @@ namespace KerbalEngineer.Flight.Readouts.Vessel
             get { return instance.heading; }
         }
 
+        public static double HeadingRate
+        {
+            get { return instance.headingRate; }
+        }
+
         public static AttitudeProcessor Instance
         {
             get { return instance; }
@@ -59,9 +70,19 @@ namespace KerbalEngineer.Flight.Readouts.Vessel
             get { return instance.pitch; }
         }
 
+        public static double PitchRate
+        {
+            get { return instance.pitchRate; }
+        }
+
         public static double Roll
         {
             get { return instance.roll; }
+        }
+
+        public static double RollRate
+        {
+            get { return instance.rollRate; }
         }
 
         public bool UpdateRequested { get; set; }
@@ -79,6 +100,10 @@ namespace KerbalEngineer.Flight.Readouts.Vessel
         {
             this.surfaceRotation = this.GetSurfaceRotation();
 
+            this.previousHeading = this.heading;
+            this.previousPitch = this.pitch;
+            this.previousRoll = this.roll;
+
             // This code was derived from MechJeb2's implementation for getting the vessel's surface relative rotation.
             this.heading = this.surfaceRotation.eulerAngles.y;
             this.pitch = this.surfaceRotation.eulerAngles.x > 180.0f
@@ -87,6 +112,10 @@ namespace KerbalEngineer.Flight.Readouts.Vessel
             this.roll = this.surfaceRotation.eulerAngles.z > 180.0f
                 ? this.surfaceRotation.eulerAngles.z - 360.0f
                 : this.surfaceRotation.eulerAngles.z;
+
+            this.headingRate = this.heading - this.previousHeading;
+            this.pitchRate = this.pitch - this.previousPitch;
+            this.rollRate = this.roll - this.previousRoll;
         }
 
         private Quaternion GetSurfaceRotation()

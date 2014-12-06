@@ -108,9 +108,6 @@ namespace KerbalEngineer.Flight.Readouts
                 readouts.Add(new VerticalAcceleration());
                 readouts.Add(new HorizontalSpeed());
                 readouts.Add(new HorizontalAcceleration());
-                readouts.Add(new Heading());
-                readouts.Add(new Pitch());
-                readouts.Add(new Roll());
                 readouts.Add(new Latitude());
                 readouts.Add(new Longitude());
                 readouts.Add(new GeeForce());
@@ -146,6 +143,12 @@ namespace KerbalEngineer.Flight.Readouts
                 readouts.Add(new IntakeAirSupply());
                 readouts.Add(new IntakeAirDemandSupply());
                 readouts.Add(new PartCount());
+                readouts.Add(new Heading());
+                readouts.Add(new Pitch());
+                readouts.Add(new Roll());
+                readouts.Add(new HeadingRate());
+                readouts.Add(new PitchRate());
+                readouts.Add(new RollRate());
 
                 // Rendezvous
                 readouts.Add(new TargetSelector());

@@ -325,7 +325,7 @@ namespace KerbalEngineer.VesselSimulator
                     timer.Start();
                 }
 
-                var parts = HighLogic.LoadedSceneIsEditor ? EditorLogic.SortedShipList : FlightGlobals.ActiveVessel.Parts;
+                var parts = HighLogic.LoadedSceneIsEditor ? EditorLogic.fetch.ship.parts : FlightGlobals.ActiveVessel.Parts;
 
                 // Create the Simulation object in this thread
                 var sim = new Simulation();

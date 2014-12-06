@@ -1,3 +1,11 @@
+1.0.12.1
+    Added: New readouts to the vessel category:
+        - Heading Rate
+        - Pitch Rate
+        - Roll Rate
+
+	Fixed: Editor Overlay now loads the saved visibility value properly.
+
 1.0.12.0, 01-12-2014
 	Added: Setting in Build Engineer to enable/disable vectored thrust calculations.
 	Added: Thrust torque field in Build Engineer (courtesy of mic_e).

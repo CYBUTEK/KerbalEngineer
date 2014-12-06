@@ -196,7 +196,7 @@ namespace KerbalEngineer.Editor
         public static void Load()
         {
             var handler = SettingHandler.Load("BuildOverlay.xml");
-            handler.GetSet("visible", Visible);
+            Visible = handler.GetSet("visible", Visible);
             BuildOverlayPartInfo.NamesOnly = handler.GetSet("namesOnly", BuildOverlayPartInfo.NamesOnly);
             BuildOverlayPartInfo.ClickToOpen = handler.GetSet("clickToOpen", BuildOverlayPartInfo.ClickToOpen);
             buildOverlayVessel.Open = handler.GetSet("vesselOpen", buildOverlayVessel.Open);
