@@ -6,6 +6,7 @@
 
 	Fixed: Editor Overlay now loads the saved visibility value properly.
     Fixed: Altitude (Terrain) will no longer give a reading below sea level.
+    Fixed: Suicide burn to use radar altitude that clamps to sea level.
 
 1.0.12.0, 01-12-2014
 	Added: Setting in Build Engineer to enable/disable vectored thrust calculations.

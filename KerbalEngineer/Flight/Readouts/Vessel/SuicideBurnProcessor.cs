@@ -19,12 +19,18 @@
 
 #region Using Directives
 
-using System;
+
 
 #endregion
 
 namespace KerbalEngineer.Flight.Readouts.Vessel
 {
+    #region Using Directives
+
+    using System;
+
+    #endregion
+
     public class SuicideBurnProcessor : IUpdatable, IUpdateRequest
     {
         #region Fields
@@ -55,7 +61,7 @@ namespace KerbalEngineer.Flight.Readouts.Vessel
 
         #endregion
 
-        #region Methods: public
+        #region Methods
 
         public static void RequestUpdate()
         {
@@ -79,7 +85,9 @@ namespace KerbalEngineer.Flight.Readouts.Vessel
 
             this.gravity = FlightGlobals.currentMainBody.gravParameter / Math.Pow(FlightGlobals.currentMainBody.Radius, 2.0);
             this.acceleration = SimulationProcessor.LastStage.thrust / SimulationProcessor.LastStage.totalMass;
-            this.radarAltitude = FlightGlobals.ship_altitude - FlightGlobals.ActiveVessel.terrainAltitude;
+            this.radarAltitude = FlightGlobals.ActiveVessel.terrainAltitude > 0.0
+                ? FlightGlobals.ship_altitude - FlightGlobals.ActiveVessel.terrainAltitude
+                : FlightGlobals.ship_altitude;
 
             DeltaV = Math.Sqrt((2 * this.gravity * this.radarAltitude) + Math.Pow(FlightGlobals.ship_verticalSpeed, 2.0));
             Altitude = Math.Pow(DeltaV, 2.0) / (2.0 * this.acceleration);
