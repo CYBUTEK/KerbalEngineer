@@ -19,13 +19,17 @@
 
 #region Using Directives
 
-using KerbalEngineer.Extensions;
-using KerbalEngineer.Flight.Sections;
-
 #endregion
 
 namespace KerbalEngineer.Flight.Readouts.Surface
 {
+    #region Using Directives
+
+    using Extensions;
+    using Sections;
+
+    #endregion
+
     public class AltitudeTerrain : ReadoutModule
     {
         #region Constructors
@@ -40,11 +44,18 @@ namespace KerbalEngineer.Flight.Readouts.Surface
 
         #endregion
 
-        #region Methods: public
+        #region Methods
 
         public override void Draw(SectionModule section)
         {
-            this.DrawLine((FlightGlobals.ship_altitude - FlightGlobals.ActiveVessel.terrainAltitude).ToDistance(), section.IsHud);
+            if (FlightGlobals.ActiveVessel.terrainAltitude > 0.0)
+            {
+                this.DrawLine((FlightGlobals.ship_altitude - FlightGlobals.ActiveVessel.terrainAltitude).ToDistance(), section.IsHud);
+            }
+            else
+            {
+                this.DrawLine((FlightGlobals.ship_altitude).ToDistance(), section.IsHud);
+            }
         }
 
         #endregion
