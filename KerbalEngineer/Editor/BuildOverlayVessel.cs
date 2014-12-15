@@ -82,7 +82,7 @@ namespace KerbalEngineer.Editor
         {
             try
             {
-                if (!Visible || EditorLogic.startPod == null || EditorLogic.fetch.editorScreen != EditorLogic.EditorScreen.Parts)
+                if (!Visible || EditorLogic.RootPart == null || EditorLogic.fetch.editorScreen != EditorScreen.Parts)
                 {
                     return;
                 }
@@ -129,7 +129,7 @@ namespace KerbalEngineer.Editor
         {
             try
             {
-                if (!Visible || EditorLogic.startPod == null)
+                if (!Visible || EditorLogic.RootPart == null)
                 {
                     return;
                 }

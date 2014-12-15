@@ -97,7 +97,7 @@ namespace KerbalEngineer.Editor
         {
             try
             {
-                if (!Visible || Hidden || EditorLogic.startPod == null || EditorLogic.fetch.editorScreen != EditorLogic.EditorScreen.Parts)
+                if (!Visible || Hidden || EditorLogic.RootPart == null || EditorLogic.fetch.editorScreen != EditorScreen.Parts)
                 {
                     return;
                 }

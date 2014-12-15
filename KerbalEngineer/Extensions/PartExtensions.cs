@@ -69,7 +69,7 @@ namespace KerbalEngineer.Extensions
         /// </summary>
         public static double GetCostDry(this Part part)
         {
-            return part.partInfo.cost - GetResourceCostMax(part) + part.GetModuleCosts();
+            return part.partInfo.cost - GetResourceCostMax(part) + part.GetModuleCosts(0.0f);
         }
 
         /// <summary>
@@ -77,7 +77,7 @@ namespace KerbalEngineer.Extensions
         /// </summary>
         public static double GetCostMax(this Part part)
         {
-            return part.partInfo.cost + part.GetModuleCosts();
+            return part.partInfo.cost + part.GetModuleCosts(0.0f);
         }
 
         /// <summary>
@@ -85,7 +85,7 @@ namespace KerbalEngineer.Extensions
         /// </summary>
         public static double GetCostWet(this Part part)
         {
-            return part.partInfo.cost - GetResourceCostInverted(part) + part.GetModuleCosts();
+            return part.partInfo.cost - GetResourceCostInverted(part) + part.GetModuleCosts(0.0f);
         }
 
         /// <summary>

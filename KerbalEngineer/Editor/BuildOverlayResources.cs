@@ -70,7 +70,7 @@ namespace KerbalEngineer.Editor
         {
             try
             {
-                if (!Visible || this.resources.Count == 0 || EditorLogic.fetch.editorScreen != EditorLogic.EditorScreen.Parts)
+                if (!Visible || this.resources.Count == 0 || EditorLogic.fetch.editorScreen != EditorScreen.Parts)
                 {
                     return;
                 }
