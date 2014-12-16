@@ -32,6 +32,8 @@ using UnityEngine;
 
 namespace KerbalEngineer.VesselSimulator
 {
+    using CompoundParts;
+
     public class PartSim
     {
         private readonly List<AttachNodeSim> attachNodes = new List<AttachNodeSim>();
@@ -86,7 +88,7 @@ namespace KerbalEngineer.VesselSimulator
             this.fuelCrossFeed = this.part.fuelCrossFeed;
             this.noCrossFeedNodeKey = this.part.NoCrossFeedNodeKey;
             this.decoupledInStage = this.DecoupledInStage(this.part);
-            this.isFuelLine = this.part is FuelLine;
+            this.isFuelLine = this.part.HasModule<CModuleFuelLine>();
             this.isFuelTank = this.part is FuelTank;
             this.isSepratron = this.IsSepratron();
             this.inverseStage = this.part.inverseStage;

@@ -27,6 +27,8 @@ using System.Linq;
 
 namespace KerbalEngineer.Extensions
 {
+    using CompoundParts;
+
     public static class PartExtensions
     {
         #region Methods: public
@@ -387,7 +389,7 @@ namespace KerbalEngineer.Extensions
         /// </summary>
         public static bool IsFuelLine(this Part part)
         {
-            return (part is FuelLine);
+            return (HasModule<CModuleFuelLine>(part));
         }
 
         /// <summary>

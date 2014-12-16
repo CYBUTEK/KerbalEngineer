@@ -1,4 +1,4 @@
-1.0.13
+1.0.13, 16-12-2014
 	Updated for KSP version 0.90
 
     Added: New readouts to the vessel category:
@@ -6,6 +6,7 @@
         - Pitch Rate
         - Roll Rate
 
+    Changed: Simulation to look for fuel lines that use CModuleFuelLine module.
 	Fixed: Editor Overlay now loads the saved visibility value properly.
     Fixed: Altitude (Terrain) will no longer give a reading below sea level.
     Fixed: Suicide burn now uses radar altitude that clamps to sea level.

@@ -30,6 +30,9 @@ using UnityEngine;
 
 namespace KerbalEngineer.VesselSimulator
 {
+    using CompoundParts;
+    using Extensions;
+
     public class Simulation
     {
         private const double STD_GRAVITY = 9.82;
@@ -192,10 +195,11 @@ namespace KerbalEngineer.VesselSimulator
             {
                 foreach (PartSim partSim in this.allFuelLines)
                 {
-                    if ((partSim.part as FuelLine).target != null)
+                    CModuleFuelLine fuelLine = partSim.part.GetModule<CModuleFuelLine>();
+                    if (fuelLine.target != null)
                     {
                         PartSim targetSim;
-                        if (partSimLookup.TryGetValue((partSim.part as FuelLine).target, out targetSim))
+                        if (partSimLookup.TryGetValue(fuelLine.target, out targetSim))
                         {
                             if (log != null)
                             {
