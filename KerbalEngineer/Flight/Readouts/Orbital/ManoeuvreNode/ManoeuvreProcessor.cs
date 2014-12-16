@@ -91,7 +91,11 @@ namespace KerbalEngineer.Flight.Readouts.Orbital.ManoeuvreNode
 
         public void Update()
         {
-            if (FlightGlobals.ActiveVessel.patchedConicSolver.maneuverNodes.Count == 0 || !SimulationProcessor.ShowDetails)
+            // Extra tests for low level tracking station not supporting patched conics and maneuver nodes
+            if (FlightGlobals.ActiveVessel.patchedConicSolver == null ||
+                FlightGlobals.ActiveVessel.patchedConicSolver.maneuverNodes == null ||
+                FlightGlobals.ActiveVessel.patchedConicSolver.maneuverNodes.Count == 0 ||
+                !SimulationProcessor.ShowDetails)
             {
                 ShowDetails = false;
                 return;
