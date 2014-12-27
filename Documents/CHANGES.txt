@@ -1,5 +1,11 @@
-1.0.13, 16-12-2014
-	Updated for KSP version 0.90
+1.0.14.0,
+    Added: Editor Overlay Tab's X position is now changable in the BuildOverlay.xml settings file.
+
+1.0.13.1, 16-12-2014
+    Fixed: Issue with manoeuvre node readouts and low tier tracking station.
+
+1.0.13.0, 16-12-2014
+    Updated for KSP version 0.90
 
     Added: New readouts to the vessel category:
         - Heading Rate
@@ -7,30 +13,30 @@
         - Roll Rate
 
     Changed: Simulation to look for fuel lines that use CModuleFuelLine module.
-	Fixed: Editor Overlay now loads the saved visibility value properly.
+    Fixed: Editor Overlay now loads the saved visibility value properly.
     Fixed: Altitude (Terrain) will no longer give a reading below sea level.
     Fixed: Suicide burn now uses radar altitude that clamps to sea level.
 
 1.0.12.0, 01-12-2014
-	Added: Setting in Build Engineer to enable/disable vectored thrust calculations.
-	Added: Thrust torque field in Build Engineer (courtesy of mic_e).
-	Added: New readouts to the vessel category:
-		- Thrust Offset Angle (courtesy of mic_e)
-		- Thrust Torque (courtesy of mic_e)
-		- Part Count:  stage/total
-		- Heading
-		- Pitch
-		- Roll
+    Added: Setting in Build Engineer to enable/disable vectored thrust calculations.
+    Added: Thrust torque field in Build Engineer (courtesy of mic_e).
+    Added: New readouts to the vessel category:
+        - Thrust Offset Angle (courtesy of mic_e)
+        - Thrust Torque (courtesy of mic_e)
+        - Part Count:  stage/total
+        - Heading
+        - Pitch
+        - Roll
 
-	Added: New readouts to the surface category:
-		- Situation
+    Added: New readouts to the surface category:
+        - Situation
 
-	Added: New readouts to the miscellaneous category:
-		- Vectored Thrust Toggle
+    Added: New readouts to the miscellaneous category:
+        - Vectored Thrust Toggle
 
-	Fixed: The category selection within the section editors now do not always reset back to 'Orbital'.
-	Fixed: Issue where the vessel simulation can sometimes permanently freeze.
-	Fixed: Issue where the vessel simulation would not show updates when the delay was set lower than the frame rate.
+    Fixed: The category selection within the section editors now do not always reset back to 'Orbital'.
+    Fixed: Issue where the vessel simulation can sometimes permanently freeze.
+    Fixed: Issue where the vessel simulation would not show updates when the delay was set lower than the frame rate.
 
 1.0.11.3, 11-11-2014
     Changed: Gravity measurements for Isp to 9.82.

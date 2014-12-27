@@ -19,18 +19,20 @@
 
 #region Using Directives
 
-using System;
-using System.Collections.Generic;
-
-using KerbalEngineer.Helpers;
-using KerbalEngineer.VesselSimulator;
-
-using UnityEngine;
-
 #endregion
 
 namespace KerbalEngineer.Editor
 {
+    #region Using Directives
+
+    using System;
+    using System.Collections.Generic;
+    using Helpers;
+    using UnityEngine;
+    using VesselSimulator;
+
+    #endregion
+
     public class BuildOverlayVessel : MonoBehaviour
     {
         #region Constants
@@ -51,12 +53,12 @@ namespace KerbalEngineer.Editor
         private GUIContent tabContent;
         private Rect tabPosition;
         private Vector2 tabSize;
-        private Rect windowPosition = new Rect(300.0f, 0.0f, Width, 0.0f);
+        private Rect windowPosition = new Rect(330.0f, 0.0f, Width, 0.0f);
 
         #endregion
 
         #region Properties
-
+       
         public static bool Visible
         {
             get { return visible; }
@@ -74,9 +76,28 @@ namespace KerbalEngineer.Editor
             get { return this.windowPosition; }
         }
 
+        public float WindowX
+        {
+            get { return this.windowPosition.x; }
+            set { this.windowPosition.x = value; }
+        }
+
         #endregion
 
-        #region Methods: protected
+        #region Methods
+
+        protected void Awake()
+        {
+            try
+            {
+                SimManager.OnReady -= this.GetStageInfo;
+                SimManager.OnReady += this.GetStageInfo;
+            }
+            catch (Exception ex)
+            {
+                Logger.Exception(ex);
+            }
+        }
 
         protected void OnGUI()
         {
@@ -92,19 +113,6 @@ namespace KerbalEngineer.Editor
                 {
                     this.windowPosition = GUILayout.Window(this.GetInstanceID(), this.windowPosition, this.VesselWindow, String.Empty, BuildOverlay.WindowStyle);
                 }
-            }
-            catch (Exception ex)
-            {
-                Logger.Exception(ex);
-            }
-        }
-
-        protected void Awake()
-        {
-            try
-            {
-                SimManager.OnReady -= this.GetStageInfo;
-                SimManager.OnReady += this.GetStageInfo;
             }
             catch (Exception ex)
             {
@@ -147,9 +155,10 @@ namespace KerbalEngineer.Editor
             }
         }
 
-        #endregion
-
-        #region Methods: private
+        private void GetStageInfo()
+        {
+            this.lastStage = SimManager.LastStage;
+        }
 
         private void SetSlidePosition()
         {
@@ -171,11 +180,6 @@ namespace KerbalEngineer.Editor
             this.tabPosition.height = this.tabSize.y;
             this.tabPosition.x = this.windowPosition.x;
             this.tabPosition.y = this.windowPosition.y - this.tabPosition.height;
-        }
-
-        private void GetStageInfo()
-        {
-            this.lastStage = SimManager.LastStage;
         }
 
         private void SetVesselInfo()

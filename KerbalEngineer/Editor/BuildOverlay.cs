@@ -19,17 +19,21 @@
 
 #region Using Directives
 
-using System;
 
-using KerbalEngineer.Helpers;
-using KerbalEngineer.Settings;
-
-using UnityEngine;
 
 #endregion
 
 namespace KerbalEngineer.Editor
 {
+    #region Using Directives
+
+    using System;
+    using Helpers;
+    using Settings;
+    using UnityEngine;
+
+    #endregion
+
     [KSPAddon(KSPAddon.Startup.EditorAny, false)]
     public class BuildOverlay : MonoBehaviour
     {
@@ -191,7 +195,7 @@ namespace KerbalEngineer.Editor
 
         #endregion
 
-        #region Methods: public
+        #region Methods
 
         public static void Load()
         {
@@ -201,6 +205,7 @@ namespace KerbalEngineer.Editor
             BuildOverlayPartInfo.ClickToOpen = handler.GetSet("clickToOpen", BuildOverlayPartInfo.ClickToOpen);
             buildOverlayVessel.Open = handler.GetSet("vesselOpen", buildOverlayVessel.Open);
             buildOverlayResources.Open = handler.GetSet("resourcesOpen", buildOverlayResources.Open);
+            buildOverlayVessel.WindowX = handler.GetSet("vesselWindowX", buildOverlayVessel.WindowX);
             handler.Save("BuildOverlay.xml");
         }
 
@@ -212,12 +217,9 @@ namespace KerbalEngineer.Editor
             handler.Set("clickToOpen", BuildOverlayPartInfo.ClickToOpen);
             handler.Set("vesselOpen", buildOverlayVessel.Open);
             handler.Set("resourcesOpen", buildOverlayResources.Open);
+            handler.Set("vesselWindowX", buildOverlayVessel.WindowX);
             handler.Save("BuildOverlay.xml");
         }
-
-        #endregion
-
-        #region Methods: protected
 
         protected void Awake()
         {
