@@ -1,9 +1,10 @@
 1.0.14.0,
     Added: New readouts to the miscellaneous category:
         System Time
-        
+
     Added: Editor Overlay Tab's X position is now changable in the BuildOverlay.xml settings file.
     Changed: Editor Overlay Tabs start position moved over as to not overlap the parts menu.
+    Fixed: Bug where STAGE_PRIORITY_FLOW resources would not be corrently disabled/enabled.
 
 1.0.13.1, 16-12-2014
     Fixed: Issue with manoeuvre node readouts and low tier tracking station.

@@ -273,7 +273,7 @@ namespace KerbalEngineer.VesselSimulator
                         Logger.Log(type);
                         foreach (var aPartSim in allParts)
                         {
-                            if (aPartSim.resources[type] <= SimManager.RESOURCE_MIN) continue;
+                            if (aPartSim.resources[type] <= SimManager.RESOURCE_MIN || aPartSim.resourceFlowStates[type] == 0) continue;
 
                             var stage = aPartSim.DecouplerCount();
                             if (stage > maxStage)
