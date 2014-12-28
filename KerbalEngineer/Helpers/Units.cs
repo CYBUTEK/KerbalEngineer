@@ -65,9 +65,9 @@ namespace KerbalEngineer.Helpers
 
         public static string Cost(double value1, double value2, int decimals = 1)
         {
-            if (value1 >= 1e6 || value2 >= 1e6)
+            if (value1 >= 1000000.0 || value2 >= 1000000.0)
             {
-                return (value1 / 1000.0).ToString("N" + decimals) + " / " + (value2 / 1000.0f).ToString("N" + decimals) + "K";
+                return (value1 / 1000.0).ToString("N" + decimals) + " / " + (value2 / 1000.0).ToString("N" + decimals) + "K";
             }
             return value1.ToString("N" + decimals) + " / " + value2.ToString("N" + decimals);
         }
@@ -135,9 +135,8 @@ namespace KerbalEngineer.Helpers
                 return value.ToString("N" + decimals + 2) + "t";
             }
 
-                value *= 1000.0;
-                return value.ToString("N" + decimals) + "kg";
-
+            value *= 1000.0;
+            return value.ToString("N" + decimals) + "kg";
         }
 
         public static string ToMass(double value1, double value2, int decimals = 0)
@@ -146,11 +145,10 @@ namespace KerbalEngineer.Helpers
             {
                 return value1.ToString("N" + decimals + 2) + " / " + value2.ToString("N" + decimals + 2) + "t";
             }
-   
-                value1 *= 1000.0;
-                value2 *= 1000.0;
-                return value1.ToString("N" + decimals) + " / " + value2.ToString("N" + decimals) + "kg";
-  
+
+            value1 *= 1000.0;
+            value2 *= 1000.0;
+            return value1.ToString("N" + decimals) + " / " + value2.ToString("N" + decimals) + "kg";
         }
 
         public static string ToPercent(double value, int decimals = 2)
