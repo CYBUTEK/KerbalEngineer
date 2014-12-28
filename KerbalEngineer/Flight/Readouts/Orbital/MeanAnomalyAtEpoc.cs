@@ -17,47 +17,36 @@
 //     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // 
 
-namespace KerbalEngineer.Flight.Readouts.Vessel
+#region Using Directives
+
+using System;
+
+using KerbalEngineer.Extensions;
+using KerbalEngineer.Flight.Sections;
+
+#endregion
+
+namespace KerbalEngineer.Flight.Readouts.Orbital
 {
-    #region Using Directives
-
-    using Helpers;
-    using Sections;
-
-    #endregion
-
-    public class PartCount : ReadoutModule
+    public class MeanAnomalyAtEpoc : ReadoutModule
     {
         #region Constructors
 
-        public PartCount()
+        public MeanAnomalyAtEpoc()
         {
-            this.Name = "Part Count";
-            this.Category = ReadoutCategory.GetCategory("Vessel");
-            this.HelpString = string.Empty;
-            this.IsDefault = true;
+            this.Name = "Mean Anomaly at Epoc";
+            this.Category = ReadoutCategory.GetCategory("Orbital");
+            this.HelpString = String.Empty;
+            this.IsDefault = false;
         }
 
         #endregion
 
-        #region Methods
+        #region Methods: public
 
         public override void Draw(SectionModule section)
         {
-            if (SimulationProcessor.ShowDetails)
-            {
-                this.DrawLine(Units.ConcatF(SimulationProcessor.LastStage.partCount, SimulationProcessor.LastStage.totalPartCount), section.IsHud);
-            }
-        }
-
-        public override void Reset()
-        {
-            FlightEngineerCore.Instance.AddUpdatable(SimulationProcessor.Instance);
-        }
-
-        public override void Update()
-        {
-            SimulationProcessor.RequestUpdate();
+            this.DrawLine(FlightGlobals.ship_orbit.meanAnomalyAtEpoch.ToAngle(), section.IsHud);
         }
 
         #endregion

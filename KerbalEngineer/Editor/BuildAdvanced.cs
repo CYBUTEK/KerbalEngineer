@@ -375,7 +375,7 @@ namespace KerbalEngineer.Editor
             {
                 if (this.showAllStages || stage.deltaV > 0)
                 {
-                    GUILayout.Label(Units.Concat(stage.cost, stage.totalCost), this.infoStyle);
+                    GUILayout.Label(Units.Cost(stage.cost, stage.totalCost), this.infoStyle);
                 }
             }
             GUILayout.EndVertical();

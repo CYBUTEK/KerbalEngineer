@@ -85,6 +85,7 @@ namespace KerbalEngineer.Flight.Readouts
                 readouts.Add(new ArgumentOfPeriapsis());
                 readouts.Add(new TrueAnomaly());
                 readouts.Add(new MeanAnomaly());
+                readouts.Add(new MeanAnomalyAtEpoc());
                 readouts.Add(new EccentricAnomaly());
                 readouts.Add(new SemiMajorAxis());
                 readouts.Add(new SemiMinorAxis());

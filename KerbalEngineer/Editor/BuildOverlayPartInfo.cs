@@ -195,7 +195,7 @@ namespace KerbalEngineer.Editor
 
         private void SetCostInfo()
         {
-            this.infoItems.Add(new PartInfoItem("Cost", Units.Concat(this.selectedPart.GetCostDry(), this.selectedPart.GetCostWet())));
+            this.infoItems.Add(new PartInfoItem("Cost", Units.ConcatF(this.selectedPart.GetCostDry(), this.selectedPart.GetCostWet())));
         }
 
         private void SetDecouplerInfo()
@@ -222,7 +222,7 @@ namespace KerbalEngineer.Editor
 
             var engine = this.selectedPart.GetProtoModuleEngine();
             this.infoItems.Add(new PartInfoItem("Thrust", Units.ToForce(engine.MinimumThrust, engine.MaximumThrust)));
-            this.infoItems.Add(new PartInfoItem("Isp", Units.Concat(engine.GetSpecificImpulse(1.0f), engine.GetSpecificImpulse(0.0f)) + "s"));
+            this.infoItems.Add(new PartInfoItem("Isp", Units.ConcatF(engine.GetSpecificImpulse(1.0f), engine.GetSpecificImpulse(0.0f)) + "s"));
             if (engine.Propellants.Count > 0)
             {
                 this.infoItems.Add(new PartInfoItem("Propellants"));
@@ -291,7 +291,7 @@ namespace KerbalEngineer.Editor
             }
 
             var parachute = this.selectedPart.GetModule<ModuleParachute>();
-            this.infoItems.Add(new PartInfoItem("Deployed Drag", Units.Concat(parachute.semiDeployedDrag, parachute.fullyDeployedDrag)));
+            this.infoItems.Add(new PartInfoItem("Deployed Drag", Units.ConcatF(parachute.semiDeployedDrag, parachute.fullyDeployedDrag)));
             this.infoItems.Add(new PartInfoItem("Deployment Altitude", parachute.deployAltitude.ToDistance()));
             this.infoItems.Add(new PartInfoItem("Deployment Pressure", parachute.minAirPressureToOpen.ToString("F2")));
         }
@@ -305,7 +305,7 @@ namespace KerbalEngineer.Editor
 
             var rcs = this.selectedPart.GetModule<ModuleRCS>();
             this.infoItems.Add(new PartInfoItem("Thruster Power", rcs.thrusterPower.ToForce()));
-            this.infoItems.Add(new PartInfoItem("Specific Impulse", Units.Concat(rcs.atmosphereCurve.Evaluate(1.0f), rcs.atmosphereCurve.Evaluate(0.0f)) + "s"));
+            this.infoItems.Add(new PartInfoItem("Specific Impulse", Units.ConcatF(rcs.atmosphereCurve.Evaluate(1.0f), rcs.atmosphereCurve.Evaluate(0.0f)) + "s"));
         }
 
         private void SetReactionWheelInfo()

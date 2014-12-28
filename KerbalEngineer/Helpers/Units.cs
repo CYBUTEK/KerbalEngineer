@@ -34,14 +34,42 @@ namespace KerbalEngineer.Helpers
             return value1 + " / " + value2;
         }
 
-        public static string Concat(double value1, double value2, int decimals = 1)
+        public static string ConcatF(double value1, double value2, int decimals = 1)
         {
             return value1.ToString("F" + decimals) + " / " + value2.ToString("F" + decimals);
         }
 
-        public static string Concat(double value1, double value2, double value3, int decimals = 1)
+        public static string ConcatF(double value1, double value2, double value3, int decimals = 1)
         {
             return value1.ToString("F" + decimals) + " / " + value2.ToString("F" + decimals) + " / " + value3.ToString("F" + decimals);
+        }
+
+        public static string ConcatN(double value1, double value2, int decimals = 1)
+        {
+            return value1.ToString("N" + decimals) + " / " + value2.ToString("N" + decimals);
+        }
+
+        public static string ConcatN(double value1, double value2, double value3, int decimals = 1)
+        {
+            return value1.ToString("N" + decimals) + " / " + value2.ToString("N" + decimals) + " / " + value3.ToString("N" + decimals);
+        }
+
+        public static string Cost(double value, int decimals = 1)
+        {
+            if (value >= 1000000.0)
+            {
+                return (value / 1000.0).ToString("N" + decimals) + "K";
+            }
+            return value.ToString("N" + decimals);
+        }
+
+        public static string Cost(double value1, double value2, int decimals = 1)
+        {
+            if (value1 >= 1e6 || value2 >= 1e6)
+            {
+                return (value1 / 1000.0).ToString("N" + decimals) + " / " + (value2 / 1000.0f).ToString("N" + decimals) + "K";
+            }
+            return value1.ToString("N" + decimals) + " / " + value2.ToString("N" + decimals);
         }
 
         public static string ToAcceleration(double value, int decimals = 2)
@@ -102,15 +130,27 @@ namespace KerbalEngineer.Helpers
 
         public static string ToMass(double value, int decimals = 0)
         {
-            value *= 1000.0;
-            return value.ToString("N" + decimals) + "kg";
+            if (value >= 1000.0)
+            {
+                return value.ToString("N" + decimals + 2) + "t";
+            }
+
+                value *= 1000.0;
+                return value.ToString("N" + decimals) + "kg";
+
         }
 
         public static string ToMass(double value1, double value2, int decimals = 0)
         {
-            value1 *= 1000.0;
-            value2 *= 1000.0;
-            return value1.ToString("N" + decimals) + " / " + value2.ToString("N" + decimals) + "kg";
+            if (value1 >= 1000.0f || value2 >= 1000.0f)
+            {
+                return value1.ToString("N" + decimals + 2) + " / " + value2.ToString("N" + decimals + 2) + "t";
+            }
+   
+                value1 *= 1000.0;
+                value2 *= 1000.0;
+                return value1.ToString("N" + decimals) + " / " + value2.ToString("N" + decimals) + "kg";
+  
         }
 
         public static string ToPercent(double value, int decimals = 2)
