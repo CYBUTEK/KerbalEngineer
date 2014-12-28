@@ -1,3 +1,6 @@
+1.0.14.1, 28-12-2014
+    Fixed: Missing texture on the ER-7500 model.
+    
 1.0.14.0, 28-12-2014
     Added: Career mode that limits the Flight Engineer by:
         - Requiring an Engineer Kerbal of any level, or placement of an Engineer Chip or ER-7500 part.
