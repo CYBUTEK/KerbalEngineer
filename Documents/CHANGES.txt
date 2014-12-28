@@ -1,6 +1,10 @@
 1.0.14.0,
+    Added: Career mode that limits the Flight Engineer by:
+        - Requiring an Engineer Kerbal of any level, or placement of an Engineer Chip or ER-7500 part.
+        - Tracking station level 3 enables Flight Engineer everywhere.
+
     Added: New readouts to the miscellaneous category:
-        System Time
+        - System Time
 
     Added: Editor Overlay Tab's X position is now changable in the BuildOverlay.xml settings file.
     Changed: Editor Overlay Tabs start position moved over as to not overlap the parts menu.

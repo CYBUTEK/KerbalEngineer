@@ -49,7 +49,6 @@
     <Compile Include="Extensions\FloatExtensions.cs" />
     <Compile Include="Extensions\OrbitExtensions.cs" />
     <Compile Include="Flight\ActionMenuGui.cs" />
-    <Compile Include="Flight\FlightEngineerPartless.cs" />
     <Compile Include="Flight\Presets\Preset.cs" />
     <Compile Include="Flight\Readouts\Miscellaneous\SystemTime.cs" />
     <Compile Include="Flight\Readouts\Miscellaneous\VectoredThrustToggle.cs" />

@@ -132,7 +132,7 @@ namespace KerbalEngineer.Flight
         {
             try
             {
-                if (this.Hidden)
+                if (this.Hidden || !FlightEngineerCore.IsDisplayable)
                 {
                     return;
                 }

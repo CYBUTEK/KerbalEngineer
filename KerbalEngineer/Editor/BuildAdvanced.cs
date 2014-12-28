@@ -168,11 +168,6 @@ namespace KerbalEngineer.Editor
             }
         }
 
-        private void GetStageInfo()
-        {
-            this.stages = SimManager.Stages;
-        }
-
         protected void OnGUI()
         {
             try
@@ -479,8 +474,14 @@ namespace KerbalEngineer.Editor
 
             GUILayout.BeginHorizontal();
             GUILayout.Label("Flight Engineer activation mode:", this.settingStyle);
-            FlightEngineerPartless.IsPartless = GUILayout.Toggle(FlightEngineerPartless.IsPartless, "PARTLESS", this.buttonStyle, GUILayout.Width(100.0f * GuiDisplaySize.Offset));
-            FlightEngineerPartless.IsPartless = !GUILayout.Toggle(!FlightEngineerPartless.IsPartless, "MODULE", this.buttonStyle, GUILayout.Width(100.0f * GuiDisplaySize.Offset));
+            FlightEngineerCore.IsCareerMode = GUILayout.Toggle(FlightEngineerCore.IsCareerMode, "CAREER", this.buttonStyle, GUILayout.Width(100.0f * GuiDisplaySize.Offset));
+            FlightEngineerCore.IsCareerMode = !GUILayout.Toggle(!FlightEngineerCore.IsCareerMode, "PARTLESS", this.buttonStyle, GUILayout.Width(100.0f * GuiDisplaySize.Offset));
+            GUILayout.EndHorizontal();
+
+            GUILayout.BeginHorizontal();
+            GUILayout.Label("Flight Engineer Career Limitations:", this.settingStyle);
+            FlightEngineerCore.IsKerbalLimited = GUILayout.Toggle(FlightEngineerCore.IsKerbalLimited, "KERBAL", this.buttonStyle, GUILayout.Width(100.0f * GuiDisplaySize.Offset));
+            FlightEngineerCore.IsTrackingStationLimited = GUILayout.Toggle(FlightEngineerCore.IsTrackingStationLimited, "TRACKING", this.buttonStyle, GUILayout.Width(100.0f * GuiDisplaySize.Offset));
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
@@ -583,6 +584,11 @@ namespace KerbalEngineer.Editor
                 BuildOverlayPartInfo.Hidden = false;
                 this.isEditorLocked = false;
             }
+        }
+
+        private void GetStageInfo()
+        {
+            this.stages = SimManager.Stages;
         }
 
         /// <summary>

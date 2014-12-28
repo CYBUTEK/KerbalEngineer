@@ -33,6 +33,8 @@ using UnityEngine;
 
 namespace KerbalEngineer.Flight
 {
+    using Upgradeables;
+
     /// <summary>
     ///     Graphical controller for displaying stacked sections.
     /// </summary>
@@ -150,7 +152,7 @@ namespace KerbalEngineer.Flight
         {
             try
             {
-                if (FlightEngineerCore.Instance == null)
+                if (!FlightEngineerCore.IsDisplayable)
                 {
                     return;
                 }
@@ -177,7 +179,7 @@ namespace KerbalEngineer.Flight
         {
             try
             {
-                if (FlightEngineerCore.Instance == null)
+                if (!FlightEngineerCore.IsDisplayable)
                 {
                     return;
                 }

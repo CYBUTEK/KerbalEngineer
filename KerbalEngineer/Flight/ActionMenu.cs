@@ -79,11 +79,11 @@ namespace KerbalEngineer.Flight
                 {
                     return;
                 }
-                if (FlightEngineerCore.Instance != null && this.button.State == RUIToggleButton.ButtonState.DISABLED)
+                if (FlightEngineerCore.IsDisplayable && this.button.State == RUIToggleButton.ButtonState.DISABLED)
                 {
                     this.button.Enable();
                 }
-                else if (FlightEngineerCore.Instance == null && this.button.State != RUIToggleButton.ButtonState.DISABLED)
+                else if (!FlightEngineerCore.IsDisplayable && this.button.State != RUIToggleButton.ButtonState.DISABLED)
                 {
                     this.button.Disable();
                 }

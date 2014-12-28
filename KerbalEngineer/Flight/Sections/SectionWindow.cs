@@ -118,7 +118,7 @@ namespace KerbalEngineer.Flight.Sections
         /// </summary>
         private void Draw()
         {
-            if (this.ParentSection == null || !this.ParentSection.IsVisible || (DisplayStack.Instance.Hidden && !this.ParentSection.IsHud))
+            if (this.ParentSection == null || !this.ParentSection.IsVisible || (DisplayStack.Instance.Hidden && !this.ParentSection.IsHud) || !FlightEngineerCore.IsDisplayable)
             {
                 return;
             }
