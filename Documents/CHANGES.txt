@@ -13,6 +13,7 @@
     Changed: Editor Overlay Tabs start position moved over as to not overlap the parts menu.
     Fixed: Bug where STAGE_PRIORITY_FLOW resources would not be corrently disabled/enabled.
     Fixed: Issue with the formatting large Mass and Cost values.
+    Fixed: Error when loading the Engineer7500 part model.
 
 1.0.13.1, 16-12-2014
     Fixed: Issue with manoeuvre node readouts and low tier tracking station.
