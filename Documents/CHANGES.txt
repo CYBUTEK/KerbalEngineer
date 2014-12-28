@@ -1,4 +1,4 @@
-1.0.14.0,
+1.0.14.0, 28-12-2014
     Added: Career mode that limits the Flight Engineer by:
         - Requiring an Engineer Kerbal of any level, or placement of an Engineer Chip or ER-7500 part.
         - Tracking station level 3 enables Flight Engineer everywhere.

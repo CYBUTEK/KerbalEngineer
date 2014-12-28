@@ -58,7 +58,7 @@ namespace KerbalEngineer.Editor
         #endregion
 
         #region Properties
-       
+
         public static bool Visible
         {
             get { return visible; }
