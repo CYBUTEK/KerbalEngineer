@@ -33,6 +33,7 @@ namespace KerbalEngineer.Flight
     using Sections;
     using Settings;
     using UnityEngine;
+    using VesselSimulator;
 
     #endregion
 
@@ -268,6 +269,9 @@ namespace KerbalEngineer.Flight
                 this.SectionWindows = new List<SectionWindow>();
                 this.SectionEditors = new List<SectionEditor>();
                 this.UpdatableModules = new List<IUpdatable>();
+
+                SimManager.UpdateModSettings();
+
                 Logger.Log("FlightEngineerCore->Awake");
             }
             catch (Exception ex)

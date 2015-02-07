@@ -176,7 +176,7 @@ namespace KerbalEngineer.VesselSimulator
                 }
             }
 
-            if (hasInstalledKIDS)
+            if (hasInstalledKIDS && HighLogic.LoadedSceneIsEditor)
             {
                 return bKIDSThrustISP;
             }

@@ -133,6 +133,7 @@ namespace KerbalEngineer.Editor
                 this.bodiesList.DrawCallback = this.DrawBodiesList;
                 this.Load();
 
+                SimManager.UpdateModSettings();
                 SimManager.OnReady -= this.GetStageInfo;
                 SimManager.OnReady += this.GetStageInfo;
             }
