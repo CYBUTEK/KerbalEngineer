@@ -677,6 +677,19 @@ namespace KerbalEngineer.VesselSimulator
             return time;
         }
 
+        public bool EmptyOf(HashSet<int> types)
+        {
+            foreach (int type in types)
+            {
+                if (this.resources.HasType(type) && this.resourceFlowStates[type] != 0 && (double)this.resources[type] > SimManager.RESOURCE_MIN)
+                {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
         public int DecouplerCount()
         {
             int count = 0;
