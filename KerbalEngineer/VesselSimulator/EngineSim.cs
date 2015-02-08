@@ -243,7 +243,7 @@ namespace KerbalEngineer.VesselSimulator
                 switch (ResourceContainer.GetResourceFlowMode(type))
                 {
                     case ResourceFlowMode.NO_FLOW:
-                        if (this.partSim.resources[type] > SimManager.RESOURCE_MIN)
+                        if (this.partSim.resources[type] > SimManager.RESOURCE_MIN && this.partSim.resourceFlowStates[type] != 0)
                         {
                             sourcePartSet = new HashSet<PartSim>();
                             //MonoBehaviour.print("SetResourceDrains(" + name + ":" + partId + ") setting sources to just this");
@@ -254,7 +254,7 @@ namespace KerbalEngineer.VesselSimulator
                     case ResourceFlowMode.ALL_VESSEL:
                         foreach (PartSim aPartSim in allParts)
                         {
-                            if (aPartSim.resources[type] > SimManager.RESOURCE_MIN)
+                            if (aPartSim.resources[type] > SimManager.RESOURCE_MIN && aPartSim.resourceFlowStates[type] != 0)
                             {
                                 if (sourcePartSet == null)
                                 {
@@ -270,7 +270,7 @@ namespace KerbalEngineer.VesselSimulator
                         var stagePartSets = new Dictionary<int, HashSet<PartSim>>();
                         var maxStage = -1;
 
-                        Logger.Log(type);
+                        //Logger.Log(type);
                         foreach (var aPartSim in allParts)
                         {
                             if (aPartSim.resources[type] <= SimManager.RESOURCE_MIN || aPartSim.resourceFlowStates[type] == 0) continue;

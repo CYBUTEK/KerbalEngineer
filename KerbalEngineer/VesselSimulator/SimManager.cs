@@ -46,17 +46,20 @@ namespace KerbalEngineer.VesselSimulator
         private static readonly object locker = new object();
         private static readonly Stopwatch timer = new Stopwatch();
 
-        // Support for RealFuels using reflection to check localCorrectThrust without dependency
-
-        private static FieldInfo RF_ModuleEngineConfigs_locaCorrectThrust;
-        private static FieldInfo RF_ModuleHybridEngine_locaCorrectThrust;
-        private static FieldInfo RF_ModuleHybridEngines_locaCorrectThrust;
         private static bool bRequested;
         private static bool bRunning;
         private static TimeSpan delayBetweenSims;
-        private static bool hasCheckedForRealFuels;
-        private static bool hasInstalledRealFuels;
 
+        // Support for RealFuels using reflection to check localCorrectThrust without dependency
+
+        private static bool hasCheckedForMods;
+        private static bool hasInstalledRealFuels;
+        private static FieldInfo RF_ModuleEngineConfigs_localCorrectThrust;
+        private static FieldInfo RF_ModuleHybridEngine_localCorrectThrust;
+        private static FieldInfo RF_ModuleHybridEngines_localCorrectThrust;
+        private static bool hasInstalledKIDS;
+        private static MethodInfo KIDS_Utils_GetIspMultiplier;
+        private static bool bKIDSThrustISP = false;
         #endregion
 
         #region Delegates
@@ -89,54 +92,112 @@ namespace KerbalEngineer.VesselSimulator
 
         #region Methods
 
+        private static void CheckForMods()
+        {
+            hasCheckedForMods = true;
+
+            foreach (var assembly in AssemblyLoader.loadedAssemblies)
+            {
+                MonoBehaviour.print("Assembly:" + assembly.assembly);
+
+                var name = assembly.assembly.ToString().Split(',')[0];
+
+                if (name == "RealFuels")
+                {
+                    MonoBehaviour.print("Found RealFuels mod");
+
+                    var RF_ModuleEngineConfigs_Type = assembly.assembly.GetType("RealFuels.ModuleEngineConfigs");
+                    if (RF_ModuleEngineConfigs_Type != null)
+                    {
+                        RF_ModuleEngineConfigs_localCorrectThrust = RF_ModuleEngineConfigs_Type.GetField("localCorrectThrust");
+                    }
+
+                    var RF_ModuleHybridEngine_Type = assembly.assembly.GetType("RealFuels.ModuleHybridEngine");
+                    if (RF_ModuleHybridEngine_Type != null)
+                    {
+                        RF_ModuleHybridEngine_localCorrectThrust = RF_ModuleHybridEngine_Type.GetField("localCorrectThrust");
+                    }
+
+                    var RF_ModuleHybridEngines_Type = assembly.assembly.GetType("RealFuels.ModuleHybridEngines");
+                    if (RF_ModuleHybridEngines_Type != null)
+                    {
+                        RF_ModuleHybridEngines_localCorrectThrust = RF_ModuleHybridEngines_Type.GetField("localCorrectThrust");
+                    }
+
+                    hasInstalledRealFuels = true;
+                    break;
+                }
+                else if (name == "KerbalIspDifficultyScaler")
+                {
+                    var KIDS_Utils_Type = assembly.assembly.GetType("KerbalIspDifficultyScaler.KerbalIspDifficultyScalerUtils");
+                    if (KIDS_Utils_Type != null)
+                    {
+                        KIDS_Utils_GetIspMultiplier = KIDS_Utils_Type.GetMethod("GetIspMultiplier");
+                    }
+
+                    hasInstalledKIDS = true;
+                }
+            }
+        }
+
         public static bool DoesEngineUseCorrectedThrust(Part theEngine)
         {
-            if (!hasInstalledRealFuels /*|| HighLogic.LoadedSceneIsFlight*/)
+            if (hasInstalledRealFuels)
             {
-                return false;
-            }
-
-            // Look for any of the Real Fuels engine modules and call the relevant method to find out
-            if (RF_ModuleEngineConfigs_locaCorrectThrust != null && theEngine.Modules.Contains("ModuleEngineConfigs"))
-            {
-                var modEngineConfigs = theEngine.Modules["ModuleEngineConfigs"];
-                if (modEngineConfigs != null)
+                // Look for any of the Real Fuels engine modules and call the relevant method to find out
+                if (RF_ModuleEngineConfigs_localCorrectThrust != null && theEngine.Modules.Contains("ModuleEngineConfigs"))
                 {
-                    // Check the localCorrectThrust
-                    if ((bool)RF_ModuleEngineConfigs_locaCorrectThrust.GetValue(modEngineConfigs))
+                    var modEngineConfigs = theEngine.Modules["ModuleEngineConfigs"];
+                    if (modEngineConfigs != null)
                     {
-                        return true;
+                        // Return the localCorrectThrust
+                        return (bool)RF_ModuleEngineConfigs_localCorrectThrust.GetValue(modEngineConfigs);
+                    }
+                }
+
+                if (RF_ModuleHybridEngine_localCorrectThrust != null && theEngine.Modules.Contains("ModuleHybridEngine"))
+                {
+                    var modHybridEngine = theEngine.Modules["ModuleHybridEngine"];
+                    if (modHybridEngine != null)
+                    {
+                        // Return the localCorrectThrust
+                        return (bool)RF_ModuleHybridEngine_localCorrectThrust.GetValue(modHybridEngine);
+                    }
+                }
+
+                if (RF_ModuleHybridEngines_localCorrectThrust != null && theEngine.Modules.Contains("ModuleHybridEngines"))
+                {
+                    var modHybridEngines = theEngine.Modules["ModuleHybridEngines"];
+                    if (modHybridEngines != null)
+                    {
+                        // Return the localCorrectThrust
+                        return (bool)RF_ModuleHybridEngines_localCorrectThrust.GetValue(modHybridEngines);
                     }
                 }
             }
 
-            if (RF_ModuleHybridEngine_locaCorrectThrust != null && theEngine.Modules.Contains("ModuleHybridEngine"))
+            if (hasInstalledKIDS && HighLogic.LoadedSceneIsEditor)
             {
-                var modHybridEngine = theEngine.Modules["ModuleHybridEngine"];
-                if (modHybridEngine != null)
-                {
-                    // Check the localCorrectThrust
-                    if ((bool)RF_ModuleHybridEngine_locaCorrectThrust.GetValue(modHybridEngine))
-                    {
-                        return true;
-                    }
-                }
-            }
-
-            if (RF_ModuleHybridEngines_locaCorrectThrust != null && theEngine.Modules.Contains("ModuleHybridEngines"))
-            {
-                var modHybridEngines = theEngine.Modules["ModuleHybridEngines"];
-                if (modHybridEngines != null)
-                {
-                    // Check the localCorrectThrust
-                    if ((bool)RF_ModuleHybridEngines_locaCorrectThrust.GetValue(modHybridEngines))
-                    {
-                        return true;
-                    }
-                }
+                return bKIDSThrustISP;
             }
 
             return false;
+        }
+
+        public static void UpdateModSettings()
+        {
+            if (!hasCheckedForMods)
+            {
+                CheckForMods();
+            }
+
+            if (hasInstalledKIDS)
+            {
+                // (out ispMultiplierVac, out ispMultiplierAtm, out extendToZeroIsp, out thrustCorrection, out ispCutoff, out thrustCutoff);
+                object[] parameters = new object[6];
+                KIDS_Utils_GetIspMultiplier.Invoke(null, parameters);
+                bKIDSThrustISP = (bool)parameters[3];
+            }
         }
 
         public static String GetVesselTypeString(VesselType vesselType)
@@ -171,9 +232,9 @@ namespace KerbalEngineer.VesselSimulator
 
         public static void RequestSimulation()
         {
-            if (!hasCheckedForRealFuels)
+            if (!hasCheckedForMods)
             {
-                GetRealFuelsTypes();
+                CheckForMods();
             }
 
             lock (locker)
@@ -215,42 +276,6 @@ namespace KerbalEngineer.VesselSimulator
             failMessage = "";
             Stages = null;
             LastStage = null;
-        }
-
-        private static void GetRealFuelsTypes()
-        {
-            hasCheckedForRealFuels = true;
-
-            foreach (var assembly in AssemblyLoader.loadedAssemblies)
-            {
-                MonoBehaviour.print("Assembly:" + assembly.assembly);
-
-                if (assembly.assembly.ToString().Split(',')[0] == "RealFuels")
-                {
-                    MonoBehaviour.print("Found RealFuels mod");
-
-                    var RF_ModuleEngineConfigs_Type = assembly.assembly.GetType("RealFuels.ModuleEngineConfigs");
-                    if (RF_ModuleEngineConfigs_Type != null)
-                    {
-                        RF_ModuleEngineConfigs_locaCorrectThrust = RF_ModuleEngineConfigs_Type.GetField("localCorrectThrust");
-                    }
-
-                    var RF_ModuleHybridEngine_Type = assembly.assembly.GetType("RealFuels.ModuleHybridEngine");
-                    if (RF_ModuleHybridEngine_Type != null)
-                    {
-                        RF_ModuleHybridEngine_locaCorrectThrust = RF_ModuleHybridEngine_Type.GetField("localCorrectThrust");
-                    }
-
-                    var RF_ModuleHybridEngines_Type = assembly.assembly.GetType("RealFuels.ModuleHybridEngines");
-                    if (RF_ModuleHybridEngines_Type != null)
-                    {
-                        RF_ModuleHybridEngines_locaCorrectThrust = RF_ModuleHybridEngines_Type.GetField("localCorrectThrust");
-                    }
-
-                    hasInstalledRealFuels = true;
-                    break;
-                }
-            }
         }
 
         private static void RunSimulation(object simObject)
