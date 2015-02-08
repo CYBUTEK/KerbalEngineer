@@ -270,7 +270,7 @@ namespace KerbalEngineer.VesselSimulator
                         var stagePartSets = new Dictionary<int, HashSet<PartSim>>();
                         var maxStage = -1;
 
-                        Logger.Log(type);
+                        //Logger.Log(type);
                         foreach (var aPartSim in allParts)
                         {
                             if (aPartSim.resources[type] <= SimManager.RESOURCE_MIN || aPartSim.resourceFlowStates[type] == 0) continue;
