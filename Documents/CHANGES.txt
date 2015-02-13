@@ -1,3 +1,13 @@
+1.0.15.1, 13-02-2015
+    Rebuild
+    
+1.0.15.0, 08-02-2015
+    Padishar's Fixes:
+        Added: Support KIDS ISP thrust correction.
+        Fixed: Log spam for stage priority mode.
+        Fixed: Locked tanks preventing simulation from staging.
+        Fixed: No flow and all vessel modes to respect flow states.
+
 1.0.14.1, 28-12-2014
     Fixed: Missing texture on the ER-7500 model.
     
