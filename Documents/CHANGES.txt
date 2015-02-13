@@ -1,3 +1,7 @@
+1.0.15.2, 13-02-2015
+    Padishar's Fixes:
+        Fixed: Calculation of per-stage resource mass.
+
 1.0.15.1, 13-02-2015
     Rebuild
     
