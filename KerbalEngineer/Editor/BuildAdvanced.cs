@@ -528,6 +528,11 @@ namespace KerbalEngineer.Editor
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
+            GUILayout.Label("Verbose Simulation Log:");
+            SimManager.logOutput = GUILayout.Toggle(SimManager.logOutput, "ENABLED", buttonStyle, GUILayout.Width(100.0f * GuiDisplaySize.Offset));
+            GUILayout.EndHorizontal();
+
+            GUILayout.BeginHorizontal();
             GUILayout.Label("Build Engineer Overlay:", settingStyle);
             BuildOverlay.Visible = GUILayout.Toggle(BuildOverlay.Visible, "VISIBLE", buttonStyle, GUILayout.Width(100.0f * GuiDisplaySize.Offset));
             BuildOverlayPartInfo.NamesOnly = GUILayout.Toggle(BuildOverlayPartInfo.NamesOnly, "NAMES ONLY", buttonStyle, GUILayout.Width(100.0f * GuiDisplaySize.Offset));
