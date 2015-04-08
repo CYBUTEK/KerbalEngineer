@@ -25,7 +25,7 @@ using System.Linq;
 using System.Text;
 
 using KerbalEngineer.Extensions;
-
+using Smooth.Pools;
 using UnityEngine;
 
 #endregion
@@ -36,7 +36,10 @@ namespace KerbalEngineer.VesselSimulator
 
     public class PartSim
     {
+        public static readonly Pool<PartSim> pool = new Pool<PartSim>(Create, Reset);
+
         private readonly List<AttachNodeSim> attachNodes = new List<AttachNodeSim>();
+
         public Vector3d centerOfMass;
         public double baseMass = 0d;
         public double cost;
@@ -70,8 +73,29 @@ namespace KerbalEngineer.VesselSimulator
         public double startMass = 0d;
         public String vesselName;
         public VesselType vesselType;
+        
 
-        public PartSim(Part thePart, int id, double atmosphere, LogMsg log)
+        private static PartSim Create()
+        {
+            return new PartSim();
+        }
+
+        private static void Reset(PartSim partSim)
+        {
+            for (int i = 0; i < partSim.attachNodes.Count; i++)
+            {
+                AttachNodeSim.pool.Release(partSim.attachNodes[i]);
+            }
+            partSim.attachNodes.Clear();
+            partSim.fuelTargets.Clear();
+            partSim.resourceDrains.Reset();
+            partSim.resourceFlowStates.Reset();
+            partSim.resources.Reset();
+            partSim.baseMass = 0d;
+            partSim.startMass = 0d;
+        }
+
+        public void Set(Part thePart, int id, double atmosphere, LogMsg log)
         {
             this.part = thePart;
             this.centerOfMass = thePart.transform.TransformPoint(thePart.CoMOffset);
@@ -111,8 +135,10 @@ namespace KerbalEngineer.VesselSimulator
                 MonoBehaviour.print((this.isNoPhysics ? "Ignoring" : "Using") + " part.mass of " + this.part.mass);
             }
 
-            foreach (PartResource resource in this.part.Resources)
+            for (int i = 0; i < this.part.Resources.Count; i++)
             {
+                PartResource resource = this.part.Resources[i];
+
                 // Make sure it isn't NaN as this messes up the part mass and hence most of the values
                 // This can happen if a resource capacity is 0 and tweakable
                 if (!Double.IsNaN(resource.amount))
@@ -170,9 +196,9 @@ namespace KerbalEngineer.VesselSimulator
             if (log != null)
             {
                 log.buf.AppendLine("CreateEngineSims for " + this.name);
-
-                foreach (PartModule partMod in this.part.Modules)
+                for (int i = 0; i < this.part.Modules.Count; i++)
                 {
+                    PartModule partMod = this.part.Modules[i];
                     log.buf.AppendLine("Module: " + partMod.moduleName);
                 }
 
@@ -185,8 +211,10 @@ namespace KerbalEngineer.VesselSimulator
                 // The mode of the engine is the engineID of the ModuleEnginesFX that is active
                 string mode = this.part.GetModule<MultiModeEngine>().mode;
 
-                foreach (ModuleEnginesFX engine in this.part.GetModules<ModuleEnginesFX>())
+                List<ModuleEnginesFX> enginesFx = this.part.GetModules<ModuleEnginesFX>();
+                for (int i = 0; i < enginesFx.Count; i++)
                 {
+                    ModuleEnginesFX engine = enginesFx[i];
                     if (engine.engineID == mode)
                     {
                         if (log != null)
@@ -196,22 +224,24 @@ namespace KerbalEngineer.VesselSimulator
 
                         Vector3 thrustvec = this.CalculateThrustVector(vectoredThrust ? engine.thrustTransforms : null, log);
 
-                        EngineSim engineSim = new EngineSim(this,
-                                                            atmosphere,
-                                                            velocity,
-                                                            engine.maxThrust,
-                                                            engine.minThrust,
-                                                            engine.thrustPercentage,
-                                                            engine.requestedThrust,
-                                                            thrustvec,
-                                                            engine.realIsp,
-                                                            engine.atmosphereCurve,
-                                                            engine.useVelocityCurve ? engine.velocityCurve : null,
-                                                            engine.throttleLocked,
-                                                            engine.propellants,
-                                                            engine.isOperational,
-                                                            correctThrust,
-                                                            engine.thrustTransforms);
+                        EngineSim engineSim = EngineSim.pool.Borrow();
+                        engineSim.Set(
+                            this,
+                            atmosphere,
+                            velocity,
+                            engine.maxThrust,
+                            engine.minThrust,
+                            engine.thrustPercentage,
+                            engine.requestedThrust,
+                            thrustvec,
+                            engine.realIsp,
+                            engine.atmosphereCurve,
+                            engine.useVelocityCurve ? engine.velocityCurve : null,
+                            engine.throttleLocked,
+                            engine.propellants,
+                            engine.isOperational,
+                            correctThrust,
+                            engine.thrustTransforms);
                         allEngines.Add(engineSim);
                     }
                 }
@@ -220,8 +250,10 @@ namespace KerbalEngineer.VesselSimulator
             {
                 if (this.hasModuleEnginesFX)
                 {
-                    foreach (ModuleEnginesFX engine in this.part.GetModules<ModuleEnginesFX>())
+                    List<ModuleEnginesFX> enginesFx = this.part.GetModules<ModuleEnginesFX>();  // only place that still allocate some memory
+                    for (int i = 0; i < enginesFx.Count; i++)
                     {
+                        ModuleEnginesFX engine = enginesFx[i];
                         if (log != null)
                         {
                             log.buf.AppendLine("Module: " + engine.moduleName);
@@ -229,30 +261,34 @@ namespace KerbalEngineer.VesselSimulator
 
                         Vector3 thrustvec = this.CalculateThrustVector(vectoredThrust ? engine.thrustTransforms : null, log);
 
-                        EngineSim engineSim = new EngineSim(this,
-                                                            atmosphere,
-                                                            velocity,
-                                                            engine.maxThrust,
-                                                            engine.minThrust,
-                                                            engine.thrustPercentage,
-                                                            engine.requestedThrust,
-                                                            thrustvec,
-                                                            engine.realIsp,
-                                                            engine.atmosphereCurve,
-                                                            engine.useVelocityCurve ? engine.velocityCurve : null,
-                                                            engine.throttleLocked,
-                                                            engine.propellants,
-                                                            engine.isOperational,
-                                                            correctThrust,
-                                                            engine.thrustTransforms);
+                        EngineSim engineSim = EngineSim.pool.Borrow();
+                        engineSim.Set(
+                            this,
+                            atmosphere,
+                            velocity,
+                            engine.maxThrust,
+                            engine.minThrust,
+                            engine.thrustPercentage,
+                            engine.requestedThrust,
+                            thrustvec,
+                            engine.realIsp,
+                            engine.atmosphereCurve,
+                            engine.useVelocityCurve ? engine.velocityCurve : null,
+                            engine.throttleLocked,
+                            engine.propellants,
+                            engine.isOperational,
+                            correctThrust,
+                            engine.thrustTransforms);
                         allEngines.Add(engineSim);
                     }
                 }
 
                 if (this.hasModuleEngines)
                 {
-                    foreach (ModuleEngines engine in this.part.GetModules<ModuleEngines>())
+                    List<ModuleEngines> engines = this.part.GetModules<ModuleEngines>();  // only place that still allocate some memory
+                    for (int i = 0; i < engines.Count; i++)
                     {
+                        ModuleEngines engine = engines[i];
                         if (log != null)
                         {
                             log.buf.AppendLine("Module: " + engine.moduleName);
@@ -260,22 +296,24 @@ namespace KerbalEngineer.VesselSimulator
 
                         Vector3 thrustvec = this.CalculateThrustVector(vectoredThrust ? engine.thrustTransforms : null, log);
 
-                        EngineSim engineSim = new EngineSim(this,
-                                                            atmosphere,
-                                                            velocity,
-                                                            engine.maxThrust,
-                                                            engine.minThrust,
-                                                            engine.thrustPercentage,
-                                                            engine.requestedThrust,
-                                                            thrustvec,
-                                                            engine.realIsp,
-                                                            engine.atmosphereCurve,
-                                                            engine.useVelocityCurve ? engine.velocityCurve : null,
-                                                            engine.throttleLocked,
-                                                            engine.propellants,
-                                                            engine.isOperational,
-                                                            correctThrust,
-                                                            engine.thrustTransforms);
+                        EngineSim engineSim = EngineSim.pool.Borrow();
+                        engineSim.Set(
+                            this,
+                            atmosphere,
+                            velocity,
+                            engine.maxThrust,
+                            engine.minThrust,
+                            engine.thrustPercentage,
+                            engine.requestedThrust,
+                            thrustvec,
+                            engine.realIsp,
+                            engine.atmosphereCurve,
+                            engine.useVelocityCurve ? engine.velocityCurve : null,
+                            engine.throttleLocked,
+                            engine.propellants,
+                            engine.isOperational,
+                            correctThrust,
+                            engine.thrustTransforms);
                         allEngines.Add(engineSim);
                     }
                 }
@@ -295,11 +333,17 @@ namespace KerbalEngineer.VesselSimulator
             }
 
             Vector3 thrustvec = Vector3.zero;
-            foreach (Transform trans in thrustTransforms)
+            for (int i = 0; i < thrustTransforms.Count; i++)
             {
+                Transform trans = thrustTransforms[i];
                 if (log != null)
                 {
-                    log.buf.AppendFormat("Transform = ({0:g6}, {1:g6}, {2:g6})   length = {3:g6}\n", trans.forward.x, trans.forward.y, trans.forward.z, trans.forward.magnitude);
+                    log.buf.AppendFormat(
+                        "Transform = ({0:g6}, {1:g6}, {2:g6})   length = {3:g6}\n",
+                        trans.forward.x,
+                        trans.forward.y,
+                        trans.forward.z,
+                        trans.forward.magnitude);
                 }
 
                 thrustvec -= trans.forward;
@@ -350,11 +394,14 @@ namespace KerbalEngineer.VesselSimulator
             }
 
             this.attachNodes.Clear();
-            foreach (AttachNode attachNode in this.part.attachNodes)
+            for (int i = 0; i < this.part.attachNodes.Count; i++)
             {
+                AttachNode attachNode = this.part.attachNodes[i];
                 if (log != null)
                 {
-                    log.buf.AppendLine("AttachNode " + attachNode.id + " = " + (attachNode.attachedPart != null ? attachNode.attachedPart.partInfo.name : "null"));
+                    log.buf.AppendLine(
+                        "AttachNode " + attachNode.id + " = " +
+                        (attachNode.attachedPart != null ? attachNode.attachedPart.partInfo.name : "null"));
                 }
 
                 if (attachNode.attachedPart != null && attachNode.id != "Strut")
@@ -367,7 +414,9 @@ namespace KerbalEngineer.VesselSimulator
                             log.buf.AppendLine("Adding attached node " + attachedSim.name + ":" + attachedSim.partId + "");
                         }
 
-                        this.attachNodes.Add(new AttachNodeSim(attachedSim, attachNode.id, attachNode.nodeType));
+                        AttachNodeSim attachnode = AttachNodeSim.pool.Borrow();
+                        attachnode.Set(attachedSim, attachNode.id, attachNode.nodeType);
+                        this.attachNodes.Add(attachnode);
                     }
                     else
                     {
@@ -379,8 +428,9 @@ namespace KerbalEngineer.VesselSimulator
                 }
             }
 
-            foreach (Part p in this.part.fuelLookupTargets)
+            for (int i = 0; i < this.part.fuelLookupTargets.Count; i++)
             {
+                Part p = this.part.fuelLookupTargets[i];
                 if (p != null)
                 {
                     PartSim targetSim;
@@ -446,18 +496,13 @@ namespace KerbalEngineer.VesselSimulator
                 return true;
             }
 
-            var modList = this.part.Modules.OfType<ModuleEngines>();
-            if (modList.Count() == 0)
+            if (!this.part.IsEngine())
             {
                 return false;
             }
 
-            if (modList.First().throttleLocked)
-            {
-                return true;
-            }
 
-            return false;
+            return this.part.IsSolidRocket();
         }
 
         public void ReleasePart()
@@ -468,7 +513,7 @@ namespace KerbalEngineer.VesselSimulator
         // All functions below this point must not rely on the part member (it may be null)
         //
 
-        public HashSet<PartSim> GetSourceSet(int type, List<PartSim> allParts, HashSet<PartSim> visited, LogMsg log, String indent)
+        public void GetSourceSet(int type, List<PartSim> allParts, HashSet<PartSim> visited, HashSet<PartSim> allSources, LogMsg log, String indent)
         {
             if (log != null)
             {
@@ -476,10 +521,7 @@ namespace KerbalEngineer.VesselSimulator
                 indent += "  ";
             }
 
-            HashSet<PartSim> allSources = new HashSet<PartSim>();
-            HashSet<PartSim> partSources = null;
-
-            // Rule 1: Each part can be only visited once, If it is visited for second time in particular search it returns empty list.
+            // Rule 1: Each part can be only visited once, If it is visited for second time in particular search it returns as is.
             if (visited.Contains(this))
             {
                 if (log != null)
@@ -487,7 +529,7 @@ namespace KerbalEngineer.VesselSimulator
                     log.buf.AppendLine(indent + "Returning empty set, already visited (" + this.name + ":" + this.partId + ")");
                 }
 
-                return allSources;
+                return;
             }
 
             //if (log != null)
@@ -499,8 +541,11 @@ namespace KerbalEngineer.VesselSimulator
             // Then it makes an union of fuel tank sets each pipe scan returned. If the resulting list is not empty, it is returned as result.
             //MonoBehaviour.print("foreach fuel line");
 
-            foreach (PartSim partSim in this.fuelTargets)
+            int lastCount = allSources.Count;
+
+            for (int i = 0; i < this.fuelTargets.Count; i++)
             {
+                PartSim partSim = this.fuelTargets[i];
                 if (visited.Contains(partSim))
                 {
                     //if (log != null)
@@ -511,24 +556,20 @@ namespace KerbalEngineer.VesselSimulator
                     //if (log != null)
                     //    log.buf.AppendLine(indent + "Adding fuel target as source (" + partSim.name + ":" + partSim.partId + ")");
 
-                    partSources = partSim.GetSourceSet(type, allParts, visited, log, indent);
-                    if (partSources.Count > 0)
-                    {
-                        allSources.UnionWith(partSources);
-                        partSources.Clear();
-                    }
+                    partSim.GetSourceSet(type, allParts, visited, allSources, log, indent);
                 }
             }
 
-            if (allSources.Count > 0)
+            if (allSources.Count > lastCount)
             {
                 if (log != null)
                 {
-                    log.buf.AppendLine(indent + "Returning " + allSources.Count + " fuel target sources (" + this.name + ":" + this.partId + ")");
+                    log.buf.AppendLine(indent + "Returning " + (allSources.Count - lastCount) + " fuel target sources (" + this.name + ":" + this.partId + ")");
                 }
 
-                return allSources;
+                return;
             }
+
 
             // Rule 3: This rule has been removed and merged with rules 4 and 7 to fix issue with fuel tanks with disabled crossfeed
 
@@ -539,14 +580,18 @@ namespace KerbalEngineer.VesselSimulator
             //  The order in which mount points of a part are scanned appears to be fixed and defined by the part specification file. [Experiment]
             if (this.fuelCrossFeed)
             {
+                lastCount = allSources.Count;
                 //MonoBehaviour.print("foreach attach node");
-                foreach (AttachNodeSim attachSim in this.attachNodes)
+                for (int i = 0; i < this.attachNodes.Count; i++)
                 {
+                    AttachNodeSim attachSim = this.attachNodes[i];
                     if (attachSim.attachedPartSim != null)
                     {
                         if (attachSim.nodeType == AttachNode.NodeType.Stack)
                         {
-                            if (!(this.noCrossFeedNodeKey != null && this.noCrossFeedNodeKey.Length > 0 && attachSim.id.Contains(this.noCrossFeedNodeKey)))
+                            if (
+                                !(this.noCrossFeedNodeKey != null && this.noCrossFeedNodeKey.Length > 0 &&
+                                  attachSim.id.Contains(this.noCrossFeedNodeKey)))
                             {
                                 if (visited.Contains(attachSim.attachedPartSim))
                                 {
@@ -558,26 +603,21 @@ namespace KerbalEngineer.VesselSimulator
                                     //if (log != null)
                                     //    log.buf.AppendLine(indent + "Adding attached part as source (" + attachSim.attachedPartSim.name + ":" + attachSim.attachedPartSim.partId + ")");
 
-                                    partSources = attachSim.attachedPartSim.GetSourceSet(type, allParts, visited, log, indent);
-                                    if (partSources.Count > 0)
-                                    {
-                                        allSources.UnionWith(partSources);
-                                        partSources.Clear();
-                                    }
+                                    attachSim.attachedPartSim.GetSourceSet(type, allParts, visited, allSources, log, indent);
                                 }
                             }
                         }
                     }
                 }
 
-                if (allSources.Count > 0)
+                if (allSources.Count > lastCount)
                 {
                     if (log != null)
                     {
-                        log.buf.AppendLine(indent + "Returning " + allSources.Count + " attached sources (" + this.name + ":" + this.partId + ")");
+                        log.buf.AppendLine(indent + "Returning " + (allSources.Count - lastCount) + " attached sources (" + this.name + ":" + this.partId + ")");
                     }
 
-                    return allSources;
+                    return;
                 }
             }
 
@@ -597,7 +637,7 @@ namespace KerbalEngineer.VesselSimulator
                     }
                 }
 
-                return allSources;
+                return;
             }
 
             // Rule 7: If the part is radially attached to another part and it is child of that part in the ship's tree structure, it scans its 
@@ -613,15 +653,16 @@ namespace KerbalEngineer.VesselSimulator
                     }
                     else
                     {
-                        allSources = this.parent.GetSourceSet(type, allParts, visited, log, indent);
-                        if (allSources.Count > 0)
+                        lastCount = allSources.Count;
+                        this.parent.GetSourceSet(type, allParts, visited, allSources, log, indent);
+                        if (allSources.Count > lastCount)
                         {
                             if (log != null)
                             {
-                                log.buf.AppendLine(indent + "Returning " + allSources.Count + " parent sources (" + this.name + ":" + this.partId + ")");
+                                log.buf.AppendLine(indent + "Returning " + (allSources.Count  - lastCount) + " parent sources (" + this.name + ":" + this.partId + ")");
                             }
 
-                            return allSources;
+                            return;
                         }
                     }
                 }
@@ -631,14 +672,15 @@ namespace KerbalEngineer.VesselSimulator
             //if (log != null)
             //    log.buf.AppendLine(indent + "Returning empty set, no sources found (" + name + ":" + partId + ")");
 
-            return allSources;
+            return;
         }
 
         public void RemoveAttachedParts(HashSet<PartSim> partSims)
         {
             // Loop through the attached parts
-            foreach (AttachNodeSim attachSim in this.attachNodes)
+            for (int i = 0; i < this.attachNodes.Count; i++)
             {
+                AttachNodeSim attachSim = this.attachNodes[i];
                 // If the part is in the set then "remove" it by clearing the PartSim reference
                 if (partSims.Contains(attachSim.attachedPartSim))
                 {
@@ -650,8 +692,9 @@ namespace KerbalEngineer.VesselSimulator
         public void DrainResources(double time)
         {
             //MonoBehaviour.print("DrainResources(" + name + ":" + partId + ", " + time + ")");
-            foreach (int type in this.resourceDrains.Types)
+            for (int i = 0; i < this.resourceDrains.Types.Count; i++)
             {
+                int type = this.resourceDrains.Types[i];
                 //MonoBehaviour.print("draining " + (time * resourceDrains[type]) + " " + ResourceContainer.GetResourceName(type));
                 this.resources.Add(type, -time * this.resourceDrains[type]);
                 //MonoBehaviour.print(ResourceContainer.GetResourceName(type) + " left = " + resources[type]);
@@ -663,8 +706,9 @@ namespace KerbalEngineer.VesselSimulator
             //MonoBehaviour.print("TimeToDrainResource(" + name + ":" + partId + ")");
             double time = double.MaxValue;
 
-            foreach (int type in this.resourceDrains.Types)
+            for (int i = 0; i < this.resourceDrains.Types.Count; i++)
             {
+                int type = this.resourceDrains.Types[i];
                 if (this.resourceDrains[type] > 0)
                 {
                     time = Math.Min(time, this.resources[type] / this.resourceDrains[type]);
@@ -715,8 +759,9 @@ namespace KerbalEngineer.VesselSimulator
         {
             double mass = this.baseMass;
 
-            foreach (int type in this.resources.Types)
+            for (int i = 0; i < this.resources.Types.Count; i++)
             {
+                int type = this.resources.Types[i];
                 mass += this.resources.GetResourceMass(type);
             }
 
@@ -750,8 +795,9 @@ namespace KerbalEngineer.VesselSimulator
 
             buffer.AppendFormat(", isSep = {0}", this.isSepratron);
 
-            foreach (int type in this.resources.Types)
+            for (int i = 0; i < this.resources.Types.Count; i++)
             {
+                int type = this.resources.Types[i];
                 buffer.AppendFormat(", {0} = {1:g6}", ResourceContainer.GetResourceName(type), this.resources[type]);
             }
 
@@ -774,8 +820,9 @@ namespace KerbalEngineer.VesselSimulator
             if (allParts != null)
             {
                 String newPrefix = prefix + " ";
-                foreach (PartSim partSim in allParts)
+                for (int i = 0; i < allParts.Count; i++)
                 {
+                    PartSim partSim = allParts[i];
                     if (partSim.parent == this)
                     {
                         partSim.DumpPartToBuffer(buffer, newPrefix, allParts);
