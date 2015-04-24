@@ -44,19 +44,19 @@ namespace KerbalEngineer.VesselSimulator
 
         public double thrust = 0;
 
-        public static double GetAdjustedEngineThrust(float minFuelFlow, float maxFuelFlow, double isp, float throttle)
+        public static double GetEngineThrust(float fuelFlow, double isp, float multiplier)
         {
-            return Mathf.Lerp(minFuelFlow, maxFuelFlow, throttle) * GetExhaustVelocity(isp);
-        }
-
-        public static double GetEngineThrust(float fuelFlow, double isp)
-        {
-            return fuelFlow * GetExhaustVelocity(isp);
+            return fuelFlow * GetExhaustVelocity(isp) * multiplier;
         }
 
         public static double GetExhaustVelocity(double isp)
         {
             return isp * Units.GRAVITY;
+        }
+
+        public static double GetFlowRate(double thrust, double isp)
+        {
+            return thrust / GetExhaustVelocity(isp);
         }
 
         // Add thrust vector to account for directional losses
@@ -88,6 +88,7 @@ namespace KerbalEngineer.VesselSimulator
             //MonoBehaviour.print("velocity = " + velocity);
 
             this.partSim = theEngine;
+            thrustPercentage = thrustPercentage * 0.01f;
 
             this.isActive = active;
             //this.thrust = (maxThrust - minThrust) * (thrustPercentage / 100f) + minThrust;
@@ -104,8 +105,8 @@ namespace KerbalEngineer.VesselSimulator
                     MonoBehaviour.print("Isp at " + this.partSim.part.staticPressureAtm + " is zero. Flow rate will be NaN");
                 }
 
-                this.actualThrust = isActive ? GetAdjustedEngineThrust(minFuelFlow, maxFuelFlow, isp, thrustPercentage) : 0.0;
-                this.thrust = GetEngineThrust(maxThrust, isp);
+                this.actualThrust = isActive ? requestedThrust : 0.0;
+                this.thrust = GetEngineThrust(maxFuelFlow, isp, thrustPercentage);
                 if (velocityCurve != null)
                 {
                     this.actualThrust *= velocityCurve.Evaluate((float)velocity);
@@ -122,7 +123,7 @@ namespace KerbalEngineer.VesselSimulator
                     if (this.partSim.isLanded)
                     {
                         //MonoBehaviour.print("partSim.isLanded is true, mainThrottle = " + FlightInputHandler.state.mainThrottle);
-                        flowRate = Math.Max(0.000001d, this.thrust * FlightInputHandler.state.mainThrottle) / GetExhaustVelocity(isp);
+                        flowRate = GetFlowRate(Math.Max(float.Epsilon, this.thrust * FlightInputHandler.state.mainThrottle), isp);
                     }
                     else
                     {
@@ -135,12 +136,12 @@ namespace KerbalEngineer.VesselSimulator
                             }
 
                             //MonoBehaviour.print("requestedThrust > 0");
-                            flowRate = requestedThrust / GetExhaustVelocity(isp);
+                            flowRate = GetFlowRate(requestedThrust, isp);
                         }
                         else
                         {
                             //MonoBehaviour.print("requestedThrust <= 0");
-                            flowRate = this.thrust / GetExhaustVelocity(isp);
+                            flowRate = GetFlowRate(thrust, isp);
                         }
                     }
                 }
@@ -153,14 +154,14 @@ namespace KerbalEngineer.VesselSimulator
                     MonoBehaviour.print("Isp at " + atmosphere + " is zero. Flow rate will be NaN");
                 }
 
-                this.thrust = GetAdjustedEngineThrust(minFuelFlow, maxFuelFlow, isp, thrustPercentage);
+                thrust = GetEngineThrust(maxFuelFlow, isp, thrustPercentage);
 
                 if (velocityCurve != null)
                 {
                     this.thrust *= velocityCurve.Evaluate((float)velocity);
                 }
 
-                flowRate = this.thrust / GetExhaustVelocity(isp);
+                flowRate = GetFlowRate(thrust, isp);
             }
 
             if (SimManager.logOutput)
