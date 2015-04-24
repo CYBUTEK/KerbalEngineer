@@ -124,7 +124,7 @@ namespace KerbalEngineer
                     this.CelestialBody = body;
                     this.Name = body.bodyName;
                     this.Gravity = 9.81 * body.GeeASL;
-                    this.Atmosphere = body.atmosphere ? 101.325 * body.atmosphereMultiplier : 0;
+                    this.Atmosphere = body.atmosphere ? body.atmospherePressureSeaLevel : 0;
                     this.Parent = parent;
 
                     // Set orbiting bodies information.

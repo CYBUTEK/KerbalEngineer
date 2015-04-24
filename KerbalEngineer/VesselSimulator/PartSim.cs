@@ -202,7 +202,7 @@ namespace KerbalEngineer.VesselSimulator
                                                             engine.maxThrust,
                                                             engine.minThrust,
                                                             engine.thrustPercentage,
-                                                            engine.requestedThrust,
+                                                            engine.resultingThrust,
                                                             thrustvec,
                                                             engine.realIsp,
                                                             engine.atmosphereCurve,
@@ -211,7 +211,7 @@ namespace KerbalEngineer.VesselSimulator
                                                             engine.propellants,
                                                             engine.isOperational,
                                                             correctThrust,
-                                                            engine.thrustTransforms);
+                                                            engine.thrustTransforms, engine.minFuelFlow, engine.maxFuelFlow);
                         allEngines.Add(engineSim);
                     }
                 }
@@ -235,7 +235,7 @@ namespace KerbalEngineer.VesselSimulator
                                                             engine.maxThrust,
                                                             engine.minThrust,
                                                             engine.thrustPercentage,
-                                                            engine.requestedThrust,
+                                                            engine.resultingThrust,
                                                             thrustvec,
                                                             engine.realIsp,
                                                             engine.atmosphereCurve,
@@ -244,7 +244,7 @@ namespace KerbalEngineer.VesselSimulator
                                                             engine.propellants,
                                                             engine.isOperational,
                                                             correctThrust,
-                                                            engine.thrustTransforms);
+                                                            engine.thrustTransforms, engine.minFuelFlow, engine.maxFuelFlow);
                         allEngines.Add(engineSim);
                     }
                 }
@@ -266,7 +266,7 @@ namespace KerbalEngineer.VesselSimulator
                                                             engine.maxThrust,
                                                             engine.minThrust,
                                                             engine.thrustPercentage,
-                                                            engine.requestedThrust,
+                                                            engine.resultingThrust,
                                                             thrustvec,
                                                             engine.realIsp,
                                                             engine.atmosphereCurve,
@@ -275,7 +275,7 @@ namespace KerbalEngineer.VesselSimulator
                                                             engine.propellants,
                                                             engine.isOperational,
                                                             correctThrust,
-                                                            engine.thrustTransforms);
+                                                            engine.thrustTransforms, engine.minFuelFlow, engine.maxFuelFlow);
                         allEngines.Add(engineSim);
                     }
                 }
