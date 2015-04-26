@@ -48,7 +48,10 @@ namespace KerbalEngineer.Flight.Readouts.Surface
         /// </summary>
         public static AtmosphericProcessor Instance
         {
-            get { return instance; }
+            get
+            {
+                return instance;
+            }
         }
 
         #endregion

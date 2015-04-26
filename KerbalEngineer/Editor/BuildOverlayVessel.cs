@@ -188,7 +188,7 @@ namespace KerbalEngineer.Editor
 
             if (BuildAdvanced.Instance.ShowAtmosphericDetails)
             {
-                SimManager.Atmosphere = CelestialBodies.SelectedBody.Atmosphere * 0.01;
+                SimManager.Atmosphere = CelestialBodies.SelectedBody.GetAtmospheres(BuildAdvanced.Altitude);
             }
             else
             {

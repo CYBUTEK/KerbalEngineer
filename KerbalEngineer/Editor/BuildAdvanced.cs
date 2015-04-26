@@ -37,10 +37,10 @@ namespace KerbalEngineer.Editor
     public class BuildAdvanced : MonoBehaviour
     {
         #region Fields
+        public static float Altitude = 500.0f;
 
         private GUIStyle areaSettingStyle;
         private GUIStyle areaStyle;
-        private float atmosphericPercentage = 1.0f;
         private float atmosphericMach;
         private GUIStyle bodiesButtonActiveStyle;
         private GUIStyle bodiesButtonStyle;
@@ -256,7 +256,7 @@ namespace KerbalEngineer.Editor
 
                 if (this.showAtmosphericDetails)
                 {
-                    SimManager.Atmosphere = CelestialBodies.SelectedBody.Atmosphere * 0.01d * this.atmosphericPercentage;
+                    SimManager.Atmosphere = CelestialBodies.SelectedBody.GetAtmospheres(Altitude);
                 }
                 else
                 {
@@ -296,9 +296,9 @@ namespace KerbalEngineer.Editor
         {
             GUILayout.BeginHorizontal();
             GUILayout.BeginVertical();
-            GUILayout.Label("Pressure: " + (this.atmosphericPercentage * 100.0f).ToString("F1") + "%", this.settingAtmoStyle, GUILayout.Width(125.0f * GuiDisplaySize.Offset));
+            GUILayout.Label("Altitude: " + (Altitude * 0.001f).ToString("F1") + "km", this.settingAtmoStyle, GUILayout.Width(125.0f * GuiDisplaySize.Offset));
             GUI.skin = HighLogic.Skin;
-            this.atmosphericPercentage = GUILayout.HorizontalSlider(this.atmosphericPercentage, 0, 1.0f);
+            Altitude = GUILayout.HorizontalSlider(Altitude, 0.0f, (float)(CelestialBodies.SelectedBody.CelestialBody.atmosphereDepth));
             GUI.skin = null;
             GUILayout.EndVertical();
 
@@ -307,7 +307,7 @@ namespace KerbalEngineer.Editor
             GUILayout.BeginVertical();
             GUILayout.Label("Mach: " + this.atmosphericMach.ToString("F1") + "m/s", this.settingAtmoStyle, GUILayout.Width(125.0f * GuiDisplaySize.Offset));
             GUI.skin = HighLogic.Skin;
-            this.atmosphericMach = GUILayout.HorizontalSlider(this.atmosphericMach, 0, 25f); // the game limits mach to 50 but I did not see curve with more than 25
+            atmosphericMach = GUILayout.HorizontalSlider(atmosphericMach, 0.0f, SimManager.LastStage.maxMach); // the game limits mach to 50 but I did not see curve with more than 25
             GUI.skin = null;
             GUILayout.EndVertical();
             GUILayout.EndHorizontal();

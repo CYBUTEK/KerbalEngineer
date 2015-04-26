@@ -198,7 +198,7 @@ namespace KerbalEngineer.VesselSimulator
 
                         EngineSim engineSim = new EngineSim(this,
                             atmosphere,
-                            mach,
+                            (float)mach,
                             engine.maxFuelFlow,
                             engine.minFuelFlow,
                             engine.thrustPercentage,
@@ -208,11 +208,10 @@ namespace KerbalEngineer.VesselSimulator
                             engine.useAtmCurve ? engine.atmCurve : null,
                             engine.useVelCurve ? engine.velCurve : null,
                             engine.currentThrottle,
-                            engine.g,
                             engine.throttleLocked || fullThrust,
                             engine.propellants,
                             engine.isOperational,
-                            correctThrust,
+                            engine.resultingThrust,
                             engine.thrustTransforms);
                         allEngines.Add(engineSim);
                     }
@@ -233,7 +232,7 @@ namespace KerbalEngineer.VesselSimulator
 
                         EngineSim engineSim = new EngineSim(this,
                             atmosphere,
-                            mach,
+                            (float)mach,
                             engine.maxFuelFlow,
                             engine.minFuelFlow,
                             engine.thrustPercentage,
@@ -243,11 +242,10 @@ namespace KerbalEngineer.VesselSimulator
                             engine.useAtmCurve ? engine.atmCurve : null,
                             engine.useVelCurve ? engine.velCurve : null,
                             engine.currentThrottle,
-                            engine.g,
                             engine.throttleLocked || fullThrust,
                             engine.propellants,
                             engine.isOperational,
-                            correctThrust,
+                            engine.resultingThrust,
                             engine.thrustTransforms);
                         allEngines.Add(engineSim);
                     }

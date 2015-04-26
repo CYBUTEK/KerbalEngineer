@@ -22,6 +22,7 @@ namespace KerbalEngineer.VesselSimulator
     #region Using Directives
 
     using System;
+    using System.Collections.Generic;
     using System.Diagnostics;
     using System.Reflection;
     using System.Threading;
@@ -350,7 +351,16 @@ namespace KerbalEngineer.VesselSimulator
                     timer.Start();
                 }
 
-                var parts = HighLogic.LoadedSceneIsEditor ? EditorLogic.fetch.ship.parts : FlightGlobals.ActiveVessel.Parts;
+                List<Part> parts;
+                if (HighLogic.LoadedSceneIsEditor)
+                {
+                    parts = EditorLogic.fetch.ship.parts;
+                }
+                else
+                {
+                    parts = FlightGlobals.ActiveVessel.Parts;
+                    Atmosphere = FlightGlobals.ActiveVessel.staticPressurekPa * PhysicsGlobals.KpaToAtmospheres;
+                }
 
                 // Create the Simulation object in this thread
                 var sim = new Simulation();

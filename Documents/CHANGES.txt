@@ -1,3 +1,16 @@
+1.0.16.1, 26-04-2015, KSP Build #828
+    Merged Sarbian's mach adjustments.
+    Fixed bugs relating to thrust and atmosphere/velocity curves.
+    Changed the atmospheric slider on the Build Engineer to work based on altitude.
+    Changed the atmospheric slider to clamp to the maximum altitude for the selected body.
+    Changed the velocity slider to clamp to the maximum usable mach value for the current vessel.
+
+1.0.16.0, 25-04-2015, KSP Build #821
+    Fixed errors relating to KSP 1.0 update.
+    Fixed fuel simulation to account for new thrust system.
+    Fixed atmospheric engines to use the new velocity curve.
+    Fixed atmospheric readouts to work with the new atmospheric model.
+
 1.0.15.2, 13-02-2015
     Padishar's Fixes:
         Fixed: Calculation of per-stage resource mass.
