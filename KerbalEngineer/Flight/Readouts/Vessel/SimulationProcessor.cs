@@ -119,7 +119,7 @@ namespace KerbalEngineer.Flight.Readouts.Vessel
                 SimManager.Gravity = FlightGlobals.ActiveVessel.mainBody.gravParameter /
                                      Math.Pow(FlightGlobals.ActiveVessel.mainBody.Radius +
                                               FlightGlobals.ActiveVessel.mainBody.GetAltitude(FlightGlobals.ActiveVessel.CoM), 2);
-                SimManager.Velocity = FlightGlobals.ActiveVessel.srfSpeed;
+                SimManager.Mach = FlightGlobals.ActiveVessel.mach;
             }
         }
 

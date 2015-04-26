@@ -84,7 +84,7 @@ namespace KerbalEngineer.VesselSimulator
 
         public static Stage[] Stages { get; private set; }
 
-        public static double Velocity { get; set; }
+        public static double Mach { get; set; }
 
         public static String failMessage { get; private set; }
 
@@ -356,7 +356,7 @@ namespace KerbalEngineer.VesselSimulator
                 var sim = new Simulation();
 
                 // This call doesn't ever fail at the moment but we'll check and return a sensible error for display
-                if (sim.PrepareSimulation(parts, Gravity, Atmosphere, Velocity, dumpTree, vectoredThrust))
+                if (sim.PrepareSimulation(parts, Gravity, Atmosphere, Mach, dumpTree, vectoredThrust))
                 {
                     ThreadPool.QueueUserWorkItem(RunSimulation, sim);
                 }
