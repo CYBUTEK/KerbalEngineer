@@ -198,7 +198,7 @@ namespace KerbalEngineer.VesselSimulator
             get { return this.resourceDrains; }
         }
 
-        public void CreateEngineSims(List<EngineSim> allEngines, double atmosphere, double velocity, bool vectoredThrust, LogMsg log)
+        public void CreateEngineSims(List<EngineSim> allEngines, double atmosphere, double mach, bool vectoredThrust, bool fullThrust, LogMsg log)
         {
             bool correctThrust = SimManager.DoesEngineUseCorrectedThrust(this.part);
             if (log != null)
@@ -235,16 +235,18 @@ namespace KerbalEngineer.VesselSimulator
                         EngineSim engineSim = EngineSim.New(
                             this,
                             atmosphere,
-                            velocity,
-                            engine.maxThrust,
-                            engine.minThrust,
+                            mach,
+                            engine.maxFuelFlow,
+                            engine.minFuelFlow,
                             engine.thrustPercentage,
-                            engine.requestedThrust,
                             thrustvec,
-                            engine.realIsp,
                             engine.atmosphereCurve,
-                            engine.useVelocityCurve ? engine.velocityCurve : null,
-                            engine.throttleLocked,
+                            engine.atmChangeFlow,
+                            engine.useAtmCurve ? engine.atmCurve : null,
+                            engine.useVelCurve ? engine.velCurve : null,
+                            engine.currentThrottle,
+                            engine.g,
+                            engine.throttleLocked || fullThrust,
                             engine.propellants,
                             engine.isOperational,
                             correctThrust,
@@ -255,40 +257,6 @@ namespace KerbalEngineer.VesselSimulator
             }
             else
             {
-                if (this.hasModuleEnginesFX)
-                {
-                    List<ModuleEnginesFX> enginesFx = this.part.GetModules<ModuleEnginesFX>();  // only place that still allocate some memory
-                    for (int i = 0; i < enginesFx.Count; i++)
-                    {
-                        ModuleEnginesFX engine = enginesFx[i];
-                        if (log != null)
-                        {
-                            log.buf.AppendLine("Module: " + engine.moduleName);
-                        }
-
-                        Vector3 thrustvec = this.CalculateThrustVector(vectoredThrust ? engine.thrustTransforms : null, log);
-
-                        EngineSim engineSim = EngineSim.New(
-                            this,
-                            atmosphere,
-                            velocity,
-                            engine.maxThrust,
-                            engine.minThrust,
-                            engine.thrustPercentage,
-                            engine.requestedThrust,
-                            thrustvec,
-                            engine.realIsp,
-                            engine.atmosphereCurve,
-                            engine.useVelocityCurve ? engine.velocityCurve : null,
-                            engine.throttleLocked,
-                            engine.propellants,
-                            engine.isOperational,
-                            correctThrust,
-                            engine.thrustTransforms);
-                        allEngines.Add(engineSim);
-                    }
-                }
-
                 if (this.hasModuleEngines)
                 {
                     List<ModuleEngines> engines = this.part.GetModules<ModuleEngines>();  // only place that still allocate some memory
@@ -305,16 +273,18 @@ namespace KerbalEngineer.VesselSimulator
                         EngineSim engineSim = EngineSim.New(
                             this,
                             atmosphere,
-                            velocity,
-                            engine.maxThrust,
-                            engine.minThrust,
+                            mach,
+                            engine.maxFuelFlow,
+                            engine.minFuelFlow,
                             engine.thrustPercentage,
-                            engine.requestedThrust,
                             thrustvec,
-                            engine.realIsp,
                             engine.atmosphereCurve,
-                            engine.useVelocityCurve ? engine.velocityCurve : null,
-                            engine.throttleLocked,
+                            engine.atmChangeFlow,
+                            engine.useAtmCurve ? engine.atmCurve : null,
+                            engine.useVelCurve ? engine.velCurve : null,
+                            engine.currentThrottle,
+                            engine.g,
+                            engine.throttleLocked || fullThrust,
                             engine.propellants,
                             engine.isOperational,
                             correctThrust,

@@ -41,7 +41,7 @@ namespace KerbalEngineer.Editor
         private GUIStyle areaSettingStyle;
         private GUIStyle areaStyle;
         private float atmosphericPercentage = 1.0f;
-        private float atmosphericVelocity;
+        private float atmosphericMach;
         private GUIStyle bodiesButtonActiveStyle;
         private GUIStyle bodiesButtonStyle;
         private DropDown bodiesList;
@@ -263,7 +263,7 @@ namespace KerbalEngineer.Editor
                     SimManager.Atmosphere = 0;
                 }
 
-                SimManager.Velocity = this.atmosphericVelocity;
+                SimManager.Mach = this.atmosphericMach;
 
                 SimManager.RequestSimulation();
                 SimManager.TryStartSimulation();
@@ -305,9 +305,9 @@ namespace KerbalEngineer.Editor
             GUILayout.Space(5.0f);
 
             GUILayout.BeginVertical();
-            GUILayout.Label("Velocity: " + this.atmosphericVelocity.ToString("F1") + "m/s", this.settingAtmoStyle, GUILayout.Width(125.0f * GuiDisplaySize.Offset));
+            GUILayout.Label("Mach: " + this.atmosphericMach.ToString("F1") + "m/s", this.settingAtmoStyle, GUILayout.Width(125.0f * GuiDisplaySize.Offset));
             GUI.skin = HighLogic.Skin;
-            this.atmosphericVelocity = GUILayout.HorizontalSlider(this.atmosphericVelocity, 0, 2500f);
+            this.atmosphericMach = GUILayout.HorizontalSlider(this.atmosphericMach, 0, 25f); // the game limits mach to 50 but I did not see curve with more than 25
             GUI.skin = null;
             GUILayout.EndVertical();
             GUILayout.EndHorizontal();
