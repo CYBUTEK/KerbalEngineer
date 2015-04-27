@@ -37,7 +37,7 @@ namespace KerbalEngineer.Editor
     public class BuildAdvanced : MonoBehaviour
     {
         #region Fields
-        public static float Altitude = 500.0f;
+        public static float Altitude = 0.0f;
 
         private GUIStyle areaSettingStyle;
         private GUIStyle areaStyle;
@@ -307,7 +307,7 @@ namespace KerbalEngineer.Editor
             GUILayout.BeginVertical();
             GUILayout.Label("Mach: " + this.atmosphericMach.ToString("F1") + "m/s", this.settingAtmoStyle, GUILayout.Width(125.0f * GuiDisplaySize.Offset));
             GUI.skin = HighLogic.Skin;
-            atmosphericMach = GUILayout.HorizontalSlider(atmosphericMach, 0.0f, SimManager.LastStage.maxMach); // the game limits mach to 50 but I did not see curve with more than 25
+            atmosphericMach = GUILayout.HorizontalSlider(Mathf.Clamp(atmosphericMach, 0.0f, SimManager.LastStage.maxMach), 0.0f, SimManager.LastStage.maxMach);
             GUI.skin = null;
             GUILayout.EndVertical();
             GUILayout.EndHorizontal();
@@ -335,6 +335,7 @@ namespace KerbalEngineer.Editor
             if (GUILayout.Button(bodyInfo.Children.Count > 0 ? bodyInfo.Name + " [" + bodyInfo.Children.Count + "]" : bodyInfo.Name, bodyInfo.Selected && bodyInfo.SelectedDepth == 0 ? this.bodiesButtonActiveStyle : this.bodiesButtonStyle))
             {
                 CelestialBodies.SetSelectedBody(bodyInfo.Name);
+                Altitude = 0.0f;
                 this.bodiesList.Resize = true;
             }
             GUILayout.EndHorizontal();

@@ -1,3 +1,6 @@
+1.0.16.2, 27-04-2015
+    Changed the atmospheric slider on the build engineer to default to 0km when changing bodies.
+
 1.0.16.1, 26-04-2015, KSP Build #828
     Merged Sarbian's mach adjustments.
     Fixed bugs relating to thrust and atmosphere/velocity curves.
