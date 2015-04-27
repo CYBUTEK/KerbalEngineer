@@ -303,9 +303,9 @@ namespace KerbalEngineer.Editor
             GUILayout.EndVertical();
 
             GUILayout.Space(5.0f);
-
+            
             GUILayout.BeginVertical();
-            GUILayout.Label("Mach: " + this.atmosphericMach.ToString("F1") + "m/s", this.settingAtmoStyle, GUILayout.Width(125.0f * GuiDisplaySize.Offset));
+            GUILayout.Label("Mach: " + this.atmosphericMach.ToString("F1"), this.settingAtmoStyle, GUILayout.Width(125.0f * GuiDisplaySize.Offset));
             GUI.skin = HighLogic.Skin;
             atmosphericMach = GUILayout.HorizontalSlider(Mathf.Clamp(atmosphericMach, 0.0f, SimManager.LastStage.maxMach), 0.0f, SimManager.LastStage.maxMach);
             GUI.skin = null;

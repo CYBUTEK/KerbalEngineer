@@ -1,3 +1,7 @@
+1.0.16.3, 27-04-2015
+    Fixed issue with the toolbar icons not being created.
+    Removed superfluous 'm/s' on the mach slider in the build engineer.
+
 1.0.16.2, 27-04-2015
     Changed the atmospheric slider on the build engineer to default to 0km when changing bodies.
 
