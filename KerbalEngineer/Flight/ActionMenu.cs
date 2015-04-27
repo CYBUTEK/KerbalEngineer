@@ -55,6 +55,14 @@ namespace KerbalEngineer.Flight
             Logger.Log("ActionMenu was created.");
         }
 
+        protected void Start()
+        {
+            if (button == null)
+            {
+                OnGuiAppLauncherReady();
+            }
+        }
+
         protected void OnDestroy()
         {
             try
@@ -62,7 +70,10 @@ namespace KerbalEngineer.Flight
                 GameEvents.onGUIApplicationLauncherReady.Remove(this.OnGuiAppLauncherReady);
                 GameEvents.onHideUI.Remove(this.OnHide);
                 GameEvents.onShowUI.Remove(this.OnShow);
-                ApplicationLauncher.Instance.RemoveModApplication(this.button);
+                if (button != null)
+                {
+                    ApplicationLauncher.Instance.RemoveModApplication(this.button);
+                }
             }
             catch (Exception ex)
             {
