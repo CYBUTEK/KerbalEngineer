@@ -652,7 +652,7 @@ namespace KerbalEngineer.VesselSimulator
         {
             foreach (int type in types)
             {
-                if (this.resources.HasType(type) && this.resourceFlowStates[type] != 0 && (double)this.resources[type] > SimManager.RESOURCE_MIN)
+                if (this.resources.HasType(type) && this.resourceFlowStates[type] != 0 && (double)this.resources[type] > SimManager.RESOURCE_PART_EMPTY_THRESH)
                 {
                     return false;
                 }
