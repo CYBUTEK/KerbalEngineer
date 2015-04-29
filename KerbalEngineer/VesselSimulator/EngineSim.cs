@@ -26,10 +26,10 @@ namespace KerbalEngineer.VesselSimulator
     using Helpers;
     using UnityEngine;
 
-    public class EngineSim
+    public class EngineSim : Pool<EngineSim>
     {
-        public double actualThrust = 0;
-        public List<AppliedForce> appliedForces;
+        public double actualThrust = 0.0;
+        public List<AppliedForce> appliedForces = new List<AppliedForce>();
         public bool isActive = false;
         public double isp = 0;
         public PartSim partSim;
@@ -41,7 +41,7 @@ namespace KerbalEngineer.VesselSimulator
         public Vector3 thrustVec;
         private readonly ResourceContainer resourceConsumptions = new ResourceContainer();
 
-        public EngineSim(PartSim theEngine,
+        public EngineSim Init(PartSim theEngine,
             double atmosphere,
             float machNumber,
             float maxFuelFlow,
@@ -61,9 +61,14 @@ namespace KerbalEngineer.VesselSimulator
         {
             StringBuilder buffer = null;
 
+            isp = 0.0;
+            maxMach = 0.0f;
+            actualThrust = 0.0;
             partSim = theEngine;
             isActive = active;
             thrustVec = vecThrust;
+            resourceConsumptions.Reset();
+            appliedForces.Clear();
 
             double flowRate = 0.0;
             if (partSim.hasVessel)
@@ -134,7 +139,7 @@ namespace KerbalEngineer.VesselSimulator
                 MonoBehaviour.print(buffer);
             }
 
-            appliedForces = new List<AppliedForce>();
+            appliedForces.Clear();
             double thrustPerThrustTransform = thrust / thrustTransforms.Count;
             foreach (Transform thrustTransform in thrustTransforms)
             {
@@ -142,6 +147,8 @@ namespace KerbalEngineer.VesselSimulator
                 Vector3d position = thrustTransform.position;
                 appliedForces.Add(new AppliedForce(direction * thrustPerThrustTransform, position));
             }
+
+            return this;
         }
 
         public ResourceContainer ResourceConsumptions

@@ -196,7 +196,7 @@ namespace KerbalEngineer.VesselSimulator
 
                         Vector3 thrustvec = this.CalculateThrustVector(vectoredThrust ? engine.thrustTransforms : null, log);
 
-                        EngineSim engineSim = new EngineSim(this,
+                        EngineSim engineSim = EngineSim.GetPoolObject().Init(this,
                             atmosphere,
                             (float)mach,
                             engine.maxFuelFlow,
@@ -230,7 +230,7 @@ namespace KerbalEngineer.VesselSimulator
 
                         Vector3 thrustvec = this.CalculateThrustVector(vectoredThrust ? engine.thrustTransforms : null, log);
 
-                        EngineSim engineSim = new EngineSim(this,
+                        EngineSim engineSim = EngineSim.GetPoolObject().Init(this,
                             atmosphere,
                             (float)mach,
                             engine.maxFuelFlow,

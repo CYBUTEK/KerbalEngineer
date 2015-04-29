@@ -134,7 +134,7 @@ namespace KerbalEngineer.VesselSimulator
 
         public void Reset()
         {
-            this.resources = new Hashtable();
+            this.resources.Clear();
         }
 
         public void Debug()

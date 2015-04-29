@@ -287,6 +287,7 @@ namespace KerbalEngineer.VesselSimulator
             try
             {
                 Stages = (simObject as Simulation).RunSimulation();
+
                 if (Stages != null && Stages.Length > 0)
                 {
                     if (logOutput)
@@ -367,7 +368,8 @@ namespace KerbalEngineer.VesselSimulator
                 // This call doesn't ever fail at the moment but we'll check and return a sensible error for display
                 if (simulation.PrepareSimulation(parts, Gravity, Atmosphere, Mach, dumpTree, vectoredThrust))
                 {
-                    ThreadPool.QueueUserWorkItem(RunSimulation, simulation);
+                    //ThreadPool.QueueUserWorkItem(RunSimulation, simulation);
+                    RunSimulation(simulation);
                 }
                 else
                 {

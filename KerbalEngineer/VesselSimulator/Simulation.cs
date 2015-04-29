@@ -144,6 +144,8 @@ namespace KerbalEngineer.VesselSimulator
             activeEngines.Clear();
             drainingResources.Clear();
 
+            EngineSim.ReleaseAll();
+
             // A dictionary for fast lookup of Part->PartSim during the preparation phase
             partSimLookup.Clear();
 

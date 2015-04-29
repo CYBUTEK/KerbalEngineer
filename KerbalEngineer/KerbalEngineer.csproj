@@ -199,6 +199,7 @@
     <Compile Include="UIControls\WindowObject.cs" />
     <Compile Include="VesselSimulator\AttachNodeSim.cs" />
     <Compile Include="VesselSimulator\EngineSim.cs" />
+    <Compile Include="Helpers\Pool.cs" />
     <Compile Include="VesselSimulator\PartSim.cs" />
     <Compile Include="VesselSimulator\ResourceContainer.cs" />
     <Compile Include="VesselSimulator\SimManager.cs" />
