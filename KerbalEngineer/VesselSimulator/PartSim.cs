@@ -34,7 +34,7 @@ namespace KerbalEngineer.VesselSimulator
 {
     using CompoundParts;
 
-    public class PartSim
+    public class PartSim : Pool<PartSim>
     {
         private readonly List<AttachNodeSim> attachNodes = new List<AttachNodeSim>();
         public Vector3d centerOfMass;
@@ -71,8 +71,47 @@ namespace KerbalEngineer.VesselSimulator
         public String vesselName;
         public VesselType vesselType;
 
-        public PartSim(Part thePart, int id, double atmosphere, LogMsg log)
+        private static void Reset(PartSim partSim)
         {
+            partSim.attachNodes.Clear();
+            partSim.fuelTargets.Clear();
+            partSim.resourceDrains.Reset();
+            partSim.resourceFlowStates.Reset();
+            partSim.resources.Reset();
+            partSim.baseMass = 0.0;
+            partSim.startMass = 0.0;
+            partSim.centerOfMass = Vector3d.zero;
+            partSim.cost = 0.0;
+            partSim.decoupledInStage = 0;
+            partSim.fuelCrossFeed = false;
+            partSim.hasModuleEngines = false;
+            partSim.hasModuleEnginesFX = false;
+            partSim.hasMultiModeEngine = false;
+            partSim.hasVessel = false;
+            partSim.initialVesselName = null;
+            partSim.inverseStage = 0;
+            partSim.isDecoupler = false;
+            partSim.isEngine = false;
+            partSim.isFuelLine = false;
+            partSim.isFuelTank = false;
+            partSim.isLanded = false;
+            partSim.isNoPhysics = false;
+            partSim.isSepratron = false;
+            partSim.localCorrectThrust = false;
+            partSim.name = null;
+            partSim.noCrossFeedNodeKey = null;
+            partSim.parent = null;
+            partSim.parentAttach = AttachModes.SRF_ATTACH;
+            partSim.part = null;
+            partSim.partId = 0;
+            partSim.vesselName = null;
+            partSim.vesselType = VesselType.Base;
+        }
+
+        public PartSim Initialise(Part thePart, int id, double atmosphere, LogMsg log)
+        {
+            Reset(this);
+
             this.part = thePart;
             this.centerOfMass = thePart.transform.TransformPoint(thePart.CoMOffset);
             this.partId = id;
@@ -152,6 +191,8 @@ namespace KerbalEngineer.VesselSimulator
             {
                 MonoBehaviour.print("Created " + this.name + ". Decoupled in stage " + this.decoupledInStage);
             }
+
+            return this;
         }
 
         public ResourceContainer Resources
@@ -196,7 +237,7 @@ namespace KerbalEngineer.VesselSimulator
 
                         Vector3 thrustvec = this.CalculateThrustVector(vectoredThrust ? engine.thrustTransforms : null, log);
 
-                        EngineSim engineSim = EngineSim.GetPoolObject().Init(this,
+                        EngineSim engineSim = EngineSim.GetPoolObject().Initialise(this,
                             atmosphere,
                             (float)mach,
                             engine.maxFuelFlow,
@@ -230,7 +271,7 @@ namespace KerbalEngineer.VesselSimulator
 
                         Vector3 thrustvec = this.CalculateThrustVector(vectoredThrust ? engine.thrustTransforms : null, log);
 
-                        EngineSim engineSim = EngineSim.GetPoolObject().Init(this,
+                        EngineSim engineSim = EngineSim.GetPoolObject().Initialise(this,
                             atmosphere,
                             (float)mach,
                             engine.maxFuelFlow,

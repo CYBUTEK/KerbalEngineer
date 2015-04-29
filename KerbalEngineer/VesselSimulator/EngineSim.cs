@@ -41,7 +41,7 @@ namespace KerbalEngineer.VesselSimulator
         public Vector3 thrustVec;
         private readonly ResourceContainer resourceConsumptions = new ResourceContainer();
 
-        public EngineSim Init(PartSim theEngine,
+        public EngineSim Initialise(PartSim theEngine,
             double atmosphere,
             float machNumber,
             float maxFuelFlow,

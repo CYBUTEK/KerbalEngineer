@@ -32,10 +32,10 @@ namespace KerbalEngineer.VesselSimulator
 {
     using CompoundParts;
     using Extensions;
+    using Helpers;
 
     public class Simulation
     {
-        private const double STD_GRAVITY = 9.82;
         private const double SECONDS_PER_DAY = 86400;
         private readonly Stopwatch _timer = new Stopwatch();
         private List<EngineSim> activeEngines = new List<EngineSim>();
@@ -144,6 +144,7 @@ namespace KerbalEngineer.VesselSimulator
             activeEngines.Clear();
             drainingResources.Clear();
 
+            PartSim.ReleaseAll();
             EngineSim.ReleaseAll();
 
             // A dictionary for fast lookup of Part->PartSim during the preparation phase
@@ -170,7 +171,7 @@ namespace KerbalEngineer.VesselSimulator
                 }
 
                 // Create the PartSim
-                PartSim partSim = new PartSim(part, partId, this.atmosphere, log);
+                PartSim partSim = PartSim.GetPoolObject().Initialise(part, partId, this.atmosphere, log);
 
                 // Add it to the Part lookup dictionary and the necessary lists
                 partSimLookup.Add(part, partSim);
@@ -504,7 +505,7 @@ namespace KerbalEngineer.VesselSimulator
                     // If we have drained anything and the masses make sense then add this step's deltaV to the stage total
                     if (resourceDrainTime > 0d && this.stepStartMass > this.stepEndMass && this.stepStartMass > 0d && this.stepEndMass > 0d)
                     {
-                        this.vecStageDeltaV += this.vecThrust * (float)((this.currentisp * STD_GRAVITY * Math.Log(this.stepStartMass / this.stepEndMass)) / this.simpleTotalThrust);
+                        this.vecStageDeltaV += this.vecThrust * (float)((this.currentisp * Units.GRAVITY * Math.Log(this.stepStartMass / this.stepEndMass)) / this.simpleTotalThrust);
                     }
 
                     // Update the active engines and resource drains for the next step
@@ -548,7 +549,7 @@ namespace KerbalEngineer.VesselSimulator
                 // Note: If the mass doesn't change then this is a divide by zero
                 if (this.stageStartMass != this.stepStartMass)
                 {
-                    stage.isp = stage.deltaV / (STD_GRAVITY * Math.Log(this.stageStartMass / this.stepStartMass));
+                    stage.isp = stage.deltaV / (Units.GRAVITY * Math.Log(this.stageStartMass / this.stepStartMass));
                 }
                 else
                 {
