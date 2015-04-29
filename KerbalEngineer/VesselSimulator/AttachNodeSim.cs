@@ -19,42 +19,44 @@
 
 #region Using Directives
 
-using System;
-using System.Text;
-
 #endregion
 
 namespace KerbalEngineer.VesselSimulator
 {
-    internal class AttachNodeSim
+    using System;
+    using System.Text;
+
+    internal class AttachNodeSim : Pool<AttachNodeSim>
     {
         public PartSim attachedPartSim;
         public String id;
         public AttachNode.NodeType nodeType;
 
-        public AttachNodeSim(PartSim partSim, String newId, AttachNode.NodeType newNodeType)
-        {
-            this.attachedPartSim = partSim;
-            this.nodeType = newNodeType;
-            this.id = newId;
-        }
-
         public void DumpToBuffer(StringBuilder buffer)
         {
-            if (this.attachedPartSim == null)
+            if (attachedPartSim == null)
             {
                 buffer.Append("<staged>:<n>");
             }
             else
             {
-                buffer.Append(this.attachedPartSim.name);
+                buffer.Append(attachedPartSim.name);
                 buffer.Append(":");
-                buffer.Append(this.attachedPartSim.partId);
+                buffer.Append(attachedPartSim.partId);
             }
             buffer.Append("#");
-            buffer.Append(this.nodeType);
+            buffer.Append(nodeType);
             buffer.Append(":");
-            buffer.Append(this.id);
+            buffer.Append(id);
+        }
+
+        public AttachNodeSim Initialise(PartSim partSim, String newId, AttachNode.NodeType newNodeType)
+        {
+            attachedPartSim = partSim;
+            nodeType = newNodeType;
+            id = newId;
+
+            return this;
         }
     }
 }

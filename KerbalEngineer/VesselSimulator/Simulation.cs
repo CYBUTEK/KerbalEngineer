@@ -146,6 +146,7 @@ namespace KerbalEngineer.VesselSimulator
 
             PartSim.ReleaseAll();
             EngineSim.ReleaseAll();
+            AttachNodeSim.ReleaseAll();
 
             // A dictionary for fast lookup of Part->PartSim during the preparation phase
             partSimLookup.Clear();

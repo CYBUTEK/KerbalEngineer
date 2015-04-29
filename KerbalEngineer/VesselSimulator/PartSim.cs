@@ -361,7 +361,8 @@ namespace KerbalEngineer.VesselSimulator
                 log.buf.AppendLine("SetupAttachNodes for " + this.name + ":" + this.partId + "");
             }
 
-            this.attachNodes.Clear();
+            attachNodes.Clear();
+
             foreach (AttachNode attachNode in this.part.attachNodes)
             {
                 if (log != null)
@@ -379,7 +380,7 @@ namespace KerbalEngineer.VesselSimulator
                             log.buf.AppendLine("Adding attached node " + attachedSim.name + ":" + attachedSim.partId + "");
                         }
 
-                        this.attachNodes.Add(new AttachNodeSim(attachedSim, attachNode.id, attachNode.nodeType));
+                        attachNodes.Add(AttachNodeSim.GetPoolObject().Initialise(attachedSim, attachNode.id, attachNode.nodeType));
                     }
                     else
                     {
