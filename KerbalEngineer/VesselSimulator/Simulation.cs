@@ -38,21 +38,24 @@ namespace KerbalEngineer.VesselSimulator
         private const double STD_GRAVITY = 9.82;
         private const double SECONDS_PER_DAY = 86400;
         private readonly Stopwatch _timer = new Stopwatch();
-        private List<EngineSim> activeEngines;
-        private List<EngineSim> allEngines;
-        private List<PartSim> allFuelLines;
-        private List<PartSim> allParts;
+        private List<EngineSim> activeEngines = new List<EngineSim>();
+        private List<EngineSim> allEngines = new List<EngineSim>();
+        private List<PartSim> allFuelLines = new List<PartSim>();
+        private List<PartSim> allParts = new List<PartSim>();
+        private Dictionary<Part, PartSim> partSimLookup = new Dictionary<Part, PartSim>();
         private double atmosphere;
         private int currentStage;
         private double currentisp;
         private bool doingCurrent;
-        private List<PartSim> dontStageParts;
-        private HashSet<PartSim> drainingParts;
-        private HashSet<int> drainingResources;
+        private List<PartSim> dontStageParts = new List<PartSim>();
+        List<List<PartSim>> dontStagePartsLists = new List<List<PartSim>>();
+        private HashSet<PartSim> drainingParts = new HashSet<PartSim>();
+        private HashSet<int> drainingResources = new HashSet<int>();
+        private HashSet<PartSim> decoupledParts = new HashSet<PartSim>();
         private double gravity;
 
         private int lastStage;
-        private List<Part> partList;
+        private List<Part> partList = new List<Part>();
         private double simpleTotalThrust;
         private double stageStartMass;
         private Vector3d stageStartCom;
@@ -133,16 +136,16 @@ namespace KerbalEngineer.VesselSimulator
             this.lastStage = Staging.lastStage;
             //MonoBehaviour.print("lastStage = " + lastStage);
 
-            // Create the lists for our simulation parts
-            this.allParts = new List<PartSim>();
-            this.allFuelLines = new List<PartSim>();
-            this.drainingParts = new HashSet<PartSim>();
-            this.allEngines = new List<EngineSim>();
-            this.activeEngines = new List<EngineSim>();
-            this.drainingResources = new HashSet<int>();
+            // Clear the lists for our simulation parts
+            allParts.Clear();
+            allFuelLines.Clear();
+            drainingParts.Clear();
+            allEngines.Clear();
+            activeEngines.Clear();
+            drainingResources.Clear();
 
             // A dictionary for fast lookup of Part->PartSim during the preparation phase
-            Dictionary<Part, PartSim> partSimLookup = new Dictionary<Part, PartSim>();
+            partSimLookup.Clear();
 
             if (this.partList.Count > 0 && this.partList[0].vessel != null)
             {
@@ -347,7 +350,7 @@ namespace KerbalEngineer.VesselSimulator
             }
 
             // Create a list of lists of PartSims that prevent decoupling
-            List<List<PartSim>> dontStagePartsLists = this.BuildDontStageLists(log);
+            BuildDontStageLists(log);
 
             if (log != null)
             {
@@ -617,16 +620,24 @@ namespace KerbalEngineer.VesselSimulator
             return stages;
         }
 
-        private List<List<PartSim>> BuildDontStageLists(LogMsg log)
+        private void BuildDontStageLists(LogMsg log)
         {
             if (log != null)
             {
                 log.buf.AppendLine("Creating list with capacity of " + (this.currentStage + 1));
             }
-            List<List<PartSim>> lists = new List<List<PartSim>>();
+
+            dontStagePartsLists.Clear();
             for (int i = 0; i <= this.currentStage; i++)
             {
-                lists.Add(new List<PartSim>());
+                if (i < dontStagePartsLists.Count)
+                {
+                    dontStagePartsLists[i].Clear();
+                }
+                else
+                {
+                    dontStagePartsLists.Add(new List<PartSim>());
+                }
             }
 
             foreach (PartSim partSim in this.allParts)
@@ -647,20 +658,18 @@ namespace KerbalEngineer.VesselSimulator
                     }
                     else
                     {
-                        lists[partSim.decoupledInStage + 1].Add(partSim);
+                        dontStagePartsLists[partSim.decoupledInStage + 1].Add(partSim);
                     }
                 }
             }
 
             for (int i = 1; i <= this.lastStage; i++)
             {
-                if (lists[i].Count == 0)
+                if (dontStagePartsLists[i].Count == 0)
                 {
-                    lists[i] = lists[i - 1];
+                    dontStagePartsLists[i] = dontStagePartsLists[i - 1];
                 }
             }
-
-            return lists;
         }
 
         // This function simply rebuilds the active engines by testing the isActive flag of all the engines
@@ -841,7 +850,7 @@ namespace KerbalEngineer.VesselSimulator
         private void ActivateStage()
         {
             // Build a set of all the parts that will be decoupled
-            HashSet<PartSim> decoupledParts = new HashSet<PartSim>();
+            decoupledParts.Clear();
             foreach (PartSim partSim in this.allParts)
             {
                 if (partSim.decoupledInStage >= this.currentStage)

@@ -61,6 +61,9 @@ namespace KerbalEngineer.VesselSimulator
         private static bool hasInstalledKIDS;
         private static MethodInfo KIDS_Utils_GetIspMultiplier;
         private static bool bKIDSThrustISP = false;
+        private static List<Part> parts = new List<Part>(); 
+
+        private static Simulation simulation = new Simulation();
         #endregion
 
         #region Delegates
@@ -351,7 +354,6 @@ namespace KerbalEngineer.VesselSimulator
                     timer.Start();
                 }
 
-                List<Part> parts;
                 if (HighLogic.LoadedSceneIsEditor)
                 {
                     parts = EditorLogic.fetch.ship.parts;
@@ -362,13 +364,10 @@ namespace KerbalEngineer.VesselSimulator
                     Atmosphere = FlightGlobals.ActiveVessel.staticPressurekPa * PhysicsGlobals.KpaToAtmospheres;
                 }
 
-                // Create the Simulation object in this thread
-                var sim = new Simulation();
-
                 // This call doesn't ever fail at the moment but we'll check and return a sensible error for display
-                if (sim.PrepareSimulation(parts, Gravity, Atmosphere, Mach, dumpTree, vectoredThrust))
+                if (simulation.PrepareSimulation(parts, Gravity, Atmosphere, Mach, dumpTree, vectoredThrust))
                 {
-                    ThreadPool.QueueUserWorkItem(RunSimulation, sim);
+                    ThreadPool.QueueUserWorkItem(RunSimulation, simulation);
                 }
                 else
                 {
