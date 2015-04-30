@@ -38,7 +38,7 @@ namespace KerbalEngineer.VesselSimulator
     {
         private readonly List<AttachNodeSim> attachNodes = new List<AttachNodeSim>();
         public Vector3d centerOfMass;
-        public double baseMass = 0d;
+        public double baseMass;
         public double cost;
         public int decoupledInStage;
         public bool fuelCrossFeed;
@@ -136,13 +136,11 @@ namespace KerbalEngineer.VesselSimulator
             this.cost = this.part.GetCostWet();
 
             // Work out if the part should have no physical significance
-            this.isNoPhysics = this.part.HasModule<LaunchClamp>() ||
-                               this.part.physicalSignificance == Part.PhysicalSignificance.NONE ||
-                               this.part.PhysicsSignificance == 1;
+            this.isNoPhysics = this.part.HasModule<LaunchClamp>();
 
-            if (!this.isNoPhysics)
+            if (isNoPhysics == false)
             {
-                this.baseMass = this.part.mass;
+                baseMass = part.mass;
             }
 
             if (SimManager.logOutput)
