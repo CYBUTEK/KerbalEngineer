@@ -128,6 +128,8 @@ namespace KerbalEngineer.Editor
                         return;
                     }
 
+                    PartInfoItem.ReleaseAll();
+
                     this.SetCostInfo();
                     this.SetMassItems();
                     this.SetResourceItems();
@@ -186,16 +188,16 @@ namespace KerbalEngineer.Editor
             }
 
             var alternator = this.selectedPart.GetModule<ModuleAlternator>();
-            this.infoItems.Add(new PartInfoItem("Alternator"));
+            this.infoItems.Add(PartInfoItem.Create("Alternator"));
             foreach (var resource in alternator.outputResources)
             {
-                this.infoItems.Add(new PartInfoItem("\t" + resource.name, resource.rate.ToRate()));
+                this.infoItems.Add(PartInfoItem.Create("\t" + resource.name, resource.rate.ToRate()));
             }
         }
 
         private void SetCostInfo()
         {
-            this.infoItems.Add(new PartInfoItem("Cost", Units.ConcatF(this.selectedPart.GetCostDry(), this.selectedPart.GetCostWet())));
+            this.infoItems.Add(PartInfoItem.Create("Cost", Units.ConcatF(this.selectedPart.GetCostDry(), this.selectedPart.GetCostWet())));
         }
 
         private void SetDecouplerInfo()
@@ -206,10 +208,10 @@ namespace KerbalEngineer.Editor
             }
 
             var decoupler = this.selectedPart.GetProtoModuleDecoupler();
-            this.infoItems.Add(new PartInfoItem("Ejection Force", decoupler.EjectionForce.ToForce()));
+            this.infoItems.Add(PartInfoItem.Create("Ejection Force", decoupler.EjectionForce.ToForce()));
             if (decoupler.IsOmniDecoupler)
             {
-                this.infoItems.Add(new PartInfoItem("Omni-directional"));
+                this.infoItems.Add(PartInfoItem.Create("Omni-directional"));
             }
         }
 
@@ -221,15 +223,15 @@ namespace KerbalEngineer.Editor
             }
 
             var engine = this.selectedPart.GetProtoModuleEngine();
-            this.infoItems.Add(new PartInfoItem("Thrust", Units.ToForce(engine.MinimumThrust, engine.MaximumThrust)));
-            this.infoItems.Add(new PartInfoItem("Isp", Units.ConcatF(engine.GetSpecificImpulse(1.0f), engine.GetSpecificImpulse(0.0f)) + "s"));
+            this.infoItems.Add(PartInfoItem.Create("Thrust", Units.ToForce(engine.MinimumThrust, engine.MaximumThrust)));
+            this.infoItems.Add(PartInfoItem.Create("Isp", Units.ConcatF(engine.GetSpecificImpulse(1.0f), engine.GetSpecificImpulse(0.0f)) + "s"));
             if (engine.Propellants.Count > 0)
             {
-                this.infoItems.Add(new PartInfoItem("Propellants"));
+                this.infoItems.Add(PartInfoItem.Create("Propellants"));
                 var totalRatio = engine.Propellants.Sum(p => p.ratio);
                 foreach (var propellant in engine.Propellants)
                 {
-                    this.infoItems.Add(new PartInfoItem("\t" + propellant.name, (propellant.ratio / totalRatio).ToPercent()));
+                    this.infoItems.Add(PartInfoItem.Create("\t" + propellant.name, (propellant.ratio / totalRatio).ToPercent()));
                 }
             }
         }
@@ -244,23 +246,23 @@ namespace KerbalEngineer.Editor
             var generator = this.selectedPart.GetModule<ModuleGenerator>();
             if (generator.inputList.Count > 0)
             {
-                this.infoItems.Add(new PartInfoItem("Generator Input"));
+                this.infoItems.Add(PartInfoItem.Create("Generator Input"));
                 foreach (var resource in generator.inputList)
                 {
-                    this.infoItems.Add(new PartInfoItem("\t" + resource.name, resource.rate.ToRate()));
+                    this.infoItems.Add(PartInfoItem.Create("\t" + resource.name, resource.rate.ToRate()));
                 }
             }
             if (generator.outputList.Count > 0)
             {
-                this.infoItems.Add(new PartInfoItem("Generator Output"));
+                this.infoItems.Add(PartInfoItem.Create("Generator Output"));
                 foreach (var resource in generator.outputList)
                 {
-                    this.infoItems.Add(new PartInfoItem("\t" + resource.name, resource.rate.ToRate()));
+                    this.infoItems.Add(PartInfoItem.Create("\t" + resource.name, resource.rate.ToRate()));
                 }
             }
             if (generator.isAlwaysActive)
             {
-                this.infoItems.Add(new PartInfoItem("Generator is Always Active"));
+                this.infoItems.Add(PartInfoItem.Create("Generator is Always Active"));
             }
         }
 
@@ -272,14 +274,14 @@ namespace KerbalEngineer.Editor
             }
 
             var gimbal = this.selectedPart.GetModule<ModuleGimbal>();
-            this.infoItems.Add(new PartInfoItem("Thrust Vectoring", gimbal.gimbalRange.ToString("F2")));
+            this.infoItems.Add(PartInfoItem.Create("Thrust Vectoring", gimbal.gimbalRange.ToString("F2")));
         }
 
         private void SetMassItems()
         {
             if (this.selectedPart.physicalSignificance == Part.PhysicalSignificance.FULL)
             {
-                this.infoItems.Add(new PartInfoItem("Mass", Units.ToMass(this.selectedPart.GetDryMass(), this.selectedPart.GetWetMass())));
+                this.infoItems.Add(PartInfoItem.Create("Mass", Units.ToMass(this.selectedPart.GetDryMass(), this.selectedPart.GetWetMass())));
             }
         }
 
@@ -291,9 +293,9 @@ namespace KerbalEngineer.Editor
             }
 
             var parachute = this.selectedPart.GetModule<ModuleParachute>();
-            this.infoItems.Add(new PartInfoItem("Deployed Drag", Units.ConcatF(parachute.semiDeployedDrag, parachute.fullyDeployedDrag)));
-            this.infoItems.Add(new PartInfoItem("Deployment Altitude", parachute.deployAltitude.ToDistance()));
-            this.infoItems.Add(new PartInfoItem("Deployment Pressure", parachute.minAirPressureToOpen.ToString("F2")));
+            this.infoItems.Add(PartInfoItem.Create("Deployed Drag", Units.ConcatF(parachute.semiDeployedDrag, parachute.fullyDeployedDrag)));
+            this.infoItems.Add(PartInfoItem.Create("Deployment Altitude", parachute.deployAltitude.ToDistance()));
+            this.infoItems.Add(PartInfoItem.Create("Deployment Pressure", parachute.minAirPressureToOpen.ToString("F2")));
         }
 
         private void SetRcsInfo()
@@ -304,8 +306,8 @@ namespace KerbalEngineer.Editor
             }
 
             var rcs = this.selectedPart.GetModule<ModuleRCS>();
-            this.infoItems.Add(new PartInfoItem("Thruster Power", rcs.thrusterPower.ToForce()));
-            this.infoItems.Add(new PartInfoItem("Specific Impulse", Units.ConcatF(rcs.atmosphereCurve.Evaluate(1.0f), rcs.atmosphereCurve.Evaluate(0.0f)) + "s"));
+            this.infoItems.Add(PartInfoItem.Create("Thruster Power", rcs.thrusterPower.ToForce()));
+            this.infoItems.Add(PartInfoItem.Create("Specific Impulse", Units.ConcatF(rcs.atmosphereCurve.Evaluate(1.0f), rcs.atmosphereCurve.Evaluate(0.0f)) + "s"));
         }
 
         private void SetReactionWheelInfo()
@@ -316,13 +318,13 @@ namespace KerbalEngineer.Editor
             }
 
             var reactionWheel = this.selectedPart.GetModule<ModuleReactionWheel>();
-            this.infoItems.Add(new PartInfoItem("Reaction Wheel Torque"));
-            this.infoItems.Add(new PartInfoItem("\tPitch", reactionWheel.PitchTorque.ToTorque()));
-            this.infoItems.Add(new PartInfoItem("\tRoll", reactionWheel.RollTorque.ToTorque()));
-            this.infoItems.Add(new PartInfoItem("\tYaw", reactionWheel.YawTorque.ToTorque()));
+            this.infoItems.Add(PartInfoItem.Create("Reaction Wheel Torque"));
+            this.infoItems.Add(PartInfoItem.Create("\tPitch", reactionWheel.PitchTorque.ToTorque()));
+            this.infoItems.Add(PartInfoItem.Create("\tRoll", reactionWheel.RollTorque.ToTorque()));
+            this.infoItems.Add(PartInfoItem.Create("\tYaw", reactionWheel.YawTorque.ToTorque()));
             foreach (var resource in reactionWheel.inputResources)
             {
-                this.infoItems.Add(new PartInfoItem("\t" + resource.name, resource.rate.ToRate()));
+                this.infoItems.Add(PartInfoItem.Create("\t" + resource.name, resource.rate.ToRate()));
             }
         }
 
@@ -330,12 +332,12 @@ namespace KerbalEngineer.Editor
         {
             if (this.selectedPart.Resources.list.Any(r => !r.hideFlow))
             {
-                this.infoItems.Add(new PartInfoItem("Resources"));
+                this.infoItems.Add(PartInfoItem.Create("Resources"));
                 foreach (var resource in this.selectedPart.Resources.list.Where(r => !r.hideFlow))
                 {
                     this.infoItems.Add(resource.GetDensity() > 0
-                        ? new PartInfoItem("\t" + resource.info.name, "(" + resource.GetMass().ToMass() + ") " + resource.amount.ToString("F1"))
-                        : new PartInfoItem("\t" + resource.info.name, resource.amount.ToString("F1")));
+                        ? PartInfoItem.Create("\t" + resource.info.name, "(" + resource.GetMass().ToMass() + ") " + resource.amount.ToString("F1"))
+                        : PartInfoItem.Create("\t" + resource.info.name, resource.amount.ToString("F1")));
                 }
             }
         }
@@ -344,7 +346,7 @@ namespace KerbalEngineer.Editor
         {
             if (this.selectedPart.HasModule<ModuleSAS>())
             {
-                this.infoItems.Add(new PartInfoItem("SAS Equiped"));
+                this.infoItems.Add(PartInfoItem.Create("SAS Equiped"));
             }
         }
 
@@ -352,7 +354,7 @@ namespace KerbalEngineer.Editor
         {
             if (this.selectedPart.HasModule<ModuleScienceContainer>())
             {
-                this.infoItems.Add(new PartInfoItem("Science Container"));
+                this.infoItems.Add(PartInfoItem.Create("Science Container"));
             }
         }
 
@@ -364,11 +366,11 @@ namespace KerbalEngineer.Editor
             }
 
             var experiment = this.selectedPart.GetModule<ModuleScienceExperiment>();
-            this.infoItems.Add(new PartInfoItem("Science Experiment", experiment.experimentActionName));
-            this.infoItems.Add(new PartInfoItem("\tTransmit Efficiency", experiment.xmitDataScalar.ToPercent()));
+            this.infoItems.Add(PartInfoItem.Create("Science Experiment", experiment.experimentActionName));
+            this.infoItems.Add(PartInfoItem.Create("\tTransmit Efficiency", experiment.xmitDataScalar.ToPercent()));
             if (!experiment.rerunnable)
             {
-                this.infoItems.Add(new PartInfoItem("\tSingle Usage"));
+                this.infoItems.Add(PartInfoItem.Create("\tSingle Usage"));
             }
         }
 
@@ -376,7 +378,7 @@ namespace KerbalEngineer.Editor
         {
             if (this.selectedPart.HasModule<ModuleAnimateGeneric>(m => m.isOneShot))
             {
-                this.infoItems.Add(new PartInfoItem("Single Activation"));
+                this.infoItems.Add(PartInfoItem.Create("Single Activation"));
             }
         }
 
@@ -388,14 +390,14 @@ namespace KerbalEngineer.Editor
             }
 
             var solarPanel = this.selectedPart.GetModule<ModuleDeployableSolarPanel>();
-            this.infoItems.Add(new PartInfoItem("Charge Rate", solarPanel.chargeRate.ToRate()));
+            this.infoItems.Add(PartInfoItem.Create("Charge Rate", solarPanel.chargeRate.ToRate()));
             if (solarPanel.isBreakable)
             {
-                this.infoItems.Add(new PartInfoItem("Breakable"));
+                this.infoItems.Add(PartInfoItem.Create("Breakable"));
             }
             if (solarPanel.sunTracking)
             {
-                this.infoItems.Add(new PartInfoItem("Sun Tracking"));
+                this.infoItems.Add(PartInfoItem.Create("Sun Tracking"));
             }
         }
 
@@ -407,9 +409,9 @@ namespace KerbalEngineer.Editor
             }
 
             var transmitter = this.selectedPart.GetModule<ModuleDataTransmitter>();
-            this.infoItems.Add(new PartInfoItem("Packet Size", transmitter.packetSize.ToString("F2") + " Mits"));
-            this.infoItems.Add(new PartInfoItem("Bandwidth", (transmitter.packetInterval * transmitter.packetSize).ToString("F2") + "Mits/sec"));
-            this.infoItems.Add(new PartInfoItem(transmitter.requiredResource, transmitter.packetResourceCost.ToString("F2") + "/Packet"));
+            this.infoItems.Add(PartInfoItem.Create("Packet Size", transmitter.packetSize.ToString("F2") + " Mits"));
+            this.infoItems.Add(PartInfoItem.Create("Bandwidth", (transmitter.packetInterval * transmitter.packetSize).ToString("F2") + "Mits/sec"));
+            this.infoItems.Add(PartInfoItem.Create(transmitter.requiredResource, transmitter.packetResourceCost.ToString("F2") + "/Packet"));
         }
 
         private void Window(int windowId)
