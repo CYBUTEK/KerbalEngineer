@@ -1,3 +1,7 @@
+1.0.16.5, 02-05-2015
+    Fixed: Delta-V not being correctly calculated.
+    Changed: Editor locking now uses the InputLockManager.
+
 1.0.16.4, 01-05-2015
     Fixed: Physically insignificant part mass is now accounted for.
     Changed: Module mass accounted for as it now makes its way onto the launch pad (e.g. fairings).

@@ -33,7 +33,7 @@ namespace KerbalEngineer
         /// <summary>
         ///     Current version of the Kerbal Engineer assembly.
         /// </summary>
-        public const string AssemblyVersion = "1.0.16.4";
+        public const string AssemblyVersion = "1.0.16.5";
 
         #endregion
 
