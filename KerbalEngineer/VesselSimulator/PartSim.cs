@@ -19,26 +19,22 @@
 
 #region Using Directives
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-using KerbalEngineer.Extensions;
-
-using UnityEngine;
-
 #endregion
 
 namespace KerbalEngineer.VesselSimulator
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Text;
     using CompoundParts;
+    using Extensions;
+    using UnityEngine;
 
     public class PartSim : Pool<PartSim>
     {
-        private readonly List<AttachNodeSim> attachNodes = new List<AttachNodeSim>();
-        public Vector3d centerOfMass;
         public double baseMass;
+        public Vector3d centerOfMass;
         public double cost;
         public int decoupledInStage;
         public bool fuelCrossFeed;
@@ -70,149 +66,32 @@ namespace KerbalEngineer.VesselSimulator
         public double startMass = 0d;
         public String vesselName;
         public VesselType vesselType;
+        private readonly List<AttachNodeSim> attachNodes = new List<AttachNodeSim>();
 
-        private static void Reset(PartSim partSim)
+        public ResourceContainer ResourceDrains
         {
-            partSim.attachNodes.Clear();
-            partSim.fuelTargets.Clear();
-            partSim.resourceDrains.Reset();
-            partSim.resourceFlowStates.Reset();
-            partSim.resources.Reset();
-            partSim.baseMass = 0.0;
-            partSim.startMass = 0.0;
-            partSim.centerOfMass = Vector3d.zero;
-            partSim.cost = 0.0;
-            partSim.decoupledInStage = 0;
-            partSim.fuelCrossFeed = false;
-            partSim.hasModuleEngines = false;
-            partSim.hasModuleEnginesFX = false;
-            partSim.hasMultiModeEngine = false;
-            partSim.hasVessel = false;
-            partSim.initialVesselName = null;
-            partSim.inverseStage = 0;
-            partSim.isDecoupler = false;
-            partSim.isEngine = false;
-            partSim.isFuelLine = false;
-            partSim.isFuelTank = false;
-            partSim.isLanded = false;
-            partSim.isNoPhysics = false;
-            partSim.isSepratron = false;
-            partSim.localCorrectThrust = false;
-            partSim.name = null;
-            partSim.noCrossFeedNodeKey = null;
-            partSim.parent = null;
-            partSim.parentAttach = AttachModes.SRF_ATTACH;
-            partSim.part = null;
-            partSim.partId = 0;
-            partSim.vesselName = null;
-            partSim.vesselType = VesselType.Base;
-        }
-
-        public PartSim Initialise(Part thePart, int id, double atmosphere, LogMsg log)
-        {
-            Reset(this);
-
-            this.part = thePart;
-            this.centerOfMass = thePart.transform.TransformPoint(thePart.CoMOffset);
-            this.partId = id;
-            this.name = this.part.partInfo.name;
-
-            if (log != null)
+            get
             {
-                log.buf.AppendLine("Create PartSim for " + this.name);
+                return resourceDrains;
             }
-
-            this.parent = null;
-            this.parentAttach = part.attachMode;
-            this.fuelCrossFeed = this.part.fuelCrossFeed;
-            this.noCrossFeedNodeKey = this.part.NoCrossFeedNodeKey;
-            this.decoupledInStage = this.DecoupledInStage(this.part);
-            this.isFuelLine = this.part.HasModule<CModuleFuelLine>();
-            this.isFuelTank = this.part is FuelTank;
-            this.isSepratron = this.IsSepratron();
-            this.inverseStage = this.part.inverseStage;
-            //MonoBehaviour.print("inverseStage = " + inverseStage);
-
-            this.cost = this.part.GetCostWet();
-
-            // Work out if the part should have no physical significance
-            this.isNoPhysics = this.part.HasModule<LaunchClamp>();
-
-            if (isNoPhysics == false)
-            {
-                baseMass = part.mass;
-            }
-
-            if (SimManager.logOutput)
-            {
-                MonoBehaviour.print((this.isNoPhysics ? "Ignoring" : "Using") + " part.mass of " + this.part.mass);
-            }
-
-            for (int i = 0; i < part.Resources.Count; ++i)
-            {
-                PartResource resource = part.Resources[i];
-
-                // Make sure it isn't NaN as this messes up the part mass and hence most of the values
-                // This can happen if a resource capacity is 0 and tweakable
-                if (!Double.IsNaN(resource.amount))
-                {
-                    if (SimManager.logOutput)
-                    {
-                        MonoBehaviour.print(resource.resourceName + " = " + resource.amount);
-                    }
-
-                    this.resources.Add(resource.info.id, resource.amount);
-                    this.resourceFlowStates.Add(resource.info.id, resource.flowState ? 1 : 0);
-                }
-                else
-                {
-                    MonoBehaviour.print(resource.resourceName + " is NaN. Skipping.");
-                }
-            }
-
-            this.startMass = this.GetMass();
-
-            this.hasVessel = (this.part.vessel != null);
-            this.isLanded = this.hasVessel && this.part.vessel.Landed;
-            if (this.hasVessel)
-            {
-                this.vesselName = this.part.vessel.vesselName;
-                this.vesselType = this.part.vesselType;
-            }
-            this.initialVesselName = this.part.initialVesselName;
-
-            this.hasMultiModeEngine = this.part.HasModule<MultiModeEngine>();
-            this.hasModuleEnginesFX = this.part.HasModule<ModuleEnginesFX>();
-            this.hasModuleEngines = this.part.HasModule<ModuleEngines>();
-
-            this.isEngine = this.hasMultiModeEngine || this.hasModuleEnginesFX || this.hasModuleEngines;
-
-            if (SimManager.logOutput)
-            {
-                MonoBehaviour.print("Created " + this.name + ". Decoupled in stage " + this.decoupledInStage);
-            }
-
-            return this;
         }
 
         public ResourceContainer Resources
         {
-            get { return this.resources; }
-        }
-
-        public ResourceContainer ResourceDrains
-        {
-            get { return this.resourceDrains; }
+            get
+            {
+                return resources;
+            }
         }
 
         public void CreateEngineSims(List<EngineSim> allEngines, double atmosphere, double mach, bool vectoredThrust, bool fullThrust, LogMsg log)
         {
-            bool correctThrust = SimManager.DoesEngineUseCorrectedThrust(this.part);
+            bool correctThrust = SimManager.DoesEngineUseCorrectedThrust(part);
             if (log != null)
             {
-                log.buf.AppendLine("CreateEngineSims for " + this.name);
+                log.buf.AppendLine("CreateEngineSims for " + name);
 
-                foreach (PartModule partMod in this.part.Modules)
+                foreach (PartModule partMod in part.Modules)
                 {
                     log.buf.AppendLine("Module: " + partMod.moduleName);
                 }
@@ -220,11 +99,11 @@ namespace KerbalEngineer.VesselSimulator
                 log.buf.AppendLine("correctThrust = " + correctThrust);
             }
 
-            if (this.hasMultiModeEngine)
+            if (hasMultiModeEngine)
             {
                 // A multi-mode engine has multiple ModuleEnginesFX but only one is active at any point
                 // The mode of the engine is the engineID of the ModuleEnginesFX that is active
-                string mode = this.part.GetModule<MultiModeEngine>().mode;
+                string mode = part.GetModule<MultiModeEngine>().mode;
 
                 List<ModuleEnginesFX> engines = part.GetModules<ModuleEnginesFX>();
 
@@ -239,7 +118,7 @@ namespace KerbalEngineer.VesselSimulator
                             log.buf.AppendLine("Module: " + engine.moduleName);
                         }
 
-                        Vector3 thrustvec = this.CalculateThrustVector(vectoredThrust ? engine.thrustTransforms : null, log);
+                        Vector3 thrustvec = CalculateThrustVector(vectoredThrust ? engine.thrustTransforms : null, log);
 
                         EngineSim engineSim = EngineSim.GetPoolObject().Initialise(this,
                             atmosphere,
@@ -264,7 +143,7 @@ namespace KerbalEngineer.VesselSimulator
             }
             else
             {
-                if (this.hasModuleEngines)
+                if (hasModuleEngines)
                 {
                     List<ModuleEngines> engines = part.GetModules<ModuleEngines>();
                     for (int i = 0; i < engines.Count; ++i)
@@ -275,7 +154,7 @@ namespace KerbalEngineer.VesselSimulator
                             log.buf.AppendLine("Module: " + engine.moduleName);
                         }
 
-                        Vector3 thrustvec = this.CalculateThrustVector(vectoredThrust ? engine.thrustTransforms : null, log);
+                        Vector3 thrustvec = CalculateThrustVector(vectoredThrust ? engine.thrustTransforms : null, log);
 
                         EngineSim engineSim = EngineSim.GetPoolObject().Initialise(this,
                             atmosphere,
@@ -305,59 +184,405 @@ namespace KerbalEngineer.VesselSimulator
             }
         }
 
-        private Vector3 CalculateThrustVector(List<Transform> thrustTransforms, LogMsg log)
+        public int DecouplerCount()
         {
-            if (thrustTransforms == null)
+            int count = 0;
+            PartSim partSim = this;
+            while (partSim != null)
             {
-                return Vector3.forward;
-            }
-
-            Vector3 thrustvec = Vector3.zero;
-            for (int i = 0; i < thrustTransforms.Count; ++i)
-            {
-                Transform trans = thrustTransforms[i];
-
-                if (log != null)
+                if (partSim.isDecoupler)
                 {
-                    log.buf.AppendFormat("Transform = ({0:g6}, {1:g6}, {2:g6})   length = {3:g6}\n", trans.forward.x, trans.forward.y, trans.forward.z, trans.forward.magnitude);
+                    count++;
                 }
 
-                thrustvec -= trans.forward;
+                partSim = partSim.parent;
             }
-
-            if (log != null)
-            {
-                log.buf.AppendFormat("ThrustVec  = ({0:g6}, {1:g6}, {2:g6})   length = {3:g6}\n", thrustvec.x, thrustvec.y, thrustvec.z, thrustvec.magnitude);
-            }
-
-            thrustvec.Normalize();
-
-            if (log != null)
-            {
-                log.buf.AppendFormat("ThrustVecN = ({0:g6}, {1:g6}, {2:g6})   length = {3:g6}\n", thrustvec.x, thrustvec.y, thrustvec.z, thrustvec.magnitude);
-            }
-
-            return thrustvec;
+            return count;
         }
 
-        public void SetupParent(Dictionary<Part, PartSim> partSimLookup, LogMsg log)
+        public void DrainResources(double time)
         {
-            if (this.part.parent != null)
+            //MonoBehaviour.print("DrainResources(" + name + ":" + partId + ", " + time + ")");
+            for (int i = 0; i < resourceDrains.Types.Count; ++i)
             {
-                this.parent = null;
-                if (partSimLookup.TryGetValue(this.part.parent, out this.parent))
+                int type = resourceDrains.Types[i];
+
+                //MonoBehaviour.print("draining " + (time * resourceDrains[type]) + " " + ResourceContainer.GetResourceName(type));
+                resources.Add(type, -time * resourceDrains[type]);
+                //MonoBehaviour.print(ResourceContainer.GetResourceName(type) + " left = " + resources[type]);
+            }
+        }
+
+        public String DumpPartAndParentsToBuffer(StringBuilder buffer, String prefix)
+        {
+            if (parent != null)
+            {
+                prefix = parent.DumpPartAndParentsToBuffer(buffer, prefix) + " ";
+            }
+
+            DumpPartToBuffer(buffer, prefix);
+
+            return prefix;
+        }
+
+        public void DumpPartToBuffer(StringBuilder buffer, String prefix, List<PartSim> allParts = null)
+        {
+            buffer.Append(prefix);
+            buffer.Append(name);
+            buffer.AppendFormat(":[id = {0:d}, decouple = {1:d}, invstage = {2:d}", partId, decoupledInStage, inverseStage);
+
+            buffer.AppendFormat(", vesselName = '{0}'", vesselName);
+            buffer.AppendFormat(", vesselType = {0}", SimManager.GetVesselTypeString(vesselType));
+            buffer.AppendFormat(", initialVesselName = '{0}'", initialVesselName);
+
+            buffer.AppendFormat(", fuelCF = {0}", fuelCrossFeed);
+            buffer.AppendFormat(", noCFNKey = '{0}'", noCrossFeedNodeKey);
+
+            buffer.AppendFormat(", isSep = {0}", isSepratron);
+
+            foreach (int type in resources.Types)
+            {
+                buffer.AppendFormat(", {0} = {1:g6}", ResourceContainer.GetResourceName(type), resources[type]);
+            }
+
+            if (attachNodes.Count > 0)
+            {
+                buffer.Append(", attached = <");
+                attachNodes[0].DumpToBuffer(buffer);
+                for (int i = 1; i < attachNodes.Count; i++)
                 {
-                    if (log != null)
+                    buffer.Append(", ");
+                    attachNodes[i].DumpToBuffer(buffer);
+                }
+                buffer.Append(">");
+            }
+
+            // Add more info here
+
+            buffer.Append("]\n");
+
+            if (allParts != null)
+            {
+                String newPrefix = prefix + " ";
+                foreach (PartSim partSim in allParts)
+                {
+                    if (partSim.parent == this)
                     {
-                        log.buf.AppendLine("Parent part is " + this.parent.name + ":" + this.parent.partId);
+                        partSim.DumpPartToBuffer(buffer, newPrefix, allParts);
                     }
+                }
+            }
+        }
+
+        public bool EmptyOf(HashSet<int> types)
+        {
+            foreach (int type in types)
+            {
+                if (resources.HasType(type) && resourceFlowStates[type] != 0 && resources[type] > SimManager.RESOURCE_MIN)
+                {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+        public double GetMass()
+        {
+            double mass = baseMass;
+
+            for (int i = 0; i < resources.Types.Count; ++i)
+            {
+                mass += resources.GetResourceMass(resources.Types[i]);
+            }
+
+            return mass;
+        }
+
+        public HashSet<PartSim> GetSourceSet(int type, List<PartSim> allParts, HashSet<PartSim> visited, LogMsg log, String indent)
+        {
+            if (log != null)
+            {
+                log.buf.AppendLine(indent + "GetSourceSet(" + ResourceContainer.GetResourceName(type) + ") for " + name + ":" + partId);
+                indent += "  ";
+            }
+
+            HashSet<PartSim> allSources = new HashSet<PartSim>();
+            HashSet<PartSim> partSources = null;
+
+            // Rule 1: Each part can be only visited once, If it is visited for second time in particular search it returns empty list.
+            if (visited.Contains(this))
+            {
+                if (log != null)
+                {
+                    log.buf.AppendLine(indent + "Returning empty set, already visited (" + name + ":" + partId + ")");
+                }
+
+                return allSources;
+            }
+
+            //if (log != null)
+            //    log.buf.AppendLine(indent + "Adding this to visited");
+
+            visited.Add(this);
+
+            // Rule 2: Part performs scan on start of every fuel pipe ending in it. This scan is done in order in which pipes were installed.
+            // Then it makes an union of fuel tank sets each pipe scan returned. If the resulting list is not empty, it is returned as result.
+            //MonoBehaviour.print("foreach fuel line");
+            for (int i = 0; i < fuelTargets.Count; ++i)
+            {
+                PartSim partSim = fuelTargets[i];
+
+                if (visited.Contains(partSim))
+                {
+                    //if (log != null)
+                    //    log.buf.AppendLine(indent + "Fuel target already visited, skipping (" + partSim.name + ":" + partSim.partId + ")");
                 }
                 else
                 {
+                    //if (log != null)
+                    //    log.buf.AppendLine(indent + "Adding fuel target as source (" + partSim.name + ":" + partSim.partId + ")");
+
+                    partSources = partSim.GetSourceSet(type, allParts, visited, log, indent);
+                    if (partSources.Count > 0)
+                    {
+                        allSources.UnionWith(partSources);
+                        partSources.Clear();
+                    }
+                }
+            }
+
+            if (allSources.Count > 0)
+            {
+                if (log != null)
+                {
+                    log.buf.AppendLine(indent + "Returning " + allSources.Count + " fuel target sources (" + name + ":" + partId + ")");
+                }
+
+                return allSources;
+            }
+
+            // Rule 3: This rule has been removed and merged with rules 4 and 7 to fix issue with fuel tanks with disabled crossfeed
+
+            // Rule 4: Part performs scan on each of its axially mounted neighbors. 
+            //  Couplers (bicoupler, tricoupler, ...) are an exception, they only scan one attach point on the single attachment side,
+            //  skip the points on the side where multiple points are. [Experiment]
+            //  Again, the part creates union of scan lists from each of its neighbor and if it is not empty, returns this list. 
+            //  The order in which mount points of a part are scanned appears to be fixed and defined by the part specification file. [Experiment]
+            if (fuelCrossFeed)
+            {
+                //MonoBehaviour.print("foreach attach node");
+                for (int i = 0; i < attachNodes.Count; ++i)
+                {
+                    AttachNodeSim attachSim = attachNodes[i];
+
+                    if (attachSim.attachedPartSim != null)
+                    {
+                        if (attachSim.nodeType == AttachNode.NodeType.Stack)
+                        {
+                            if (!(noCrossFeedNodeKey != null && noCrossFeedNodeKey.Length > 0 && attachSim.id.Contains(noCrossFeedNodeKey)))
+                            {
+                                if (visited.Contains(attachSim.attachedPartSim))
+                                {
+                                    //if (log != null)
+                                    //    log.buf.AppendLine(indent + "Attached part already visited, skipping (" + attachSim.attachedPartSim.name + ":" + attachSim.attachedPartSim.partId + ")");
+                                }
+                                else
+                                {
+                                    //if (log != null)
+                                    //    log.buf.AppendLine(indent + "Adding attached part as source (" + attachSim.attachedPartSim.name + ":" + attachSim.attachedPartSim.partId + ")");
+
+                                    partSources = attachSim.attachedPartSim.GetSourceSet(type, allParts, visited, log, indent);
+                                    if (partSources.Count > 0)
+                                    {
+                                        allSources.UnionWith(partSources);
+                                        partSources.Clear();
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+
+                if (allSources.Count > 0)
+                {
                     if (log != null)
                     {
-                        log.buf.AppendLine("No PartSim for parent part (" + this.part.parent.partInfo.name + ")");
+                        log.buf.AppendLine(indent + "Returning " + allSources.Count + " attached sources (" + name + ":" + partId + ")");
                     }
+
+                    return allSources;
+                }
+            }
+
+            // Rule 5: If the part is fuel container for searched type of fuel (i.e. it has capability to contain that type of fuel and the fuel 
+            // type was not disabled [Experiment]) and it contains fuel, it returns itself.
+            // Rule 6: If the part is fuel container for searched type of fuel (i.e. it has capability to contain that type of fuel and the fuel 
+            // type was not disabled) but it does not contain the requested fuel, it returns empty list. [Experiment]
+            if (resources.HasType(type) && resourceFlowStates[type] != 0)
+            {
+                if (resources[type] > SimManager.RESOURCE_MIN)
+                {
+                    allSources.Add(this);
+
+                    if (log != null)
+                    {
+                        log.buf.AppendLine(indent + "Returning enabled tank as only source (" + name + ":" + partId + ")");
+                    }
+                }
+
+                return allSources;
+            }
+
+            // Rule 7: If the part is radially attached to another part and it is child of that part in the ship's tree structure, it scans its 
+            // parent and returns whatever the parent scan returned. [Experiment] [Experiment]
+            if (parent != null && parentAttach == AttachModes.SRF_ATTACH)
+            {
+                if (fuelCrossFeed)
+                {
+                    if (visited.Contains(parent))
+                    {
+                        //if (log != null)
+                        //    log.buf.AppendLine(indent + "Parent part already visited, skipping (" + parent.name + ":" + parent.partId + ")");
+                    }
+                    else
+                    {
+                        allSources = parent.GetSourceSet(type, allParts, visited, log, indent);
+                        if (allSources.Count > 0)
+                        {
+                            if (log != null)
+                            {
+                                log.buf.AppendLine(indent + "Returning " + allSources.Count + " parent sources (" + name + ":" + partId + ")");
+                            }
+
+                            return allSources;
+                        }
+                    }
+                }
+            }
+
+            // Rule 8: If all preceding rules failed, part returns empty list.
+            //if (log != null)
+            //    log.buf.AppendLine(indent + "Returning empty set, no sources found (" + name + ":" + partId + ")");
+
+            return allSources;
+        }
+
+        public double GetStartMass()
+        {
+            return startMass;
+        }
+
+        public PartSim Initialise(Part thePart, int id, double atmosphere, LogMsg log)
+        {
+            Reset(this);
+
+            part = thePart;
+            centerOfMass = thePart.transform.TransformPoint(thePart.CoMOffset);
+            partId = id;
+            name = part.partInfo.name;
+
+            if (log != null)
+            {
+                log.buf.AppendLine("Create PartSim for " + name);
+            }
+
+            parent = null;
+            parentAttach = part.attachMode;
+            fuelCrossFeed = part.fuelCrossFeed;
+            noCrossFeedNodeKey = part.NoCrossFeedNodeKey;
+            decoupledInStage = DecoupledInStage(part);
+            isFuelLine = part.HasModule<CModuleFuelLine>();
+            isFuelTank = part is FuelTank;
+            isSepratron = IsSepratron();
+            inverseStage = part.inverseStage;
+            //MonoBehaviour.print("inverseStage = " + inverseStage);
+
+            cost = part.GetCostWet();
+
+            // Work out if the part should have no physical significance
+            isNoPhysics = part.HasModule<LaunchClamp>();
+
+            if (isNoPhysics == false)
+            {
+                if (part.vessel != null)
+                {
+                    baseMass = part.mass;
+                }
+                else
+                {
+                    baseMass = part.mass + part.GetModuleMass(part.mass);
+                }
+            }
+
+            if (SimManager.logOutput)
+            {
+                MonoBehaviour.print((isNoPhysics ? "Ignoring" : "Using") + " part.mass of " + part.mass);
+            }
+
+            for (int i = 0; i < part.Resources.Count; ++i)
+            {
+                PartResource resource = part.Resources[i];
+
+                // Make sure it isn't NaN as this messes up the part mass and hence most of the values
+                // This can happen if a resource capacity is 0 and tweakable
+                if (!Double.IsNaN(resource.amount))
+                {
+                    if (SimManager.logOutput)
+                    {
+                        MonoBehaviour.print(resource.resourceName + " = " + resource.amount);
+                    }
+
+                    resources.Add(resource.info.id, resource.amount);
+                    resourceFlowStates.Add(resource.info.id, resource.flowState ? 1 : 0);
+                }
+                else
+                {
+                    MonoBehaviour.print(resource.resourceName + " is NaN. Skipping.");
+                }
+            }
+
+            startMass = GetMass();
+
+            hasVessel = (part.vessel != null);
+            isLanded = hasVessel && part.vessel.Landed;
+            if (hasVessel)
+            {
+                vesselName = part.vessel.vesselName;
+                vesselType = part.vesselType;
+            }
+            initialVesselName = part.initialVesselName;
+
+            hasMultiModeEngine = part.HasModule<MultiModeEngine>();
+            hasModuleEnginesFX = part.HasModule<ModuleEnginesFX>();
+            hasModuleEngines = part.HasModule<ModuleEngines>();
+
+            isEngine = hasMultiModeEngine || hasModuleEnginesFX || hasModuleEngines;
+
+            if (SimManager.logOutput)
+            {
+                MonoBehaviour.print("Created " + name + ". Decoupled in stage " + decoupledInStage);
+            }
+
+            return this;
+        }
+
+        public void ReleasePart()
+        {
+            part = null;
+        }
+
+        public void RemoveAttachedParts(HashSet<PartSim> partSims)
+        {
+            // Loop through the attached parts
+            for (int i = 0; i < attachNodes.Count; ++i)
+            {
+                AttachNodeSim attachSim = attachNodes[i];
+
+                // If the part is in the set then "remove" it by clearing the PartSim reference
+                if (partSims.Contains(attachSim.attachedPartSim))
+                {
+                    attachSim.attachedPartSim = null;
                 }
             }
         }
@@ -366,7 +591,7 @@ namespace KerbalEngineer.VesselSimulator
         {
             if (log != null)
             {
-                log.buf.AppendLine("SetupAttachNodes for " + this.name + ":" + this.partId + "");
+                log.buf.AppendLine("SetupAttachNodes for " + name + ":" + partId + "");
             }
 
             attachNodes.Clear();
@@ -416,7 +641,7 @@ namespace KerbalEngineer.VesselSimulator
                             log.buf.AppendLine("Fuel target: " + targetSim.name + ":" + targetSim.partId);
                         }
 
-                        this.fuelTargets.Add(targetSim);
+                        fuelTargets.Add(targetSim);
                     }
                     else
                     {
@@ -429,264 +654,25 @@ namespace KerbalEngineer.VesselSimulator
             }
         }
 
-        private int DecoupledInStage(Part thePart, int stage = -1)
+        public void SetupParent(Dictionary<Part, PartSim> partSimLookup, LogMsg log)
         {
-            if (this.IsDecoupler(thePart))
+            if (part.parent != null)
             {
-                if (thePart.inverseStage > stage)
+                parent = null;
+                if (partSimLookup.TryGetValue(part.parent, out parent))
                 {
-                    stage = thePart.inverseStage;
-                }
-            }
-
-            if (thePart.parent != null)
-            {
-                stage = this.DecoupledInStage(thePart.parent, stage);
-            }
-
-            return stage;
-        }
-
-        private bool IsDecoupler(Part thePart)
-        {
-            return thePart.HasModule<ModuleDecouple>() ||
-                   thePart.HasModule<ModuleAnchoredDecoupler>();
-        }
-
-        private bool IsActiveDecoupler(Part thePart)
-        {
-            return thePart.FindModulesImplementing<ModuleDecouple>().Any(mod => !mod.isDecoupled) ||
-                   thePart.FindModulesImplementing<ModuleAnchoredDecoupler>().Any(mod => !mod.isDecoupled);
-        }
-
-        private bool IsSepratron()
-        {
-            if (!this.part.ActivatesEvenIfDisconnected)
-            {
-                return false;
-            }
-
-            if (this.part is SolidRocket)
-            {
-                return true;
-            }
-
-            var modList = this.part.Modules.OfType<ModuleEngines>();
-            if (modList.Count() == 0)
-            {
-                return false;
-            }
-
-            if (modList.First().throttleLocked)
-            {
-                return true;
-            }
-
-            return false;
-        }
-
-        public void ReleasePart()
-        {
-            this.part = null;
-        }
-
-        // All functions below this point must not rely on the part member (it may be null)
-        //
-
-        public HashSet<PartSim> GetSourceSet(int type, List<PartSim> allParts, HashSet<PartSim> visited, LogMsg log, String indent)
-        {
-            if (log != null)
-            {
-                log.buf.AppendLine(indent + "GetSourceSet(" + ResourceContainer.GetResourceName(type) + ") for " + this.name + ":" + this.partId);
-                indent += "  ";
-            }
-
-            HashSet<PartSim> allSources = new HashSet<PartSim>();
-            HashSet<PartSim> partSources = null;
-
-            // Rule 1: Each part can be only visited once, If it is visited for second time in particular search it returns empty list.
-            if (visited.Contains(this))
-            {
-                if (log != null)
-                {
-                    log.buf.AppendLine(indent + "Returning empty set, already visited (" + this.name + ":" + this.partId + ")");
-                }
-
-                return allSources;
-            }
-
-            //if (log != null)
-            //    log.buf.AppendLine(indent + "Adding this to visited");
-
-            visited.Add(this);
-
-            // Rule 2: Part performs scan on start of every fuel pipe ending in it. This scan is done in order in which pipes were installed.
-            // Then it makes an union of fuel tank sets each pipe scan returned. If the resulting list is not empty, it is returned as result.
-            //MonoBehaviour.print("foreach fuel line");
-            for (int i = 0; i < fuelTargets.Count; ++i)
-            {
-                PartSim partSim = fuelTargets[i];
-
-                if (visited.Contains(partSim))
-                {
-                    //if (log != null)
-                    //    log.buf.AppendLine(indent + "Fuel target already visited, skipping (" + partSim.name + ":" + partSim.partId + ")");
+                    if (log != null)
+                    {
+                        log.buf.AppendLine("Parent part is " + parent.name + ":" + parent.partId);
+                    }
                 }
                 else
                 {
-                    //if (log != null)
-                    //    log.buf.AppendLine(indent + "Adding fuel target as source (" + partSim.name + ":" + partSim.partId + ")");
-
-                    partSources = partSim.GetSourceSet(type, allParts, visited, log, indent);
-                    if (partSources.Count > 0)
-                    {
-                        allSources.UnionWith(partSources);
-                        partSources.Clear();
-                    }
-                }
-            }
-
-            if (allSources.Count > 0)
-            {
-                if (log != null)
-                {
-                    log.buf.AppendLine(indent + "Returning " + allSources.Count + " fuel target sources (" + this.name + ":" + this.partId + ")");
-                }
-
-                return allSources;
-            }
-
-            // Rule 3: This rule has been removed and merged with rules 4 and 7 to fix issue with fuel tanks with disabled crossfeed
-
-            // Rule 4: Part performs scan on each of its axially mounted neighbors. 
-            //  Couplers (bicoupler, tricoupler, ...) are an exception, they only scan one attach point on the single attachment side,
-            //  skip the points on the side where multiple points are. [Experiment]
-            //  Again, the part creates union of scan lists from each of its neighbor and if it is not empty, returns this list. 
-            //  The order in which mount points of a part are scanned appears to be fixed and defined by the part specification file. [Experiment]
-            if (this.fuelCrossFeed)
-            {
-                //MonoBehaviour.print("foreach attach node");
-                for (int i = 0; i < attachNodes.Count; ++i)
-                {
-                    AttachNodeSim attachSim = attachNodes[i];
-
-                    if (attachSim.attachedPartSim != null)
-                    {
-                        if (attachSim.nodeType == AttachNode.NodeType.Stack)
-                        {
-                            if (!(this.noCrossFeedNodeKey != null && this.noCrossFeedNodeKey.Length > 0 && attachSim.id.Contains(this.noCrossFeedNodeKey)))
-                            {
-                                if (visited.Contains(attachSim.attachedPartSim))
-                                {
-                                    //if (log != null)
-                                    //    log.buf.AppendLine(indent + "Attached part already visited, skipping (" + attachSim.attachedPartSim.name + ":" + attachSim.attachedPartSim.partId + ")");
-                                }
-                                else
-                                {
-                                    //if (log != null)
-                                    //    log.buf.AppendLine(indent + "Adding attached part as source (" + attachSim.attachedPartSim.name + ":" + attachSim.attachedPartSim.partId + ")");
-
-                                    partSources = attachSim.attachedPartSim.GetSourceSet(type, allParts, visited, log, indent);
-                                    if (partSources.Count > 0)
-                                    {
-                                        allSources.UnionWith(partSources);
-                                        partSources.Clear();
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-
-                if (allSources.Count > 0)
-                {
                     if (log != null)
                     {
-                        log.buf.AppendLine(indent + "Returning " + allSources.Count + " attached sources (" + this.name + ":" + this.partId + ")");
-                    }
-
-                    return allSources;
-                }
-            }
-
-            // Rule 5: If the part is fuel container for searched type of fuel (i.e. it has capability to contain that type of fuel and the fuel 
-            // type was not disabled [Experiment]) and it contains fuel, it returns itself.
-            // Rule 6: If the part is fuel container for searched type of fuel (i.e. it has capability to contain that type of fuel and the fuel 
-            // type was not disabled) but it does not contain the requested fuel, it returns empty list. [Experiment]
-            if (this.resources.HasType(type) && this.resourceFlowStates[type] != 0)
-            {
-                if (this.resources[type] > SimManager.RESOURCE_MIN)
-                {
-                    allSources.Add(this);
-
-                    if (log != null)
-                    {
-                        log.buf.AppendLine(indent + "Returning enabled tank as only source (" + this.name + ":" + this.partId + ")");
+                        log.buf.AppendLine("No PartSim for parent part (" + part.parent.partInfo.name + ")");
                     }
                 }
-
-                return allSources;
-            }
-
-            // Rule 7: If the part is radially attached to another part and it is child of that part in the ship's tree structure, it scans its 
-            // parent and returns whatever the parent scan returned. [Experiment] [Experiment]
-            if (this.parent != null && this.parentAttach == AttachModes.SRF_ATTACH)
-            {
-                if (this.fuelCrossFeed)
-                {
-                    if (visited.Contains(this.parent))
-                    {
-                        //if (log != null)
-                        //    log.buf.AppendLine(indent + "Parent part already visited, skipping (" + parent.name + ":" + parent.partId + ")");
-                    }
-                    else
-                    {
-                        allSources = this.parent.GetSourceSet(type, allParts, visited, log, indent);
-                        if (allSources.Count > 0)
-                        {
-                            if (log != null)
-                            {
-                                log.buf.AppendLine(indent + "Returning " + allSources.Count + " parent sources (" + this.name + ":" + this.partId + ")");
-                            }
-
-                            return allSources;
-                        }
-                    }
-                }
-            }
-
-            // Rule 8: If all preceding rules failed, part returns empty list.
-            //if (log != null)
-            //    log.buf.AppendLine(indent + "Returning empty set, no sources found (" + name + ":" + partId + ")");
-
-            return allSources;
-        }
-
-        public void RemoveAttachedParts(HashSet<PartSim> partSims)
-        {
-            // Loop through the attached parts
-            for (int i = 0; i < attachNodes.Count; ++i)
-            {
-                AttachNodeSim attachSim = attachNodes[i];
-
-                // If the part is in the set then "remove" it by clearing the PartSim reference
-                if (partSims.Contains(attachSim.attachedPartSim))
-                {
-                    attachSim.attachedPartSim = null;
-                }
-            }
-        }
-
-        public void DrainResources(double time)
-        {
-            //MonoBehaviour.print("DrainResources(" + name + ":" + partId + ", " + time + ")");
-            for (int i = 0; i < resourceDrains.Types.Count; ++i)
-            {
-                int type = resourceDrains.Types[i];
-
-                //MonoBehaviour.print("draining " + (time * resourceDrains[type]) + " " + ResourceContainer.GetResourceName(type));
-                this.resources.Add(type, -time * this.resourceDrains[type]);
-                //MonoBehaviour.print(ResourceContainer.GetResourceName(type) + " left = " + resources[type]);
             }
         }
 
@@ -699,9 +685,9 @@ namespace KerbalEngineer.VesselSimulator
             {
                 int type = resourceDrains.Types[i];
 
-                if (this.resourceDrains[type] > 0)
+                if (resourceDrains[type] > 0)
                 {
-                    time = Math.Min(time, this.resources[type] / this.resourceDrains[type]);
+                    time = Math.Min(time, resources[type] / resourceDrains[type]);
                     //MonoBehaviour.print("type = " + ResourceContainer.GetResourceName(type) + "  amount = " + resources[type] + "  rate = " + resourceDrains[type] + "  time = " + time);
                 }
             }
@@ -711,111 +697,132 @@ namespace KerbalEngineer.VesselSimulator
             return time;
         }
 
-        public bool EmptyOf(HashSet<int> types)
+        private static void Reset(PartSim partSim)
         {
-            foreach (int type in types)
+            partSim.attachNodes.Clear();
+            partSim.fuelTargets.Clear();
+            partSim.resourceDrains.Reset();
+            partSim.resourceFlowStates.Reset();
+            partSim.resources.Reset();
+            partSim.baseMass = 0.0;
+            partSim.startMass = 0.0;
+            partSim.centerOfMass = Vector3d.zero;
+            partSim.cost = 0.0;
+            partSim.decoupledInStage = 0;
+            partSim.fuelCrossFeed = false;
+            partSim.hasModuleEngines = false;
+            partSim.hasModuleEnginesFX = false;
+            partSim.hasMultiModeEngine = false;
+            partSim.hasVessel = false;
+            partSim.initialVesselName = null;
+            partSim.inverseStage = 0;
+            partSim.isDecoupler = false;
+            partSim.isEngine = false;
+            partSim.isFuelLine = false;
+            partSim.isFuelTank = false;
+            partSim.isLanded = false;
+            partSim.isNoPhysics = false;
+            partSim.isSepratron = false;
+            partSim.localCorrectThrust = false;
+            partSim.name = null;
+            partSim.noCrossFeedNodeKey = null;
+            partSim.parent = null;
+            partSim.parentAttach = AttachModes.SRF_ATTACH;
+            partSim.part = null;
+            partSim.partId = 0;
+            partSim.vesselName = null;
+            partSim.vesselType = VesselType.Base;
+        }
+
+        private Vector3 CalculateThrustVector(List<Transform> thrustTransforms, LogMsg log)
+        {
+            if (thrustTransforms == null)
             {
-                if (this.resources.HasType(type) && this.resourceFlowStates[type] != 0 && (double)this.resources[type] > SimManager.RESOURCE_MIN)
+                return Vector3.forward;
+            }
+
+            Vector3 thrustvec = Vector3.zero;
+            for (int i = 0; i < thrustTransforms.Count; ++i)
+            {
+                Transform trans = thrustTransforms[i];
+
+                if (log != null)
                 {
-                    return false;
+                    log.buf.AppendFormat("Transform = ({0:g6}, {1:g6}, {2:g6})   length = {3:g6}\n", trans.forward.x, trans.forward.y, trans.forward.z, trans.forward.magnitude);
+                }
+
+                thrustvec -= trans.forward;
+            }
+
+            if (log != null)
+            {
+                log.buf.AppendFormat("ThrustVec  = ({0:g6}, {1:g6}, {2:g6})   length = {3:g6}\n", thrustvec.x, thrustvec.y, thrustvec.z, thrustvec.magnitude);
+            }
+
+            thrustvec.Normalize();
+
+            if (log != null)
+            {
+                log.buf.AppendFormat("ThrustVecN = ({0:g6}, {1:g6}, {2:g6})   length = {3:g6}\n", thrustvec.x, thrustvec.y, thrustvec.z, thrustvec.magnitude);
+            }
+
+            return thrustvec;
+        }
+
+        private int DecoupledInStage(Part thePart, int stage = -1)
+        {
+            if (IsDecoupler(thePart))
+            {
+                if (thePart.inverseStage > stage)
+                {
+                    stage = thePart.inverseStage;
                 }
             }
 
-            return true;
+            if (thePart.parent != null)
+            {
+                stage = DecoupledInStage(thePart.parent, stage);
+            }
+
+            return stage;
         }
 
-        public int DecouplerCount()
+        private bool IsActiveDecoupler(Part thePart)
         {
-            int count = 0;
-            PartSim partSim = this;
-            while (partSim != null)
-            {
-                if (partSim.isDecoupler)
-                {
-                    count++;
-                }
-
-                partSim = partSim.parent;
-            }
-            return count;
+            return thePart.FindModulesImplementing<ModuleDecouple>().Any(mod => !mod.isDecoupled) ||
+                   thePart.FindModulesImplementing<ModuleAnchoredDecoupler>().Any(mod => !mod.isDecoupled);
         }
 
-        public double GetStartMass()
+        private bool IsDecoupler(Part thePart)
         {
-            return this.startMass;
+            return thePart.HasModule<ModuleDecouple>() ||
+                   thePart.HasModule<ModuleAnchoredDecoupler>();
         }
 
-        public double GetMass()
+        private bool IsSepratron()
         {
-            double mass = this.baseMass;
-
-            for (int i = 0; i < resources.Types.Count; ++i)
+            if (!part.ActivatesEvenIfDisconnected)
             {
-                mass += this.resources.GetResourceMass(resources.Types[i]);
+                return false;
             }
 
-            return mass;
-        }
-
-        public String DumpPartAndParentsToBuffer(StringBuilder buffer, String prefix)
-        {
-            if (this.parent != null)
+            if (part is SolidRocket)
             {
-                prefix = this.parent.DumpPartAndParentsToBuffer(buffer, prefix) + " ";
+                return true;
             }
 
-            this.DumpPartToBuffer(buffer, prefix);
-
-            return prefix;
-        }
-
-        public void DumpPartToBuffer(StringBuilder buffer, String prefix, List<PartSim> allParts = null)
-        {
-            buffer.Append(prefix);
-            buffer.Append(this.name);
-            buffer.AppendFormat(":[id = {0:d}, decouple = {1:d}, invstage = {2:d}", this.partId, this.decoupledInStage, this.inverseStage);
-
-            buffer.AppendFormat(", vesselName = '{0}'", this.vesselName);
-            buffer.AppendFormat(", vesselType = {0}", SimManager.GetVesselTypeString(this.vesselType));
-            buffer.AppendFormat(", initialVesselName = '{0}'", this.initialVesselName);
-
-            buffer.AppendFormat(", fuelCF = {0}", this.fuelCrossFeed);
-            buffer.AppendFormat(", noCFNKey = '{0}'", this.noCrossFeedNodeKey);
-
-            buffer.AppendFormat(", isSep = {0}", this.isSepratron);
-
-            foreach (int type in this.resources.Types)
+            IEnumerable<ModuleEngines> modList = part.Modules.OfType<ModuleEngines>();
+            if (modList.Count() == 0)
             {
-                buffer.AppendFormat(", {0} = {1:g6}", ResourceContainer.GetResourceName(type), this.resources[type]);
+                return false;
             }
 
-            if (this.attachNodes.Count > 0)
+            if (modList.First().throttleLocked)
             {
-                buffer.Append(", attached = <");
-                this.attachNodes[0].DumpToBuffer(buffer);
-                for (int i = 1; i < this.attachNodes.Count; i++)
-                {
-                    buffer.Append(", ");
-                    this.attachNodes[i].DumpToBuffer(buffer);
-                }
-                buffer.Append(">");
+                return true;
             }
 
-            // Add more info here
-
-            buffer.Append("]\n");
-
-            if (allParts != null)
-            {
-                String newPrefix = prefix + " ";
-                foreach (PartSim partSim in allParts)
-                {
-                    if (partSim.parent == this)
-                    {
-                        partSim.DumpPartToBuffer(buffer, newPrefix, allParts);
-                    }
-                }
-            }
+            return false;
         }
     }
 }
