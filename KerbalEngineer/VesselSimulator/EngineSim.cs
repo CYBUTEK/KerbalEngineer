@@ -102,22 +102,51 @@ namespace KerbalEngineer.VesselSimulator
                 flowRate = GetFlowRate(thrust, isp);
             }
 
-            float flowMass = 0.0f;
+            if (SimManager.logOutput)
+            {
+                buffer = new StringBuilder(1024);
+                buffer.AppendFormat("flowRate = {0:g6}\n", flowRate);
+            }
 
+            float flowMass = 0f;
             for (int i = 0; i < propellants.Count; ++i)
             {
                 Propellant propellant = propellants[i];
                 flowMass += propellant.ratio * ResourceContainer.GetResourceDensity(propellant.id);
+            }
+
+            if (SimManager.logOutput)
+            {
+                buffer.AppendFormat("flowMass = {0:g6}\n", flowMass);
+            }
+
+            for (int i = 0; i < propellants.Count; ++i)
+            {
+                Propellant propellant = propellants[i];
+
+                if (propellant.name == "ElectricCharge" || propellant.name == "IntakeAir")
+                {
+                    continue;
+                }
 
                 double consumptionRate = propellant.ratio * flowRate / flowMass;
+                if (SimManager.logOutput)
+                {
+                    buffer.AppendFormat("Add consumption({0}, {1}:{2:d}) = {3:g6}\n", ResourceContainer.GetResourceName(propellant.id), theEngine.name, theEngine.partId, consumptionRate);
+                }
                 resourceConsumptions.Add(propellant.id, consumptionRate);
             }
 
+            if (SimManager.logOutput)
+            {
+                MonoBehaviour.print(buffer);
+            }
+
+            appliedForces.Clear();
             double thrustPerThrustTransform = thrust / thrustTransforms.Count;
             for (int i = 0; i < thrustTransforms.Count; ++i)
             {
                 Transform thrustTransform = thrustTransforms[i];
-
                 Vector3d direction = thrustTransform.forward.normalized;
                 Vector3d position = thrustTransform.position;
                 appliedForces.Add(new AppliedForce(direction * thrustPerThrustTransform, position));
@@ -198,6 +227,7 @@ namespace KerbalEngineer.VesselSimulator
             for (int i = 0; i < resourceConsumptions.Types.Count; ++i)
             {
                 int type = resourceConsumptions.Types[i];
+
                 HashSet<PartSim> sourcePartSet = null;
                 switch (ResourceContainer.GetResourceFlowMode(type))
                 {
@@ -214,7 +244,6 @@ namespace KerbalEngineer.VesselSimulator
                         for (int j = 0; j < allParts.Count; ++j)
                         {
                             PartSim aPartSim = allParts[j];
-
                             if (aPartSim.resources[type] > SimManager.RESOURCE_MIN && aPartSim.resourceFlowStates[type] != 0)
                             {
                                 if (sourcePartSet == null)
@@ -231,10 +260,10 @@ namespace KerbalEngineer.VesselSimulator
                         Dictionary<int, HashSet<PartSim>> stagePartSets = new Dictionary<int, HashSet<PartSim>>();
                         int maxStage = -1;
 
+                        //Logger.Log(type);
                         for (int j = 0; j < allParts.Count; ++j)
                         {
                             PartSim aPartSim = allParts[j];
-
                             if (aPartSim.resources[type] <= SimManager.RESOURCE_MIN || aPartSim.resourceFlowStates[type] == 0)
                             {
                                 continue;
@@ -301,7 +330,7 @@ namespace KerbalEngineer.VesselSimulator
             }
 
             // If we don't have sources for all the needed resources then return false without setting up any drains
-            for(int i = 0; i < resourceConsumptions.Types.Count; ++i)
+            for (int i = 0; i < resourceConsumptions.Types.Count; ++i)
             {
                 int type = resourceConsumptions.Types[i];
 
