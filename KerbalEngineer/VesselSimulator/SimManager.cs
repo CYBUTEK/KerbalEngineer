@@ -302,8 +302,7 @@ namespace KerbalEngineer.VesselSimulator
             }
             catch (Exception e)
             {
-                MonoBehaviour.print("Exception in RunSimulation: " + e);
-                Logger.Exception(e);
+                Logger.Exception(e, "SimManager.RunSimulation()");
                 Stages = null;
                 LastStage = null;
                 failMessage = e.ToString();
@@ -383,8 +382,7 @@ namespace KerbalEngineer.VesselSimulator
             }
             catch (Exception e)
             {
-                MonoBehaviour.print("Exception in StartSimulation: " + e);
-                Logger.Exception(e);
+                Logger.Exception(e, "SimManager.StartSimulation()");
                 failMessage = e.ToString();
                 lock (locker)
                 {

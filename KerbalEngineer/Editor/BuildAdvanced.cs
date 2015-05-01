@@ -65,6 +65,7 @@ namespace KerbalEngineer.Editor
         private GUIStyle titleStyle;
         private bool visible = true;
         private GUIStyle windowStyle;
+        private float maxMach;
 
         #endregion
 
@@ -139,7 +140,7 @@ namespace KerbalEngineer.Editor
             }
             catch (Exception ex)
             {
-                Logger.Exception(ex);
+                Logger.Exception(ex, "BuildAdvanced.Awake()");
             }
         }
 
@@ -165,7 +166,7 @@ namespace KerbalEngineer.Editor
             }
             catch (Exception ex)
             {
-                Logger.Exception(ex);
+                Logger.Exception(ex, "BuildAdvanced.OnDestroy()");
             }
         }
 
@@ -215,7 +216,7 @@ namespace KerbalEngineer.Editor
             }
             catch (Exception ex)
             {
-                Logger.Exception(ex);
+                Logger.Exception(ex, "BuildAdvanced.OnGUI()");
             }
         }
 
@@ -228,7 +229,7 @@ namespace KerbalEngineer.Editor
             }
             catch (Exception ex)
             {
-                Logger.Exception(ex);
+                Logger.Exception(ex, "BuildAdvanced.Start()");
             }
         }
 
@@ -270,7 +271,7 @@ namespace KerbalEngineer.Editor
             }
             catch (Exception ex)
             {
-                Logger.Exception(ex, "BuildAdvanced->Update");
+                Logger.Exception(ex, "BuildAdvanced.Update()");
             }
         }
 
@@ -294,23 +295,30 @@ namespace KerbalEngineer.Editor
         /// </summary>
         private void DrawAtmosphericDetails()
         {
-            GUILayout.BeginHorizontal();
-            GUILayout.BeginVertical();
-            GUILayout.Label("Altitude: " + (Altitude * 0.001f).ToString("F1") + "km", this.settingAtmoStyle, GUILayout.Width(125.0f * GuiDisplaySize.Offset));
-            GUI.skin = HighLogic.Skin;
-            Altitude = GUILayout.HorizontalSlider(Altitude, 0.0f, (float)(CelestialBodies.SelectedBody.CelestialBody.atmosphereDepth));
-            GUI.skin = null;
-            GUILayout.EndVertical();
+            try
+            {
+                GUILayout.BeginHorizontal();
+                GUILayout.BeginVertical();
+                GUILayout.Label("Altitude: " + (Altitude * 0.001f).ToString("F1") + "km", this.settingAtmoStyle, GUILayout.Width(125.0f * GuiDisplaySize.Offset));
+                GUI.skin = HighLogic.Skin;
+                Altitude = GUILayout.HorizontalSlider(Altitude, 0.0f, (float)(CelestialBodies.SelectedBody.CelestialBody.atmosphereDepth));
+                GUI.skin = null;
+                GUILayout.EndVertical();
 
-            GUILayout.Space(5.0f);
-            
-            GUILayout.BeginVertical();
-            GUILayout.Label("Mach: " + this.atmosphericMach.ToString("F1"), this.settingAtmoStyle, GUILayout.Width(125.0f * GuiDisplaySize.Offset));
-            GUI.skin = HighLogic.Skin;
-            atmosphericMach = GUILayout.HorizontalSlider(Mathf.Clamp(atmosphericMach, 0.0f, SimManager.LastStage.maxMach), 0.0f, SimManager.LastStage.maxMach);
-            GUI.skin = null;
-            GUILayout.EndVertical();
-            GUILayout.EndHorizontal();
+                GUILayout.Space(5.0f);
+
+                GUILayout.BeginVertical();
+                GUILayout.Label("Mach: " + this.atmosphericMach.ToString("F1"), this.settingAtmoStyle, GUILayout.Width(125.0f * GuiDisplaySize.Offset));
+                GUI.skin = HighLogic.Skin;
+                atmosphericMach = GUILayout.HorizontalSlider(Mathf.Clamp(atmosphericMach, 0.0f, maxMach), 0.0f, maxMach);
+                GUI.skin = null;
+                GUILayout.EndVertical();
+                GUILayout.EndHorizontal();
+            }
+            catch (Exception ex)
+            {
+                Logger.Exception(ex, "BuildAdvanced.DrawAtmosphericDetails()");
+            }
         }
 
         private void DrawBodiesList()
@@ -590,7 +598,11 @@ namespace KerbalEngineer.Editor
 
         private void GetStageInfo()
         {
-            this.stages = SimManager.Stages;
+            stages = SimManager.Stages;
+            if (stages != null && stages.Length > 0)
+            {
+                maxMach = stages[stages.Length - 1].maxMach;
+            }
         }
 
         /// <summary>
@@ -703,7 +715,7 @@ namespace KerbalEngineer.Editor
             }
             catch (Exception ex)
             {
-                Logger.Exception(ex, "BuildAdvanced->Load");
+                Logger.Exception(ex, "BuildAdvanced.Load()");
             }
         }
 
@@ -798,7 +810,7 @@ namespace KerbalEngineer.Editor
             }
             catch (Exception ex)
             {
-                Logger.Exception(ex);
+                Logger.Exception(ex, "BuildAdvanced.Window()");
             }
         }
 
