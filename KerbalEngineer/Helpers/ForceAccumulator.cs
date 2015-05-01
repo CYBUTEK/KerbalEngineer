@@ -99,5 +99,12 @@ namespace KerbalEngineer
         {
             return GetMinTorqueForceApplicationPoint(avgApplicationPoint.Get());
         }
+
+	    public void Reset()
+	    {
+	        totalForce = Vector3d.zero;
+	        totalZeroOriginTorque = Vector3d.zero;
+            avgApplicationPoint.Reset();
+	    }
 	}
 }

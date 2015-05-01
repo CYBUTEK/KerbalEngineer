@@ -66,7 +66,7 @@ namespace KerbalEngineer.VesselSimulator
         private double totalStageFlowRate;
         private double totalStageIspFlowRate;
         private double totalStageThrust;
-        private ForceAccumulator totalStageThrustForce;
+        private ForceAccumulator totalStageThrustForce = new ForceAccumulator();
         private Vector3 vecActualThrust;
         private Vector3 vecStageDeltaV;
         private Vector3 vecThrust;
@@ -714,7 +714,7 @@ namespace KerbalEngineer.VesselSimulator
             this.totalStageActualThrust = 0d;
             this.totalStageFlowRate = 0d;
             this.totalStageIspFlowRate = 0d;
-            this.totalStageThrustForce = new ForceAccumulator();
+            this.totalStageThrustForce.Reset();
 
             // Loop through all the active engines totalling the thrust, actual thrust and mass flow rates
             // The thrust is totalled as vectors
