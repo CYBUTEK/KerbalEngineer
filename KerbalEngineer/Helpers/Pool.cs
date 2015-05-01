@@ -41,6 +41,14 @@
             }
         }
 
+        public static void Release(List<T> objList)
+        {
+            for (int i = 0; i < objList.Count; ++i)
+            {
+                Release(objList[i]);
+            }
+        }
+
         public static void ReleaseAll()
         {
             for (int i = 0; i < inUse.Count; ++i)

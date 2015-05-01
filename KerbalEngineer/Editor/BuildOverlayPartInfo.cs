@@ -17,27 +17,35 @@
 //     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // 
 
-#region Using Directives
-
-using System;
-using System.Collections.Generic;
-using System.Linq;
-
-using KerbalEngineer.Extensions;
-using KerbalEngineer.Helpers;
-
-using UnityEngine;
-
-#endregion
-
 namespace KerbalEngineer.Editor
 {
+    using System;
+    using System.Collections.Generic;
+    using Extensions;
+    using Helpers;
+    using UnityEngine;
+
     public class BuildOverlayPartInfo : MonoBehaviour
     {
-        #region Fields
-
         private static bool clickToOpen = true;
+        private static ModuleGenerator.GeneratorResource generatorResource;
+        private static ModuleAlternator moduleAlternator;
+        private static ModuleDataTransmitter moduleDataTransmitter;
+        private static ModuleDeployableSolarPanel moduleDeployableSolarPanel;
+        private static ModuleGenerator moduleGenerator;
+        private static ModuleGimbal moduleGimbal;
+        private static ModuleParachute moduleParachute;
+        private static ModuleRCS moduleRcs;
+        private static ModuleReactionWheel moduleReactionWheel;
+        private static ModuleResource moduleResource;
+        private static ModuleScienceExperiment moduleScienceExperiment;
         private static bool namesOnly;
+        private static Part part;
+        private static PartInfoItem partInfoItem;
+        private static PartResource partResource;
+        private static Propellant propellant;
+        private static PartExtensions.ProtoModuleDecoupler protoModuleDecoupler;
+        private static PartExtensions.ProtoModuleEngine protoModuleEngine;
         private static bool visible = true;
 
         private readonly List<PartInfoItem> infoItems = new List<PartInfoItem>();
@@ -47,44 +55,54 @@ namespace KerbalEngineer.Editor
         private bool showInfo;
         private bool skipFrame;
 
-        #endregion
-
-        #region Properties
-
         public static bool ClickToOpen
         {
-            get { return clickToOpen; }
-            set { clickToOpen = value; }
+            get
+            {
+                return clickToOpen;
+            }
+            set
+            {
+                clickToOpen = value;
+            }
         }
 
         public static bool Hidden { get; set; }
 
         public static bool NamesOnly
         {
-            get { return namesOnly; }
-            set { namesOnly = value; }
+            get
+            {
+                return namesOnly;
+            }
+            set
+            {
+                namesOnly = value;
+            }
         }
 
         public static bool Visible
         {
-            get { return visible; }
-            set { visible = value; }
+            get
+            {
+                return visible;
+            }
+            set
+            {
+                visible = value;
+            }
         }
-
-        #endregion
-
-        #region Methods: protected
 
         protected void OnGUI()
         {
             try
             {
-                if (!Visible || Hidden || this.selectedPart == null)
+                if (!Visible || Hidden || selectedPart == null)
                 {
                     return;
                 }
 
-                this.position = GUILayout.Window(this.GetInstanceID(), this.position, this.Window, String.Empty, BuildOverlay.WindowStyle);
+                position = GUILayout.Window(GetInstanceID(), position, Window, String.Empty, BuildOverlay.WindowStyle);
             }
             catch (Exception ex)
 
@@ -102,64 +120,66 @@ namespace KerbalEngineer.Editor
                     return;
                 }
 
-                this.position.x = Mathf.Clamp(Input.mousePosition.x + 16.0f, 0.0f, Screen.width - this.position.width);
-                this.position.y = Mathf.Clamp(Screen.height - Input.mousePosition.y, 0.0f, Screen.height - this.position.height);
-                if (this.position.x < Input.mousePosition.x + 20.0f)
+                position.x = Mathf.Clamp(Input.mousePosition.x + 16.0f, 0.0f, Screen.width - position.width);
+                position.y = Mathf.Clamp(Screen.height - Input.mousePosition.y, 0.0f, Screen.height - position.height);
+                if (position.x < Input.mousePosition.x + 20.0f)
                 {
-                    this.position.y = Mathf.Clamp(this.position.y + 20.0f, 0.0f, Screen.height - this.position.height);
+                    position.y = Mathf.Clamp(position.y + 20.0f, 0.0f, Screen.height - position.height);
                 }
-                if (this.position.x < Input.mousePosition.x + 16.0f && this.position.y < Screen.height - Input.mousePosition.y)
+                if (position.x < Input.mousePosition.x + 16.0f && position.y < Screen.height - Input.mousePosition.y)
                 {
-                    this.position.x = Input.mousePosition.x - 3 - this.position.width;
+                    position.x = Input.mousePosition.x - 3 - position.width;
                 }
 
-                this.infoItems.Clear();
-                var part = EditorLogic.fetch.ship.parts.Find(p => p.stackIcon.highlightIcon) ?? EditorLogic.SelectedPart;
+                part = EditorLogic.fetch.ship.parts.Find(p => p.stackIcon.highlightIcon) ?? EditorLogic.SelectedPart;
                 if (part != null)
                 {
-                    if (!part.Equals(this.selectedPart))
+                    if (!part.Equals(selectedPart))
                     {
-                        this.selectedPart = part;
-                        this.ResetInfo();
+                        selectedPart = part;
+                        ResetInfo();
                     }
-                    if (NamesOnly || this.skipFrame)
+                    if (NamesOnly || skipFrame)
                     {
-                        this.skipFrame = false;
+                        skipFrame = false;
                         return;
                     }
 
-                    PartInfoItem.ReleaseAll();
-
-                    this.SetCostInfo();
-                    this.SetMassItems();
-                    this.SetResourceItems();
-                    this.SetEngineInfo();
-                    this.SetAlternatorInfo();
-                    this.SetGimbalInfo();
-                    this.SetRcsInfo();
-                    this.SetParachuteInfo();
-                    this.SetSasInfo();
-                    this.SetReactionWheelInfo();
-                    this.SetSolarPanelInfo();
-                    this.SetGeneratorInfo();
-                    this.SetDecouplerInfo();
-                    this.SetTransmitterInfo();
-                    this.SetScienceExperimentInfo();
-                    this.SetScienceContainerInfo();
-                    this.SetSingleActivationInfo();
-
-                    if (!this.showInfo && Input.GetMouseButtonDown(2))
+                    if (!showInfo && Input.GetMouseButtonDown(2))
                     {
-                        this.showInfo = true;
+                        showInfo = true;
                     }
-                    else if (ClickToOpen && this.showInfo && Input.GetMouseButtonDown(2))
+                    else if (ClickToOpen && showInfo && Input.GetMouseButtonDown(2))
                     {
-                        this.ResetInfo();
+                        ResetInfo();
+                    }
+
+                    if (showInfo)
+                    {
+                        PartInfoItem.Release(infoItems);
+                        infoItems.Clear();
+                        SetCostInfo();
+                        SetMassItems();
+                        SetResourceItems();
+                        SetEngineInfo();
+                        SetAlternatorInfo();
+                        SetGimbalInfo();
+                        SetRcsInfo();
+                        SetParachuteInfo();
+                        SetSasInfo();
+                        SetReactionWheelInfo();
+                        SetSolarPanelInfo();
+                        SetGeneratorInfo();
+                        SetDecouplerInfo();
+                        SetTransmitterInfo();
+                        SetScienceExperimentInfo();
+                        SetScienceContainerInfo();
+                        SetSingleActivationInfo();
                     }
                 }
                 else
                 {
-                    this.selectedPart = null;
+                    selectedPart = null;
                 }
             }
             catch (Exception ex)
@@ -168,277 +188,277 @@ namespace KerbalEngineer.Editor
             }
         }
 
-        #endregion
-
-        #region Methods: private
-
         private void ResetInfo()
         {
-            this.showInfo = !clickToOpen;
-            this.skipFrame = true;
-            this.position.width = namesOnly || clickToOpen ? 0.0f : 200.0f;
-            this.position.height = 0.0f;
+            showInfo = !clickToOpen;
+            skipFrame = true;
+            position.width = namesOnly || clickToOpen ? 0.0f : 200.0f;
+            position.height = 0.0f;
         }
 
         private void SetAlternatorInfo()
         {
-            if (!this.selectedPart.HasModule<ModuleAlternator>())
+            moduleAlternator = selectedPart.GetModule<ModuleAlternator>();
+            if (moduleAlternator != null)
             {
-                return;
-            }
-
-            var alternator = this.selectedPart.GetModule<ModuleAlternator>();
-            this.infoItems.Add(PartInfoItem.Create("Alternator"));
-            foreach (var resource in alternator.outputResources)
-            {
-                this.infoItems.Add(PartInfoItem.Create("\t" + resource.name, resource.rate.ToRate()));
+                infoItems.Add(PartInfoItem.Create("Alternator"));
+                for (int i = 0; i < moduleAlternator.outputResources.Count; ++i)
+                {
+                    moduleResource = moduleAlternator.outputResources[i];
+                    infoItems.Add(PartInfoItem.Create("\t" + moduleResource.name, moduleResource.rate.ToRate()));
+                }
             }
         }
 
         private void SetCostInfo()
         {
-            this.infoItems.Add(PartInfoItem.Create("Cost", Units.ConcatF(this.selectedPart.GetCostDry(), this.selectedPart.GetCostWet())));
+            infoItems.Add(PartInfoItem.Create("Cost", Units.ConcatF(selectedPart.GetCostDry(), selectedPart.GetCostWet())));
         }
 
         private void SetDecouplerInfo()
         {
-            if (!this.selectedPart.IsDecoupler())
+            protoModuleDecoupler = selectedPart.GetProtoModuleDecoupler();
+            if (protoModuleDecoupler != null)
             {
-                return;
-            }
-
-            var decoupler = this.selectedPart.GetProtoModuleDecoupler();
-            this.infoItems.Add(PartInfoItem.Create("Ejection Force", decoupler.EjectionForce.ToForce()));
-            if (decoupler.IsOmniDecoupler)
-            {
-                this.infoItems.Add(PartInfoItem.Create("Omni-directional"));
+                infoItems.Add(PartInfoItem.Create("Ejection Force", protoModuleDecoupler.EjectionForce.ToForce()));
+                if (protoModuleDecoupler.IsOmniDecoupler)
+                {
+                    infoItems.Add(PartInfoItem.Create("Omni-directional"));
+                }
             }
         }
 
         private void SetEngineInfo()
         {
-            if (!this.selectedPart.IsEngine())
+            protoModuleEngine = selectedPart.GetProtoModuleEngine();
+            if (protoModuleEngine != null)
             {
-                return;
-            }
-
-            var engine = this.selectedPart.GetProtoModuleEngine();
-            this.infoItems.Add(PartInfoItem.Create("Thrust", Units.ToForce(engine.MinimumThrust, engine.MaximumThrust)));
-            this.infoItems.Add(PartInfoItem.Create("Isp", Units.ConcatF(engine.GetSpecificImpulse(1.0f), engine.GetSpecificImpulse(0.0f)) + "s"));
-            if (engine.Propellants.Count > 0)
-            {
-                this.infoItems.Add(PartInfoItem.Create("Propellants"));
-                var totalRatio = engine.Propellants.Sum(p => p.ratio);
-                foreach (var propellant in engine.Propellants)
+                infoItems.Add(PartInfoItem.Create("Thrust", Units.ToForce(protoModuleEngine.MinimumThrust, protoModuleEngine.MaximumThrust)));
+                infoItems.Add(PartInfoItem.Create("Isp", Units.ConcatF(protoModuleEngine.GetSpecificImpulse(1.0f), protoModuleEngine.GetSpecificImpulse(0.0f)) + "s"));
+                if (protoModuleEngine.Propellants.Count > 0)
                 {
-                    this.infoItems.Add(PartInfoItem.Create("\t" + propellant.name, (propellant.ratio / totalRatio).ToPercent()));
+                    infoItems.Add(PartInfoItem.Create("Propellants"));
+
+                    float totalRatio = 0.0f;
+                    for (int i = 0; i < protoModuleEngine.Propellants.Count; ++i)
+                    {
+                        totalRatio = totalRatio + protoModuleEngine.Propellants[i].ratio;
+                    }
+
+                    for (int i = 0; i < protoModuleEngine.Propellants.Count; ++i)
+                    {
+                        propellant = protoModuleEngine.Propellants[i];
+                        infoItems.Add(PartInfoItem.Create("\t" + propellant.name, (propellant.ratio / totalRatio).ToPercent()));
+                    }
                 }
             }
         }
 
         private void SetGeneratorInfo()
         {
-            if (!this.selectedPart.HasModule<ModuleGenerator>())
+            moduleGenerator = selectedPart.GetModule<ModuleGenerator>();
+            if (moduleGenerator != null)
             {
-                return;
-            }
-
-            var generator = this.selectedPart.GetModule<ModuleGenerator>();
-            if (generator.inputList.Count > 0)
-            {
-                this.infoItems.Add(PartInfoItem.Create("Generator Input"));
-                foreach (var resource in generator.inputList)
+                if (moduleGenerator.inputList.Count > 0)
                 {
-                    this.infoItems.Add(PartInfoItem.Create("\t" + resource.name, resource.rate.ToRate()));
+                    infoItems.Add(PartInfoItem.Create("Generator Input"));
+                    for (int i = 0; i < moduleGenerator.inputList.Count; ++i)
+                    {
+                        generatorResource = moduleGenerator.inputList[i];
+                        infoItems.Add(PartInfoItem.Create("\t" + generatorResource.name, generatorResource.rate.ToRate()));
+                    }
                 }
-            }
-            if (generator.outputList.Count > 0)
-            {
-                this.infoItems.Add(PartInfoItem.Create("Generator Output"));
-                foreach (var resource in generator.outputList)
+                if (moduleGenerator.outputList.Count > 0)
                 {
-                    this.infoItems.Add(PartInfoItem.Create("\t" + resource.name, resource.rate.ToRate()));
+                    infoItems.Add(PartInfoItem.Create("Generator Output"));
+                    for (int i = 0; i < moduleGenerator.outputList.Count; ++i)
+                    {
+                        generatorResource = moduleGenerator.outputList[i];
+                        infoItems.Add(PartInfoItem.Create("\t" + generatorResource.name, generatorResource.rate.ToRate()));
+                    }
                 }
-            }
-            if (generator.isAlwaysActive)
-            {
-                this.infoItems.Add(PartInfoItem.Create("Generator is Always Active"));
+                if (moduleGenerator.isAlwaysActive)
+                {
+                    infoItems.Add(PartInfoItem.Create("Generator is Always Active"));
+                }
             }
         }
 
         private void SetGimbalInfo()
         {
-            if (!this.selectedPart.HasModule<ModuleGimbal>())
+            moduleGimbal = selectedPart.GetModule<ModuleGimbal>();
+            if (moduleGimbal != null)
             {
-                return;
+                infoItems.Add(PartInfoItem.Create("Thrust Vectoring", moduleGimbal.gimbalRange.ToString("F2")));
             }
-
-            var gimbal = this.selectedPart.GetModule<ModuleGimbal>();
-            this.infoItems.Add(PartInfoItem.Create("Thrust Vectoring", gimbal.gimbalRange.ToString("F2")));
         }
 
         private void SetMassItems()
         {
-            if (this.selectedPart.physicalSignificance == Part.PhysicalSignificance.FULL)
+            if (selectedPart.physicalSignificance == Part.PhysicalSignificance.FULL)
             {
-                this.infoItems.Add(PartInfoItem.Create("Mass", Units.ToMass(this.selectedPart.GetDryMass(), this.selectedPart.GetWetMass())));
+                infoItems.Add(PartInfoItem.Create("Mass", Units.ToMass(selectedPart.GetDryMass(), selectedPart.GetWetMass())));
             }
         }
 
         private void SetParachuteInfo()
         {
-            if (!this.selectedPart.HasModule<ModuleParachute>())
+            moduleParachute = selectedPart.GetModule<ModuleParachute>();
+            if (moduleParachute != null)
             {
-                return;
+                infoItems.Add(PartInfoItem.Create("Deployed Drag", Units.ConcatF(moduleParachute.semiDeployedDrag, moduleParachute.fullyDeployedDrag)));
+                infoItems.Add(PartInfoItem.Create("Deployment Altitude", moduleParachute.deployAltitude.ToDistance()));
+                infoItems.Add(PartInfoItem.Create("Deployment Pressure", moduleParachute.minAirPressureToOpen.ToString("F2")));
             }
-
-            var parachute = this.selectedPart.GetModule<ModuleParachute>();
-            this.infoItems.Add(PartInfoItem.Create("Deployed Drag", Units.ConcatF(parachute.semiDeployedDrag, parachute.fullyDeployedDrag)));
-            this.infoItems.Add(PartInfoItem.Create("Deployment Altitude", parachute.deployAltitude.ToDistance()));
-            this.infoItems.Add(PartInfoItem.Create("Deployment Pressure", parachute.minAirPressureToOpen.ToString("F2")));
         }
 
         private void SetRcsInfo()
         {
-            if (!this.selectedPart.HasModule<ModuleRCS>())
+            moduleRcs = selectedPart.GetModule<ModuleRCS>();
+            if (moduleRcs != null)
             {
-                return;
+                infoItems.Add(PartInfoItem.Create("Thruster Power", moduleRcs.thrusterPower.ToForce()));
+                infoItems.Add(PartInfoItem.Create("Specific Impulse", Units.ConcatF(moduleRcs.atmosphereCurve.Evaluate(1.0f), moduleRcs.atmosphereCurve.Evaluate(0.0f)) + "s"));
             }
-
-            var rcs = this.selectedPart.GetModule<ModuleRCS>();
-            this.infoItems.Add(PartInfoItem.Create("Thruster Power", rcs.thrusterPower.ToForce()));
-            this.infoItems.Add(PartInfoItem.Create("Specific Impulse", Units.ConcatF(rcs.atmosphereCurve.Evaluate(1.0f), rcs.atmosphereCurve.Evaluate(0.0f)) + "s"));
         }
 
         private void SetReactionWheelInfo()
         {
-            if (!this.selectedPart.HasModule<ModuleReactionWheel>())
+            moduleReactionWheel = selectedPart.GetModule<ModuleReactionWheel>();
+            if (moduleReactionWheel != null)
             {
-                return;
-            }
-
-            var reactionWheel = this.selectedPart.GetModule<ModuleReactionWheel>();
-            this.infoItems.Add(PartInfoItem.Create("Reaction Wheel Torque"));
-            this.infoItems.Add(PartInfoItem.Create("\tPitch", reactionWheel.PitchTorque.ToTorque()));
-            this.infoItems.Add(PartInfoItem.Create("\tRoll", reactionWheel.RollTorque.ToTorque()));
-            this.infoItems.Add(PartInfoItem.Create("\tYaw", reactionWheel.YawTorque.ToTorque()));
-            foreach (var resource in reactionWheel.inputResources)
-            {
-                this.infoItems.Add(PartInfoItem.Create("\t" + resource.name, resource.rate.ToRate()));
+                infoItems.Add(PartInfoItem.Create("Reaction Wheel Torque"));
+                infoItems.Add(PartInfoItem.Create("\tPitch", moduleReactionWheel.PitchTorque.ToTorque()));
+                infoItems.Add(PartInfoItem.Create("\tRoll", moduleReactionWheel.RollTorque.ToTorque()));
+                infoItems.Add(PartInfoItem.Create("\tYaw", moduleReactionWheel.YawTorque.ToTorque()));
+                for (int i = 0; i < moduleReactionWheel.inputResources.Count; ++i)
+                {
+                    moduleResource = moduleReactionWheel.inputResources[i];
+                    infoItems.Add(PartInfoItem.Create("\t" + moduleResource.name, moduleResource.rate.ToRate()));
+                }
             }
         }
 
         private void SetResourceItems()
         {
-            if (this.selectedPart.Resources.list.Any(r => !r.hideFlow))
+            bool visibleResources = false;
+            for (int i = 0; i < selectedPart.Resources.list.Count; ++i)
             {
-                this.infoItems.Add(PartInfoItem.Create("Resources"));
-                foreach (var resource in this.selectedPart.Resources.list.Where(r => !r.hideFlow))
+                if (selectedPart.Resources.list[i].hideFlow == false)
                 {
-                    this.infoItems.Add(resource.GetDensity() > 0
-                        ? PartInfoItem.Create("\t" + resource.info.name, "(" + resource.GetMass().ToMass() + ") " + resource.amount.ToString("F1"))
-                        : PartInfoItem.Create("\t" + resource.info.name, resource.amount.ToString("F1")));
+                    visibleResources = true;
+                    break;
+                }
+            }
+            if (visibleResources)
+            {
+                infoItems.Add(PartInfoItem.Create("Resources"));
+                for (int i = 0; i < selectedPart.Resources.list.Count; ++i)
+                {
+                    partResource = selectedPart.Resources.list[i];
+
+                    if (partResource.hideFlow == false)
+                    {
+                        infoItems.Add(partResource.GetDensity() > 0
+                            ? PartInfoItem.Create("\t" + partResource.info.name, "(" + partResource.GetMass().ToMass() + ") " + partResource.amount.ToString("F1"))
+                            : PartInfoItem.Create("\t" + partResource.info.name, partResource.amount.ToString("F1")));
+                    }
                 }
             }
         }
 
         private void SetSasInfo()
         {
-            if (this.selectedPart.HasModule<ModuleSAS>())
+            if (selectedPart.HasModule<ModuleSAS>())
             {
-                this.infoItems.Add(PartInfoItem.Create("SAS Equiped"));
+                infoItems.Add(PartInfoItem.Create("SAS Equiped"));
             }
         }
 
         private void SetScienceContainerInfo()
         {
-            if (this.selectedPart.HasModule<ModuleScienceContainer>())
+            if (selectedPart.HasModule<ModuleScienceContainer>())
             {
-                this.infoItems.Add(PartInfoItem.Create("Science Container"));
+                infoItems.Add(PartInfoItem.Create("Science Container"));
             }
         }
 
         private void SetScienceExperimentInfo()
         {
-            if (!this.selectedPart.HasModule<ModuleScienceExperiment>())
+            moduleScienceExperiment = selectedPart.GetModule<ModuleScienceExperiment>();
+            if (moduleScienceExperiment != null)
             {
-                return;
-            }
-
-            var experiment = this.selectedPart.GetModule<ModuleScienceExperiment>();
-            this.infoItems.Add(PartInfoItem.Create("Science Experiment", experiment.experimentActionName));
-            this.infoItems.Add(PartInfoItem.Create("\tTransmit Efficiency", experiment.xmitDataScalar.ToPercent()));
-            if (!experiment.rerunnable)
-            {
-                this.infoItems.Add(PartInfoItem.Create("\tSingle Usage"));
+                infoItems.Add(PartInfoItem.Create("Science Experiment", moduleScienceExperiment.experimentActionName));
+                infoItems.Add(PartInfoItem.Create("\tTransmit Efficiency", moduleScienceExperiment.xmitDataScalar.ToPercent()));
+                if (moduleScienceExperiment.rerunnable == false)
+                {
+                    infoItems.Add(PartInfoItem.Create("\tSingle Usage"));
+                }
             }
         }
 
         private void SetSingleActivationInfo()
         {
-            if (this.selectedPart.HasModule<ModuleAnimateGeneric>(m => m.isOneShot))
+            if (selectedPart.HasModule<ModuleAnimateGeneric>(m => m.isOneShot))
             {
-                this.infoItems.Add(PartInfoItem.Create("Single Activation"));
+                infoItems.Add(PartInfoItem.Create("Single Activation"));
             }
         }
 
         private void SetSolarPanelInfo()
         {
-            if (!this.selectedPart.HasModule<ModuleDeployableSolarPanel>())
+            moduleDeployableSolarPanel = selectedPart.GetModule<ModuleDeployableSolarPanel>();
+            if (moduleDeployableSolarPanel != null)
             {
-                return;
-            }
-
-            var solarPanel = this.selectedPart.GetModule<ModuleDeployableSolarPanel>();
-            this.infoItems.Add(PartInfoItem.Create("Charge Rate", solarPanel.chargeRate.ToRate()));
-            if (solarPanel.isBreakable)
-            {
-                this.infoItems.Add(PartInfoItem.Create("Breakable"));
-            }
-            if (solarPanel.sunTracking)
-            {
-                this.infoItems.Add(PartInfoItem.Create("Sun Tracking"));
+                infoItems.Add(PartInfoItem.Create("Charge Rate", moduleDeployableSolarPanel.chargeRate.ToRate()));
+                if (moduleDeployableSolarPanel.isBreakable)
+                {
+                    infoItems.Add(PartInfoItem.Create("Breakable"));
+                }
+                if (moduleDeployableSolarPanel.sunTracking)
+                {
+                    infoItems.Add(PartInfoItem.Create("Sun Tracking"));
+                }
             }
         }
 
         private void SetTransmitterInfo()
         {
-            if (!this.selectedPart.HasModule<ModuleDataTransmitter>())
+            moduleDataTransmitter = selectedPart.GetModule<ModuleDataTransmitter>();
+            if (moduleDataTransmitter != null)
             {
-                return;
+                infoItems.Add(PartInfoItem.Create("Packet Size", moduleDataTransmitter.packetSize.ToString("F2") + " Mits"));
+                infoItems.Add(PartInfoItem.Create("Bandwidth", (moduleDataTransmitter.packetInterval * moduleDataTransmitter.packetSize).ToString("F2") + "Mits/sec"));
+                infoItems.Add(PartInfoItem.Create(moduleDataTransmitter.requiredResource, moduleDataTransmitter.packetResourceCost.ToString("F2") + "/Packet"));
             }
-
-            var transmitter = this.selectedPart.GetModule<ModuleDataTransmitter>();
-            this.infoItems.Add(PartInfoItem.Create("Packet Size", transmitter.packetSize.ToString("F2") + " Mits"));
-            this.infoItems.Add(PartInfoItem.Create("Bandwidth", (transmitter.packetInterval * transmitter.packetSize).ToString("F2") + "Mits/sec"));
-            this.infoItems.Add(PartInfoItem.Create(transmitter.requiredResource, transmitter.packetResourceCost.ToString("F2") + "/Packet"));
         }
 
         private void Window(int windowId)
         {
             try
             {
-                GUILayout.Label(this.selectedPart.partInfo.title, BuildOverlay.TitleStyle);
-                if (this.showInfo)
+                GUILayout.Label(selectedPart.partInfo.title, BuildOverlay.TitleStyle);
+                if (showInfo)
                 {
-                    foreach (var item in this.infoItems)
+                    for (int i = 0; i < infoItems.Count; ++i)
                     {
+                        partInfoItem = infoItems[i];
                         GUILayout.Space(2.0f);
                         GUILayout.BeginHorizontal();
-                        if (item.Value != null)
+                        if (partInfoItem.Value != null)
                         {
-                            GUILayout.Label(item.Name + ":", BuildOverlay.NameStyle);
+                            GUILayout.Label(partInfoItem.Name + ":", BuildOverlay.NameStyle);
                             GUILayout.Space(25.0f);
-                            GUILayout.Label(item.Value, BuildOverlay.ValueStyle);
+                            GUILayout.Label(partInfoItem.Value, BuildOverlay.ValueStyle);
                         }
                         else
                         {
-                            GUILayout.Label(item.Name, BuildOverlay.NameStyle);
+                            GUILayout.Label(partInfoItem.Name, BuildOverlay.NameStyle);
                         }
                         GUILayout.EndHorizontal();
                     }
                 }
-                else if (this.infoItems.Count > 0)
+                else if (clickToOpen && namesOnly == false)
                 {
                     GUILayout.Space(2.0f);
                     GUILayout.Label("Click middle mouse to show more info...", BuildOverlay.NameStyle);
@@ -449,7 +469,5 @@ namespace KerbalEngineer.Editor
                 Logger.Exception(ex);
             }
         }
-
-        #endregion
     }
 }
