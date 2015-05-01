@@ -74,6 +74,7 @@ namespace KerbalEngineer.VesselSimulator
         private float maxMach;
         public String vesselName;
         public VesselType vesselType;
+        private WeightedVectorAverager vectorAverager = new WeightedVectorAverager();
 
         public Simulation()
         {
@@ -89,9 +90,8 @@ namespace KerbalEngineer.VesselSimulator
             {
                 double mass = 0d;
 
-                foreach (PartSim partSim in this.allParts)
-                {
-                    mass += partSim.GetMass();
+                for (int i = 0; i < allParts.Count; ++i) { 
+                    mass += allParts[i].GetMass();
                 }
 
                 return mass;
@@ -102,14 +102,15 @@ namespace KerbalEngineer.VesselSimulator
         {
             get
             {
-                WeightedVectorAverager averager = new WeightedVectorAverager();
+                vectorAverager.Reset();
 
-                foreach (PartSim partSim in this.allParts)
+                for (int i = 0; i < allParts.Count; ++i)
                 {
-                    averager.Add(partSim.centerOfMass, partSim.GetMass());
+                    PartSim partSim = allParts[i];
+                    vectorAverager.Add(partSim.centerOfMass, partSim.GetMass());
                 }
 
-                return averager.Get();
+                return vectorAverager.Get();
             }
         }
 
@@ -159,8 +160,10 @@ namespace KerbalEngineer.VesselSimulator
 
             // First we create a PartSim for each Part (giving each a unique id)
             int partId = 1;
-            foreach (Part part in this.partList)
+            for (int i = 0; i < partList.Count; ++i)
             {
+                Part part = partList[i];
+
                 // If the part is already in the lookup dictionary then log it and skip to the next part
                 if (partSimLookup.ContainsKey(part))
                 {
@@ -206,8 +209,10 @@ namespace KerbalEngineer.VesselSimulator
             // Then, in the VAB/SPH, we add the parent of each fuel line to the fuelTargets list of their targets
             if (HighLogic.LoadedSceneIsEditor)
             {
-                foreach (PartSim partSim in this.allFuelLines)
+                for (int i = 0; i < allFuelLines.Count; ++i)
                 {
+                    PartSim partSim = allFuelLines[i];
+
                     CModuleFuelLine fuelLine = partSim.part.GetModule<CModuleFuelLine>();
                     if (fuelLine.target != null)
                     {
@@ -240,8 +245,10 @@ namespace KerbalEngineer.VesselSimulator
             }
 
             //MonoBehaviour.print("SetupAttachNodes and count stages");
-            foreach (PartSim partSim in this.allParts)
+            for (int i = 0; i < allParts.Count; ++i)
             {
+                PartSim partSim = allParts[i];
+
                 partSim.SetupAttachNodes(partSimLookup, log);
                 if (partSim.decoupledInStage >= this.lastStage)
                 {
@@ -251,9 +258,9 @@ namespace KerbalEngineer.VesselSimulator
 
             // And finally release the Part references from all the PartSims
             //MonoBehaviour.print("ReleaseParts");
-            foreach (PartSim partSim in this.allParts)
-            {
-                partSim.ReleasePart();
+            for (int i = 0; i < allParts.Count; ++i)
+            { 
+                allParts[i].ReleasePart();
             }
 
             // And dereference the core's part list
@@ -298,8 +305,10 @@ namespace KerbalEngineer.VesselSimulator
             // currently active engines then generate an extra stage
             // Loop through all the engines
             bool anyActive = false;
-            foreach (EngineSim engine in this.allEngines)
+            for (int i = 0; i < allEngines.Count; ++i)
             {
+                EngineSim engine = allEngines[i];
+
                 if (log != null)
                 {
                     log.buf.AppendLine("Testing engine mod of " + engine.partSim.name + ":" + engine.partSim.partId);
@@ -427,8 +436,10 @@ namespace KerbalEngineer.VesselSimulator
 
                 // Calculate the cost and mass of this stage and add all engines and tanks that are decoupled
                 // in the next stage to the dontStageParts list
-                foreach (PartSim partSim in this.allParts)
+                for (int i = 0; i < allParts.Count; ++i)
                 {
+                    PartSim partSim = allParts[i];
+
                     if (partSim.decoupledInStage == this.currentStage - 1)
                     {
                         stage.cost += partSim.cost;
@@ -644,8 +655,10 @@ namespace KerbalEngineer.VesselSimulator
                 }
             }
 
-            foreach (PartSim partSim in this.allParts)
+            for (int i = 0; i < allParts.Count; ++i)
             {
+                PartSim partSim = allParts[i];
+
                 if (partSim.isEngine || !partSim.Resources.Empty)
                 {
                     if (log != null)
@@ -680,8 +693,10 @@ namespace KerbalEngineer.VesselSimulator
         private void UpdateActiveEngines()
         {
             this.activeEngines.Clear();
-            foreach (EngineSim engine in this.allEngines)
+            for (int i = 0; i < allEngines.Count; ++i)
             {
+                EngineSim engine = allEngines[i];
+
                 if (engine.isActive)
                 {
                     this.activeEngines.Add(engine);
@@ -703,8 +718,10 @@ namespace KerbalEngineer.VesselSimulator
 
             // Loop through all the active engines totalling the thrust, actual thrust and mass flow rates
             // The thrust is totalled as vectors
-            foreach (EngineSim engine in this.activeEngines)
+            for (int i = 0; i < activeEngines.Count; ++i)
             {
+                EngineSim engine = activeEngines[i];
+
                 this.simpleTotalThrust += engine.thrust;
                 this.vecThrust += ((float)engine.thrust * engine.thrustVec);
                 this.vecActualThrust += ((float)engine.actualThrust * engine.thrustVec);
@@ -712,8 +729,9 @@ namespace KerbalEngineer.VesselSimulator
                 this.totalStageFlowRate += engine.ResourceConsumptions.Mass;
                 this.totalStageIspFlowRate += engine.ResourceConsumptions.Mass * engine.isp;
 
-                foreach (AppliedForce f in engine.appliedForces) {
-                    this.totalStageThrustForce.AddForce(f);
+                for (int j = 0; j < engine.appliedForces.Count; ++j)
+                {
+                    this.totalStageThrustForce.AddForce(engine.appliedForces[j]);
                 }
             }
 
@@ -753,15 +771,17 @@ namespace KerbalEngineer.VesselSimulator
             this.drainingParts.Clear();
 
             // Loop through all the active engine modules
-            foreach (EngineSim engine in this.activeEngines)
+            for (int i = 0; i < activeEngines.Count; ++i)
             {
+                EngineSim engine = activeEngines[i];
+
                 // Set the resource drains for this engine
                 if (engine.SetResourceDrains(this.allParts, this.allFuelLines, this.drainingParts))
                 {
                     // If it is active then add the consumed resource types to the set
-                    foreach (int type in engine.ResourceConsumptions.Types)
-                    {
-                        this.drainingResources.Add(type);
+                    for (int j = 0; j < engine.ResourceConsumptions.Types.Count; ++j)
+                    { 
+                        drainingResources.Add(engine.ResourceConsumptions.Types[j]);
                     }
                 }
             }
@@ -795,8 +815,10 @@ namespace KerbalEngineer.VesselSimulator
 
             if (this.activeEngines.Count > 0)
             {
-                foreach (PartSim partSim in this.dontStageParts)
+                for (int i = 0; i < dontStageParts.Count; ++i)
                 {
+                    PartSim partSim = dontStageParts[i];
+
                     if (SimManager.logOutput)
                     {
                         partSim.DumpPartToBuffer(buffer, "Testing: ");
@@ -815,8 +837,10 @@ namespace KerbalEngineer.VesselSimulator
 
                     if (partSim.isEngine)
                     {
-                        foreach (EngineSim engine in this.activeEngines)
+                        for (int j = 0; j < activeEngines.Count; ++j)
                         {
+                            EngineSim engine = activeEngines[j];
+
                             if (engine.partSim == partSim)
                             {
                                 if (SimManager.logOutput)
@@ -855,8 +879,10 @@ namespace KerbalEngineer.VesselSimulator
         {
             // Build a set of all the parts that will be decoupled
             decoupledParts.Clear();
-            foreach (PartSim partSim in this.allParts)
+            for (int i = 0; i < allParts.Count; ++i)
             {
+                PartSim partSim = allParts[i];
+
                 if (partSim.decoupledInStage >= this.currentStage)
                 {
                     decoupledParts.Add(partSim);
@@ -886,15 +912,15 @@ namespace KerbalEngineer.VesselSimulator
             }
 
             // Loop through all the (remaining) parts
-            foreach (PartSim partSim in this.allParts)
-            {
+            for (int i = 0; i < allParts.Count; ++i) { 
                 // Ask the part to remove all the parts that are decoupled
-                partSim.RemoveAttachedParts(decoupledParts);
+                allParts[i].RemoveAttachedParts(decoupledParts);
             }
 
             // Now we loop through all the engines and activate those that are ignited in this stage
-            foreach (EngineSim engine in this.allEngines)
+            for (int i = 0; i < allEngines.Count; ++i)
             {
+                EngineSim engine = allEngines[i];
                 if (engine.partSim.inverseStage == this.currentStage)
                 {
                     engine.isActive = true;
