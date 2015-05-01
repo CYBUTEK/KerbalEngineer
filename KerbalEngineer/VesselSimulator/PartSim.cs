@@ -148,8 +148,10 @@ namespace KerbalEngineer.VesselSimulator
                 MonoBehaviour.print((this.isNoPhysics ? "Ignoring" : "Using") + " part.mass of " + this.part.mass);
             }
 
-            foreach (PartResource resource in this.part.Resources)
+            for (int i = 0; i < part.Resources.Count; ++i)
             {
+                PartResource resource = part.Resources[i];
+
                 // Make sure it isn't NaN as this messes up the part mass and hence most of the values
                 // This can happen if a resource capacity is 0 and tweakable
                 if (!Double.IsNaN(resource.amount))
@@ -224,8 +226,12 @@ namespace KerbalEngineer.VesselSimulator
                 // The mode of the engine is the engineID of the ModuleEnginesFX that is active
                 string mode = this.part.GetModule<MultiModeEngine>().mode;
 
-                foreach (ModuleEnginesFX engine in this.part.GetModules<ModuleEnginesFX>())
+                List<ModuleEnginesFX> engines = part.GetModules<ModuleEnginesFX>();
+
+                for (int i = 0; i < engines.Count; ++i)
                 {
+                    ModuleEnginesFX engine = engines[i];
+
                     if (engine.engineID == mode)
                     {
                         if (log != null)
@@ -260,8 +266,10 @@ namespace KerbalEngineer.VesselSimulator
             {
                 if (this.hasModuleEngines)
                 {
-                    foreach (ModuleEngines engine in this.part.GetModules<ModuleEngines>())
+                    List<ModuleEngines> engines = part.GetModules<ModuleEngines>();
+                    for (int i = 0; i < engines.Count; ++i)
                     {
+                        ModuleEngines engine = engines[i];
                         if (log != null)
                         {
                             log.buf.AppendLine("Module: " + engine.moduleName);
@@ -305,8 +313,10 @@ namespace KerbalEngineer.VesselSimulator
             }
 
             Vector3 thrustvec = Vector3.zero;
-            foreach (Transform trans in thrustTransforms)
+            for (int i = 0; i < thrustTransforms.Count; ++i)
             {
+                Transform trans = thrustTransforms[i];
+
                 if (log != null)
                 {
                     log.buf.AppendFormat("Transform = ({0:g6}, {1:g6}, {2:g6})   length = {3:g6}\n", trans.forward.x, trans.forward.y, trans.forward.z, trans.forward.magnitude);
@@ -361,8 +371,10 @@ namespace KerbalEngineer.VesselSimulator
 
             attachNodes.Clear();
 
-            foreach (AttachNode attachNode in this.part.attachNodes)
+            for (int i = 0; i < part.attachNodes.Count; ++i)
             {
+                AttachNode attachNode = part.attachNodes[i];
+
                 if (log != null)
                 {
                     log.buf.AppendLine("AttachNode " + attachNode.id + " = " + (attachNode.attachedPart != null ? attachNode.attachedPart.partInfo.name : "null"));
@@ -390,8 +402,10 @@ namespace KerbalEngineer.VesselSimulator
                 }
             }
 
-            foreach (Part p in this.part.fuelLookupTargets)
+            for (int i = 0; i < part.fuelLookupTargets.Count; ++i)
             {
+                Part p = part.fuelLookupTargets[i];
+
                 if (p != null)
                 {
                     PartSim targetSim;
@@ -509,9 +523,10 @@ namespace KerbalEngineer.VesselSimulator
             // Rule 2: Part performs scan on start of every fuel pipe ending in it. This scan is done in order in which pipes were installed.
             // Then it makes an union of fuel tank sets each pipe scan returned. If the resulting list is not empty, it is returned as result.
             //MonoBehaviour.print("foreach fuel line");
-
-            foreach (PartSim partSim in this.fuelTargets)
+            for (int i = 0; i < fuelTargets.Count; ++i)
             {
+                PartSim partSim = fuelTargets[i];
+
                 if (visited.Contains(partSim))
                 {
                     //if (log != null)
@@ -551,8 +566,10 @@ namespace KerbalEngineer.VesselSimulator
             if (this.fuelCrossFeed)
             {
                 //MonoBehaviour.print("foreach attach node");
-                foreach (AttachNodeSim attachSim in this.attachNodes)
+                for (int i = 0; i < attachNodes.Count; ++i)
                 {
+                    AttachNodeSim attachSim = attachNodes[i];
+
                     if (attachSim.attachedPartSim != null)
                     {
                         if (attachSim.nodeType == AttachNode.NodeType.Stack)
@@ -648,8 +665,10 @@ namespace KerbalEngineer.VesselSimulator
         public void RemoveAttachedParts(HashSet<PartSim> partSims)
         {
             // Loop through the attached parts
-            foreach (AttachNodeSim attachSim in this.attachNodes)
+            for (int i = 0; i < attachNodes.Count; ++i)
             {
+                AttachNodeSim attachSim = attachNodes[i];
+
                 // If the part is in the set then "remove" it by clearing the PartSim reference
                 if (partSims.Contains(attachSim.attachedPartSim))
                 {
@@ -661,8 +680,10 @@ namespace KerbalEngineer.VesselSimulator
         public void DrainResources(double time)
         {
             //MonoBehaviour.print("DrainResources(" + name + ":" + partId + ", " + time + ")");
-            foreach (int type in this.resourceDrains.Types)
+            for (int i = 0; i < resourceDrains.Types.Count; ++i)
             {
+                int type = resourceDrains.Types[i];
+
                 //MonoBehaviour.print("draining " + (time * resourceDrains[type]) + " " + ResourceContainer.GetResourceName(type));
                 this.resources.Add(type, -time * this.resourceDrains[type]);
                 //MonoBehaviour.print(ResourceContainer.GetResourceName(type) + " left = " + resources[type]);
@@ -674,8 +695,10 @@ namespace KerbalEngineer.VesselSimulator
             //MonoBehaviour.print("TimeToDrainResource(" + name + ":" + partId + ")");
             double time = double.MaxValue;
 
-            foreach (int type in this.resourceDrains.Types)
+            for (int i = 0; i < resourceDrains.Types.Count; ++i)
             {
+                int type = resourceDrains.Types[i];
+
                 if (this.resourceDrains[type] > 0)
                 {
                     time = Math.Min(time, this.resources[type] / this.resourceDrains[type]);
@@ -726,9 +749,9 @@ namespace KerbalEngineer.VesselSimulator
         {
             double mass = this.baseMass;
 
-            foreach (int type in this.resources.Types)
+            for (int i = 0; i < resources.Types.Count; ++i)
             {
-                mass += this.resources.GetResourceMass(type);
+                mass += this.resources.GetResourceMass(resources.Types[i]);
             }
 
             return mass;
