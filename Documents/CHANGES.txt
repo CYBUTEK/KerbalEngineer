@@ -1,3 +1,12 @@
+1.0.16.4, 01-05-2015
+    Fixed: Physically insignificant part mass is now accounted for.
+    Changed: Module mass accounted for as it now makes its way onto the launch pad (e.g. fairings).
+
+    Various optimisations:
+        Object pooling.
+        Removed LINQ expressions.
+        Converted foreach to for loops.
+
 1.0.16.3, 27-04-2015
     Fixed issue with the toolbar icons not being created.
     Removed superfluous 'm/s' on the mach slider in the build engineer.
