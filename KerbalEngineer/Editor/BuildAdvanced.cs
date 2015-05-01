@@ -640,13 +640,13 @@ namespace KerbalEngineer.Editor
         {
             if (state)
             {
-                EditorLogic.fetch.Lock(true, true, true, "KER_BuildAdvanced");
+                InputLockManager.SetControlLock(ControlTypes.All, "KER_BuildAdvanced");
                 BuildOverlayPartInfo.Hidden = true;
                 isEditorLocked = true;
             }
             else
             {
-                EditorLogic.fetch.Unlock("KER_BuildAdvanced");
+                InputLockManager.SetControlLock(ControlTypes.None, "KER_BuildAdvanced");
                 BuildOverlayPartInfo.Hidden = false;
                 isEditorLocked = false;
             }
