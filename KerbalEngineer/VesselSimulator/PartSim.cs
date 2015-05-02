@@ -18,7 +18,6 @@
 // 
 
 #region Using Directives
-
 #endregion
 
 namespace KerbalEngineer.VesselSimulator
@@ -53,7 +52,10 @@ namespace KerbalEngineer.VesselSimulator
         public bool isLanded;
         public bool isNoPhysics;
         public bool isSepratron;
+        public bool isFairing;
         public bool localCorrectThrust;
+        public float moduleMass;
+        public int stageIndex;
         public String name;
         public String noCrossFeedNodeKey;
         public PartSim parent;
@@ -287,13 +289,18 @@ namespace KerbalEngineer.VesselSimulator
             return true;
         }
 
-        public double GetMass()
+        public double GetMass(int currentStage)
         {
             double mass = baseMass;
 
             for (int i = 0; i < resources.Types.Count; ++i)
             {
                 mass += resources.GetResourceMass(resources.Types[i]);
+            }
+
+            if (hasVessel == false && isFairing && inverseStage < currentStage)
+            {
+                mass = mass + moduleMass;
             }
 
             return mass;
@@ -478,6 +485,7 @@ namespace KerbalEngineer.VesselSimulator
             Reset(this);
 
             part = thePart;
+            hasVessel = (part.vessel != null);
             centerOfMass = thePart.transform.TransformPoint(thePart.CoMOffset);
             partId = id;
             name = part.partInfo.name;
@@ -495,30 +503,23 @@ namespace KerbalEngineer.VesselSimulator
             isFuelLine = part.HasModule<CModuleFuelLine>();
             isFuelTank = part is FuelTank;
             isSepratron = IsSepratron();
+            isFairing = IsFairing(part);
             inverseStage = part.inverseStage;
+            stageIndex = part.inStageIndex;
             //MonoBehaviour.print("inverseStage = " + inverseStage);
-
-            cost = part.GetCostWet();
 
             // Work out if the part should have no physical significance
             isNoPhysics = part.HasModule<LaunchClamp>();
-
             if (isNoPhysics == false)
             {
-                if (part.vessel != null)
+                baseMass = part.mass;
+                if (hasVessel == false)
                 {
-                    baseMass = part.mass;
-                }
-                else
-                {
-                    baseMass = part.mass + part.GetModuleMass(part.mass);
+                    moduleMass = part.GetModuleMass(part.mass);
                 }
             }
 
-            if (SimManager.logOutput)
-            {
-                MonoBehaviour.print((isNoPhysics ? "Ignoring" : "Using") + " part.mass of " + part.mass);
-            }
+            cost = part.GetCostWet();
 
             for (int i = 0; i < part.Resources.Count; ++i)
             {
@@ -542,9 +543,6 @@ namespace KerbalEngineer.VesselSimulator
                 }
             }
 
-            startMass = GetMass();
-
-            hasVessel = (part.vessel != null);
             isLanded = hasVessel && part.vessel.Landed;
             if (hasVessel)
             {
@@ -558,6 +556,8 @@ namespace KerbalEngineer.VesselSimulator
             hasModuleEngines = part.HasModule<ModuleEngines>();
 
             isEngine = hasMultiModeEngine || hasModuleEnginesFX || hasModuleEngines;
+
+            startMass = GetMass(-1);
 
             if (SimManager.logOutput)
             {
@@ -723,6 +723,7 @@ namespace KerbalEngineer.VesselSimulator
             partSim.isLanded = false;
             partSim.isNoPhysics = false;
             partSim.isSepratron = false;
+            partSim.isFairing = false;
             partSim.localCorrectThrust = false;
             partSim.name = null;
             partSim.noCrossFeedNodeKey = null;
@@ -732,6 +733,8 @@ namespace KerbalEngineer.VesselSimulator
             partSim.partId = 0;
             partSim.vesselName = null;
             partSim.vesselType = VesselType.Base;
+            partSim.moduleMass = 0.0f;
+            partSim.stageIndex = 0;
         }
 
         private Vector3 CalculateThrustVector(List<Transform> thrustTransforms, LogMsg log)
@@ -797,6 +800,11 @@ namespace KerbalEngineer.VesselSimulator
         {
             return thePart.HasModule<ModuleDecouple>() ||
                    thePart.HasModule<ModuleAnchoredDecoupler>();
+        }
+
+        private bool IsFairing(Part thePart)
+        {
+            return thePart.HasModule<ModuleProceduralFairing>();
         }
 
         private bool IsSepratron()

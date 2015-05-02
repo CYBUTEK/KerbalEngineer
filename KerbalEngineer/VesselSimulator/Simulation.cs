@@ -75,6 +75,7 @@ namespace KerbalEngineer.VesselSimulator
         public String vesselName;
         public VesselType vesselType;
         private WeightedVectorAverager vectorAverager = new WeightedVectorAverager();
+        private static ModuleProceduralFairing moduleProceduralFairing;
 
         public Simulation()
         {
@@ -91,7 +92,7 @@ namespace KerbalEngineer.VesselSimulator
                 double mass = 0d;
 
                 for (int i = 0; i < allParts.Count; ++i) { 
-                    mass += allParts[i].GetMass();
+                    mass += allParts[i].GetMass(currentStage);
                 }
 
                 return mass;
@@ -107,7 +108,7 @@ namespace KerbalEngineer.VesselSimulator
                 for (int i = 0; i < allParts.Count; ++i)
                 {
                     PartSim partSim = allParts[i];
-                    vectorAverager.Add(partSim.centerOfMass, partSim.GetMass());
+                    vectorAverager.Add(partSim.centerOfMass, partSim.GetMass(currentStage));
                 }
 
                 return vectorAverager.Get();
@@ -373,7 +374,6 @@ namespace KerbalEngineer.VesselSimulator
             // Create the array of stages that will be returned
             Stage[] stages = new Stage[this.currentStage + 1];
 
-
             // Loop through the stages
             while (this.currentStage >= 0)
             {
@@ -444,6 +444,11 @@ namespace KerbalEngineer.VesselSimulator
                     {
                         stage.cost += partSim.cost;
                         stage.mass += partSim.GetStartMass();
+                    }
+
+                    if (partSim.hasVessel == false && partSim.isFairing && partSim.inverseStage == currentStage)
+                    {
+                        stage.mass += partSim.moduleMass;
                     }
                 }
 
