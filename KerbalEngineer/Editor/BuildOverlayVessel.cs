@@ -18,13 +18,11 @@
 // 
 
 #region Using Directives
-
 #endregion
 
 namespace KerbalEngineer.Editor
 {
     #region Using Directives
-
     using System;
     using System.Collections.Generic;
     using Helpers;
@@ -36,13 +34,10 @@ namespace KerbalEngineer.Editor
     public class BuildOverlayVessel : MonoBehaviour
     {
         #region Constants
-
         private const float Width = 175.0f;
-
         #endregion
 
         #region Fields
-
         private static bool visible = true;
 
         private readonly List<PartInfoItem> infoItems = new List<PartInfoItem>();
@@ -54,44 +49,61 @@ namespace KerbalEngineer.Editor
         private Rect tabPosition;
         private Vector2 tabSize;
         private Rect windowPosition = new Rect(330.0f, 0.0f, Width, 0.0f);
-
         #endregion
 
         #region Properties
-
         public static bool Visible
         {
-            get { return visible; }
-            set { visible = value; }
+            get
+            {
+                return visible;
+            }
+            set
+            {
+                visible = value;
+            }
         }
 
         public bool Open
         {
-            get { return this.open; }
-            set { this.open = value; }
+            get
+            {
+                return open;
+            }
+            set
+            {
+                open = value;
+            }
         }
 
         public Rect WindowPosition
         {
-            get { return this.windowPosition; }
+            get
+            {
+                return windowPosition;
+            }
         }
 
         public float WindowX
         {
-            get { return this.windowPosition.x; }
-            set { this.windowPosition.x = value; }
+            get
+            {
+                return windowPosition.x;
+            }
+            set
+            {
+                windowPosition.x = value;
+            }
         }
-
         #endregion
 
         #region Methods
-
         protected void Awake()
         {
             try
             {
-                SimManager.OnReady -= this.GetStageInfo;
-                SimManager.OnReady += this.GetStageInfo;
+                SimManager.OnReady -= GetStageInfo;
+                SimManager.OnReady += GetStageInfo;
             }
             catch (Exception ex)
             {
@@ -108,10 +120,10 @@ namespace KerbalEngineer.Editor
                     return;
                 }
 
-                this.open = GUI.Toggle(this.tabPosition, this.open, this.tabContent, BuildOverlay.TabStyle);
-                if (this.openPercent > 0.0)
+                open = GUI.Toggle(tabPosition, open, tabContent, BuildOverlay.TabStyle);
+                if (openPercent > 0.0)
                 {
-                    this.windowPosition = GUILayout.Window(this.GetInstanceID(), this.windowPosition, this.VesselWindow, String.Empty, BuildOverlay.WindowStyle);
+                    windowPosition = GUILayout.Window(GetInstanceID(), windowPosition, VesselWindow, String.Empty, BuildOverlay.WindowStyle);
                 }
             }
             catch (Exception ex)
@@ -124,8 +136,8 @@ namespace KerbalEngineer.Editor
         {
             try
             {
-                this.tabContent = new GUIContent("VESSEL");
-                this.tabSize = BuildOverlay.TabStyle.CalcSize(this.tabContent);
+                tabContent = new GUIContent("VESSEL");
+                tabSize = BuildOverlay.TabStyle.CalcSize(tabContent);
             }
             catch (Exception ex)
             {
@@ -142,12 +154,12 @@ namespace KerbalEngineer.Editor
                     return;
                 }
 
-                if (this.openPercent > 0.0)
+                if (openPercent > 0.0)
                 {
-                    this.SetVesselInfo();
+                    SetVesselInfo();
                 }
 
-                this.SetSlidePosition();
+                SetSlidePosition();
             }
             catch (Exception ex)
             {
@@ -157,29 +169,29 @@ namespace KerbalEngineer.Editor
 
         private void GetStageInfo()
         {
-            this.lastStage = SimManager.LastStage;
+            lastStage = SimManager.LastStage;
         }
 
         private void SetSlidePosition()
         {
-            if (this.open && this.openPercent < 1.0f)
+            if (open && openPercent < 1.0f)
             {
-                this.openPercent = Mathf.Clamp(this.openPercent + Time.deltaTime * BuildOverlay.TabSpeed, 0.0f, 1.0f);
+                openPercent = Mathf.Clamp(openPercent + Time.deltaTime * BuildOverlay.TabSpeed, 0.0f, 1.0f);
             }
-            else if (!this.open && this.openPercent > 0.0f)
+            else if (!open && openPercent > 0.0f)
             {
-                this.openPercent = Mathf.Clamp(this.openPercent - Time.deltaTime * BuildOverlay.TabSpeed, 0.0f, 1.0f);
+                openPercent = Mathf.Clamp(openPercent - Time.deltaTime * BuildOverlay.TabSpeed, 0.0f, 1.0f);
             }
 
-            this.windowPosition.y = Mathf.Lerp(Screen.height, Screen.height - this.windowPosition.height, this.openPercent);
-            if (this.windowPosition.width < Width)
+            windowPosition.y = Mathf.Lerp(Screen.height, Screen.height - windowPosition.height, openPercent);
+            if (windowPosition.width < Width)
             {
-                this.windowPosition.width = Width;
+                windowPosition.width = Width;
             }
-            this.tabPosition.width = this.tabSize.x;
-            this.tabPosition.height = this.tabSize.y;
-            this.tabPosition.x = this.windowPosition.x;
-            this.tabPosition.y = this.windowPosition.y - this.tabPosition.height;
+            tabPosition.width = tabSize.x;
+            tabPosition.height = tabSize.y;
+            tabPosition.x = windowPosition.x;
+            tabPosition.y = windowPosition.y - tabPosition.height;
         }
 
         private void SetVesselInfo()
@@ -188,7 +200,7 @@ namespace KerbalEngineer.Editor
 
             if (BuildAdvanced.Instance.ShowAtmosphericDetails)
             {
-                SimManager.Atmosphere = CelestialBodies.SelectedBody.Atmosphere * 0.01;
+                SimManager.Atmosphere = CelestialBodies.SelectedBody.GetAtmospheres(BuildAdvanced.Altitude);
             }
             else
             {
@@ -198,13 +210,14 @@ namespace KerbalEngineer.Editor
             SimManager.RequestSimulation();
             SimManager.TryStartSimulation();
 
-            if (this.lastStage != null)
+            if (lastStage != null)
             {
-                this.infoItems.Clear();
-                this.infoItems.Add(new PartInfoItem("Delta-V", this.lastStage.deltaV.ToString("N0") + " / " + this.lastStage.totalDeltaV.ToString("N0") + "m/s"));
-                this.infoItems.Add(new PartInfoItem("Mass", Units.ToMass(this.lastStage.mass, this.lastStage.totalMass)));
-                this.infoItems.Add(new PartInfoItem("TWR", this.lastStage.thrustToWeight.ToString("F2") + " (" + this.lastStage.maxThrustToWeight.ToString("F2") + ")"));
-                this.infoItems.Add(new PartInfoItem("Parts", this.lastStage.partCount + " / " + this.lastStage.totalPartCount));
+                PartInfoItem.Release(infoItems);
+                infoItems.Clear();
+                infoItems.Add(PartInfoItem.Create("Delta-V", lastStage.deltaV.ToString("N0") + " / " + lastStage.totalDeltaV.ToString("N0") + "m/s"));
+                infoItems.Add(PartInfoItem.Create("Mass", Units.ToMass(lastStage.mass, lastStage.totalMass)));
+                infoItems.Add(PartInfoItem.Create("TWR", lastStage.thrustToWeight.ToString("F2") + " (" + lastStage.maxThrustToWeight.ToString("F2") + ")"));
+                infoItems.Add(PartInfoItem.Create("Parts", lastStage.partCount + " / " + lastStage.totalPartCount));
             }
         }
 
@@ -212,8 +225,8 @@ namespace KerbalEngineer.Editor
         {
             try
             {
-                var firstItem = true;
-                foreach (var item in this.infoItems)
+                bool firstItem = true;
+                foreach (PartInfoItem item in infoItems)
                 {
                     if (!firstItem)
                     {
@@ -240,7 +253,6 @@ namespace KerbalEngineer.Editor
                 Logger.Exception(ex);
             }
         }
-
         #endregion
     }
 }

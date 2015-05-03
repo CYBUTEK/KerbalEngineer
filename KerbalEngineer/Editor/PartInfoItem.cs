@@ -19,29 +19,69 @@
 
 namespace KerbalEngineer.Editor
 {
+    using System.Collections.Generic;
+    using VesselSimulator;
+
     public class PartInfoItem
     {
-        #region Constructors
-
-        public PartInfoItem(string name)
-        {
-            this.Name = name;
-        }
-
-        public PartInfoItem(string name, string value)
-        {
-            this.Name = name;
-            this.Value = value;
-        }
-
-        #endregion
-
-        #region Properties
+        private static readonly Pool<PartInfoItem> pool = new Pool<PartInfoItem>(Create, Reset);
 
         public string Name { get; set; }
 
         public string Value { get; set; }
 
-        #endregion
+        private static PartInfoItem Create()
+        {
+            return new PartInfoItem();
+        }
+
+        public void Release()
+        {
+            pool.Release(this);
+        }
+
+        public static void Release(List<PartInfoItem> objList)
+        {
+            for (int i = 0; i < objList.Count; ++i)
+            {
+                objList[i].Release();
+            }
+        }
+
+        private static void Reset(PartInfoItem obj)
+        {
+            obj.Name = string.Empty;
+            obj.Value = string.Empty;
+        }
+
+        public static PartInfoItem Create(string name)
+        {
+            return New(name);
+        }
+
+        public static PartInfoItem Create(string name, string value)
+        {
+            return New(name, value);
+        }
+
+        public static PartInfoItem New(string name)
+        {
+            PartInfoItem obj = pool.Borrow();
+            
+            obj.Name = name;
+            obj.Value = string.Empty;
+
+            return obj;
+        }
+
+        public static PartInfoItem New(string name, string value)
+        {
+            PartInfoItem obj = pool.Borrow();
+
+            obj.Name = name;
+            obj.Value = value;
+
+            return obj;
+        }
     }
 }

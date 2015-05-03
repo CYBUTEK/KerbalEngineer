@@ -17,18 +17,15 @@
 //     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // 
 
-#region Using Directives
-
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using UnityEngine;
-
-#endregion
-
 namespace KerbalEngineer.VesselSimulator
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Text;
+    using Editor;
+    using Helpers;
+    using UnityEngine;
+
     public class EngineSim
     {
         private static readonly Pool<EngineSim> pool = new Pool<EngineSim>(Create, Reset);
@@ -40,6 +37,7 @@ namespace KerbalEngineer.VesselSimulator
         public double isp = 0;
         public PartSim partSim;
         public List<AppliedForce> appliedForces = new List<AppliedForce>();
+        public float maxMach;
 
         public double thrust = 0;
 
@@ -63,6 +61,7 @@ namespace KerbalEngineer.VesselSimulator
             }
             engineSim.appliedForces.Clear();
             engineSim.thrust = 0;
+            engineSim.maxMach = 0f;
         }
 
         public void Release()
@@ -72,7 +71,7 @@ namespace KerbalEngineer.VesselSimulator
 
         public static EngineSim New(PartSim theEngine,
                          double atmosphere,
-                         double machNumber,
+                         float machNumber,
                          float maxFuelFlow,
                          float minFuelFlow,
                          float thrustPercentage,
@@ -86,148 +85,52 @@ namespace KerbalEngineer.VesselSimulator
                          bool throttleLocked,
                          List<Propellant> propellants,
                          bool active,
-                         bool correctThrust,
+                         float resultingThrust,
                          List<Transform> thrustTransforms)
         {
             EngineSim engineSim = pool.Borrow();
 
-
             StringBuilder buffer = null;
-            //MonoBehaviour.print("Create EngineSim for " + theEngine.name);
-            //MonoBehaviour.print("maxThrust = " + maxThrust);
-            //MonoBehaviour.print("minThrust = " + minThrust);
-            //MonoBehaviour.print("thrustPercentage = " + thrustPercentage);
-            //MonoBehaviour.print("requestedThrust = " + requestedThrust);
-            //MonoBehaviour.print("velocity = " + velocity);
 
+            engineSim.isp = 0.0;
+            engineSim.maxMach = 0.0f;
+            engineSim.actualThrust = 0.0;
             engineSim.partSim = theEngine;
-
             engineSim.isActive = active;
-            //this.thrust = (maxThrust - minThrust) * (thrustPercentage / 100f) + minThrust;
-            //MonoBehaviour.print("thrust = " + thrust);
-
             engineSim.thrustVec = vecThrust;
+            engineSim.resourceConsumptions.Reset();
+            engineSim.appliedForces.Clear();
 
-            double flowRate = 0d;
+            double flowRate = 0.0;
             if (engineSim.partSim.hasVessel)
             {
-                //MonoBehaviour.print("hasVessel is true");
-
-                //this.actualThrust = this.isActive ? resultingThrust : 0.0;
-
+                float flowModifier = GetFlowModifier(atmChangeFlow, atmCurve, engineSim.partSim.part.atmDensity, velCurve, machNumber, ref engineSim.maxMach);
                 engineSim.isp = atmosphereCurve.Evaluate((float)atmosphere);
-
-                //if (this.isp == 0d)
-                //{
-                //    MonoBehaviour.print("Isp at " + this.partSim.part.staticPressureAtm + " is zero. Flow rate will be NaN");
-                //}
-
-
-                // correctThrust is less usefull now that the stock engines do it. Keep or remove.
-
-                //if (correctThrust && realIsp == 0)
-                //{
-                //    float ispsl = atmosphereCurve.Evaluate(0);
-                //    if (ispsl != 0)
-                //    {
-                //        this.thrust = this.thrust * this.isp / ispsl;
-                //    }
-                //    else
-                //    {
-                //        MonoBehaviour.print("Isp at sea level is zero. Unable to correct thrust.");
-                //    }
-                //    //MonoBehaviour.print("corrected thrust = " + thrust);
-                //}
-
-                //if (velocityCurve != null)
-                //{
-                //    this.thrust *= velocityCurve.Evaluate((float)velocity);
-                //    //MonoBehaviour.print("thrust at velocity = " + thrust);
-                //}
-                
-                float multiplier = 1;
-                if (atmChangeFlow)
-                {
-                    multiplier = (float)(theEngine.part.atmDensity / 1.225);
-                    if (atmCurve != null)
-                    {
-                        multiplier = atmCurve.Evaluate(multiplier);
-                    }
-                    //MonoBehaviour.print("corrected thrust = " + thrust);
-                }
-                if (velCurve != null)
-                {
-                    multiplier *= velCurve.Evaluate((float)machNumber);
-                }
+                engineSim.thrust = GetThrust(Mathf.Lerp(minFuelFlow, maxFuelFlow, GetThrustPercent(thrustPercentage)) * flowModifier, engineSim.isp);
+                engineSim.actualThrust = engineSim.isActive ? resultingThrust : 0.0;
 
                 if (throttleLocked)
                 {
-                    //MonoBehaviour.print("throttleLocked is true");
-                    //flowRate = this.thrust / (this.isp * 9.82);
-                    flowRate = Mathf.Lerp(minFuelFlow, maxFuelFlow, (thrustPercentage / 100f)) * multiplier;
+                    flowRate = GetFlowRate(engineSim.thrust, engineSim.isp);
                 }
                 else
                 {
-                    if (theEngine.isLanded)
+                    if (currentThrottle > 0.0f && engineSim.partSim.isLanded == false)
                     {
-                        //MonoBehaviour.print("partSim.isLanded is true, mainThrottle = " + FlightInputHandler.state.mainThrottle);
-                        flowRate = Mathf.Lerp(minFuelFlow, maxFuelFlow, FlightInputHandler.state.mainThrottle * (thrustPercentage / 100f)) * multiplier;
+                        flowRate = GetFlowRate(engineSim.actualThrust, engineSim.isp);
                     }
                     else
                     {
-                        if (currentThrottle > 0)
-                        {
-                            //MonoBehaviour.print("requestedThrust > 0");
-                            //flowRate = requestedThrust / (this.isp * 9.82) * multiplier;
-                            flowRate = Mathf.Lerp(minFuelFlow, maxFuelFlow, currentThrottle * (thrustPercentage / 100f)) * multiplier;
-                        }
-                        else
-                        {
-                            //MonoBehaviour.print("requestedThrust <= 0");
-                            flowRate = Mathf.Lerp(minFuelFlow, maxFuelFlow, (thrustPercentage / 100f)) * multiplier;
-                        }
+                        flowRate = GetFlowRate(engineSim.thrust, engineSim.isp);
                     }
                 }
             }
             else
             {
-                //MonoBehaviour.print("hasVessel is false");
+                float flowModifier = GetFlowModifier(atmChangeFlow, atmCurve, CelestialBodies.SelectedBody.GetDensity(BuildAdvanced.Altitude), velCurve, machNumber, ref engineSim.maxMach);
                 engineSim.isp = atmosphereCurve.Evaluate((float)atmosphere);
-                if (engineSim.isp == 0d)
-                {
-                    MonoBehaviour.print("Isp at " + atmosphere + " is zero. Flow rate will be NaN");
-                }
-                //if (correctThrust)
-                //{
-                //    float ispsl = atmosphereCurve.Evaluate(0);
-                //    if (ispsl != 0)
-                //    {
-                //        this.thrust = this.thrust * this.isp / ispsl;
-                //    }
-                //    else
-                //    {
-                //        MonoBehaviour.print("Isp at sea level is zero. Unable to correct thrust.");
-                //    }
-                //    //MonoBehaviour.print("corrected thrust = " + thrust);
-                //}
-
-                float multiplier = 1;
-                if (atmChangeFlow)
-                {
-                    //multiplier = (float)(this.partSim.part.atmDensity / 1.225);
-                    multiplier = (float)atmosphere;    // technically wrong but the same for my Editor need
-                    if (atmCurve != null)
-                    {
-                        multiplier = atmCurve.Evaluate(multiplier);
-                    }
-                }
-
-                if (velCurve != null)
-                {
-                    multiplier *= velCurve.Evaluate((float)machNumber);
-                }
-
-                flowRate = Mathf.Lerp(minFuelFlow, maxFuelFlow, (thrustPercentage / 100f)) * multiplier;
+                engineSim.thrust = GetThrust(Mathf.Lerp(minFuelFlow, maxFuelFlow, GetThrustPercent(thrustPercentage)) * flowModifier, engineSim.isp);
+                flowRate = GetFlowRate(engineSim.thrust, engineSim.isp);
             }
 
             if (SimManager.logOutput)
@@ -241,7 +144,7 @@ namespace KerbalEngineer.VesselSimulator
             engineSim.actualThrust = engineSim.thrust;
 
             float flowMass = 0f;
-            for (int i = 0; i < propellants.Count; i++)
+            for (int i = 0; i < propellants.Count; ++i)
             {
                 Propellant propellant = propellants[i];
                 flowMass += propellant.ratio * ResourceContainer.GetResourceDensity(propellant.id);
@@ -252,9 +155,10 @@ namespace KerbalEngineer.VesselSimulator
                 buffer.AppendFormat("flowMass = {0:g6}\n", flowMass);
             }
 
-            for (int i = 0; i < propellants.Count; i++)
+            for (int i = 0; i < propellants.Count; ++i)
             {
                 Propellant propellant = propellants[i];
+
                 if (propellant.name == "ElectricCharge" || propellant.name == "IntakeAir")
                 {
                     continue;
@@ -288,12 +192,70 @@ namespace KerbalEngineer.VesselSimulator
                 AppliedForce appliedForce = AppliedForce.New(direction * thrustPerThrustTransform, position);
                 engineSim.appliedForces.Add(appliedForce);
             }
+
             return engineSim;
         }
 
         public ResourceContainer ResourceConsumptions
         {
-            get { return this.resourceConsumptions; }
+            get
+            {
+                return resourceConsumptions;
+            }
+        }
+
+        public static double GetExhaustVelocity(double isp)
+        {
+            return isp * Units.GRAVITY;
+        }
+
+        public static float GetFlowModifier(bool atmChangeFlow, FloatCurve atmCurve, double atmDensity, FloatCurve velCurve, float machNumber, ref float maxMach)
+        {
+            float flowModifier = 1.0f;
+            if (atmChangeFlow)
+            {
+                flowModifier = (float)(atmDensity / 1.225);
+                if (atmCurve != null)
+                {
+                    flowModifier = atmCurve.Evaluate(flowModifier);
+                }
+            }
+            if (velCurve != null)
+            {
+                flowModifier = flowModifier * velCurve.Evaluate(machNumber);
+                maxMach = velCurve.maxTime;
+            }
+            if (flowModifier < float.Epsilon)
+            {
+                flowModifier = float.Epsilon;
+            }
+            return flowModifier;
+        }
+
+        public static double GetFlowRate(double thrust, double isp)
+        {
+            return thrust / GetExhaustVelocity(isp);
+        }
+
+        public static float GetThrottlePercent(float currentThrottle, float thrustPercentage)
+        {
+            return currentThrottle * GetThrustPercent(thrustPercentage);
+        }
+
+        public static double GetThrust(double flowRate, double isp)
+        {
+            return flowRate * GetExhaustVelocity(isp);
+        }
+
+        public static float GetThrustPercent(float thrustPercentage)
+        {
+            return thrustPercentage * 0.01f;
+        }
+
+        public void DumpEngineToBuffer(StringBuilder buffer, String prefix)
+        {
+            buffer.Append(prefix);
+            buffer.AppendFormat("[thrust = {0:g6}, actual = {1:g6}, isp = {2:g6}\n", thrust, actualThrust, isp);
         }
 
         // A dictionary to hold a set of parts for each resource
@@ -322,14 +284,15 @@ namespace KerbalEngineer.VesselSimulator
                     sourcePartSet = new HashSet<PartSim>();
                     sourcePartSets.Add(type, sourcePartSet);
                 }
+
                 switch (ResourceContainer.GetResourceFlowMode(type))
                 {
                     case ResourceFlowMode.NO_FLOW:
-                        if (this.partSim.resources[type] > SimManager.RESOURCE_MIN && this.partSim.resourceFlowStates[type] != 0)
+                        if (partSim.resources[type] > SimManager.RESOURCE_MIN && partSim.resourceFlowStates[type] != 0)
                         {
                             //sourcePartSet = new HashSet<PartSim>();
                             //MonoBehaviour.print("SetResourceDrains(" + name + ":" + partId + ") setting sources to just this");
-                            sourcePartSet.Add(this.partSim);
+                            sourcePartSet.Add(partSim);
                         }
                         break;
 
@@ -361,7 +324,7 @@ namespace KerbalEngineer.VesselSimulator
                                 continue;
                             }
 
-                            var stage = aPartSim.DecouplerCount();
+                            int stage = aPartSim.DecouplerCount();
                             if (stage > maxStage)
                             {
                                 maxStage = stage;
@@ -375,10 +338,10 @@ namespace KerbalEngineer.VesselSimulator
                             sourcePartSet.Add(aPartSim);
                         }
 
-                        for (var i = 0; i <= maxStage; i++)
+                        for (int j = 0; j <= maxStage; j++)
                         {
                             HashSet<PartSim> stagePartSet;
-                            if (stagePartSets.TryGetValue(i, out stagePartSet) && stagePartSet.Count > 0)
+                            if (stagePartSets.TryGetValue(j, out stagePartSet) && stagePartSet.Count > 0)
                             {
                                 sourcePartSet = stagePartSet;
                             }
@@ -391,11 +354,9 @@ namespace KerbalEngineer.VesselSimulator
                         if (SimManager.logOutput)
                         {
                             log = new LogMsg();
-                            log.buf.AppendLine(
-                                "Find " + ResourceContainer.GetResourceName(type) + " sources for " + this.partSim.name + ":" +
-                                this.partSim.partId);
+                            log.buf.AppendLine("Find " + ResourceContainer.GetResourceName(type) + " sources for " + partSim.name + ":" + partSim.partId);
                         }
-                        this.partSim.GetSourceSet(type, allParts, visited, sourcePartSet, log, "");
+                        partSim.GetSourceSet(type, allParts, visited, sourcePartSet, log, "");
                         if (SimManager.logOutput)
                         {
                             MonoBehaviour.print(log.buf);
@@ -403,9 +364,7 @@ namespace KerbalEngineer.VesselSimulator
                         break;
 
                     default:
-                        MonoBehaviour.print(
-                            "SetResourceDrains(" + this.partSim.name + ":" + this.partSim.partId + ") Unexpected flow type for " +
-                            ResourceContainer.GetResourceName(type) + ")");
+                        MonoBehaviour.print("SetResourceDrains(" + partSim.name + ":" + partSim.partId + ") Unexpected flow type for " + ResourceContainer.GetResourceName(type) + ")");
                         break;
                 }
 
@@ -431,14 +390,14 @@ namespace KerbalEngineer.VesselSimulator
             {
                 int type = this.resourceConsumptions.Types[i];
                 HashSet<PartSim> sourcePartSet; 
-                if (!sourcePartSets.TryGetValue(type, out sourcePartSet) || sourcePartSet.Count() == 0)
+                if (!sourcePartSets.TryGetValue(type, out sourcePartSet) || sourcePartSet.Count == 0)
                 {
                     if (SimManager.logOutput)
                     {
                         MonoBehaviour.print("No source of " + ResourceContainer.GetResourceName(type));
                     }
 
-                    this.isActive = false;
+                    isActive = false;
                     return false;
                 }
             }
@@ -448,7 +407,7 @@ namespace KerbalEngineer.VesselSimulator
                 int type = this.resourceConsumptions.Types[i];
                 HashSet<PartSim> sourcePartSet = sourcePartSets[type];
                 // Loop through the members of the set 
-                double amount = this.resourceConsumptions[type] / sourcePartSet.Count;
+                double amount = resourceConsumptions[type] / sourcePartSet.Count;
                 foreach (PartSim partSim in sourcePartSet)
                 {
                     if (SimManager.logOutput)
@@ -463,12 +422,6 @@ namespace KerbalEngineer.VesselSimulator
                 }
             }
             return true;
-        }
-
-        public void DumpEngineToBuffer(StringBuilder buffer, String prefix)
-        {
-            buffer.Append(prefix);
-            buffer.AppendFormat("[thrust = {0:g6}, actual = {1:g6}, isp = {2:g6}\n", this.thrust, this.actualThrust, this.isp);
         }
     }
 }

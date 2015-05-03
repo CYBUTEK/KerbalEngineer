@@ -20,7 +20,6 @@
 namespace KerbalEngineer.Helpers
 {
     #region Using Directives
-
     using System;
 
     #endregion
@@ -28,6 +27,7 @@ namespace KerbalEngineer.Helpers
     public static class Units
     {
         #region Methods
+        public const double GRAVITY = 9.80665;
 
         public static string Concat(int value1, int value2)
         {
@@ -123,8 +123,8 @@ namespace KerbalEngineer.Helpers
 
         public static string ToForce(double value1, double value2)
         {
-            var format1 = (value1 < 100000.0) ? (value1 < 10000.0) ? (value1 < 100.0) ? (Math.Abs(value1) < Double.Epsilon) ? "N0" : "N3" : "N2" : "N1" : "N0";
-            var format2 = (value2 < 100000.0) ? (value2 < 10000.0) ? (value2 < 100.0) ? (Math.Abs(value2) < Double.Epsilon) ? "N0" : "N3" : "N2" : "N1" : "N0";
+            string format1 = (value1 < 100000.0) ? (value1 < 10000.0) ? (value1 < 100.0) ? (Math.Abs(value1) < Double.Epsilon) ? "N0" : "N3" : "N2" : "N1" : "N0";
+            string format2 = (value2 < 100000.0) ? (value2 < 10000.0) ? (value2 < 100.0) ? (Math.Abs(value2) < Double.Epsilon) ? "N0" : "N3" : "N2" : "N1" : "N0";
             return value1.ToString(format1) + " / " + value2.ToString(format2) + "kN";
         }
 
@@ -180,7 +180,6 @@ namespace KerbalEngineer.Helpers
         {
             return value.ToString((value < 100.0) ? (Math.Abs(value) < Double.Epsilon) ? "N0" : "N1" : "N0") + "kNm";
         }
-
         #endregion
     }
 }

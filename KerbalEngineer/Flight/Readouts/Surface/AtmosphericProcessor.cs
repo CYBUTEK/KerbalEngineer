@@ -29,6 +29,8 @@ using KerbalEngineer.Extensions;
 
 namespace KerbalEngineer.Flight.Readouts.Surface
 {
+    using UnityEngine;
+
     public class AtmosphericProcessor : IUpdatable, IUpdateRequest
     {
         #region Instance
@@ -46,7 +48,10 @@ namespace KerbalEngineer.Flight.Readouts.Surface
         /// </summary>
         public static AtmosphericProcessor Instance
         {
-            get { return instance; }
+            get
+            {
+                return instance;
+            }
         }
 
         #endregion
@@ -122,13 +127,13 @@ namespace KerbalEngineer.Flight.Readouts.Surface
                 }
                 else
                 {
-                    var mass = FlightGlobals.ActiveVessel.parts.Sum(p => p.GetWetMass());
-                    var drag = FlightGlobals.ActiveVessel.parts.Sum(p => p.GetWetMass() * p.maximum_drag);
-                    var grav = FlightGlobals.getGeeForceAtPosition(FlightGlobals.ship_position).magnitude;
-                    var atmo = FlightGlobals.ActiveVessel.atmDensity;
-                    var coef = FlightGlobals.ActiveVessel.parts.Sum(p => p.DragCubes.DragCoeff);
+                    var m = FlightGlobals.ActiveVessel.parts.Sum(part => part.GetWetMass()) * 1000.0;
+                    var g = FlightGlobals.getGeeForceAtPosition(FlightGlobals.ship_position).magnitude;
+                    var a = FlightGlobals.ActiveVessel.parts.Sum(part => part.DragCubes.AreaDrag) * PhysicsGlobals.DragCubeMultiplier;
+                    var p = FlightGlobals.ActiveVessel.atmDensity;
+                    var c = PhysicsGlobals.DragMultiplier;
 
-                    TerminalVelocity = Math.Sqrt((2 * mass * grav) / (atmo * drag * coef));
+                    TerminalVelocity = Math.Sqrt((2.0 * m * g) / (p * a * c));
                 }
 
                 Efficiency = FlightGlobals.ship_srfSpeed / TerminalVelocity;

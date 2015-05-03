@@ -20,9 +20,7 @@
 namespace KerbalEngineer.Editor
 {
     #region Using Directives
-
     using System;
-    using System.Linq;
     using Extensions;
     using Flight;
     using Helpers;
@@ -37,10 +35,10 @@ namespace KerbalEngineer.Editor
     public class BuildAdvanced : MonoBehaviour
     {
         #region Fields
+        public static float Altitude = 0.0f;
 
         private GUIStyle areaSettingStyle;
         private GUIStyle areaStyle;
-        private float atmosphericPercentage = 1.0f;
         private float atmosphericMach;
         private GUIStyle bodiesButtonActiveStyle;
         private GUIStyle bodiesButtonStyle;
@@ -54,6 +52,7 @@ namespace KerbalEngineer.Editor
         private bool hasChanged;
         private GUIStyle infoStyle;
         private bool isEditorLocked;
+        private float maxMach;
         private int numberOfStages;
         private Rect position = new Rect(265.0f, 45.0f, 0, 0);
         private GUIStyle settingAtmoStyle;
@@ -65,11 +64,9 @@ namespace KerbalEngineer.Editor
         private GUIStyle titleStyle;
         private bool visible = true;
         private GUIStyle windowStyle;
-
         #endregion
 
         #region Properties
-
         /// <summary>
         ///     Gets the current instance if started or returns null.
         /// </summary>
@@ -80,8 +77,14 @@ namespace KerbalEngineer.Editor
         /// </summary>
         public bool CompactMode
         {
-            get { return this.compactMode; }
-            set { this.compactMode = value; }
+            get
+            {
+                return compactMode;
+            }
+            set
+            {
+                compactMode = value;
+            }
         }
 
         /// <summary>
@@ -89,8 +92,14 @@ namespace KerbalEngineer.Editor
         /// </summary>
         public bool ShowAllStages
         {
-            get { return this.showAllStages; }
-            set { this.showAllStages = value; }
+            get
+            {
+                return showAllStages;
+            }
+            set
+            {
+                showAllStages = value;
+            }
         }
 
         /// <summary>
@@ -98,8 +107,14 @@ namespace KerbalEngineer.Editor
         /// </summary>
         public bool ShowAtmosphericDetails
         {
-            get { return this.showAtmosphericDetails; }
-            set { this.showAtmosphericDetails = value; }
+            get
+            {
+                return showAtmosphericDetails;
+            }
+            set
+            {
+                showAtmosphericDetails = value;
+            }
         }
 
         /// <summary>
@@ -107,8 +122,14 @@ namespace KerbalEngineer.Editor
         /// </summary>
         public bool ShowSettings
         {
-            get { return this.showSettings; }
-            set { this.showSettings = value; }
+            get
+            {
+                return showSettings;
+            }
+            set
+            {
+                showSettings = value;
+            }
         }
 
         /// <summary>
@@ -116,30 +137,40 @@ namespace KerbalEngineer.Editor
         /// </summary>
         public bool Visible
         {
-            get { return this.visible; }
-            set { this.visible = value; }
+            get
+            {
+                return visible;
+            }
+            set
+            {
+                visible = value;
+            }
         }
-
         #endregion
 
         #region Methods
+        private static Rect compactModeRect = new Rect(0.0f, 5.0f, 0.0f, 20.0f);
+        private static Stage stage;
+        private static int stagesCount;
+        private static int stagesLength;
+        private static string title;
 
         protected void Awake()
         {
             try
             {
                 Instance = this;
-                this.bodiesList = this.gameObject.AddComponent<DropDown>();
-                this.bodiesList.DrawCallback = this.DrawBodiesList;
-                this.Load();
+                bodiesList = gameObject.AddComponent<DropDown>();
+                bodiesList.DrawCallback = DrawBodiesList;
+                Load();
 
                 SimManager.UpdateModSettings();
-                SimManager.OnReady -= this.GetStageInfo;
-                SimManager.OnReady += this.GetStageInfo;
+                SimManager.OnReady -= GetStageInfo;
+                SimManager.OnReady += GetStageInfo;
             }
             catch (Exception ex)
             {
-                Logger.Exception(ex);
+                Logger.Exception(ex, "BuildAdvanced.Awake()");
             }
         }
 
@@ -150,22 +181,22 @@ namespace KerbalEngineer.Editor
         {
             try
             {
-                var handler = new SettingHandler();
-                handler.Set("visible", this.visible);
-                handler.Set("windowPositionX", this.position.x);
-                handler.Set("windowPositionY", this.position.y);
-                handler.Set("compactMode", this.compactMode);
-                handler.Set("compactCollapseRight", this.compactCollapseRight);
-                handler.Set("showAllStages", this.showAllStages);
-                handler.Set("showAtmosphericDetails", this.showAtmosphericDetails);
-                handler.Set("showSettings", this.showSettings);
+                SettingHandler handler = new SettingHandler();
+                handler.Set("visible", visible);
+                handler.Set("windowPositionX", position.x);
+                handler.Set("windowPositionY", position.y);
+                handler.Set("compactMode", compactMode);
+                handler.Set("compactCollapseRight", compactCollapseRight);
+                handler.Set("showAllStages", showAllStages);
+                handler.Set("showAtmosphericDetails", showAtmosphericDetails);
+                handler.Set("showSettings", showSettings);
                 handler.Set("selectedBodyName", CelestialBodies.SelectedBody.Name);
                 handler.Save("BuildAdvanced.xml");
-                GuiDisplaySize.OnSizeChanged -= this.OnSizeChanged;
+                GuiDisplaySize.OnSizeChanged -= OnSizeChanged;
             }
             catch (Exception ex)
             {
-                Logger.Exception(ex);
+                Logger.Exception(ex, "BuildAdvanced.OnDestroy()");
             }
         }
 
@@ -173,49 +204,65 @@ namespace KerbalEngineer.Editor
         {
             try
             {
-                if (!this.visible || EditorLogic.fetch == null || EditorLogic.fetch.ship.parts.Count == 0 || EditorLogic.fetch.editorScreen != EditorScreen.Parts)
+                if (!visible || EditorLogic.fetch == null || EditorLogic.fetch.ship.parts.Count == 0 || EditorLogic.fetch.editorScreen != EditorScreen.Parts)
                 {
                     return;
                 }
 
-                if (this.stages == null)
+                if (stages == null)
                 {
                     return;
                 }
 
                 // Change the window title based on whether in compact mode or not.
-                var title = !this.compactMode ? "KERBAL ENGINEER REDUX " + EngineerGlobals.AssemblyVersion : "K.E.R. " + EngineerGlobals.AssemblyVersion + (this.showAtmosphericDetails ? " (ATMOS.)" : String.Empty);
+                title = !compactMode ? "KERBAL ENGINEER REDUX " + EngineerGlobals.AssemblyVersion : "K.E.R. " + EngineerGlobals.AssemblyVersion + (showAtmosphericDetails ? " (ATMOS.)" : String.Empty);
 
                 // Reset the window size when the staging or something else has changed.
-                var stageCount = this.stages.Count(stage => this.showAllStages || stage.deltaV > 0);
-                if (this.hasChanged || stageCount != this.numberOfStages)
+                stagesLength = stages.Length;
+                if (showAllStages)
                 {
-                    this.hasChanged = false;
-                    this.numberOfStages = stageCount;
+                    stagesCount = stagesLength;
+                }
+                if (showAllStages == false)
+                {
+                    stagesCount = 0;
+                    for (int i = 0; i < stagesLength; ++i)
+                    {
+                        if (stages[i].deltaV > 0.0f)
+                        {
+                            stagesCount = stagesCount + 1;
+                        }
+                    }
+                }
 
-                    this.position.width = 0;
-                    this.position.height = 0;
+                if (hasChanged || stagesCount != numberOfStages)
+                {
+                    hasChanged = false;
+                    numberOfStages = stagesCount;
+
+                    position.width = 0;
+                    position.height = 0;
                 }
 
                 GUI.skin = null;
-                this.position = GUILayout.Window(this.GetInstanceID(), this.position, this.Window, title, this.windowStyle).ClampToScreen();
+                position = GUILayout.Window(GetInstanceID(), position, Window, title, windowStyle).ClampToScreen();
 
-                if (this.compactCheck > 0 && this.compactCollapseRight)
+                if (compactCheck > 0 && compactCollapseRight)
                 {
-                    this.position.x = this.compactRight - this.position.width;
-                    this.compactCheck--;
+                    position.x = compactRight - position.width;
+                    compactCheck--;
                 }
-                else if (this.compactCheck > 0)
+                else if (compactCheck > 0)
                 {
-                    this.compactCheck = 0;
+                    compactCheck = 0;
                 }
 
                 // Check editor lock to manage click-through.
-                this.CheckEditorLock();
+                CheckEditorLock();
             }
             catch (Exception ex)
             {
-                Logger.Exception(ex);
+                Logger.Exception(ex, "BuildAdvanced.OnGUI()");
             }
         }
 
@@ -223,12 +270,12 @@ namespace KerbalEngineer.Editor
         {
             try
             {
-                this.InitialiseStyles();
-                GuiDisplaySize.OnSizeChanged += this.OnSizeChanged;
+                InitialiseStyles();
+                GuiDisplaySize.OnSizeChanged += OnSizeChanged;
             }
             catch (Exception ex)
             {
-                Logger.Exception(ex);
+                Logger.Exception(ex, "BuildAdvanced.Start()");
             }
         }
 
@@ -238,39 +285,39 @@ namespace KerbalEngineer.Editor
             {
                 if (Input.GetKeyDown(KeyBinder.EditorShowHide))
                 {
-                    this.visible = !this.visible;
-                    if (!this.visible)
+                    visible = !visible;
+                    if (!visible)
                     {
-                        this.EditorLock(false);
+                        EditorLock(false);
                     }
                 }
 
-                if (!this.visible || EditorLogic.fetch == null || EditorLogic.fetch.ship.parts.Count == 0)
+                if (!visible || EditorLogic.fetch == null || EditorLogic.fetch.ship.parts.Count == 0)
                 {
-                    this.bodiesList.enabled = false;
+                    bodiesList.enabled = false;
                     return;
                 }
 
                 // Configure the simulation parameters based on the selected reference body.
                 SimManager.Gravity = CelestialBodies.SelectedBody.Gravity;
 
-                if (this.showAtmosphericDetails)
+                if (showAtmosphericDetails)
                 {
-                    SimManager.Atmosphere = CelestialBodies.SelectedBody.Atmosphere * 0.01d * this.atmosphericPercentage;
+                    SimManager.Atmosphere = CelestialBodies.SelectedBody.GetAtmospheres(Altitude);
                 }
                 else
                 {
                     SimManager.Atmosphere = 0;
                 }
 
-                SimManager.Mach = this.atmosphericMach;
+                SimManager.Mach = atmosphericMach;
 
                 SimManager.RequestSimulation();
                 SimManager.TryStartSimulation();
             }
             catch (Exception ex)
             {
-                Logger.Exception(ex, "BuildAdvanced->Update");
+                Logger.Exception(ex, "BuildAdvanced.Update()");
             }
         }
 
@@ -279,13 +326,13 @@ namespace KerbalEngineer.Editor
         /// </summary>
         private void CheckEditorLock()
         {
-            if ((this.position.MouseIsOver() || this.bodiesList.Position.MouseIsOver()) && !this.isEditorLocked)
+            if ((position.MouseIsOver() || bodiesList.Position.MouseIsOver()) && !isEditorLocked)
             {
-                this.EditorLock(true);
+                EditorLock(true);
             }
-            else if (!this.position.MouseIsOver() && !this.bodiesList.Position.MouseIsOver() && this.isEditorLocked)
+            else if (!position.MouseIsOver() && !bodiesList.Position.MouseIsOver() && isEditorLocked)
             {
-                this.EditorLock(false);
+                EditorLock(false);
             }
         }
 
@@ -294,36 +341,43 @@ namespace KerbalEngineer.Editor
         /// </summary>
         private void DrawAtmosphericDetails()
         {
-            GUILayout.BeginHorizontal();
-            GUILayout.BeginVertical();
-            GUILayout.Label("Pressure: " + (this.atmosphericPercentage * 100.0f).ToString("F1") + "%", this.settingAtmoStyle, GUILayout.Width(125.0f * GuiDisplaySize.Offset));
-            GUI.skin = HighLogic.Skin;
-            this.atmosphericPercentage = GUILayout.HorizontalSlider(this.atmosphericPercentage, 0, 1.0f);
-            GUI.skin = null;
-            GUILayout.EndVertical();
+            try
+            {
+                GUILayout.BeginHorizontal();
+                GUILayout.BeginVertical();
+                GUILayout.Label("Altitude: " + (Altitude * 0.001f).ToString("F1") + "km", settingAtmoStyle, GUILayout.Width(125.0f * GuiDisplaySize.Offset));
+                GUI.skin = HighLogic.Skin;
+                Altitude = GUILayout.HorizontalSlider(Altitude, 0.0f, (float)(CelestialBodies.SelectedBody.CelestialBody.atmosphereDepth));
+                GUI.skin = null;
+                GUILayout.EndVertical();
 
-            GUILayout.Space(5.0f);
+                GUILayout.Space(5.0f);
 
-            GUILayout.BeginVertical();
-            GUILayout.Label("Mach: " + this.atmosphericMach.ToString("F1") + "m/s", this.settingAtmoStyle, GUILayout.Width(125.0f * GuiDisplaySize.Offset));
-            GUI.skin = HighLogic.Skin;
-            this.atmosphericMach = GUILayout.HorizontalSlider(this.atmosphericMach, 0, 25f); // the game limits mach to 50 but I did not see curve with more than 25
-            GUI.skin = null;
-            GUILayout.EndVertical();
-            GUILayout.EndHorizontal();
+                GUILayout.BeginVertical();
+                GUILayout.Label("Mach: " + atmosphericMach.ToString("F1"), settingAtmoStyle, GUILayout.Width(125.0f * GuiDisplaySize.Offset));
+                GUI.skin = HighLogic.Skin;
+                atmosphericMach = GUILayout.HorizontalSlider(Mathf.Clamp(atmosphericMach, 0.0f, maxMach), 0.0f, maxMach);
+                GUI.skin = null;
+                GUILayout.EndVertical();
+                GUILayout.EndHorizontal();
+            }
+            catch (Exception ex)
+            {
+                Logger.Exception(ex, "BuildAdvanced.DrawAtmosphericDetails()");
+            }
         }
 
         private void DrawBodiesList()
         {
             if (CelestialBodies.SystemBody == CelestialBodies.SelectedBody)
             {
-                this.DrawBody(CelestialBodies.SystemBody);
+                DrawBody(CelestialBodies.SystemBody);
             }
             else
             {
-                foreach (var body in CelestialBodies.SystemBody.Children)
+                foreach (CelestialBodies.BodyInfo body in CelestialBodies.SystemBody.Children)
                 {
-                    this.DrawBody(body);
+                    DrawBody(body);
                 }
             }
         }
@@ -332,18 +386,19 @@ namespace KerbalEngineer.Editor
         {
             GUILayout.BeginHorizontal();
             GUILayout.Space(20.0f * depth);
-            if (GUILayout.Button(bodyInfo.Children.Count > 0 ? bodyInfo.Name + " [" + bodyInfo.Children.Count + "]" : bodyInfo.Name, bodyInfo.Selected && bodyInfo.SelectedDepth == 0 ? this.bodiesButtonActiveStyle : this.bodiesButtonStyle))
+            if (GUILayout.Button(bodyInfo.Children.Count > 0 ? bodyInfo.Name + " [" + bodyInfo.Children.Count + "]" : bodyInfo.Name, bodyInfo.Selected && bodyInfo.SelectedDepth == 0 ? bodiesButtonActiveStyle : bodiesButtonStyle))
             {
                 CelestialBodies.SetSelectedBody(bodyInfo.Name);
-                this.bodiesList.Resize = true;
+                Altitude = 0.0f;
+                bodiesList.Resize = true;
             }
             GUILayout.EndHorizontal();
 
             if (bodyInfo.Selected)
             {
-                foreach (var body in bodyInfo.Children)
+                for (int i = 0; i < bodyInfo.Children.Count; ++i)
                 {
-                    this.DrawBody(body, depth + 1);
+                    DrawBody(bodyInfo.Children[i], depth + 1);
                 }
             }
         }
@@ -354,12 +409,13 @@ namespace KerbalEngineer.Editor
         private void DrawBurnTime()
         {
             GUILayout.BeginVertical(GUILayout.Width(75.0f * GuiDisplaySize.Offset));
-            GUILayout.Label("BURN", this.titleStyle);
-            foreach (var stage in this.stages)
+            GUILayout.Label("BURN", titleStyle);
+            for (int i = 0; i < stagesLength; ++i)
             {
-                if (this.showAllStages || stage.deltaV > 0)
+                stage = stages[i];
+                if (showAllStages || stage.deltaV > 0.0)
                 {
-                    GUILayout.Label(TimeFormatter.ConvertToString(stage.time), this.infoStyle);
+                    GUILayout.Label(TimeFormatter.ConvertToString(stage.time), infoStyle);
                 }
             }
             GUILayout.EndVertical();
@@ -371,12 +427,13 @@ namespace KerbalEngineer.Editor
         private void DrawCost()
         {
             GUILayout.BeginVertical(GUILayout.Width(110.0f * GuiDisplaySize.Offset));
-            GUILayout.Label("COST", this.titleStyle);
-            foreach (var stage in this.stages)
+            GUILayout.Label("COST", titleStyle);
+            for (int i = 0; i < stagesLength; ++i)
             {
-                if (this.showAllStages || stage.deltaV > 0)
+                stage = stages[i];
+                if (showAllStages || stage.deltaV > 0.0)
                 {
-                    GUILayout.Label(Units.Cost(stage.cost, stage.totalCost), this.infoStyle);
+                    GUILayout.Label(Units.Cost(stage.cost, stage.totalCost), infoStyle);
                 }
             }
             GUILayout.EndVertical();
@@ -388,12 +445,13 @@ namespace KerbalEngineer.Editor
         private void DrawDeltaV()
         {
             GUILayout.BeginVertical(GUILayout.Width(100.0f * GuiDisplaySize.Offset));
-            GUILayout.Label("DELTA-V", this.titleStyle);
-            foreach (var stage in this.stages)
+            GUILayout.Label("DELTA-V", titleStyle);
+            for (int i = 0; i < stagesLength; ++i)
             {
-                if (this.showAllStages || stage.deltaV > 0)
+                stage = stages[i];
+                if (showAllStages || stage.deltaV > 0.0)
                 {
-                    GUILayout.Label(stage.deltaV.ToString("N0") + " / " + stage.inverseTotalDeltaV.ToString("N0") + "m/s", this.infoStyle);
+                    GUILayout.Label(stage.deltaV.ToString("N0") + " / " + stage.inverseTotalDeltaV.ToString("N0") + "m/s", infoStyle);
                 }
             }
             GUILayout.EndVertical();
@@ -405,12 +463,13 @@ namespace KerbalEngineer.Editor
         private void DrawIsp()
         {
             GUILayout.BeginVertical(GUILayout.Width(75.0f * GuiDisplaySize.Offset));
-            GUILayout.Label("ISP", this.titleStyle);
-            foreach (var stage in this.stages)
+            GUILayout.Label("ISP", titleStyle);
+            for (int i = 0; i < stagesLength; ++i)
             {
-                if (this.showAllStages || stage.deltaV > 0)
+                stage = stages[i];
+                if (showAllStages || stage.deltaV > 0.0)
                 {
-                    GUILayout.Label(stage.isp.ToString("F1") + "s", this.infoStyle);
+                    GUILayout.Label(stage.isp.ToString("F1") + "s", infoStyle);
                 }
             }
             GUILayout.EndVertical();
@@ -422,12 +481,13 @@ namespace KerbalEngineer.Editor
         private void DrawMass()
         {
             GUILayout.BeginVertical(GUILayout.Width(110.0f * GuiDisplaySize.Offset));
-            GUILayout.Label("MASS", this.titleStyle);
-            foreach (var stage in this.stages)
+            GUILayout.Label("MASS", titleStyle);
+            for (int i = 0; i < stagesLength; ++i)
             {
-                if (this.showAllStages || stage.deltaV > 0)
+                stage = stages[i];
+                if (showAllStages || stage.deltaV > 0.0)
                 {
-                    GUILayout.Label(Units.ToMass(stage.mass, stage.totalMass), this.infoStyle);
+                    GUILayout.Label(Units.ToMass(stage.mass, stage.totalMass), infoStyle);
                 }
             }
             GUILayout.EndVertical();
@@ -439,12 +499,13 @@ namespace KerbalEngineer.Editor
         private void DrawPartCount()
         {
             GUILayout.BeginVertical(GUILayout.Width(50.0f * GuiDisplaySize.Offset));
-            GUILayout.Label("PARTS", this.titleStyle);
-            foreach (var stage in this.stages)
+            GUILayout.Label("PARTS", titleStyle);
+            for (int i = 0; i < stagesLength; ++i)
             {
-                if (this.showAllStages || stage.deltaV > 0)
+                stage = stages[i];
+                if (showAllStages || stage.deltaV > 0.0)
                 {
-                    GUILayout.Label(stage.partCount + " / " + stage.totalPartCount, this.infoStyle);
+                    GUILayout.Label(stage.partCount + " / " + stage.totalPartCount, infoStyle);
                 }
             }
             GUILayout.EndVertical();
@@ -456,48 +517,48 @@ namespace KerbalEngineer.Editor
         private void DrawSettings()
         {
             GUILayout.BeginHorizontal();
-            GUILayout.Label("Compact mode collapses to the:", this.settingStyle);
-            this.compactCollapseRight = !GUILayout.Toggle(!this.compactCollapseRight, "LEFT", this.buttonStyle, GUILayout.Width(100.0f * GuiDisplaySize.Offset));
-            this.compactCollapseRight = GUILayout.Toggle(this.compactCollapseRight, "RIGHT", this.buttonStyle, GUILayout.Width(100.0f * GuiDisplaySize.Offset));
+            GUILayout.Label("Compact mode collapses to the:", settingStyle);
+            compactCollapseRight = !GUILayout.Toggle(!compactCollapseRight, "LEFT", buttonStyle, GUILayout.Width(100.0f * GuiDisplaySize.Offset));
+            compactCollapseRight = GUILayout.Toggle(compactCollapseRight, "RIGHT", buttonStyle, GUILayout.Width(100.0f * GuiDisplaySize.Offset));
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
             GUILayout.Label("Simulate using vectored thrust values:");
-            SimManager.vectoredThrust = GUILayout.Toggle(SimManager.vectoredThrust, "ENABLED", this.buttonStyle, GUILayout.Width(100.0f * GuiDisplaySize.Offset));
+            SimManager.vectoredThrust = GUILayout.Toggle(SimManager.vectoredThrust, "ENABLED", buttonStyle, GUILayout.Width(100.0f * GuiDisplaySize.Offset));
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
-            GUILayout.Label("Build Engineer Overlay:", this.settingStyle);
-            BuildOverlay.Visible = GUILayout.Toggle(BuildOverlay.Visible, "VISIBLE", this.buttonStyle, GUILayout.Width(100.0f * GuiDisplaySize.Offset));
-            BuildOverlayPartInfo.NamesOnly = GUILayout.Toggle(BuildOverlayPartInfo.NamesOnly, "NAMES ONLY", this.buttonStyle, GUILayout.Width(100.0f * GuiDisplaySize.Offset));
-            BuildOverlayPartInfo.ClickToOpen = GUILayout.Toggle(BuildOverlayPartInfo.ClickToOpen, "CLICK TO OPEN", this.buttonStyle, GUILayout.Width(100.0f * GuiDisplaySize.Offset));
+            GUILayout.Label("Build Engineer Overlay:", settingStyle);
+            BuildOverlay.Visible = GUILayout.Toggle(BuildOverlay.Visible, "VISIBLE", buttonStyle, GUILayout.Width(100.0f * GuiDisplaySize.Offset));
+            BuildOverlayPartInfo.NamesOnly = GUILayout.Toggle(BuildOverlayPartInfo.NamesOnly, "NAMES ONLY", buttonStyle, GUILayout.Width(100.0f * GuiDisplaySize.Offset));
+            BuildOverlayPartInfo.ClickToOpen = GUILayout.Toggle(BuildOverlayPartInfo.ClickToOpen, "CLICK TO OPEN", buttonStyle, GUILayout.Width(100.0f * GuiDisplaySize.Offset));
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
-            GUILayout.Label("Flight Engineer activation mode:", this.settingStyle);
-            FlightEngineerCore.IsCareerMode = GUILayout.Toggle(FlightEngineerCore.IsCareerMode, "CAREER", this.buttonStyle, GUILayout.Width(100.0f * GuiDisplaySize.Offset));
-            FlightEngineerCore.IsCareerMode = !GUILayout.Toggle(!FlightEngineerCore.IsCareerMode, "PARTLESS", this.buttonStyle, GUILayout.Width(100.0f * GuiDisplaySize.Offset));
+            GUILayout.Label("Flight Engineer activation mode:", settingStyle);
+            FlightEngineerCore.IsCareerMode = GUILayout.Toggle(FlightEngineerCore.IsCareerMode, "CAREER", buttonStyle, GUILayout.Width(100.0f * GuiDisplaySize.Offset));
+            FlightEngineerCore.IsCareerMode = !GUILayout.Toggle(!FlightEngineerCore.IsCareerMode, "PARTLESS", buttonStyle, GUILayout.Width(100.0f * GuiDisplaySize.Offset));
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
-            GUILayout.Label("Flight Engineer Career Limitations:", this.settingStyle);
-            FlightEngineerCore.IsKerbalLimited = GUILayout.Toggle(FlightEngineerCore.IsKerbalLimited, "KERBAL", this.buttonStyle, GUILayout.Width(100.0f * GuiDisplaySize.Offset));
-            FlightEngineerCore.IsTrackingStationLimited = GUILayout.Toggle(FlightEngineerCore.IsTrackingStationLimited, "TRACKING", this.buttonStyle, GUILayout.Width(100.0f * GuiDisplaySize.Offset));
+            GUILayout.Label("Flight Engineer Career Limitations:", settingStyle);
+            FlightEngineerCore.IsKerbalLimited = GUILayout.Toggle(FlightEngineerCore.IsKerbalLimited, "KERBAL", buttonStyle, GUILayout.Width(100.0f * GuiDisplaySize.Offset));
+            FlightEngineerCore.IsTrackingStationLimited = GUILayout.Toggle(FlightEngineerCore.IsTrackingStationLimited, "TRACKING", buttonStyle, GUILayout.Width(100.0f * GuiDisplaySize.Offset));
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
-            GUILayout.Label("GUI Size: " + GuiDisplaySize.Increment, this.settingStyle);
-            if (GUILayout.Button("<", this.buttonStyle, GUILayout.Width(100.0f * GuiDisplaySize.Offset)))
+            GUILayout.Label("GUI Size: " + GuiDisplaySize.Increment, settingStyle);
+            if (GUILayout.Button("<", buttonStyle, GUILayout.Width(100.0f * GuiDisplaySize.Offset)))
             {
                 GuiDisplaySize.Increment--;
             }
-            if (GUILayout.Button(">", this.buttonStyle, GUILayout.Width(100.0f * GuiDisplaySize.Offset)))
+            if (GUILayout.Button(">", buttonStyle, GUILayout.Width(100.0f * GuiDisplaySize.Offset)))
             {
                 GuiDisplaySize.Increment++;
             }
             GUILayout.EndHorizontal();
 
-            GUILayout.Label("Minimum delay between simulations: " + SimManager.minSimTime.Milliseconds + "ms", this.settingStyle);
+            GUILayout.Label("Minimum delay between simulations: " + SimManager.minSimTime.Milliseconds + "ms", settingStyle);
             GUI.skin = HighLogic.Skin;
             SimManager.minSimTime = new TimeSpan(0, 0, 0, 0, (int)GUILayout.HorizontalSlider(SimManager.minSimTime.Milliseconds, 0, 2000.0f));
             GUI.skin = null;
@@ -509,12 +570,13 @@ namespace KerbalEngineer.Editor
         private void DrawStageNumbers()
         {
             GUILayout.BeginVertical(GUILayout.Width(30.0f * GuiDisplaySize.Offset));
-            GUILayout.Label(string.Empty, this.titleStyle);
-            foreach (var stage in this.stages)
+            GUILayout.Label(string.Empty, titleStyle);
+            for (int i = 0; i < stagesLength; ++i)
             {
-                if (this.showAllStages || stage.deltaV > 0)
+                stage = stages[i];
+                if (showAllStages || stage.deltaV > 0.0)
                 {
-                    GUILayout.Label("S" + stage.number, this.titleStyle);
+                    GUILayout.Label("S" + stage.number, titleStyle);
                 }
             }
             GUILayout.EndVertical();
@@ -526,12 +588,13 @@ namespace KerbalEngineer.Editor
         private void DrawThrust()
         {
             GUILayout.BeginVertical(GUILayout.Width(75.0f * GuiDisplaySize.Offset));
-            GUILayout.Label("THRUST", this.titleStyle);
-            foreach (var stage in this.stages)
+            GUILayout.Label("THRUST", titleStyle);
+            for (int i = 0; i < stagesLength; ++i)
             {
-                if (this.showAllStages || stage.deltaV > 0)
+                stage = stages[i];
+                if (showAllStages || stage.deltaV > 0.0)
                 {
-                    GUILayout.Label(stage.thrust.ToForce(), this.infoStyle);
+                    GUILayout.Label(stage.thrust.ToForce(), infoStyle);
                 }
             }
             GUILayout.EndVertical();
@@ -543,12 +606,13 @@ namespace KerbalEngineer.Editor
         private void DrawTorque()
         {
             GUILayout.BeginVertical(GUILayout.Width(75.0f * GuiDisplaySize.Offset));
-            GUILayout.Label("TORQUE", this.titleStyle);
-            foreach (var stage in this.stages)
+            GUILayout.Label("TORQUE", titleStyle);
+            for (int i = 0; i < stagesLength; ++i)
             {
-                if (this.showAllStages || stage.deltaV > 0)
+                stage = stages[i];
+                if (showAllStages || stage.deltaV > 0.0)
                 {
-                    GUILayout.Label(stage.maxThrustTorque.ToTorque(), this.infoStyle);
+                    GUILayout.Label(stage.maxThrustTorque.ToTorque(), infoStyle);
                 }
             }
             GUILayout.EndVertical();
@@ -560,12 +624,13 @@ namespace KerbalEngineer.Editor
         private void DrawTwr()
         {
             GUILayout.BeginVertical(GUILayout.Width(100.0f * GuiDisplaySize.Offset));
-            GUILayout.Label("TWR (MAX)", this.titleStyle);
-            foreach (var stage in this.stages)
+            GUILayout.Label("TWR (MAX)", titleStyle);
+            for (int i = 0; i < stagesLength; ++i)
             {
-                if (this.showAllStages || stage.deltaV > 0)
+                stage = stages[i];
+                if (showAllStages || stage.deltaV > 0.0)
                 {
-                    GUILayout.Label(stage.thrustToWeight.ToString("F2") + " (" + stage.maxThrustToWeight.ToString("F2") + ")", this.infoStyle);
+                    GUILayout.Label(stage.thrustToWeight.ToString("F2") + " (" + stage.maxThrustToWeight.ToString("F2") + ")", infoStyle);
                 }
             }
             GUILayout.EndVertical();
@@ -575,21 +640,25 @@ namespace KerbalEngineer.Editor
         {
             if (state)
             {
-                EditorLogic.fetch.Lock(true, true, true, "KER_BuildAdvanced");
+                InputLockManager.SetControlLock(ControlTypes.All, "KER_BuildAdvanced");
                 BuildOverlayPartInfo.Hidden = true;
-                this.isEditorLocked = true;
+                isEditorLocked = true;
             }
             else
             {
-                EditorLogic.fetch.Unlock("KER_BuildAdvanced");
+                InputLockManager.SetControlLock(ControlTypes.None, "KER_BuildAdvanced");
                 BuildOverlayPartInfo.Hidden = false;
-                this.isEditorLocked = false;
+                isEditorLocked = false;
             }
         }
 
         private void GetStageInfo()
         {
-            this.stages = SimManager.Stages;
+            stages = SimManager.Stages;
+            if (stages != null && stages.Length > 0)
+            {
+                maxMach = stages[stages.Length - 1].maxMach;
+            }
         }
 
         /// <summary>
@@ -597,22 +666,22 @@ namespace KerbalEngineer.Editor
         /// </summary>
         private void InitialiseStyles()
         {
-            this.windowStyle = new GUIStyle(HighLogic.Skin.window)
+            windowStyle = new GUIStyle(HighLogic.Skin.window)
             {
                 alignment = TextAnchor.UpperLeft
             };
 
-            this.areaStyle = new GUIStyle(HighLogic.Skin.box)
+            areaStyle = new GUIStyle(HighLogic.Skin.box)
             {
                 padding = new RectOffset(0, 0, 9, 0)
             };
 
-            this.areaSettingStyle = new GUIStyle(HighLogic.Skin.box)
+            areaSettingStyle = new GUIStyle(HighLogic.Skin.box)
             {
                 padding = new RectOffset(10, 10, 10, 10)
             };
 
-            this.buttonStyle = new GUIStyle(HighLogic.Skin.button)
+            buttonStyle = new GUIStyle(HighLogic.Skin.button)
             {
                 normal =
                 {
@@ -623,7 +692,7 @@ namespace KerbalEngineer.Editor
                 alignment = TextAnchor.MiddleCenter
             };
 
-            this.titleStyle = new GUIStyle(HighLogic.Skin.label)
+            titleStyle = new GUIStyle(HighLogic.Skin.label)
             {
                 normal =
                 {
@@ -635,7 +704,7 @@ namespace KerbalEngineer.Editor
                 stretchWidth = true,
             };
 
-            this.infoStyle = new GUIStyle(HighLogic.Skin.label)
+            infoStyle = new GUIStyle(HighLogic.Skin.label)
             {
                 fontSize = (int)(11 * GuiDisplaySize.Offset),
                 fontStyle = FontStyle.Bold,
@@ -643,21 +712,21 @@ namespace KerbalEngineer.Editor
                 stretchWidth = true
             };
 
-            this.settingStyle = new GUIStyle(this.titleStyle)
+            settingStyle = new GUIStyle(titleStyle)
             {
                 alignment = TextAnchor.MiddleLeft,
                 stretchWidth = true,
                 stretchHeight = true
             };
 
-            this.settingAtmoStyle = new GUIStyle(this.titleStyle)
+            settingAtmoStyle = new GUIStyle(titleStyle)
             {
                 margin = new RectOffset(),
                 padding = new RectOffset(),
                 alignment = TextAnchor.UpperLeft
             };
 
-            this.bodiesButtonStyle = new GUIStyle(HighLogic.Skin.button)
+            bodiesButtonStyle = new GUIStyle(HighLogic.Skin.button)
             {
                 margin = new RectOffset(0, 0, 2, 0),
                 padding = new RectOffset(5, 5, 5, 5),
@@ -675,10 +744,10 @@ namespace KerbalEngineer.Editor
                 fixedHeight = 20.0f
             };
 
-            this.bodiesButtonActiveStyle = new GUIStyle(this.bodiesButtonStyle)
+            bodiesButtonActiveStyle = new GUIStyle(bodiesButtonStyle)
             {
-                normal = this.bodiesButtonStyle.onNormal,
-                hover = this.bodiesButtonStyle.onHover
+                normal = bodiesButtonStyle.onNormal,
+                hover = bodiesButtonStyle.onHover
             };
         }
 
@@ -689,27 +758,27 @@ namespace KerbalEngineer.Editor
         {
             try
             {
-                var handler = SettingHandler.Load("BuildAdvanced.xml");
-                handler.Get("visible", ref this.visible);
-                this.position.x = handler.Get("windowPositionX", this.position.x);
-                this.position.y = handler.Get("windowPositionY", this.position.y);
-                handler.Get("compactMode", ref this.compactMode);
-                handler.Get("compactCollapseRight", ref this.compactCollapseRight);
-                handler.Get("showAllStages", ref this.showAllStages);
-                handler.Get("showAtmosphericDetails", ref this.showAtmosphericDetails);
-                handler.Get("showSettings", ref this.showSettings);
+                SettingHandler handler = SettingHandler.Load("BuildAdvanced.xml");
+                handler.Get("visible", ref visible);
+                position.x = handler.Get("windowPositionX", position.x);
+                position.y = handler.Get("windowPositionY", position.y);
+                handler.Get("compactMode", ref compactMode);
+                handler.Get("compactCollapseRight", ref compactCollapseRight);
+                handler.Get("showAllStages", ref showAllStages);
+                handler.Get("showAtmosphericDetails", ref showAtmosphericDetails);
+                handler.Get("showSettings", ref showSettings);
                 CelestialBodies.SetSelectedBody(handler.Get("selectedBodyName", CelestialBodies.SelectedBody.Name));
             }
             catch (Exception ex)
             {
-                Logger.Exception(ex, "BuildAdvanced->Load");
+                Logger.Exception(ex, "BuildAdvanced.Load()");
             }
         }
 
         private void OnSizeChanged()
         {
-            this.InitialiseStyles();
-            this.hasChanged = true;
+            InitialiseStyles();
+            hasChanged = true;
         }
 
         /// <summary>
@@ -719,77 +788,79 @@ namespace KerbalEngineer.Editor
         {
             try
             {
+                compactModeRect = new Rect(position.width - 70.0f * GuiDisplaySize.Offset, 5.0f, 65.0f * GuiDisplaySize.Offset, 20.0f);
+
                 // Draw the compact mode toggle.
-                if (GUI.Toggle(new Rect(this.position.width - 70.0f * GuiDisplaySize.Offset, 5.0f, 65.0f * GuiDisplaySize.Offset, 20.0f), this.compactMode, "COMPACT", this.buttonStyle) != this.compactMode)
+                if (GUI.Toggle(compactModeRect, compactMode, "COMPACT", buttonStyle) != compactMode)
                 {
-                    this.hasChanged = true;
-                    this.compactCheck = 2;
-                    this.compactRight = this.position.xMax;
-                    this.compactMode = !this.compactMode;
+                    hasChanged = true;
+                    compactCheck = 2;
+                    compactRight = position.xMax;
+                    compactMode = !compactMode;
                 }
 
                 // When not in compact mode draw the 'All Stages' and 'Atmospheric' toggles.
-                if (!this.compactMode)
+                if (!compactMode)
                 {
-                    if (GUI.Toggle(new Rect(this.position.width - 143.0f * GuiDisplaySize.Offset, 5.0f, 70.0f * GuiDisplaySize.Offset, 20.0f), this.showSettings, "SETTINGS", this.buttonStyle) != this.showSettings)
+                    if (GUI.Toggle(new Rect(position.width - 143.0f * GuiDisplaySize.Offset, 5.0f, 70.0f * GuiDisplaySize.Offset, 20.0f), showSettings, "SETTINGS", buttonStyle) != showSettings)
                     {
-                        this.hasChanged = true;
-                        this.showSettings = !this.showSettings;
+                        hasChanged = true;
+                        showSettings = !showSettings;
                     }
 
-                    if (GUI.Toggle(new Rect(this.position.width - 226.0f * GuiDisplaySize.Offset, 5.0f, 80.0f * GuiDisplaySize.Offset, 20.0f), this.showAllStages, "ALL STAGES", this.buttonStyle) != this.showAllStages)
+                    if (GUI.Toggle(new Rect(position.width - 226.0f * GuiDisplaySize.Offset, 5.0f, 80.0f * GuiDisplaySize.Offset, 20.0f), showAllStages, "ALL STAGES", buttonStyle) != showAllStages)
                     {
-                        this.hasChanged = true;
-                        this.showAllStages = !this.showAllStages;
+                        hasChanged = true;
+                        showAllStages = !showAllStages;
                     }
 
-                    if (GUI.Toggle(new Rect(this.position.width - 324.0f * GuiDisplaySize.Offset, 5.0f, 95.0f * GuiDisplaySize.Offset, 20.0f), this.showAtmosphericDetails, "ATMOSPHERIC", this.buttonStyle) != this.showAtmosphericDetails)
+                    if (GUI.Toggle(new Rect(position.width - 324.0f * GuiDisplaySize.Offset, 5.0f, 95.0f * GuiDisplaySize.Offset, 20.0f), showAtmosphericDetails, "ATMOSPHERIC", buttonStyle) != showAtmosphericDetails)
                     {
-                        this.hasChanged = true;
-                        this.showAtmosphericDetails = !this.showAtmosphericDetails;
+                        hasChanged = true;
+                        showAtmosphericDetails = !showAtmosphericDetails;
                     }
 
-                    this.bodiesListPosition = new Rect(this.position.width - 452.0f * GuiDisplaySize.Offset, 5.0f, 125.0f * GuiDisplaySize.Offset, 20.0f);
-                    this.bodiesList.enabled = GUI.Toggle(this.bodiesListPosition, this.bodiesList.enabled, "BODY: " + CelestialBodies.SelectedBody.Name.ToUpper(), this.buttonStyle);
-                    this.bodiesList.SetPosition(this.bodiesListPosition.Translate(this.position));
+                    bodiesListPosition = new Rect(position.width - 452.0f * GuiDisplaySize.Offset, 5.0f, 125.0f * GuiDisplaySize.Offset, 20.0f);
+                    bodiesList.enabled = GUI.Toggle(bodiesListPosition, bodiesList.enabled, "BODY: " + CelestialBodies.SelectedBody.Name.ToUpper(), buttonStyle);
+                    bodiesList.SetPosition(bodiesListPosition.Translate(position));
                 }
 
                 // Draw the main informational display box.
-                if (!this.compactMode)
+                if (!compactMode)
                 {
-                    GUILayout.BeginHorizontal(this.areaStyle);
-                    this.DrawStageNumbers();
-                    this.DrawPartCount();
-                    this.DrawCost();
-                    this.DrawMass();
-                    this.DrawIsp();
-                    this.DrawThrust();
-                    this.DrawTorque();
-                    this.DrawTwr();
-                    this.DrawDeltaV();
-                    this.DrawBurnTime();
+                    GUILayout.BeginHorizontal(areaStyle);
+                    DrawStageNumbers();
+                    DrawPartCount();
+                    DrawCost();
+                    DrawMass();
+                    DrawIsp();
+                    DrawThrust();
+                    DrawTorque();
+                    DrawTwr();
+                    DrawDeltaV();
+                    DrawBurnTime();
                     GUILayout.EndHorizontal();
 
-                    if (this.showAtmosphericDetails)
+                    if (showAtmosphericDetails)
                     {
-                        GUILayout.BeginVertical(this.areaSettingStyle);
-                        this.DrawAtmosphericDetails();
+                        GUILayout.BeginVertical(areaSettingStyle);
+                        DrawAtmosphericDetails();
                         GUILayout.EndVertical();
                     }
 
-                    if (this.showSettings)
+                    if (showSettings)
                     {
-                        GUILayout.BeginVertical(this.areaSettingStyle);
-                        this.DrawSettings();
+                        GUILayout.BeginVertical(areaSettingStyle);
+                        DrawSettings();
                         GUILayout.EndVertical();
                     }
                 }
                 else // Draw only a few details when in compact mode.
                 {
-                    GUILayout.BeginHorizontal(this.areaStyle);
-                    this.DrawStageNumbers();
-                    this.DrawTwr();
-                    this.DrawDeltaV();
+                    GUILayout.BeginHorizontal(areaStyle);
+                    DrawStageNumbers();
+                    DrawTwr();
+                    DrawDeltaV();
                     GUILayout.EndHorizontal();
                 }
 
@@ -797,10 +868,9 @@ namespace KerbalEngineer.Editor
             }
             catch (Exception ex)
             {
-                Logger.Exception(ex);
+                Logger.Exception(ex, "BuildAdvanced.Window()");
             }
         }
-
         #endregion
     }
 }

@@ -19,22 +19,18 @@
 
 #region Using Directives
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-
-using KerbalEngineer.Extensions;
-
-using UnityEngine;
-
 #endregion
 
 namespace KerbalEngineer.Editor
 {
+    using System;
+    using System.Collections.Generic;
+    using Extensions;
+    using UnityEngine;
+
     public class BuildOverlayResources : MonoBehaviour
     {
         #region Fields
-
         private static bool visible = true;
 
         private readonly Dictionary<int, ResourceInfoItem> resources = new Dictionary<int, ResourceInfoItem>();
@@ -45,40 +41,48 @@ namespace KerbalEngineer.Editor
         private Rect tabPosition;
         private Vector2 tabSize;
         private Rect windowPosition = new Rect(0.0f, 0.0f, BuildOverlay.MinimumWidth, 0.0f);
-
         #endregion
 
         #region Properties
-
         public static bool Visible
         {
-            get { return visible; }
-            set { visible = value; }
+            get
+            {
+                return visible;
+            }
+            set
+            {
+                visible = value;
+            }
         }
 
         public bool Open
         {
-            get { return this.open; }
-            set { this.open = value; }
+            get
+            {
+                return open;
+            }
+            set
+            {
+                open = value;
+            }
         }
-
         #endregion
 
         #region Methods: protected
-
         protected void OnGUI()
         {
             try
             {
-                if (!Visible || this.resources.Count == 0 || EditorLogic.fetch.editorScreen != EditorScreen.Parts)
+                if (!Visible || resources.Count == 0 || EditorLogic.fetch.editorScreen != EditorScreen.Parts)
                 {
                     return;
                 }
 
-                this.open = GUI.Toggle(this.tabPosition, this.open, this.tabContent, BuildOverlay.TabStyle);
-                if (this.openPercent > 0.0)
+                open = GUI.Toggle(tabPosition, open, tabContent, BuildOverlay.TabStyle);
+                if (openPercent > 0.0)
                 {
-                    this.windowPosition = GUILayout.Window(this.GetInstanceID(), this.windowPosition, this.Window, String.Empty, BuildOverlay.WindowStyle);
+                    windowPosition = GUILayout.Window(GetInstanceID(), windowPosition, Window, String.Empty, BuildOverlay.WindowStyle);
                 }
             }
             catch (Exception ex)
@@ -91,8 +95,8 @@ namespace KerbalEngineer.Editor
         {
             try
             {
-                this.tabContent = new GUIContent("RESOURCES");
-                this.tabSize = BuildOverlay.TabStyle.CalcSize(this.tabContent);
+                tabContent = new GUIContent("RESOURCES");
+                tabSize = BuildOverlay.TabStyle.CalcSize(tabContent);
             }
             catch (Exception ex)
             {
@@ -109,66 +113,74 @@ namespace KerbalEngineer.Editor
                     return;
                 }
 
-                this.SetResources();
-                this.SetSlidePosition();
+                SetResources();
+                SetSlidePosition();
             }
             catch (Exception ex)
             {
                 Logger.Exception(ex);
             }
         }
-
         #endregion
 
         #region Methods: private
+        private static Part part;
+        private static PartResource partResource;
 
         private void SetResources()
         {
-            var previousCount = this.resources.Count;
-            this.resources.Clear();
-            foreach (var resource in EditorLogic.fetch.ship.parts.SelectMany(p => p.Resources.list).Where(r => r.amount > 0.0))
+            int previousCount = resources.Count;
+            resources.Clear();
+
+            for (int i = 0; i < EditorLogic.fetch.ship.parts.Count; ++i)
             {
-                if (this.resources.ContainsKey(resource.info.id))
+                part = EditorLogic.fetch.ship.parts[i];
+                for (int j = 0; j < part.Resources.list.Count; ++j)
                 {
-                    this.resources[resource.info.id].Amount += resource.amount;
-                }
-                else
-                {
-                    this.resources.Add(resource.info.id, new ResourceInfoItem(resource));
+                    partResource = part.Resources.list[j];
+
+                    if (resources.ContainsKey(partResource.info.id))
+                    {
+                        resources[partResource.info.id].Amount += partResource.amount;
+                    }
+                    else
+                    {
+                        resources.Add(partResource.info.id, new ResourceInfoItem(partResource));
+                    }
                 }
             }
 
-            if (this.resources.Count < previousCount)
+            if (resources.Count < previousCount)
             {
-                this.windowPosition.height = 0;
+                windowPosition.height = 0;
             }
         }
 
         private void SetSlidePosition()
         {
-            if (this.open && this.openPercent < 1.0f)
+            if (open && openPercent < 1.0f)
             {
-                this.openPercent = Mathf.Clamp(this.openPercent + Time.deltaTime * BuildOverlay.TabSpeed, 0.0f, 1.0f);
+                openPercent = Mathf.Clamp(openPercent + Time.deltaTime * BuildOverlay.TabSpeed, 0.0f, 1.0f);
             }
-            else if (!this.open && this.openPercent > 0.0f)
+            else if (!open && openPercent > 0.0f)
             {
-                this.openPercent = Mathf.Clamp(this.openPercent - Time.deltaTime * BuildOverlay.TabSpeed, 0.0f, 1.0f);
+                openPercent = Mathf.Clamp(openPercent - Time.deltaTime * BuildOverlay.TabSpeed, 0.0f, 1.0f);
             }
 
-            this.windowPosition.x = BuildOverlay.BuildOverlayVessel.WindowPosition.xMax + 5.0f;
-            this.windowPosition.y = Mathf.Lerp(Screen.height, Screen.height - this.windowPosition.height, this.openPercent);
-            this.tabPosition.width = this.tabSize.x;
-            this.tabPosition.height = this.tabSize.y;
-            this.tabPosition.x = this.windowPosition.x;
-            this.tabPosition.y = this.windowPosition.y - this.tabPosition.height;
+            windowPosition.x = BuildOverlay.BuildOverlayVessel.WindowPosition.xMax + 5.0f;
+            windowPosition.y = Mathf.Lerp(Screen.height, Screen.height - windowPosition.height, openPercent);
+            tabPosition.width = tabSize.x;
+            tabPosition.height = tabSize.y;
+            tabPosition.x = windowPosition.x;
+            tabPosition.y = windowPosition.y - tabPosition.height;
         }
 
         private void Window(int windowId)
         {
             try
             {
-                var firstItem = true;
-                foreach (var resource in this.resources)
+                bool firstItem = true;
+                foreach (KeyValuePair<int, ResourceInfoItem> resource in resources)
                 {
                     if (!firstItem)
                     {
@@ -197,7 +209,6 @@ namespace KerbalEngineer.Editor
                 Logger.Exception(ex);
             }
         }
-
         #endregion
     }
 }

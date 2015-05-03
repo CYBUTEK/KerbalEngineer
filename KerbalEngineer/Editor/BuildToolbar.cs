@@ -44,6 +44,14 @@ namespace KerbalEngineer.Editor
             Logger.Log("BuildToolbar->Awake");
         }
 
+        private void Start()
+        {
+            if (button == null)
+            {
+                OnGuiAppLauncherReady();
+            }
+        }
+
         private void OnDestroy()
         {
             GameEvents.onGUIApplicationLauncherReady.Remove(this.OnGuiAppLauncherReady);

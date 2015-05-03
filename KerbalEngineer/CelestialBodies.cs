@@ -17,16 +17,12 @@
 //     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // 
 
-#region Using Directives
-
-using System;
-using System.Collections.Generic;
-using System.Linq;
-
-#endregion
-
 namespace KerbalEngineer
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+
     /*
      * 
      * With thanks to Nathaniel R. Lewis (aka. Teknoman117) (linux.robotdude@gmail.com) for working out
@@ -36,8 +32,6 @@ namespace KerbalEngineer
 
     public static class CelestialBodies
     {
-        #region Constructors
-
         static CelestialBodies()
         {
             try
@@ -55,16 +49,8 @@ namespace KerbalEngineer
             }
         }
 
-        #endregion
-
-        #region Properties
-
         public static BodyInfo SelectedBody { get; private set; }
         public static BodyInfo SystemBody { get; private set; }
-
-        #endregion
-
-        #region Public Methods
 
         /// <summary>
         ///     Gets a body given a supplied body name.
@@ -89,7 +75,7 @@ namespace KerbalEngineer
         {
             try
             {
-                var body = GetBodyInfo(bodyName);
+                BodyInfo body = GetBodyInfo(bodyName);
                 if (body != null)
                 {
                     if (SelectedBody != null)
@@ -108,34 +94,26 @@ namespace KerbalEngineer
             return false;
         }
 
-        #endregion
-
-        #region Nested type: BodyInfo
-
         public class BodyInfo
         {
-            #region Constructors
-
             public BodyInfo(CelestialBody body, BodyInfo parent = null)
             {
                 try
                 {
                     // Set the body information.
-                    this.CelestialBody = body;
-                    this.Name = body.bodyName;
-                    this.Gravity = 9.81 * body.GeeASL;
-                    //this.Atmosphere = body.atmosphere ? body.GetPressure(0) : 0;
-                    this.Atmosphere = body.atmosphere ? body.atmospherePressureSeaLevel : 0;   // Check that one because I did not. S
-                    this.Parent = parent; 
+                    CelestialBody = body;
+                    Name = body.bodyName;
+                    Gravity = 9.81 * body.GeeASL;
+                    Parent = parent;
 
                     // Set orbiting bodies information.
-                    this.Children = new List<BodyInfo>();
-                    foreach (var orbitingBody in body.orbitingBodies)
+                    Children = new List<BodyInfo>();
+                    foreach (CelestialBody orbitingBody in body.orbitingBodies)
                     {
-                        this.Children.Add(new BodyInfo(orbitingBody, this));
+                        Children.Add(new BodyInfo(orbitingBody, this));
                     }
 
-                    this.SelectedDepth = 0;
+                    SelectedDepth = 0;
                 }
                 catch (Exception ex)
                 {
@@ -143,37 +121,28 @@ namespace KerbalEngineer
                 }
             }
 
-            #endregion
-
-            #region Properties
-
-            public string Name { get; private set; }
-            public double Gravity { get; private set; }
-            public double Atmosphere { get; private set; }
-            public BodyInfo Parent { get; private set; }
-            public List<BodyInfo> Children { get; private set; }
             public CelestialBody CelestialBody { get; private set; }
+            public List<BodyInfo> Children { get; private set; }
+            public double Gravity { get; private set; }
+            public string Name { get; private set; }
+            public BodyInfo Parent { get; private set; }
             public bool Selected { get; private set; }
             public int SelectedDepth { get; private set; }
-
-            #endregion
-
-            #region Public Methods
 
             public BodyInfo GetBodyInfo(string bodyName)
             {
                 try
                 {
                     // This is the searched body.
-                    if (String.Equals(this.Name, bodyName, StringComparison.CurrentCultureIgnoreCase))
+                    if (String.Equals(Name, bodyName, StringComparison.CurrentCultureIgnoreCase))
                     {
                         return this;
                     }
 
                     // Check to see if any of this bodies children are the searched body.
-                    foreach (var child in this.Children)
+                    foreach (BodyInfo child in Children)
                     {
-                        var body = child.GetBodyInfo(bodyName);
+                        BodyInfo body = child.GetBodyInfo(bodyName);
                         if (body != null)
                         {
                             return body;
@@ -189,33 +158,44 @@ namespace KerbalEngineer
                 return null;
             }
 
+            public double GetDensity(double altitude)
+            {
+                return CelestialBody.GetDensity(GetPressure(altitude), GetTemperature(altitude));
+            }
+
+            public double GetPressure(double altitude)
+            {
+                return CelestialBody.GetPressure(altitude);
+            }
+
+            public double GetTemperature(double altitude)
+            {
+                return CelestialBody.GetTemperature(altitude);
+            }
+
+            public double GetAtmospheres(double altitude)
+            {
+                return GetPressure(altitude) * PhysicsGlobals.KpaToAtmospheres;
+            }
+
             public void SetSelected(bool state, int depth = 0)
             {
-                this.Selected = state;
-                this.SelectedDepth = depth;
-                if (this.Parent != null)
+                Selected = state;
+                SelectedDepth = depth;
+                if (Parent != null)
                 {
-                    this.Parent.SetSelected(state, depth + 1);
+                    Parent.SetSelected(state, depth + 1);
                 }
             }
 
-            #endregion
-
-            #region Debugging
-
             public override string ToString()
             {
-                var log = "\n" + this.Name +
-                          "\n\tGravity: " + this.Gravity +
-                          "\n\tAtmosphere: " + this.Atmosphere +
-                          "\n\tSelected: " + this.Selected;
+                string log = "\n" + Name +
+                             "\n\tGravity: " + Gravity +
+                             "\n\tSelected: " + Selected;
 
-                return this.Children.Aggregate(log, (current, child) => current + "\n" + child);
+                return Children.Aggregate(log, (current, child) => current + "\n" + child);
             }
-
-            #endregion
         }
-
-        #endregion
     }
 }
