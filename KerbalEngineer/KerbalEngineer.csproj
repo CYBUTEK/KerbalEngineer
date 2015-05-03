@@ -119,16 +119,12 @@
     <Compile Include="Helpers\AngleHelper.cs" />
     <Compile Include="Helpers\Averager.cs" />
     <Compile Include="Helpers\ForceAccumulator.cs" />
+    <Compile Include="Helpers\Pool.cs" />
     <Compile Include="Helpers\TextureHelper.cs" />
     <Compile Include="Helpers\Units.cs" />
     <Compile Include="Helpers\TimeFormatter.cs" />
     <Compile Include="KeyBinder.cs" />
     <Compile Include="Control\ControlCentre.cs" />
-    <Compile Include="Smooth\Delegates\Delegates.cs" />
-    <Compile Include="Smooth\Dispose\Disposable.cs" />
-    <Compile Include="Smooth\Dispose\DisposalQueue.cs" />
-    <Compile Include="Smooth\Dispose\SmoothDisposer.cs" />
-    <Compile Include="Smooth\Pools\Pool.cs" />
     <Compile Include="UIControls\DropDown.cs" />
     <Compile Include="Logger.cs" />
     <Compile Include="EngineerGlobals.cs" />
@@ -213,6 +209,7 @@
   <ItemGroup>
     <Reference Include="Assembly-CSharp">
       <HintPath>..\..\..\..\..\..\Program Files (x86)\Steam\SteamApps\common\Kerbal Space Program\KSP_Data\Managed\Assembly-CSharp.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="System">
       <HintPath>..\Game\KSP_Data\Managed\System.dll</HintPath>
@@ -224,6 +221,7 @@
     </Reference>
     <Reference Include="UnityEngine">
       <HintPath>..\..\..\..\..\..\Program Files (x86)\Steam\SteamApps\common\Kerbal Space Program\KSP_Data\Managed\UnityEngine.dll</HintPath>
+      <Private>False</Private>
     </Reference>
   </ItemGroup>
   <ItemGroup />
