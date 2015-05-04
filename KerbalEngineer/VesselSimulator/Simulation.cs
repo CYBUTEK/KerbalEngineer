@@ -147,6 +147,7 @@ namespace KerbalEngineer.VesselSimulator
             this.atmosphere = theAtmosphere;
             this.mach = theMach;
             this.lastStage = Staging.lastStage;
+            this.maxMach = 1.0f;
             //MonoBehaviour.print("lastStage = " + lastStage);
 
             // Clear the lists for our simulation parts
