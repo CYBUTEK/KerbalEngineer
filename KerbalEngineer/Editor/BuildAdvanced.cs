@@ -215,7 +215,7 @@ namespace KerbalEngineer.Editor
                 }
 
                 // Change the window title based on whether in compact mode or not.
-                title = !compactMode ? "KERBAL ENGINEER REDUX " + EngineerGlobals.AssemblyVersion : "K.E.R. " + EngineerGlobals.AssemblyVersion + (showAtmosphericDetails ? " (ATMOS.)" : String.Empty);
+                title = !compactMode ? "KERBAL ENGINEER REDUX " + EngineerGlobals.AssemblyVersion : "K.E.R. " + EngineerGlobals.AssemblyVersion;
 
                 // Reset the window size when the staging or something else has changed.
                 stagesLength = stages.Length;
@@ -824,6 +824,14 @@ namespace KerbalEngineer.Editor
                     bodiesList.enabled = GUI.Toggle(bodiesListPosition, bodiesList.enabled, "BODY: " + CelestialBodies.SelectedBody.Name.ToUpper(), buttonStyle);
                     bodiesList.SetPosition(bodiesListPosition.Translate(position));
                 }
+                else
+                {
+                    if (GUI.Toggle(new Rect(position.width - 133.0f * GuiDisplaySize.Offset, 5.0f, 60.0f * GuiDisplaySize.Offset, 20.0f), showAtmosphericDetails, "ATMO", buttonStyle) != showAtmosphericDetails)
+                    {
+                        hasChanged = true;
+                        showAtmosphericDetails = !showAtmosphericDetails;
+                    }
+                }
 
                 // Draw the main informational display box.
                 if (!compactMode)
@@ -841,7 +849,7 @@ namespace KerbalEngineer.Editor
                     DrawBurnTime();
                     GUILayout.EndHorizontal();
 
-                    if (showAtmosphericDetails)
+                    if (showAtmosphericDetails && !compactMode)
                     {
                         GUILayout.BeginVertical(areaSettingStyle);
                         DrawAtmosphericDetails();
