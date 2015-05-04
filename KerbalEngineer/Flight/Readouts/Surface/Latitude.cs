@@ -20,6 +20,7 @@
 #region Using Directives
 
 using KerbalEngineer.Flight.Sections;
+using KerbalEngineer.Helpers;
 
 #endregion
 
@@ -43,7 +44,7 @@ namespace KerbalEngineer.Flight.Readouts.Surface
 
         public override void Draw(SectionModule section)
         {
-            this.DrawLine(KSPUtil.PrintLatitude(FlightGlobals.ship_latitude), section.IsHud);
+            this.DrawLine(Units.ToAngleDMS(FlightGlobals.ship_latitude) + (FlightGlobals.ship_latitude < 0 ? " S" : " N"), section.IsHud);
         }
 
         #endregion
