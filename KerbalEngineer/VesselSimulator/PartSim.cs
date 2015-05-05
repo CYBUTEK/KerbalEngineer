@@ -609,6 +609,17 @@ namespace KerbalEngineer.VesselSimulator
                     attachSim.attachedPartSim = null;
                 }
             }
+
+            // Loop through the fuel targets (fuel line sources)
+            for (int i = 0; i < this.fuelTargets.Count; i++)
+            {
+                PartSim fuelTargetSim = this.fuelTargets[i];
+                // If the part is in the set then "remove" it by clearing the PartSim reference
+                if (fuelTargetSim != null && partSims.Contains(fuelTargetSim))
+                {
+                    this.fuelTargets[i] = null;
+                }
+            }
         }
 
         public void SetupAttachNodes(Dictionary<Part, PartSim> partSimLookup, LogMsg log)
