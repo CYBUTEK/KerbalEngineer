@@ -444,15 +444,13 @@ namespace KerbalEngineer.VesselSimulator
             if (visited.Contains(this))
             {
                 if (log != null)
-                {
                     log.buf.AppendLine(indent + "Returning empty set, already visited (" + name + ":" + partId + ")");
-                }
 
                 return;
             }
 
-            //if (log != null)
-            //    log.buf.AppendLine(indent + "Adding this to visited");
+            if (log != null)
+                log.buf.AppendLine(indent + "Adding this to visited");
 
             visited.Add(this);
 
@@ -465,26 +463,27 @@ namespace KerbalEngineer.VesselSimulator
             for (int i = 0; i < this.fuelTargets.Count; i++)
             {
                 PartSim partSim = this.fuelTargets[i];
-                if (visited.Contains(partSim))
+                if (partSim != null)
                 {
-                    //if (log != null)
-                    //    log.buf.AppendLine(indent + "Fuel target already visited, skipping (" + partSim.name + ":" + partSim.partId + ")");
-                }
-                else
-                {
-                    //if (log != null)
-                    //    log.buf.AppendLine(indent + "Adding fuel target as source (" + partSim.name + ":" + partSim.partId + ")");
+                    if (visited.Contains(partSim))
+                    {
+                        if (log != null)
+                            log.buf.AppendLine(indent + "Fuel target already visited, skipping (" + partSim.name + ":" + partSim.partId + ")");
+                    }
+                    else
+                    {
+                        if (log != null)
+                            log.buf.AppendLine(indent + "Adding fuel target as source (" + partSim.name + ":" + partSim.partId + ")");
 
-                    partSim.GetSourceSet(type, allParts, visited, allSources, log, indent);
+                        partSim.GetSourceSet(type, allParts, visited, allSources, log, indent);
+                    }
                 }
             }
 
             if (allSources.Count > lastCount)
             {
                 if (log != null)
-                {
                     log.buf.AppendLine(indent + "Returning " + (allSources.Count - lastCount) + " fuel target sources (" + this.name + ":" + this.partId + ")");
-                }
 
                 return;
             }
@@ -514,13 +513,13 @@ namespace KerbalEngineer.VesselSimulator
                             {
                                 if (visited.Contains(attachSim.attachedPartSim))
                                 {
-                                    //if (log != null)
-                                    //    log.buf.AppendLine(indent + "Attached part already visited, skipping (" + attachSim.attachedPartSim.name + ":" + attachSim.attachedPartSim.partId + ")");
+                                    if (log != null)
+                                        log.buf.AppendLine(indent + "Attached part already visited, skipping (" + attachSim.attachedPartSim.name + ":" + attachSim.attachedPartSim.partId + ")");
                                 }
                                 else
                                 {
-                                    //if (log != null)
-                                    //    log.buf.AppendLine(indent + "Adding attached part as source (" + attachSim.attachedPartSim.name + ":" + attachSim.attachedPartSim.partId + ")");
+                                    if (log != null)
+                                        log.buf.AppendLine(indent + "Adding attached part as source (" + attachSim.attachedPartSim.name + ":" + attachSim.attachedPartSim.partId + ")");
 
                                     attachSim.attachedPartSim.GetSourceSet(type, allParts, visited, allSources, log, indent);
                                 }
@@ -532,9 +531,7 @@ namespace KerbalEngineer.VesselSimulator
                 if (allSources.Count > lastCount)
                 {
                     if (log != null)
-                    {
                         log.buf.AppendLine(indent + "Returning " + (allSources.Count - lastCount) + " attached sources (" + this.name + ":" + this.partId + ")");
-                    }
 
                     return;
                 }
@@ -551,12 +548,15 @@ namespace KerbalEngineer.VesselSimulator
                     allSources.Add(this);
 
                     if (log != null)
-                    {
                         log.buf.AppendLine(indent + "Returning enabled tank as only source (" + name + ":" + partId + ")");
-                    }
                 }
 
                 return;
+            }
+            else
+            {
+                if (log != null)
+                    log.buf.AppendLine(indent + "Not fuel tank or disabled. HasType = " + resources.HasType(type) + "  FlowState = " + resourceFlowStates[type]);
             }
 
             // Rule 7: If the part is radially attached to another part and it is child of that part in the ship's tree structure, it scans its 
@@ -567,8 +567,8 @@ namespace KerbalEngineer.VesselSimulator
                 {
                     if (visited.Contains(parent))
                     {
-                        //if (log != null)
-                        //    log.buf.AppendLine(indent + "Parent part already visited, skipping (" + parent.name + ":" + parent.partId + ")");
+                        if (log != null)
+                            log.buf.AppendLine(indent + "Parent part already visited, skipping (" + parent.name + ":" + parent.partId + ")");
                     }
                     else
                     {
@@ -577,9 +577,7 @@ namespace KerbalEngineer.VesselSimulator
                         if (allSources.Count > lastCount)
                         {
                             if (log != null)
-                            {
                                 log.buf.AppendLine(indent + "Returning " + (allSources.Count  - lastCount) + " parent sources (" + this.name + ":" + this.partId + ")");
-                            }
 
                             return;
                         }
@@ -588,8 +586,8 @@ namespace KerbalEngineer.VesselSimulator
             }
 
             // Rule 8: If all preceding rules failed, part returns empty list.
-            //if (log != null)
-            //    log.buf.AppendLine(indent + "Returning empty set, no sources found (" + name + ":" + partId + ")");
+            if (log != null)
+                log.buf.AppendLine(indent + "Returning empty set, no sources found (" + name + ":" + partId + ")");
 
             return;
         }
