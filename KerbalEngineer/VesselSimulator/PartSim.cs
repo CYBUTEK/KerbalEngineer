@@ -360,8 +360,9 @@ namespace KerbalEngineer.VesselSimulator
 
             buffer.AppendFormat(", isSep = {0}", isSepratron);
 
-            foreach (int type in resources.Types)
+            for (int i = 0; i < resources.Types.Count; i++)
             {
+                int type = resources.Types[i];
                 buffer.AppendFormat(", {0} = {1:g6}", ResourceContainer.GetResourceName(type), resources[type]);
             }
 
@@ -384,8 +385,9 @@ namespace KerbalEngineer.VesselSimulator
             if (allParts != null)
             {
                 String newPrefix = prefix + " ";
-                foreach (PartSim partSim in allParts)
+                for (int i = 0; i < allParts.Count; i++)
                 {
+                    PartSim partSim = allParts[i];
                     if (partSim.parent == this)
                     {
                         partSim.DumpPartToBuffer(buffer, newPrefix, allParts);
@@ -456,7 +458,7 @@ namespace KerbalEngineer.VesselSimulator
 
             // Rule 2: Part performs scan on start of every fuel pipe ending in it. This scan is done in order in which pipes were installed.
             // Then it makes an union of fuel tank sets each pipe scan returned. If the resulting list is not empty, it is returned as result.
-            //MonoBehaviour.print("foreach fuel line");
+            //MonoBehaviour.print("for each fuel line");
 
             int lastCount = allSources.Count;
 
@@ -499,7 +501,7 @@ namespace KerbalEngineer.VesselSimulator
             if (fuelCrossFeed)
             {
                 lastCount = allSources.Count;
-                //MonoBehaviour.print("foreach attach node");
+                //MonoBehaviour.print("for each attach node");
                 for (int i = 0; i < this.attachNodes.Count; i++)
                 {
                     AttachNodeSim attachSim = this.attachNodes[i];
