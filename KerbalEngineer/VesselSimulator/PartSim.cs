@@ -692,15 +692,11 @@ namespace KerbalEngineer.VesselSimulator
                 if (log != null)
                     log.buf.AppendLine("Moving NoPhysics part mass of " + this.baseMass + " to parent part");
 
-                // Go up the parent chain until we find a part that is physically significant or we reach the root
-                PartSim MassParent = parent;
-                while (MassParent.isNoPhysics && (MassParent.parent != null))
-                    MassParent = MassParent.parent;
-
                 // Apply this part's mass to the part we have found
-                MassParent.baseMass += this.baseMass;
+                if (parent != null && !parent.isNoPhysics)
+                    parent.baseMass += this.baseMass;
 
-                // And zero out this part's mass
+                // And zero out this part's mass regardless of whether the mass was added to the parent
                 this.baseMass = 0;
             }
         }
