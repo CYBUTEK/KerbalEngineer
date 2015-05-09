@@ -686,6 +686,23 @@ namespace KerbalEngineer.VesselSimulator
                     }
                 }
             }
+
+            if (isNoPhysics)
+            {
+                if (log != null)
+                    log.buf.AppendLine("Moving NoPhysics part mass of " + this.baseMass + " to parent part");
+
+                // Go up the parent chain until we find a part that is physically significant or we reach the root
+                PartSim MassParent = parent;
+                while (MassParent.isNoPhysics && (MassParent.parent != null))
+                    MassParent = MassParent.parent;
+
+                // Apply this part's mass to the part we have found
+                MassParent.baseMass += this.baseMass;
+
+                // And zero out this part's mass
+                this.baseMass = 0;
+            }
         }
 
         public void SetupParent(Dictionary<Part, PartSim> partSimLookup, LogMsg log)
@@ -697,14 +714,6 @@ namespace KerbalEngineer.VesselSimulator
                 {
                     if (log != null)
                         log.buf.AppendLine("Parent part is " + parent.name + ":" + parent.partId);
-
-                    if (isNoPhysics)
-                    {
-                        if (log != null)
-                            log.buf.AppendLine("Moving NoPhysics part mass of " + this.baseMass + " to parent part");
-                        parent.baseMass += this.baseMass;
-                        this.baseMass = 0;
-                    }
                 }
                 else
                 {
