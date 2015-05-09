@@ -215,7 +215,7 @@ namespace KerbalEngineer.Editor
                 }
 
                 // Change the window title based on whether in compact mode or not.
-                title = !compactMode ? "KERBAL ENGINEER REDUX " + EngineerGlobals.AssemblyVersion : "K.E.R. " + EngineerGlobals.AssemblyVersion + (showAtmosphericDetails ? " (ATMOS.)" : String.Empty);
+                title = !compactMode ? "KERBAL ENGINEER REDUX " + EngineerGlobals.AssemblyVersion : "K.E.R. " + EngineerGlobals.AssemblyVersion;
 
                 // Reset the window size when the staging or something else has changed.
                 stagesLength = stages.Length;
@@ -354,7 +354,7 @@ namespace KerbalEngineer.Editor
                 GUILayout.Space(5.0f);
 
                 GUILayout.BeginVertical();
-                GUILayout.Label("Mach: " + atmosphericMach.ToString("F1"), settingAtmoStyle, GUILayout.Width(125.0f * GuiDisplaySize.Offset));
+                GUILayout.Label("Mach: " + atmosphericMach.ToString("F2"), settingAtmoStyle, GUILayout.Width(125.0f * GuiDisplaySize.Offset));
                 GUI.skin = HighLogic.Skin;
                 atmosphericMach = GUILayout.HorizontalSlider(Mathf.Clamp(atmosphericMach, 0.0f, maxMach), 0.0f, maxMach);
                 GUI.skin = null;
@@ -525,6 +525,11 @@ namespace KerbalEngineer.Editor
             GUILayout.BeginHorizontal();
             GUILayout.Label("Simulate using vectored thrust values:");
             SimManager.vectoredThrust = GUILayout.Toggle(SimManager.vectoredThrust, "ENABLED", buttonStyle, GUILayout.Width(100.0f * GuiDisplaySize.Offset));
+            GUILayout.EndHorizontal();
+
+            GUILayout.BeginHorizontal();
+            GUILayout.Label("Verbose Simulation Log:");
+            SimManager.logOutput = GUILayout.Toggle(SimManager.logOutput, "ENABLED", buttonStyle, GUILayout.Width(100.0f * GuiDisplaySize.Offset));
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
@@ -824,6 +829,14 @@ namespace KerbalEngineer.Editor
                     bodiesList.enabled = GUI.Toggle(bodiesListPosition, bodiesList.enabled, "BODY: " + CelestialBodies.SelectedBody.Name.ToUpper(), buttonStyle);
                     bodiesList.SetPosition(bodiesListPosition.Translate(position));
                 }
+                else
+                {
+                    if (GUI.Toggle(new Rect(position.width - 133.0f * GuiDisplaySize.Offset, 5.0f, 60.0f * GuiDisplaySize.Offset, 20.0f), showAtmosphericDetails, "ATMO", buttonStyle) != showAtmosphericDetails)
+                    {
+                        hasChanged = true;
+                        showAtmosphericDetails = !showAtmosphericDetails;
+                    }
+                }
 
                 // Draw the main informational display box.
                 if (!compactMode)
@@ -841,7 +854,7 @@ namespace KerbalEngineer.Editor
                     DrawBurnTime();
                     GUILayout.EndHorizontal();
 
-                    if (showAtmosphericDetails)
+                    if (showAtmosphericDetails && !compactMode)
                     {
                         GUILayout.BeginVertical(areaSettingStyle);
                         DrawAtmosphericDetails();

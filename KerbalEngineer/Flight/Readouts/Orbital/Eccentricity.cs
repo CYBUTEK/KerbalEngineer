@@ -43,7 +43,7 @@ namespace KerbalEngineer.Flight.Readouts.Orbital
 
         public override void Draw(SectionModule section)
         {
-            this.DrawLine(FlightGlobals.ship_orbit.eccentricity.ToString("F3"), section.IsHud);
+            this.DrawLine(FlightGlobals.ship_orbit.eccentricity.ToString("F5"), section.IsHud);
         }
 
         #endregion

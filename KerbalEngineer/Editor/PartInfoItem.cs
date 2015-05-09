@@ -19,38 +19,69 @@
 
 namespace KerbalEngineer.Editor
 {
+    using System.Collections.Generic;
     using VesselSimulator;
 
-    public class PartInfoItem : Pool<PartInfoItem>
+    public class PartInfoItem
     {
+        private static readonly Pool<PartInfoItem> pool = new Pool<PartInfoItem>(Create, Reset);
+
         public string Name { get; set; }
 
         public string Value { get; set; }
 
+        private static PartInfoItem Create()
+        {
+            return new PartInfoItem();
+        }
+
+        public void Release()
+        {
+            pool.Release(this);
+        }
+
+        public static void Release(List<PartInfoItem> objList)
+        {
+            for (int i = 0; i < objList.Count; ++i)
+            {
+                objList[i].Release();
+            }
+        }
+
+        private static void Reset(PartInfoItem obj)
+        {
+            obj.Name = string.Empty;
+            obj.Value = string.Empty;
+        }
+
         public static PartInfoItem Create(string name)
         {
-            return GetPoolObject().Initialise(name);
+            return New(name);
         }
 
         public static PartInfoItem Create(string name, string value)
         {
-            return GetPoolObject().Initialise(name, value);
+            return New(name, value);
         }
 
-        public PartInfoItem Initialise(string name)
+        public static PartInfoItem New(string name)
         {
-            Name = name;
-            Value = string.Empty;
+            PartInfoItem obj = pool.Borrow();
+            
+            obj.Name = name;
+            obj.Value = string.Empty;
 
-            return this;
+            return obj;
         }
 
-        public PartInfoItem Initialise(string name, string value)
+        public static PartInfoItem New(string name, string value)
         {
-            Name = name;
-            Value = value;
+            PartInfoItem obj = pool.Borrow();
 
-            return this;
+            obj.Name = name;
+            obj.Value = value;
+
+            return obj;
         }
     }
 }
