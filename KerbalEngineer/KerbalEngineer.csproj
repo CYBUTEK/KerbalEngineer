@@ -89,6 +89,7 @@
     <Compile Include="Flight\Readouts\Surface\Biome.cs" />
     <Compile Include="Flight\Readouts\Surface\HorizontalAcceleration.cs" />
     <Compile Include="Flight\Readouts\Surface\VerticalAcceleration.cs" />
+    <Compile Include="Flight\Readouts\Surface\MachNumber.cs" />
     <Compile Include="Flight\Readouts\Vessel\AttitudeProcessor.cs" />
     <Compile Include="Flight\Readouts\Vessel\DeltaVCurrentTotal.cs" />
     <Compile Include="Flight\Readouts\Vessel\PitchRate.cs" />
