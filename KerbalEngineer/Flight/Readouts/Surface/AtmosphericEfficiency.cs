@@ -1,7 +1,7 @@
 ﻿// 
 //     Kerbal Engineer Redux
 // 
-//     Copyright (C) 2014 CYBUTEK
+//     Copyright (C) 2015 CYBUTEK
 // 
 //     This program is free software: you can redistribute it and/or modify
 //     it under the terms of the GNU General Public License as published by
@@ -17,36 +17,26 @@
 //     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // 
 
-#region Using Directives
-
-using KerbalEngineer.Extensions;
-using KerbalEngineer.Flight.Sections;
-
-#endregion
-
 namespace KerbalEngineer.Flight.Readouts.Surface
 {
+    using Extensions;
+    using Sections;
+
     public class AtmosphericEfficiency : ReadoutModule
     {
-        #region Constructors
-
         public AtmosphericEfficiency()
         {
-            this.Name = "Atmos. Efficiency";
-            this.Category = ReadoutCategory.GetCategory("Surface");
-            this.HelpString = "Shows you vessel's efficiency as a ratio of the current velocity and terminal velocity.  Less than 1 means that you are losing efficiency due to gravity and greater than 1 is due to drag.";
-            this.IsDefault = true;
+            Name = "Atmos. Efficiency";
+            Category = ReadoutCategory.GetCategory("Surface");
+            HelpString = "Shows you vessel's efficiency as a ratio of the current velocity and terminal velocity.  Less than 100% means that you are losing efficiency due to gravity and greater than 100% is due to drag.";
+            IsDefault = false;
         }
-
-        #endregion
-
-        #region Methods: public
 
         public override void Draw(SectionModule section)
         {
             if (AtmosphericProcessor.ShowDetails)
             {
-                this.DrawLine(AtmosphericProcessor.Efficiency.ToPercent(), section.IsHud);
+                DrawLine(AtmosphericProcessor.Efficiency.ToPercent(), section.IsHud);
             }
         }
 
@@ -59,7 +49,5 @@ namespace KerbalEngineer.Flight.Readouts.Surface
         {
             AtmosphericProcessor.RequestUpdate();
         }
-
-        #endregion
     }
 }
