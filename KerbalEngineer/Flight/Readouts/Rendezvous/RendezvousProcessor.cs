@@ -1,7 +1,7 @@
 ﻿// 
 //     Kerbal Engineer Redux
 // 
-//     Copyright (C) 2014 CYBUTEK
+//     Copyright (C) 2015 CYBUTEK
 // 
 //     This program is free software: you can redistribute it and/or modify
 //     it under the terms of the GNU General Public License as published by
@@ -17,29 +17,18 @@
 //     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // 
 
-#region Using Directives
-
-using System;
-
-using KerbalEngineer.Extensions;
-using KerbalEngineer.Helpers;
-
-#endregion
-
 namespace KerbalEngineer.Flight.Readouts.Rendezvous
 {
+    using System;
+    using Extensions;
+    using Helpers;
+
     public class RendezvousProcessor : IUpdatable, IUpdateRequest
     {
-        #region Fields
-
         private static readonly RendezvousProcessor instance = new RendezvousProcessor();
 
         private Orbit originOrbit;
         private Orbit targetOrbit;
-
-        #endregion
-
-        #region Properties
 
         /// <summary>
         ///     Gets the target's altitude above its reference body.
@@ -71,7 +60,10 @@ namespace KerbalEngineer.Flight.Readouts.Rendezvous
         /// </summary>
         public static RendezvousProcessor Instance
         {
-            get { return instance; }
+            get
+            {
+                return instance;
+            }
         }
 
         /// <summary>
@@ -149,10 +141,6 @@ namespace KerbalEngineer.Flight.Readouts.Rendezvous
         /// </summary>
         public bool UpdateRequested { get; set; }
 
-        #endregion
-
-        #region Methods: public
-
         /// <summary>
         ///     Request and update to calculate the details.
         /// </summary>
@@ -166,7 +154,13 @@ namespace KerbalEngineer.Flight.Readouts.Rendezvous
         /// </summary>
         public void Update()
         {
-            if (FlightGlobals.fetch.VesselTarget == null)
+            if (FlightGlobals.fetch == null ||
+                FlightGlobals.fetch.VesselTarget == null ||
+                FlightGlobals.ActiveVessel == null ||
+                FlightGlobals.ActiveVessel.targetObject == null ||
+                FlightGlobals.ActiveVessel.targetObject.GetOrbit() == null ||
+                FlightGlobals.ship_orbit == null ||
+                FlightGlobals.ship_orbit.referenceBody == null)
             {
                 ShowDetails = false;
                 return;
@@ -174,55 +168,50 @@ namespace KerbalEngineer.Flight.Readouts.Rendezvous
 
             ShowDetails = true;
 
-            this.targetOrbit = FlightGlobals.fetch.VesselTarget.GetOrbit();
-            this.originOrbit = (FlightGlobals.ship_orbit.referenceBody == Planetarium.fetch.Sun || FlightGlobals.ship_orbit.referenceBody == FlightGlobals.ActiveVessel.targetObject.GetOrbit().referenceBody)
+            targetOrbit = FlightGlobals.fetch.VesselTarget.GetOrbit();
+            originOrbit = (FlightGlobals.ship_orbit.referenceBody == Planetarium.fetch.Sun ||
+                           FlightGlobals.ship_orbit.referenceBody == FlightGlobals.ActiveVessel.targetObject.GetOrbit().referenceBody)
                 ? FlightGlobals.ship_orbit
                 : FlightGlobals.ship_orbit.referenceBody.orbit;
 
-            RelativeInclination = this.originOrbit.GetRelativeInclination(this.targetOrbit);
+            RelativeInclination = originOrbit.GetRelativeInclination(targetOrbit);
             RelativeVelocity = FlightGlobals.ship_tgtSpeed;
-            RelativeSpeed = FlightGlobals.ship_obtSpeed - this.targetOrbit.orbitalSpeed;
-            PhaseAngle = this.originOrbit.GetPhaseAngle(this.targetOrbit);
-            InterceptAngle = this.CalcInterceptAngle();
-            TimeToAscendingNode = this.originOrbit.GetTimeToVector(this.GetAscendingNode());
-            TimeToDescendingNode = this.originOrbit.GetTimeToVector(this.GetDescendingNode());
-            AngleToAscendingNode = this.originOrbit.GetAngleToVector(this.GetAscendingNode());
-            AngleToDescendingNode = this.originOrbit.GetAngleToVector(this.GetDescendingNode());
-            AltitudeSeaLevel = this.targetOrbit.altitude;
-            ApoapsisHeight = this.targetOrbit.ApA;
-            PeriapsisHeight = this.targetOrbit.PeA;
-            TimeToApoapsis = this.targetOrbit.timeToAp;
-            TimeToPeriapsis = this.targetOrbit.timeToPe;
-            SemiMajorAxis = this.targetOrbit.semiMajorAxis;
-            SemiMinorAxis = this.targetOrbit.semiMinorAxis;
+            RelativeSpeed = FlightGlobals.ship_obtSpeed - targetOrbit.orbitalSpeed;
+            PhaseAngle = originOrbit.GetPhaseAngle(targetOrbit);
+            InterceptAngle = CalcInterceptAngle();
+            TimeToAscendingNode = originOrbit.GetTimeToVector(GetAscendingNode());
+            TimeToDescendingNode = originOrbit.GetTimeToVector(GetDescendingNode());
+            AngleToAscendingNode = originOrbit.GetAngleToVector(GetAscendingNode());
+            AngleToDescendingNode = originOrbit.GetAngleToVector(GetDescendingNode());
+            AltitudeSeaLevel = targetOrbit.altitude;
+            ApoapsisHeight = targetOrbit.ApA;
+            PeriapsisHeight = targetOrbit.PeA;
+            TimeToApoapsis = targetOrbit.timeToAp;
+            TimeToPeriapsis = targetOrbit.timeToPe;
+            SemiMajorAxis = targetOrbit.semiMajorAxis;
+            SemiMinorAxis = targetOrbit.semiMinorAxis;
 
-            Distance = Vector3d.Distance(this.targetOrbit.pos, this.originOrbit.pos);
-            OrbitalPeriod = this.targetOrbit.period;
+            Distance = Vector3d.Distance(targetOrbit.pos, originOrbit.pos);
+            OrbitalPeriod = targetOrbit.period;
         }
-
-        #endregion
-
-        #region Methods: private
 
         private double CalcInterceptAngle()
         {
-            var originRadius = (this.originOrbit.semiMinorAxis + this.originOrbit.semiMajorAxis) * 0.5;
-            var targetRadius = (this.targetOrbit.semiMinorAxis + this.targetOrbit.semiMajorAxis) * 0.5;
-            var angle = 180.0 * (1.0 - Math.Pow((originRadius + targetRadius) / (2.0 * targetRadius), 1.5));
+            double originRadius = (originOrbit.semiMinorAxis + originOrbit.semiMajorAxis) * 0.5;
+            double targetRadius = (targetOrbit.semiMinorAxis + targetOrbit.semiMajorAxis) * 0.5;
+            double angle = 180.0 * (1.0 - Math.Pow((originRadius + targetRadius) / (2.0 * targetRadius), 1.5));
             angle = PhaseAngle - angle;
             return RelativeInclination < 90.0 ? AngleHelper.Clamp360(angle) : AngleHelper.Clamp360(360.0 - (180.0 - angle));
         }
 
         private Vector3d GetAscendingNode()
         {
-            return Vector3d.Cross(this.targetOrbit.GetOrbitNormal(), this.originOrbit.GetOrbitNormal());
+            return Vector3d.Cross(targetOrbit.GetOrbitNormal(), originOrbit.GetOrbitNormal());
         }
 
         private Vector3d GetDescendingNode()
         {
-            return Vector3d.Cross(this.originOrbit.GetOrbitNormal(), this.targetOrbit.GetOrbitNormal());
+            return Vector3d.Cross(originOrbit.GetOrbitNormal(), targetOrbit.GetOrbitNormal());
         }
-
-        #endregion
     }
 }
