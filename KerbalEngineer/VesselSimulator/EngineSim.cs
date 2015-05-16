@@ -145,7 +145,8 @@ namespace KerbalEngineer.VesselSimulator
             for (int i = 0; i < propellants.Count; ++i)
             {
                 Propellant propellant = propellants[i];
-                flowMass += propellant.ratio * ResourceContainer.GetResourceDensity(propellant.id);
+                if (!propellant.ignoreForIsp)
+                    flowMass += propellant.ratio * ResourceContainer.GetResourceDensity(propellant.id);
             }
 
             if (log != null) log.buf.AppendFormat("flowMass = {0:g6}\n", flowMass);
