@@ -17,35 +17,25 @@
 //     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // 
 
-#region Using Directives
-
-using KerbalEngineer.Flight.Sections;
-
-#endregion
-
 namespace KerbalEngineer.Flight.Readouts.Surface
 {
+    using Helpers;
+    using Sections;
+
     public class Longitude : ReadoutModule
     {
-        #region Constructors
-
         public Longitude()
         {
-            this.Name = "Longitude";
-            this.Category = ReadoutCategory.GetCategory("Surface");
-            this.HelpString = "Shows the vessel's longitude around a celestial body.  Longitude is the angle from the bodies prime meridian.";
-            this.IsDefault = true;
+            Name = "Longitude";
+            Category = ReadoutCategory.GetCategory("Surface");
+            HelpString = "Shows the vessel's longitude around a celestial body.  Longitude is the angle from the bodies prime meridian.";
+            IsDefault = true;
         }
-
-        #endregion
-
-        #region Methods: public
 
         public override void Draw(SectionModule section)
         {
-            this.DrawLine(KSPUtil.PrintLongitude(FlightGlobals.ship_longitude), section.IsHud);
+            double angle = AngleHelper.Clamp180(FlightGlobals.ship_longitude);
+            DrawLine(Units.ToAngleDMS(angle) + (angle < 0.0 ? "W" : " E"), section.IsHud);
         }
-
-        #endregion
     }
 }

@@ -17,21 +17,30 @@
 //     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // 
 
-#region Using Directives
-
-using UnityEngine;
-
-#endregion
-
 namespace KerbalEngineer.Helpers
 {
+    using UnityEngine;
+
     public static class AngleHelper
     {
-        #region Methods: public
-
-        public static double Clamp360(double value)
+        public static double Clamp180(double angle)
         {
-            return ClampBetween(value, 0.0, 360.0);
+            angle = Clamp360(angle);
+            if (angle > 180.0)
+            {
+                angle = angle - 360.0;
+            }
+            return angle;
+        }
+
+        public static double Clamp360(double angle)
+        {
+            angle = angle % 360.0;
+            if (angle < 0.0)
+            {
+                angle = angle + 360.0;
+            }
+            return angle;
         }
 
         public static double ClampBetween(double value, double minimum, double maximum)
@@ -51,8 +60,8 @@ namespace KerbalEngineer.Helpers
 
         public static double GetAngleBetweenVectors(Vector3d left, Vector3d right)
         {
-            var angle = Vector3d.Angle(left, right);
-            var rotated = QuaternionD.AngleAxis(90.0, Vector3d.forward) * right;
+            double angle = Vector3d.Angle(left, right);
+            Vector3d rotated = QuaternionD.AngleAxis(90.0, Vector3d.forward) * right;
 
             if (Vector3d.Angle(rotated, left) > 90.0)
             {
@@ -60,7 +69,5 @@ namespace KerbalEngineer.Helpers
             }
             return angle;
         }
-
-        #endregion
     }
 }
