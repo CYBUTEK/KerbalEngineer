@@ -31,6 +31,7 @@ namespace KerbalEngineer.VesselSimulator
         private static readonly Pool<EngineSim> pool = new Pool<EngineSim>(Create, Reset);
 
         private readonly ResourceContainer resourceConsumptions = new ResourceContainer();
+        private readonly ResourceContainer resourceFlowModes = new ResourceContainer();
 
         public double actualThrust = 0;
         public bool isActive = false;
@@ -52,6 +53,7 @@ namespace KerbalEngineer.VesselSimulator
         private static void Reset(EngineSim engineSim)
         {
             engineSim.resourceConsumptions.Reset();
+            engineSim.resourceFlowModes.Reset();
             engineSim.actualThrust = 0;
             engineSim.isActive = false;
             engineSim.isp = 0;
@@ -98,6 +100,7 @@ namespace KerbalEngineer.VesselSimulator
             engineSim.isActive = active;
             engineSim.thrustVec = vecThrust;
             engineSim.resourceConsumptions.Reset();
+            engineSim.resourceFlowModes.Reset();
             engineSim.appliedForces.Clear();
 
             double flowRate = 0.0;
@@ -164,6 +167,7 @@ namespace KerbalEngineer.VesselSimulator
                         theEngine.partId,
                         consumptionRate);
                 engineSim.resourceConsumptions.Add(propellant.id, consumptionRate);
+                engineSim.resourceFlowModes.Add(propellant.id, (double)propellant.GetFlowMode());
             }
 
             double thrustPerThrustTransform = engineSim.thrust / thrustTransforms.Count;
@@ -269,7 +273,7 @@ namespace KerbalEngineer.VesselSimulator
                     sourcePartSets.Add(type, sourcePartSet);
                 }
 
-                switch (ResourceContainer.GetResourceFlowMode(type))
+                switch ((ResourceFlowMode)this.resourceFlowModes[type])
                 {
                     case ResourceFlowMode.NO_FLOW:
                         if (partSim.resources[type] > SimManager.RESOURCE_MIN && partSim.resourceFlowStates[type] != 0)
