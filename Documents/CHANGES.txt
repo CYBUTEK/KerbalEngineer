@@ -1,4 +1,5 @@
 1.0.17.0
+    Added: 'Mach Number' readout and included it on the default surface HUD.
     Changed: Mach on the Build Engineer now accurate to 2 decimal places.
     Changed: Max mach in the Build Engineer defaults to 1.00 even when no jet engines are present.
     Changed: Increased eccentricity readout to 5 decimal places.  
@@ -6,7 +7,6 @@
     Fixed: Physically insignificant part mass is now associated with the parent part.
     Fixed: Longitude and Latitude readouts now use a KER formatter instead of Squad's incorrect implementation.
     Fixed: Possible null reference in the Rendezvous Processor.
-
 
 1.0.16.6, 02-05-15
     Fixed: Separately staged fairing mass jettisons are now calculated in the editor.

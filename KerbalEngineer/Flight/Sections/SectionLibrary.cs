@@ -101,7 +101,8 @@ namespace KerbalEngineer.Flight.Sections
                     ReadoutLibrary.GetReadout("AltitudeTerrain"),
                     ReadoutLibrary.GetReadout("VerticalSpeed"),
                     ReadoutLibrary.GetReadout("HorizontalSpeed"),
-                    ReadoutLibrary.GetReadout("Biome")
+                    ReadoutLibrary.GetReadout("Biome"),
+                    ReadoutLibrary.GetReadout("MachNumber")
                 },
             };
             hud2.FloatingPositionX = Screen.width * 0.75f - (hud2.ReadoutModules.First().ContentWidth * 0.5f);
