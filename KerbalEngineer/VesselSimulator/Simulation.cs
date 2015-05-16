@@ -139,6 +139,7 @@ namespace KerbalEngineer.VesselSimulator
                 log.buf.AppendLine("PrepareSimulation started");
                 dumpTree = true;
             }
+            this._timer.Reset();
             this._timer.Start();
 
             // Store the parameters in members for ease of access in other functions
@@ -299,6 +300,7 @@ namespace KerbalEngineer.VesselSimulator
                 MonoBehaviour.print("RunSimulation started");
             }
 
+            this._timer.Reset();
             this._timer.Start();
 
             LogMsg log = null;
