@@ -106,40 +106,59 @@ namespace KerbalEngineer.VesselSimulator
             double flowRate = 0.0;
             if (engineSim.partSim.hasVessel)
             {
+                if (log != null) log.buf.AppendLine("hasVessel is true"); 
+
                 float flowModifier = GetFlowModifier(atmChangeFlow, atmCurve, engineSim.partSim.part.atmDensity, velCurve, machNumber, ref engineSim.maxMach);
                 engineSim.isp = atmosphereCurve.Evaluate((float)atmosphere);
                 engineSim.thrust = GetThrust(Mathf.Lerp(minFuelFlow, maxFuelFlow, GetThrustPercent(thrustPercentage)) * flowModifier, engineSim.isp);
                 engineSim.actualThrust = engineSim.isActive ? resultingThrust : 0.0;
+                if (log != null)
+                {
+                    log.buf.AppendFormat("flowMod = {0:g6}\n", flowModifier);
+                    log.buf.AppendFormat("isp     = {0:g6}\n", engineSim.isp);
+                    log.buf.AppendFormat("thrust  = {0:g6}\n", engineSim.thrust);
+                    log.buf.AppendFormat("actual  = {0:g6}\n", engineSim.actualThrust);
+                }
 
                 if (throttleLocked)
                 {
+                    if (log != null) log.buf.AppendLine("throttleLocked is true, using thrust for flowRate");
                     flowRate = GetFlowRate(engineSim.thrust, engineSim.isp);
                 }
                 else
                 {
                     if (currentThrottle > 0.0f && engineSim.partSim.isLanded == false)
                     {
+                        if (log != null) log.buf.AppendLine("throttled up and not landed, using actualThrust for flowRate");
                         flowRate = GetFlowRate(engineSim.actualThrust, engineSim.isp);
                     }
                     else
                     {
+                        if (log != null) log.buf.AppendLine("throttled down or landed, using thrust for flowRate");
                         flowRate = GetFlowRate(engineSim.thrust, engineSim.isp);
                     }
                 }
             }
             else
             {
+                if (log != null) log.buf.AppendLine("hasVessel is false");
                 float flowModifier = GetFlowModifier(atmChangeFlow, atmCurve, CelestialBodies.SelectedBody.GetDensity(BuildAdvanced.Altitude), velCurve, machNumber, ref engineSim.maxMach);
                 engineSim.isp = atmosphereCurve.Evaluate((float)atmosphere);
                 engineSim.thrust = GetThrust(Mathf.Lerp(minFuelFlow, maxFuelFlow, GetThrustPercent(thrustPercentage)) * flowModifier, engineSim.isp);
+                engineSim.actualThrust = 0d;
+                if (log != null)
+                {
+                    log.buf.AppendFormat("flowMod = {0:g6}\n", flowModifier);
+                    log.buf.AppendFormat("isp     = {0:g6}\n", engineSim.isp);
+                    log.buf.AppendFormat("thrust  = {0:g6}\n", engineSim.thrust);
+                    log.buf.AppendFormat("actual  = {0:g6}\n", engineSim.actualThrust);
+                }
+
+                if (log != null) log.buf.AppendLine("no vessel, using thrust for flowRate");
                 flowRate = GetFlowRate(engineSim.thrust, engineSim.isp);
             }
 
             if (log != null) log.buf.AppendFormat("flowRate = {0:g6}\n", flowRate);
-
-            engineSim.thrust = flowRate * (engineSim.isp * IspG);
-            // I did not look into the diff between those 2 so I made them equal...
-            engineSim.actualThrust = engineSim.thrust;
 
             float flowMass = 0f;
             for (int i = 0; i < propellants.Count; ++i)
