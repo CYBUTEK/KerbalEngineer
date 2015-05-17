@@ -123,6 +123,11 @@ namespace KerbalEngineer.Helpers
             return value.ToString("N" + decimals) + "Mm";
         }
 
+        public static string ToFlux(double value)
+        {
+            return value.ToString("#,0.00") + "W";
+        }
+
         public static string ToForce(double value)
         {
             return value.ToString((value < 100000.0) ? (value < 10000.0) ? (value < 100.0) ? (Math.Abs(value) < Double.Epsilon) ? "N0" : "N3" : "N2" : "N1" : "N0") + "kN";
@@ -181,6 +186,16 @@ namespace KerbalEngineer.Helpers
                 return (value * 1000.0).ToString("N" + decimals) + "mm/s";
             }
             return value.ToString("N" + decimals) + "m/s";
+        }
+
+        public static string ToTemperature(double value)
+        {
+            return value.ToString("#,0") + "K";
+        }
+
+        public static string ToTemperature(double value1, double value2)
+        {
+            return value1.ToString("#,0") + " / " + value2.ToString("#,0") + "K";
         }
 
         public static string ToTime(double value)

@@ -38,6 +38,11 @@ namespace KerbalEngineer.Extensions
             return Units.ToDistance(value);
         }
 
+        public static string ToFlux(this float value)
+        {
+            return Units.ToFlux(value);
+        }
+
         public static string ToForce(this float value)
         {
             return Units.ToForce(value);
@@ -66,6 +71,11 @@ namespace KerbalEngineer.Extensions
         public static string ToSpeed(this float value)
         {
             return Units.ToSpeed(value);
+        }
+
+        public static string ToTemperature(this float value)
+        {
+            return Units.ToTemperature(value);
         }
 
         public static string ToTorque(this float value)

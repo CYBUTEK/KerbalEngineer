@@ -1,7 +1,7 @@
 ﻿// 
 //     Kerbal Engineer Redux
 // 
-//     Copyright (C) 2014 CYBUTEK
+//     Copyright (C) 2015 CYBUTEK
 // 
 //     This program is free software: you can redistribute it and/or modify
 //     it under the terms of the GNU General Public License as published by
@@ -19,22 +19,19 @@
 
 #region Using Directives
 
-using System.Collections.Generic;
-using System.Linq;
-
-using KerbalEngineer.Flight.Readouts;
-using KerbalEngineer.Settings;
-
-using UnityEngine;
-
 #endregion
 
 namespace KerbalEngineer.Flight.Sections
 {
+    using System.Collections.Generic;
+    using System.Linq;
+    using Readouts;
+    using Settings;
+    using UnityEngine;
+
     public static class SectionLibrary
     {
         #region Constructors
-
         /// <summary>
         ///     Sets up and populates the library with the stock sections on creation.
         /// </summary>
@@ -71,7 +68,14 @@ namespace KerbalEngineer.Flight.Sections
                 ReadoutModules = ReadoutLibrary.GetCategory(ReadoutCategory.GetCategory("Rendezvous")).Where(r => r.IsDefault).ToList()
             });
 
-            var hud1 = new SectionModule
+            CustomSections.Add(new SectionModule
+            {
+                Name = "THERMAL",
+                Abbreviation = "HEAT",
+                ReadoutModules = ReadoutLibrary.GetCategory(ReadoutCategory.GetCategory("Thermal")).Where(r => r.IsDefault).ToList()
+            });
+
+            SectionModule hud1 = new SectionModule
             {
                 Name = "HUD 1",
                 Abbreviation = "HUD 1",
@@ -90,7 +94,7 @@ namespace KerbalEngineer.Flight.Sections
             hud1.IsHud = true;
             CustomSections.Add(hud1);
 
-            var hud2 = new SectionModule
+            SectionModule hud2 = new SectionModule
             {
                 Name = "HUD 2",
                 Abbreviation = "HUD 2",
@@ -110,11 +114,9 @@ namespace KerbalEngineer.Flight.Sections
             hud2.IsHud = true;
             CustomSections.Add(hud2);
         }
-
         #endregion
 
         #region Properties
-
         /// <summary>
         ///     Gets and sets a list of custom sections.
         /// </summary>
@@ -134,13 +136,11 @@ namespace KerbalEngineer.Flight.Sections
         ///     Gets and sets a list of stock sections
         /// </summary>
         public static List<SectionModule> StockSections { get; set; }
-
         #endregion
 
         #region Updating
 
         #region Methods: public
-
         /// <summary>
         ///     Fixed update all of the sections.
         /// </summary>
@@ -161,17 +161,15 @@ namespace KerbalEngineer.Flight.Sections
             UpdateSections(StockSections);
             UpdateSections(CustomSections);
         }
-
         #endregion
 
         #region Methods: private
-
         /// <summary>
         ///     Fixed updates a list of sections.
         /// </summary>
         private static void FixedUpdateSections(IEnumerable<SectionModule> sections)
         {
-            foreach (var section in sections)
+            foreach (SectionModule section in sections)
             {
                 if (section.IsVisible)
                 {
@@ -185,13 +183,13 @@ namespace KerbalEngineer.Flight.Sections
         /// </summary>
         private static void UpdateSections(IEnumerable<SectionModule> sections)
         {
-            foreach (var section in sections)
+            foreach (SectionModule section in sections)
             {
                 if (section.IsVisible)
                 {
                     if (!section.IsFloating)
                     {
-                        foreach (var readout in section.ReadoutModules)
+                        foreach (ReadoutModule readout in section.ReadoutModules)
                         {
                             if (readout.ResizeRequested)
                             {
@@ -204,7 +202,7 @@ namespace KerbalEngineer.Flight.Sections
                     }
                     else
                     {
-                        foreach (var readout in section.ReadoutModules)
+                        foreach (ReadoutModule readout in section.ReadoutModules)
                         {
                             if (readout.ResizeRequested)
                             {
@@ -219,13 +217,11 @@ namespace KerbalEngineer.Flight.Sections
                 NumberOfSections++;
             }
         }
-
         #endregion
 
         #endregion
 
         #region Saving and Loading
-
         /// <summary>
         ///     Loads the state of all stored sections.
         /// </summary>
@@ -244,11 +240,11 @@ namespace KerbalEngineer.Flight.Sections
                 }
             });
 
-            var handler = SettingHandler.Load("SectionLibrary.xml", new[] {typeof(List<SectionModule>)});
+            SettingHandler handler = SettingHandler.Load("SectionLibrary.xml", new[] { typeof(List<SectionModule>) });
             StockSections = handler.Get("StockSections", StockSections);
             CustomSections = handler.Get("CustomSections", CustomSections);
 
-            foreach (var section in GetAllSections())
+            foreach (SectionModule section in GetAllSections())
             {
                 section.ClearNullReadouts();
             }
@@ -259,22 +255,20 @@ namespace KerbalEngineer.Flight.Sections
         /// </summary>
         public static void Save()
         {
-            var handler = new SettingHandler();
+            SettingHandler handler = new SettingHandler();
             handler.Set("StockSections", StockSections);
             handler.Set("CustomSections", CustomSections);
             handler.Save("SectionLibrary.xml");
         }
-
         #endregion
 
         #region Methods
-
         /// <summary>
         ///     Gets a list containing all section modules.
         /// </summary>
         public static List<SectionModule> GetAllSections()
         {
-            var sections = new List<SectionModule>();
+            List<SectionModule> sections = new List<SectionModule>();
             sections.AddRange(StockSections);
             sections.AddRange(CustomSections);
             return sections;
@@ -327,7 +321,6 @@ namespace KerbalEngineer.Flight.Sections
         {
             return StockSections.Remove(GetStockSection(name));
         }
-
         #endregion
     }
 }

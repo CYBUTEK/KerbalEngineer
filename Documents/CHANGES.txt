@@ -1,5 +1,17 @@
 1.0.17.0
-    Added: 'Mach Number' readout and included it on the default surface HUD.
+    Added: 'Mach Number' readout under the 'Surface' category and included it on the default surface HUD.
+    Added 'Thermal' readouts category including:
+        Internal Flux
+        Convection Flux
+        Radiation Flux
+        Critical Part Name
+        Critical Part Temperature
+        Critical Part Percentage of Max Temperature
+        Hottest Part Name
+        Hottest Part Temperature
+        Coldest Part Name
+        Coldest Part Temperature
+
     Changed: Mach on the Build Engineer now accurate to 2 decimal places.
     Changed: Max mach in the Build Engineer defaults to 1.00 even when no jet engines are present.
     Changed: Increased eccentricity readout to 5 decimal places.  

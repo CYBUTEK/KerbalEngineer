@@ -48,6 +48,7 @@
     <Compile Include="Editor\ResourceInfoItem.cs" />
     <Compile Include="Extensions\FloatExtensions.cs" />
     <Compile Include="Extensions\OrbitExtensions.cs" />
+    <Compile Include="Extensions\StringExtensions.cs" />
     <Compile Include="Flight\ActionMenuGui.cs" />
     <Compile Include="Flight\Presets\Preset.cs" />
     <Compile Include="Flight\Readouts\Miscellaneous\SystemTime.cs" />
@@ -90,6 +91,17 @@
     <Compile Include="Flight\Readouts\Surface\HorizontalAcceleration.cs" />
     <Compile Include="Flight\Readouts\Surface\VerticalAcceleration.cs" />
     <Compile Include="Flight\Readouts\Surface\MachNumber.cs" />
+    <Compile Include="Flight\Readouts\Thermal\CriticalPart.cs" />
+    <Compile Include="Flight\Readouts\Thermal\CoolestPart.cs" />
+    <Compile Include="Flight\Readouts\Thermal\CoolestTemperature.cs" />
+    <Compile Include="Flight\Readouts\Thermal\CriticalPercentage.cs" />
+    <Compile Include="Flight\Readouts\Thermal\CriticalTemperature.cs" />
+    <Compile Include="Flight\Readouts\Thermal\InternalFlux.cs" />
+    <Compile Include="Flight\Readouts\Thermal\RadiationFlux.cs" />
+    <Compile Include="Flight\Readouts\Thermal\ConvectionFlux.cs" />
+    <Compile Include="Flight\Readouts\Thermal\HottestTemperature.cs" />
+    <Compile Include="Flight\Readouts\Thermal\HottestPart.cs" />
+    <Compile Include="Flight\Readouts\Thermal\ThermalProcessor.cs" />
     <Compile Include="Flight\Readouts\Vessel\AttitudeProcessor.cs" />
     <Compile Include="Flight\Readouts\Vessel\DeltaVCurrentTotal.cs" />
     <Compile Include="Flight\Readouts\Vessel\PitchRate.cs" />
