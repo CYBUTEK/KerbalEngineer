@@ -150,6 +150,12 @@ namespace KerbalEngineer.VesselSimulator
             return density == 0d ? 0d : this.resources[type] * density;
         }
 
+        public double GetResourceCost(int type)
+        {
+            double unitCost = GetResourceUnitCost(type);
+            return unitCost == 0d ? 0d : this.resources[type] * unitCost;
+        }
+
         public static ResourceFlowMode GetResourceFlowMode(int type)
         {
             return PartResourceLibrary.Instance.GetDefinition(type).resourceFlowMode;
@@ -157,7 +163,7 @@ namespace KerbalEngineer.VesselSimulator
 
         public static ResourceTransferMode GetResourceTransferMode(int type)
         {
-            return PartResourceLibrary.Instance.GetDefinition(type).resourceTransferMode;;
+            return PartResourceLibrary.Instance.GetDefinition(type).resourceTransferMode;
         }
 
         public static float GetResourceDensity(int type)
@@ -168,6 +174,11 @@ namespace KerbalEngineer.VesselSimulator
         public static string GetResourceName(int type)
         {
             return PartResourceLibrary.Instance.GetDefinition(type).name;
+        }
+
+        public static double GetResourceUnitCost(int type)
+        {
+            return PartResourceLibrary.Instance.GetDefinition(type).unitCost;
         }
     }
 }
