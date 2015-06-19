@@ -30,6 +30,8 @@ using UnityEngine;
 
 namespace KerbalEngineer.Flight.Readouts.Orbital.ManoeuvreNode
 {
+    using Helpers;
+
     public class ManoeuvreProcessor : IUpdatable, IUpdateRequest
     {
         #region Fields
@@ -163,7 +165,7 @@ namespace KerbalEngineer.Flight.Readouts.Orbital.ManoeuvreNode
                     deltaVDrain = deltaV.Clamp(0.0, stageDeltaV);
                 }
 
-                var exhaustVelocity = stage.isp * 9.82;
+                var exhaustVelocity = stage.isp * Units.GRAVITY;
                 var flowRate = stage.thrust / exhaustVelocity;
                 var endMass = Math.Exp(Math.Log(startMass) - deltaVDrain / exhaustVelocity);
                 var deltaMass = (startMass - endMass) * Math.Exp(-(deltaVDrain * 0.001) / exhaustVelocity);

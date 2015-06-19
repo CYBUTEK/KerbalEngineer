@@ -17,37 +17,37 @@
 //     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // 
 
-namespace KerbalEngineer.Flight.Readouts.Surface
+namespace KerbalEngineer.Flight.Readouts.Thermal
 {
-    using Extensions;
+    using Helpers;
     using Sections;
 
-    public class AtmosphericEfficiency : ReadoutModule
+    public class CoolestTemperature : ReadoutModule
     {
-        public AtmosphericEfficiency()
+        public CoolestTemperature()
         {
-            Name = "Atmos. Efficiency";
-            Category = ReadoutCategory.GetCategory("Surface");
-            HelpString = "Shows you vessel's efficiency as a ratio of the current velocity and terminal velocity.  Less than 100% means that you are losing efficiency due to gravity and greater than 100% is due to drag.";
-            IsDefault = false;
+            Name = "Coolest Temperature";
+            Category = ReadoutCategory.GetCategory("Thermal");
+            HelpString = string.Empty;
+            IsDefault = true;
         }
 
         public override void Draw(SectionModule section)
         {
-            if (AtmosphericProcessor.ShowDetails)
+            if (ThermalProcessor.ShowDetails)
             {
-                DrawLine(AtmosphericProcessor.Efficiency.ToPercent(), section.IsHud);
+                DrawLine(Units.ToTemperature(ThermalProcessor.CoolestTemperature, ThermalProcessor.CoolestTemperatureMax), section.IsHud);
             }
         }
 
         public override void Reset()
         {
-            FlightEngineerCore.Instance.AddUpdatable(AtmosphericProcessor.Instance);
+            FlightEngineerCore.Instance.AddUpdatable(ThermalProcessor.Instance);
         }
 
         public override void Update()
         {
-            AtmosphericProcessor.RequestUpdate();
+            ThermalProcessor.RequestUpdate();
         }
     }
 }

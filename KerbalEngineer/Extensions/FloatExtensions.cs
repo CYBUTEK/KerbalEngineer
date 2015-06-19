@@ -1,7 +1,7 @@
 ﻿// 
 //     Kerbal Engineer Redux
 // 
-//     Copyright (C) 2014 CYBUTEK
+//     Copyright (C) 2015 CYBUTEK
 // 
 //     This program is free software: you can redistribute it and/or modify
 //     it under the terms of the GNU General Public License as published by
@@ -17,18 +17,12 @@
 //     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // 
 
-#region Using Directives
-
-using KerbalEngineer.Helpers;
-
-#endregion
-
 namespace KerbalEngineer.Extensions
 {
+    using Helpers;
+
     public static class FloatExtensions
     {
-        #region Methods: public
-
         public static string ToAcceleration(this float value)
         {
             return Units.ToAcceleration(value);
@@ -44,14 +38,19 @@ namespace KerbalEngineer.Extensions
             return Units.ToDistance(value);
         }
 
+        public static string ToFlux(this float value)
+        {
+            return Units.ToFlux(value);
+        }
+
         public static string ToForce(this float value)
         {
             return Units.ToForce(value);
         }
 
-        public static string ToTorque(this float value)
+        public static string ToMach(this float value)
         {
-            return Units.ToTorque(value);
+            return Units.ToMach(value);
         }
 
         public static string ToMass(this float value)
@@ -74,6 +73,14 @@ namespace KerbalEngineer.Extensions
             return Units.ToSpeed(value);
         }
 
-        #endregion
+        public static string ToTemperature(this float value)
+        {
+            return Units.ToTemperature(value);
+        }
+
+        public static string ToTorque(this float value)
+        {
+            return Units.ToTorque(value);
+        }
     }
 }

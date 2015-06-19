@@ -1,7 +1,7 @@
 ﻿// 
 //     Kerbal Engineer Redux
 // 
-//     Copyright (C) 2014 CYBUTEK
+//     Copyright (C) 2015 CYBUTEK
 // 
 //     This program is free software: you can redistribute it and/or modify
 //     it under the terms of the GNU General Public License as published by
@@ -19,8 +19,6 @@
 
 namespace KerbalEngineer.Flight.Readouts
 {
-    #region Using Directives
-
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -30,6 +28,7 @@ namespace KerbalEngineer.Flight.Readouts
     using Rendezvous;
     using Settings;
     using Surface;
+    using Thermal;
     using Vessel;
     using AltitudeSeaLevel = Surface.AltitudeSeaLevel;
     using ApoapsisHeight = Orbital.ApoapsisHeight;
@@ -40,17 +39,9 @@ namespace KerbalEngineer.Flight.Readouts
     using TimeToApoapsis = Orbital.TimeToApoapsis;
     using TimeToPeriapsis = Orbital.TimeToPeriapsis;
 
-    #endregion
-
     public static class ReadoutLibrary
     {
-        #region Fields
-
         private static List<ReadoutModule> readouts = new List<ReadoutModule>();
-
-        #endregion
-
-        #region Constructors
 
         /// <summary>
         ///     Sets up and populates the readout library with the stock readouts.
@@ -63,6 +54,7 @@ namespace KerbalEngineer.Flight.Readouts
                 ReadoutCategory.SetCategory("Surface", "Surface and atmospheric readouts.");
                 ReadoutCategory.SetCategory("Vessel", "Vessel performance statistics.");
                 ReadoutCategory.SetCategory("Rendezvous", "Readouts for rendezvous manovoeures.");
+                ReadoutCategory.SetCategory("Thermal", "Thermal characteristics readouts.");
                 ReadoutCategory.SetCategory("Miscellaneous", "Miscellaneous readouts.");
                 ReadoutCategory.Selected = ReadoutCategory.GetCategory("Orbital");
 
@@ -109,6 +101,7 @@ namespace KerbalEngineer.Flight.Readouts
                 readouts.Add(new VerticalAcceleration());
                 readouts.Add(new HorizontalSpeed());
                 readouts.Add(new HorizontalAcceleration());
+                readouts.Add(new MachNumber());
                 readouts.Add(new Latitude());
                 readouts.Add(new Longitude());
                 readouts.Add(new GeeForce());
@@ -171,7 +164,19 @@ namespace KerbalEngineer.Flight.Readouts
                 readouts.Add(new Rendezvous.OrbitalPeriod());
                 readouts.Add(new Rendezvous.SemiMajorAxis());
                 readouts.Add(new Rendezvous.SemiMinorAxis());
-                
+
+                // Thermal
+                readouts.Add(new InternalFlux());
+                readouts.Add(new ConvectionFlux());
+                readouts.Add(new RadiationFlux());
+                readouts.Add(new CriticalPart());
+                readouts.Add(new CriticalTemperature());
+                readouts.Add(new CriticalPercentage());
+                readouts.Add(new HottestPart());
+                readouts.Add(new HottestTemperature());
+                readouts.Add(new CoolestPart());
+                readouts.Add(new CoolestTemperature());
+
                 // Misc
                 readouts.Add(new Separator());
                 readouts.Add(new GuiSizeAdjustor());
@@ -188,22 +193,20 @@ namespace KerbalEngineer.Flight.Readouts
             }
         }
 
-        #endregion
-
-        #region Properties
-
         /// <summary>
         ///     Gets and sets the available readout modules.
         /// </summary>
         public static List<ReadoutModule> Readouts
         {
-            get { return readouts; }
-            set { readouts = value; }
+            get
+            {
+                return readouts;
+            }
+            set
+            {
+                readouts = value;
+            }
         }
-
-        #endregion
-
-        #region Methods
 
         /// <summary>
         ///     Gets a list of readout modules which are associated with the specified category.
@@ -226,7 +229,7 @@ namespace KerbalEngineer.Flight.Readouts
         /// </summary>
         public static void Reset()
         {
-            foreach (var readout in readouts)
+            foreach (ReadoutModule readout in readouts)
             {
                 readout.Reset();
             }
@@ -239,8 +242,8 @@ namespace KerbalEngineer.Flight.Readouts
         {
             try
             {
-                var handler = SettingHandler.Load("HelpStrings.xml");
-                foreach (var readout in readouts)
+                SettingHandler handler = SettingHandler.Load("HelpStrings.xml");
+                foreach (ReadoutModule readout in readouts)
                 {
                     readout.HelpString = handler.GetSet(readout.Category + "." + readout.GetType().Name, readout.HelpString);
                 }
@@ -251,7 +254,5 @@ namespace KerbalEngineer.Flight.Readouts
                 Logger.Exception(ex);
             }
         }
-
-        #endregion
     }
 }

@@ -22,32 +22,22 @@ namespace KerbalEngineer.Flight.Readouts.Surface
     using Extensions;
     using Sections;
 
-    public class AtmosphericEfficiency : ReadoutModule
+    public class MachNumber : ReadoutModule
     {
-        public AtmosphericEfficiency()
+        public MachNumber()
         {
-            Name = "Atmos. Efficiency";
+            Name = "Mach Number";
             Category = ReadoutCategory.GetCategory("Surface");
-            HelpString = "Shows you vessel's efficiency as a ratio of the current velocity and terminal velocity.  Less than 100% means that you are losing efficiency due to gravity and greater than 100% is due to drag.";
-            IsDefault = false;
+            HelpString = "Shows the vessel's mach number.";
+            IsDefault = true;
         }
 
         public override void Draw(SectionModule section)
         {
-            if (AtmosphericProcessor.ShowDetails)
+            if (FlightGlobals.ActiveVessel.atmDensity > 0.0)
             {
-                DrawLine(AtmosphericProcessor.Efficiency.ToPercent(), section.IsHud);
+                DrawLine(FlightGlobals.ActiveVessel.mach.ToMach(), section.IsHud);
             }
-        }
-
-        public override void Reset()
-        {
-            FlightEngineerCore.Instance.AddUpdatable(AtmosphericProcessor.Instance);
-        }
-
-        public override void Update()
-        {
-            AtmosphericProcessor.RequestUpdate();
         }
     }
 }

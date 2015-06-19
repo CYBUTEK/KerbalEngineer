@@ -29,6 +29,8 @@ using UnityEngine;
 
 namespace KerbalEngineer.Flight.Readouts
 {
+    using Extensions;
+
     public abstract class ReadoutModule
     {
         #region Fields
@@ -178,13 +180,13 @@ namespace KerbalEngineer.Flight.Readouts
             {
                 GUILayout.Label(this.Name, this.NameStyle);
                 GUILayout.FlexibleSpace();
-                GUILayout.Label(value, this.ValueStyle);
+                GUILayout.Label(value.ToLength(20), this.ValueStyle);
             }
             else
             {
                 GUILayout.Label(this.Name, this.NameStyle, GUILayout.Height(this.NameStyle.fontSize * 1.2f));
                 GUILayout.FlexibleSpace();
-                GUILayout.Label(value, this.ValueStyle, GUILayout.Height(this.ValueStyle.fontSize * 1.2f));
+                GUILayout.Label(value.ToLength(20), this.ValueStyle, GUILayout.Height(this.ValueStyle.fontSize * 1.2f));
             }
             GUILayout.EndHorizontal();
 
@@ -198,13 +200,13 @@ namespace KerbalEngineer.Flight.Readouts
             {
                 GUILayout.Label(name, this.NameStyle);
                 GUILayout.FlexibleSpace();
-                GUILayout.Label(value, this.ValueStyle);
+                GUILayout.Label(value.ToLength(20), this.ValueStyle);
             }
             else
             {
                 GUILayout.Label(name, this.NameStyle, GUILayout.Height(this.NameStyle.fontSize * 1.2f));
                 GUILayout.FlexibleSpace();
-                GUILayout.Label(value, this.ValueStyle, GUILayout.Height(this.ValueStyle.fontSize * 1.2f));
+                GUILayout.Label(value.ToLength(20), this.ValueStyle, GUILayout.Height(this.ValueStyle.fontSize * 1.2f));
             }
             GUILayout.EndHorizontal();
 
