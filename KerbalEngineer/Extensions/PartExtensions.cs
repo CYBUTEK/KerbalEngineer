@@ -197,10 +197,10 @@ namespace KerbalEngineer.Extensions
             return GetModule<ModuleEngines>(part);
         }
 
-        public static ModuleEnginesFX GetModuleEnginesFx(this Part part)
+/*        public static ModuleEnginesFX GetModuleEnginesFx(this Part part)
         {
             return GetModule<ModuleEnginesFX>(part);
-        }
+        }*/
 
         /// <summary>
         ///     Gets a ModuleGenerator typed PartModule.
@@ -221,19 +221,19 @@ namespace KerbalEngineer.Extensions
         /// <summary>
         ///     Gets the current selected ModuleEnginesFX.
         /// </summary>
-        public static ModuleEnginesFX GetModuleMultiModeEngine(this Part part)
+        public static ModuleEngines GetModuleMultiModeEngine(this Part part)
         {
-            ModuleEnginesFX moduleEngineFx;
+            ModuleEngines moduleEngines;
             MultiModeEngine multiMod = GetModule<MultiModeEngine>(part);
             if (multiMod != null)
             {
                 string mode = multiMod.mode;
                 for (int i = 0; i < part.Modules.Count; ++i)
                 {
-                    moduleEngineFx = part.Modules[i] as ModuleEnginesFX;
-                    if (moduleEngineFx != null && moduleEngineFx.engineID == mode)
+                    moduleEngines = part.Modules[i] as ModuleEngines;
+                    if (moduleEngines != null && moduleEngines.engineID == mode)
                     {
-                        return moduleEngineFx;
+                        return moduleEngines;
                     }
                 }
             }
@@ -466,7 +466,7 @@ namespace KerbalEngineer.Extensions
         /// </summary>
         public static bool IsEngine(this Part part)
         {
-            return HasModule<ModuleEngines>(part) || HasModule<ModuleEnginesFX>(part);
+            return HasModule<ModuleEngines>(part);
         }
 
         /// <summary>
@@ -549,7 +549,7 @@ namespace KerbalEngineer.Extensions
         /// </summary>
         public static bool IsSolidRocket(this Part part)
         {
-            return (part.HasModule<ModuleEngines>() && part.GetModuleEngines().throttleLocked) || (part.HasModule<ModuleEnginesFX>() && part.GetModuleEnginesFx().throttleLocked);
+            return (part.HasModule<ModuleEngines>() && part.GetModuleEngines().throttleLocked);
         }
 
         public class ProtoModuleDecoupler
