@@ -75,7 +75,6 @@ namespace KerbalEngineer.VesselSimulator
         public String vesselName;
         public VesselType vesselType;
         private WeightedVectorAverager vectorAverager = new WeightedVectorAverager();
-        private static ModuleProceduralFairing moduleProceduralFairing;
 
         public Simulation()
         {
