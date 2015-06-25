@@ -1,5 +1,6 @@
 1.0.17.0
     Added: 'Mach Number' readout under the 'Surface' category and included it on the default surface HUD.
+    Added: Stock sections in the Flight Engineer can now become HUDs.
     Added 'Thermal' readouts category including:
         Internal Flux
         Convection Flux
@@ -19,7 +20,7 @@
     Changed: Max mach in the Build Engineer defaults to 1.00 even when no jet engines are present.
     Changed: Increased eccentricity readout to 5 decimal places.  
     Changed: Implemented Sarbian's object pooling. 
-    Changed: How the default selected body is assigned to 'Planitarium.Home'.
+    Changed: The default selected body is now assigned via 'Planitarium.Home'.
     Changed: HUDs to clamp fully inside the screen instead of allowing them to run off the edge by a certain amount.
     Fixed: Physically insignificant part mass is now associated with the parent part.
     Fixed: Longitude and Latitude readouts now use a KER formatter instead of Squad's incorrect implementation.
