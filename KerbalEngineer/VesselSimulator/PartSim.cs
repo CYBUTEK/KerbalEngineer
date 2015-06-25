@@ -56,7 +56,7 @@ namespace KerbalEngineer.VesselSimulator
         public bool isNoPhysics;
         public bool isSepratron;
         public bool isFairing;
-        public float moduleMass;
+        public float fairingMass;
         public int stageIndex;
         public String name;
         public String noCrossFeedNodeKey;
@@ -118,6 +118,7 @@ namespace KerbalEngineer.VesselSimulator
             partSim.isFuelLine = partSim.part.HasModule<CModuleFuelLine>();
             partSim.isFuelTank = partSim.part is FuelTank;
             partSim.isSepratron = partSim.IsSepratron();
+            partSim.isFairing = partSim.IsFairing(partSim.part);
             partSim.inverseStage = partSim.part.inverseStage;
             //MonoBehaviour.print("inverseStage = " + inverseStage);
 
@@ -146,7 +147,10 @@ namespace KerbalEngineer.VesselSimulator
                 if (log != null) log.buf.AppendLine("Using part.mass of " + partSim.part.mass);
             }
 
-            partSim.moduleMass = partSim.part.GetModuleMass((float)partSim.realMass);
+            if (partSim.isFairing)
+            {
+                partSim.fairingMass = partSim.part.GetModuleMass((float)partSim.realMass);
+            }
 
             for (int i = 0; i < partSim.part.Resources.Count; i++)
             {
@@ -412,9 +416,13 @@ namespace KerbalEngineer.VesselSimulator
                 mass += resources.GetResourceMass(resources.Types[i]);
             }
 
-            if (hasVessel == false && isFairing && inverseStage < currentStage)
+            if (hasVessel == false && isFairing && currentStage > inverseStage)
             {
-                mass = mass + moduleMass;
+                mass += fairingMass;
+            }
+            else if (hasVessel && isFairing && currentStage <= inverseStage)
+            {
+                mass -= fairingMass;
             }
 
             return mass;
