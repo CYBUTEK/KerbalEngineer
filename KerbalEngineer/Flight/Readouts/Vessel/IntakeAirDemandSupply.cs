@@ -65,16 +65,6 @@ namespace KerbalEngineer.Flight.Readouts.Vessel
                             .Sum(p => p.currentRequirement);
                     }
                 }
-                if (part.Modules.Contains("ModuleEnginesFX"))
-                {
-                    var engine = part.Modules["ModuleEnginesFX"] as ModuleEnginesFX;
-                    if (engine.isOperational)
-                    {
-                        demand += engine.propellants
-                            .Where(p => p.name == "IntakeAir")
-                            .Sum(p => p.currentRequirement);
-                    }
-                }
             }
             return demand;
         }

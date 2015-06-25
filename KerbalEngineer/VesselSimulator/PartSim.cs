@@ -38,12 +38,11 @@ namespace KerbalEngineer.VesselSimulator
         public double baseMass;
         public double baseMassForCoM;
         public Vector3d centerOfMass;
-        public double cost;
+        public double baseCost;
         public int decoupledInStage;
         public bool fuelCrossFeed;
         public List<PartSim> fuelTargets = new List<PartSim>();
         public bool hasModuleEngines;
-        public bool hasModuleEnginesFX;
         public bool hasMultiModeEngine;
 
         public bool hasVessel;
@@ -57,7 +56,6 @@ namespace KerbalEngineer.VesselSimulator
         public bool isNoPhysics;
         public bool isSepratron;
         public bool isFairing;
-        public bool localCorrectThrust;
         public float moduleMass;
         public int stageIndex;
         public String name;
@@ -90,6 +88,7 @@ namespace KerbalEngineer.VesselSimulator
             partSim.resourceDrains.Reset();
             partSim.resourceFlowStates.Reset();
             partSim.resources.Reset();
+            partSim.baseCost = 0d;
             partSim.baseMass = 0d;
             partSim.baseMassForCoM = 0d;
             partSim.startMass = 0d;
@@ -122,7 +121,7 @@ namespace KerbalEngineer.VesselSimulator
             partSim.inverseStage = partSim.part.inverseStage;
             //MonoBehaviour.print("inverseStage = " + inverseStage);
 
-            partSim.cost = partSim.part.GetCostWet();
+            partSim.baseCost = partSim.part.GetCostDry();
 
             if (log != null)
             {
@@ -146,6 +145,8 @@ namespace KerbalEngineer.VesselSimulator
                 partSim.realMass = partSim.part.mass;
                 if (log != null) log.buf.AppendLine("Using part.mass of " + partSim.part.mass);
             }
+
+            partSim.moduleMass = partSim.part.GetModuleMass((float)partSim.realMass);
 
             for (int i = 0; i < partSim.part.Resources.Count; i++)
             {
@@ -177,10 +178,9 @@ namespace KerbalEngineer.VesselSimulator
             partSim.initialVesselName = partSim.part.initialVesselName;
 
             partSim.hasMultiModeEngine = partSim.part.HasModule<MultiModeEngine>();
-            partSim.hasModuleEnginesFX = partSim.part.HasModule<ModuleEnginesFX>();
             partSim.hasModuleEngines = partSim.part.HasModule<ModuleEngines>();
 
-            partSim.isEngine = partSim.hasMultiModeEngine || partSim.hasModuleEnginesFX || partSim.hasModuleEngines;
+            partSim.isEngine = partSim.hasMultiModeEngine || partSim.hasModuleEngines;
 
             if (log != null) log.buf.AppendLine("Created " + partSim.name + ". Decoupled in stage " + partSim.decoupledInStage);
 
@@ -205,7 +205,6 @@ namespace KerbalEngineer.VesselSimulator
 
         public void CreateEngineSims(List<EngineSim> allEngines, double atmosphere, double mach, bool vectoredThrust, bool fullThrust, LogMsg log)
         {
-            bool correctThrust = SimManager.DoesEngineUseCorrectedThrust(part);
             if (log != null)
             {
                 log.buf.AppendLine("CreateEngineSims for " + this.name);
@@ -214,20 +213,18 @@ namespace KerbalEngineer.VesselSimulator
                     PartModule partMod = this.part.Modules[i];
                     log.buf.AppendLine("Module: " + partMod.moduleName);
                 }
-
-                log.buf.AppendLine("correctThrust = " + correctThrust);
             }
 
             if (hasMultiModeEngine)
             {
-                // A multi-mode engine has multiple ModuleEnginesFX but only one is active at any point
-                // The mode of the engine is the engineID of the ModuleEnginesFX that is active
+                // A multi-mode engine has multiple ModuleEngines but only one is active at any point
+                // The mode of the engine is the engineID of the ModuleEngines that is active
                 string mode = part.GetModule<MultiModeEngine>().mode;
 
-                List<ModuleEnginesFX> engines = part.GetModules<ModuleEnginesFX>();
+                List<ModuleEngines> engines = part.GetModules<ModuleEngines>();
                 for (int i = 0; i < engines.Count; ++i)
                 {
-                    ModuleEnginesFX engine = engines[i];
+                    ModuleEngines engine = engines[i];
                     if (engine.engineID == mode)
                     {
                         if (log != null) log.buf.AppendLine("Module: " + engine.moduleName);
@@ -258,40 +255,37 @@ namespace KerbalEngineer.VesselSimulator
                     }
                 }
             }
-            else
+            else if (hasModuleEngines)
             {
-                if (hasModuleEngines)
+                List<ModuleEngines> engines = part.GetModules<ModuleEngines>();
+                for (int i = 0; i < engines.Count; ++i)
                 {
-                    List<ModuleEngines> engines = part.GetModules<ModuleEngines>();
-                    for (int i = 0; i < engines.Count; ++i)
-                    {
-                        ModuleEngines engine = engines[i];
-                        if (log != null) log.buf.AppendLine("Module: " + engine.moduleName);
+                    ModuleEngines engine = engines[i];
+                    if (log != null) log.buf.AppendLine("Module: " + engine.moduleName);
 
-                        Vector3 thrustvec = this.CalculateThrustVector(vectoredThrust ? engine.thrustTransforms : null, log);
+                    Vector3 thrustvec = this.CalculateThrustVector(vectoredThrust ? engine.thrustTransforms : null, log);
 
-                        EngineSim engineSim = EngineSim.New(
-                            this,
-                            atmosphere,
-                            (float)mach,
-                            engine.maxFuelFlow,
-                            engine.minFuelFlow,
-                            engine.thrustPercentage,
-                            thrustvec,
-                            engine.atmosphereCurve,
-                            engine.atmChangeFlow,
-                            engine.useAtmCurve ? engine.atmCurve : null,
-                            engine.useVelCurve ? engine.velCurve : null,
-                            engine.currentThrottle,
-                            engine.g,
-                            engine.throttleLocked || fullThrust,
-                            engine.propellants,
-                            engine.isOperational,
-                            engine.resultingThrust,
-                            engine.thrustTransforms,
-                            log);
-                        allEngines.Add(engineSim);
-                    }
+                    EngineSim engineSim = EngineSim.New(
+                        this,
+                        atmosphere,
+                        (float)mach,
+                        engine.maxFuelFlow,
+                        engine.minFuelFlow,
+                        engine.thrustPercentage,
+                        thrustvec,
+                        engine.atmosphereCurve,
+                        engine.atmChangeFlow,
+                        engine.useAtmCurve ? engine.atmCurve : null,
+                        engine.useVelCurve ? engine.velCurve : null,
+                        engine.currentThrottle,
+                        engine.g,
+                        engine.throttleLocked || fullThrust,
+                        engine.propellants,
+                        engine.isOperational,
+                        engine.resultingThrust,
+                        engine.thrustTransforms,
+                        log);
+                    allEngines.Add(engineSim);
                 }
             }
 
@@ -408,6 +402,9 @@ namespace KerbalEngineer.VesselSimulator
 
         public double GetMass(int currentStage, bool forCoM = false)
         {
+            if (decoupledInStage >= currentStage)
+                return 0d;
+
             double mass = forCoM ? baseMassForCoM : baseMass;
 
             for (int i = 0; i < resources.Types.Count; ++i)
@@ -422,7 +419,22 @@ namespace KerbalEngineer.VesselSimulator
 
             return mass;
         }
-                
+
+        public double GetCost(int currentStage)
+        {
+            if (decoupledInStage >= currentStage)
+                return 0d;
+
+            double cost = baseCost;
+
+            for (int i = 0; i < resources.Types.Count; ++i)
+            {
+                cost += resources.GetResourceCost(resources.Types[i]);
+            }
+
+            return cost;
+        }
+
         public void ReleasePart()
         {
             this.part = null;

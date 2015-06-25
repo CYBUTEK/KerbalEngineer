@@ -28,12 +28,6 @@ namespace KerbalEngineer.Flight.Readouts.Vessel
 {
     public class Mass : ReadoutModule
     {
-        #region Fields
-
-        private bool showing;
-
-        #endregion
-
         #region Constructors
 
         public Mass()

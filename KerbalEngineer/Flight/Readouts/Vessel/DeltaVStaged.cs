@@ -30,13 +30,6 @@ namespace KerbalEngineer.Flight.Readouts.Vessel
 {
     public class DeltaVStaged : ReadoutModule
     {
-        #region Fields
-
-        private int numberOfStages;
-        private bool showing;
-
-        #endregion
-
         #region Constructors
 
         public DeltaVStaged()
