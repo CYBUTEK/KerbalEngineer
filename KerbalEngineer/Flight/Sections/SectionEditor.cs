@@ -215,15 +215,18 @@ namespace KerbalEngineer.Flight.Sections
             this.ParentSection.Name = GUILayout.TextField(this.ParentSection.Name, this.textStyle);
             var isShowingInControlBar = !string.IsNullOrEmpty(this.ParentSection.Abbreviation);
             this.ParentSection.Abbreviation = GUILayout.TextField(this.ParentSection.Abbreviation, this.textStyle, GUILayout.Width(75.0f));
+
+            ParentSection.IsHud = GUILayout.Toggle(this.ParentSection.IsHud, "HUD", this.readoutButtonStyle, GUILayout.Width(50.0f));
+            if (ParentSection.IsHud)
+            {
+                this.ParentSection.IsHudBackground = GUILayout.Toggle(this.ParentSection.IsHudBackground, "BG", this.readoutButtonStyle, GUILayout.Width(50.0f));
+            }
+
             if (this.ParentSection.IsCustom)
             {
                 if (isShowingInControlBar && string.IsNullOrEmpty(this.ParentSection.Abbreviation))
                 {
                     DisplayStack.Instance.RequestResize();
-                }
-                if (this.ParentSection.IsHud = GUILayout.Toggle(this.ParentSection.IsHud, "HUD", this.readoutButtonStyle, GUILayout.Width(50.0f)))
-                {
-                    this.ParentSection.IsHudBackground = GUILayout.Toggle(this.ParentSection.IsHudBackground, "BG", this.readoutButtonStyle, GUILayout.Width(50.0f));
                 }
 
                 if (GUILayout.Button("DELETE SECTION", this.readoutButtonStyle, GUILayout.Width(150.0f)))
