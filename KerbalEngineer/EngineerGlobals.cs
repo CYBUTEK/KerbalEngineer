@@ -1,7 +1,5 @@
 ﻿// 
-//     Kerbal Engineer Redux
-// 
-//     Copyright (C) 2014 CYBUTEK
+//     Copyright (C) 2015 CYBUTEK
 // 
 //     This program is free software: you can redistribute it and/or modify
 //     it under the terms of the GNU General Public License as published by
@@ -17,42 +15,31 @@
 //     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // 
 
-#region Using Directives
-
-using System.IO;
-using System.Reflection;
-
-#endregion
-
 namespace KerbalEngineer
 {
-    public class EngineerGlobals
-    {
-        #region Constants
+    using System.IO;
+    using System.Reflection;
 
+    public static class EngineerGlobals
+    {
         /// <summary>
         ///     Current version of the Kerbal Engineer assembly.
         /// </summary>
-        public const string AssemblyVersion = "1.0.16.6";
-
-        #endregion
-
-        #region Fields
+        public const string ASSEMBLY_VERSION = "1.0.16.6";
 
         private static string assemblyFile;
         private static string assemblyName;
         private static string assemblyPath;
-
-        #endregion
-
-        #region Properties
 
         /// <summary>
         ///     Gets the Kerbal Engineer assembly's path including the file name.
         /// </summary>
         public static string AssemblyFile
         {
-            get { return assemblyFile ?? (assemblyFile = Assembly.GetExecutingAssembly().Location); }
+            get
+            {
+                return assemblyFile ?? (assemblyFile = Assembly.GetExecutingAssembly().Location);
+            }
         }
 
         /// <summary>
@@ -60,7 +47,10 @@ namespace KerbalEngineer
         /// </summary>
         public static string AssemblyName
         {
-            get { return assemblyName ?? (assemblyName = new FileInfo(AssemblyFile).Name); }
+            get
+            {
+                return assemblyName ?? (assemblyName = new FileInfo(AssemblyFile).Name);
+            }
         }
 
         /// <summary>
@@ -68,9 +58,10 @@ namespace KerbalEngineer
         /// </summary>
         public static string AssemblyPath
         {
-            get { return assemblyPath ?? (assemblyPath = AssemblyFile.Replace(new FileInfo(AssemblyFile).Name, "")); }
+            get
+            {
+                return assemblyPath ?? (assemblyPath = AssemblyFile.Replace(new FileInfo(AssemblyFile).Name, ""));
+            }
         }
-
-        #endregion
     }
 }
