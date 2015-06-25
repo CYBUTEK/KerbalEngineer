@@ -16,9 +16,16 @@
     Changed: Max mach in the Build Engineer defaults to 1.00 even when no jet engines are present.
     Changed: Increased eccentricity readout to 5 decimal places.  
     Changed: Implemented Sarbian's object pooling. 
+    Changed: How the default selected body is assigned to 'Planitarium.Home'.
+    Changed: HUDs to clamp fully inside the screen instead of allowing them to run off the edge by a certain amount.
     Fixed: Physically insignificant part mass is now associated with the parent part.
     Fixed: Longitude and Latitude readouts now use a KER formatter instead of Squad's incorrect implementation.
     Fixed: Possible null reference in the Rendezvous Processor.
+    Fixed: Fairing mass issues introduced with regards to simulation changes.
+    Fixed: Use of per-propellant fuel flow mode override.
+    Fixed: Burn times calculated for jet engines.
+    Fixed: Thrust issues introduced with Sarbian's simulation alterations.
+    Fixed: Issue where HUDs positioned close to the top/bottom of the screen could be pushed out of position.
 
 1.0.16.6, 02-05-15
     Fixed: Separately staged fairing mass jettisons are now calculated in the editor.

@@ -134,7 +134,11 @@ namespace KerbalEngineer.Flight.Sections
                                                    (!this.ParentSection.IsHud || this.ParentSection.IsEditorVisible) ? this.windowStyle
                                                        : this.ParentSection.IsHudBackground && this.ParentSection.LineCount > 0
                                                            ? this.hudWindowBgStyle
-                                                           : this.hudWindowStyle).ClampToScreen();
+                                                           : this.hudWindowStyle);
+
+            windowPosition = (ParentSection.IsHud) ? windowPosition.ClampInsideScreen() : windowPosition.ClampToScreen();
+
+
             this.ParentSection.FloatingPositionX = this.windowPosition.x;
             this.ParentSection.FloatingPositionY = this.windowPosition.y;
         }
