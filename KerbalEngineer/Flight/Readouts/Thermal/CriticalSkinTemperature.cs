@@ -19,14 +19,14 @@
 
 namespace KerbalEngineer.Flight.Readouts.Thermal
 {
-    using Extensions;
+    using Helpers;
     using Sections;
 
-    public class CriticalPercentage : ReadoutModule
+    public class CriticalSkinTemperature : ReadoutModule
     {
-        public CriticalPercentage()
+        public CriticalSkinTemperature()
         {
-            Name = "Critical Percentage";
+            Name = "Critical Skin Temperature";
             Category = ReadoutCategory.GetCategory("Thermal");
             HelpString = string.Empty;
             IsDefault = true;
@@ -36,7 +36,7 @@ namespace KerbalEngineer.Flight.Readouts.Thermal
         {
             if (ThermalProcessor.ShowDetails)
             {
-                DrawLine(ThermalProcessor.CriticalTemperaturePercentage.ToPercent(), section.IsHud);
+                DrawLine(Units.ToTemperature(ThermalProcessor.CriticalSkinTemperature, ThermalProcessor.CriticalSkinTemperatureMax), section.IsHud);
             }
         }
 

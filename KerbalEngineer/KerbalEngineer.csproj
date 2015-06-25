@@ -91,11 +91,14 @@
     <Compile Include="Flight\Readouts\Surface\HorizontalAcceleration.cs" />
     <Compile Include="Flight\Readouts\Surface\VerticalAcceleration.cs" />
     <Compile Include="Flight\Readouts\Surface\MachNumber.cs" />
+    <Compile Include="Flight\Readouts\Thermal\CoolestSkinTemperature.cs" />
     <Compile Include="Flight\Readouts\Thermal\CriticalPart.cs" />
     <Compile Include="Flight\Readouts\Thermal\CoolestPart.cs" />
     <Compile Include="Flight\Readouts\Thermal\CoolestTemperature.cs" />
-    <Compile Include="Flight\Readouts\Thermal\CriticalPercentage.cs" />
+    <Compile Include="Flight\Readouts\Thermal\CriticalThermalPercentage.cs" />
+    <Compile Include="Flight\Readouts\Thermal\CriticalSkinTemperature.cs" />
     <Compile Include="Flight\Readouts\Thermal\CriticalTemperature.cs" />
+    <Compile Include="Flight\Readouts\Thermal\HottestSkinTemperature.cs" />
     <Compile Include="Flight\Readouts\Thermal\InternalFlux.cs" />
     <Compile Include="Flight\Readouts\Thermal\RadiationFlux.cs" />
     <Compile Include="Flight\Readouts\Thermal\ConvectionFlux.cs" />

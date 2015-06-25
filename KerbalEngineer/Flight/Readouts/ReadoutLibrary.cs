@@ -1,6 +1,4 @@
 ﻿// 
-//     Kerbal Engineer Redux
-// 
 //     Copyright (C) 2015 CYBUTEK
 // 
 //     This program is free software: you can redistribute it and/or modify
@@ -171,11 +169,14 @@ namespace KerbalEngineer.Flight.Readouts
                 readouts.Add(new RadiationFlux());
                 readouts.Add(new CriticalPart());
                 readouts.Add(new CriticalTemperature());
-                readouts.Add(new CriticalPercentage());
+                readouts.Add(new CriticalSkinTemperature());
+                readouts.Add(new CriticalThermalPercentage());
                 readouts.Add(new HottestPart());
                 readouts.Add(new HottestTemperature());
+                readouts.Add(new HottestSkinTemperature());
                 readouts.Add(new CoolestPart());
                 readouts.Add(new CoolestTemperature());
+                readouts.Add(new CoolestSkinTemperature());
 
                 // Misc
                 readouts.Add(new Separator());

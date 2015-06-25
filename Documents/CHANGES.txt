@@ -6,11 +6,14 @@
         Radiation Flux
         Critical Part Name
         Critical Part Temperature
-        Critical Part Percentage of Max Temperature
+        Critical Part Skin Temperature
+        Critical Part Thermal Percentage of Max Temperature
         Hottest Part Name
         Hottest Part Temperature
+        Hottest Part Skin Temperature
         Coldest Part Name
         Coldest Part Temperature
+        Coldest Part Skin Temperature
 
     Changed: Mach on the Build Engineer now accurate to 2 decimal places.
     Changed: Max mach in the Build Engineer defaults to 1.00 even when no jet engines are present.
