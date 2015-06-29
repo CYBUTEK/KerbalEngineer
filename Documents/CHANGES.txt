@@ -1,3 +1,6 @@
+1.0.17.1
+    Fixed: Synched the minimum simulation time sliders and stopped them from snapping back after 999ms. (saybur)
+
 1.0.17.0
     Added: 'Mach Number' readout under the 'Surface' category and included it on the default surface HUD.
     Added: Stock sections in the Flight Engineer can now become HUDs.

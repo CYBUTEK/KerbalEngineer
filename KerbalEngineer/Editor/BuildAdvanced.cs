@@ -563,9 +563,9 @@ namespace KerbalEngineer.Editor
             }
             GUILayout.EndHorizontal();
 
-            GUILayout.Label("Minimum delay between simulations: " + SimManager.minSimTime.Milliseconds + "ms", settingStyle);
+            GUILayout.Label("Minimum delay between simulations: " + SimManager.minSimTime.TotalMilliseconds + "ms", settingStyle);
             GUI.skin = HighLogic.Skin;
-            SimManager.minSimTime = new TimeSpan(0, 0, 0, 0, (int)GUILayout.HorizontalSlider(SimManager.minSimTime.Milliseconds, 0, 2000.0f));
+            SimManager.minSimTime = TimeSpan.FromMilliseconds(GUILayout.HorizontalSlider((float)SimManager.minSimTime.TotalMilliseconds, 0, 2000.0f));
             GUI.skin = null;
         }
 
