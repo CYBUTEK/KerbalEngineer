@@ -523,12 +523,12 @@ namespace KerbalEngineer.Editor
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
-            GUILayout.Label("Simulate using vectored thrust values:");
+            GUILayout.Label("Simulate using vectored thrust values:", settingStyle);
             SimManager.vectoredThrust = GUILayout.Toggle(SimManager.vectoredThrust, "ENABLED", buttonStyle, GUILayout.Width(100.0f * GuiDisplaySize.Offset));
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
-            GUILayout.Label("Verbose Simulation Log:");
+            GUILayout.Label("Verbose Simulation Log:", settingStyle);
             SimManager.logOutput = GUILayout.Toggle(SimManager.logOutput, "ENABLED", buttonStyle, GUILayout.Width(100.0f * GuiDisplaySize.Offset));
             GUILayout.EndHorizontal();
 
