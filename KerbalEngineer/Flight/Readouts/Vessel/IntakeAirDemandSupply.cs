@@ -55,10 +55,11 @@ namespace KerbalEngineer.Flight.Readouts.Vessel
             var demand = 0.0;
             foreach (var part in FlightGlobals.ActiveVessel.Parts)
             {
-                if (part.Modules.Contains("ModuleEngines"))
+                for (int i = 0; i < part.Modules.Count; i++)
                 {
-                    var engine = part.Modules["ModuleEngines"] as ModuleEngines;
-                    if (engine.isOperational)
+                    PartModule partmod = part.Modules[i];
+                    var engine = partmod as ModuleEngines;
+                    if (engine != null && engine.isOperational)
                     {
                         demand += engine.propellants
                             .Where(p => p.name == "IntakeAir")
