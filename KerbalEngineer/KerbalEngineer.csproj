@@ -83,6 +83,7 @@
     <Compile Include="Flight\Readouts\Orbital\SpeedAtPeriapsis.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Flight\Readouts\Orbital\TimeToAtmosphere.cs" />
     <Compile Include="Flight\Readouts\Orbital\TrueAnomaly.cs" />
     <Compile Include="Flight\Readouts\Orbital\TimeToEquatorialAscendingNode.cs" />
     <Compile Include="Flight\Readouts\Orbital\TimeToEquatorialDescendingNode.cs" />
