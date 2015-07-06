@@ -71,6 +71,8 @@
     <Compile Include="Flight\Readouts\Orbital\ManoeuvreNode\NodeAngleToPrograde.cs" />
     <Compile Include="Flight\Readouts\Orbital\ManoeuvreNode\NodeTotalDeltaV.cs" />
     <Compile Include="Flight\Readouts\Orbital\ManoeuvreNode\NodeProgradeDeltaV.cs" />
+    <Compile Include="Flight\Readouts\Orbital\ManoeuvreNode\PostBurnApoapsis.cs" />
+    <Compile Include="Flight\Readouts\Orbital\ManoeuvreNode\PostBurnPeriapsis.cs" />
     <Compile Include="Flight\Readouts\Orbital\MeanAnomalyAtEpoc.cs" />
     <Compile Include="Flight\Readouts\Orbital\MeanAnomaly.cs" />
     <Compile Include="Flight\Readouts\Orbital\EccentricAnomaly.cs" />
