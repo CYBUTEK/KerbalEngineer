@@ -1,5 +1,6 @@
 1.0.17.1
     Fixed: Synched the minimum simulation time sliders and stopped them from snapping back after 999ms. (saybur)
+    Fixed: Added workaround for the bug in Vessel.horizontalSrfSpeed (Padishar)
 
 1.0.17.0
     Added: 'Mach Number' readout under the 'Surface' category and included it on the default surface HUD.
@@ -21,8 +22,8 @@
 
     Changed: Mach on the Build Engineer now accurate to 2 decimal places.
     Changed: Max mach in the Build Engineer defaults to 1.00 even when no jet engines are present.
-    Changed: Increased eccentricity readout to 5 decimal places.  
-    Changed: Implemented Sarbian's object pooling. 
+    Changed: Increased eccentricity readout to 5 decimal places.
+    Changed: Implemented Sarbian's object pooling.
     Changed: The default selected body is now assigned via 'Planitarium.Home'.
     Changed: HUDs to clamp fully inside the screen instead of allowing them to run off the edge by a certain amount.
     Fixed: Physically insignificant part mass is now associated with the parent part.
@@ -76,7 +77,7 @@
 
 1.0.15.1, 13-02-2015
     Rebuild
-    
+
 1.0.15.0, 08-02-2015
     Padishar's Fixes:
         Added: Support KIDS ISP thrust correction.
@@ -86,7 +87,7 @@
 
 1.0.14.1, 28-12-2014
     Fixed: Missing texture on the ER-7500 model.
-    
+
 1.0.14.0, 28-12-2014
     Added: Career mode that limits the Flight Engineer by:
         - Requiring an Engineer Kerbal of any level, or placement of an Engineer Chip or ER-7500 part.
@@ -206,7 +207,7 @@
     Added: New readout to the surface category:
         - Vertical Acceleration
         - Horizontal Acceleration
-    
+
     Changed: Atmospheric efficiency readout now shows as a percentage.
     Changed: Atmospheric settings (pressure/velocity) in the editor condensed onto a single line.
     Fixed: Bug where the overlays in the editor would stay open outside of parts screen.
@@ -363,6 +364,6 @@
     Added: Stock toolbar support in the Flight Engineer.
     Changed: Orbital Period has higher precision.
     Fixed: Various NullRefs in editor window and overlay.
-    
+
 1.0.0.0, 24-07-2014
     Initial release for public testing.
