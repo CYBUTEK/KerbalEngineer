@@ -15,7 +15,8 @@ namespace KerbalEngineer
 
         public void Flush()
         {
-            MonoBehaviour.print(this.buf);
+            if (this.buf.Length > 0)
+                MonoBehaviour.print(this.buf);
             this.buf.Length = 0;
         }
     }

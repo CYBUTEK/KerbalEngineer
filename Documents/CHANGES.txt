@@ -1,4 +1,6 @@
 1.0.17.1
+    Added: Orbital readouts - "Speed at Periapsis" and "Speed at Apoapsis". (Padishar)
+    Added: Manoeuvre readouts - "Post-burn Apoapsis" and "Post-burn Periapsis". (Padishar)
     Fixed: Synched the minimum simulation time sliders and stopped them from snapping back after 999ms. (saybur)
     Fixed: Added workaround for the bug in Vessel.horizontalSrfSpeed (Padishar)
 

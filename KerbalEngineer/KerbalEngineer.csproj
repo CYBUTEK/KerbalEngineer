@@ -71,11 +71,21 @@
     <Compile Include="Flight\Readouts\Orbital\ManoeuvreNode\NodeAngleToPrograde.cs" />
     <Compile Include="Flight\Readouts\Orbital\ManoeuvreNode\NodeTotalDeltaV.cs" />
     <Compile Include="Flight\Readouts\Orbital\ManoeuvreNode\NodeProgradeDeltaV.cs" />
+    <Compile Include="Flight\Readouts\Orbital\ManoeuvreNode\PostBurnApoapsis.cs" />
+    <Compile Include="Flight\Readouts\Orbital\ManoeuvreNode\PostBurnPeriapsis.cs" />
     <Compile Include="Flight\Readouts\Orbital\MeanAnomalyAtEpoc.cs" />
     <Compile Include="Flight\Readouts\Orbital\MeanAnomaly.cs" />
     <Compile Include="Flight\Readouts\Orbital\EccentricAnomaly.cs" />
     <Compile Include="Flight\Readouts\Orbital\ArgumentOfPeriapsis.cs" />
     <Compile Include="Flight\Readouts\Orbital\CurrentSoi.cs" />
+    <Compile Include="Flight\Readouts\Orbital\SemiMajorAxis.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Flight\Readouts\Orbital\SpeedAtApoapsis.cs" />
+    <Compile Include="Flight\Readouts\Orbital\SpeedAtPeriapsis.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Flight\Readouts\Orbital\TimeToAtmosphere.cs" />
     <Compile Include="Flight\Readouts\Orbital\TrueAnomaly.cs" />
     <Compile Include="Flight\Readouts\Orbital\TimeToEquatorialAscendingNode.cs" />
     <Compile Include="Flight\Readouts\Orbital\TimeToEquatorialDescendingNode.cs" />
@@ -161,7 +171,6 @@
     <Compile Include="Flight\Readouts\Orbital\OrbitalPeriod.cs" />
     <Compile Include="Flight\Readouts\Orbital\OrbitalSpeed.cs" />
     <Compile Include="Flight\Readouts\Orbital\PeriapsisHeight.cs" />
-    <Compile Include="Flight\Readouts\Orbital\SemiMajorAxis.cs" />
     <Compile Include="Flight\Readouts\Orbital\SemiMinorAxis.cs" />
     <Compile Include="Flight\Readouts\Orbital\TimeToApoapsis.cs" />
     <Compile Include="Flight\Readouts\Orbital\TimeToPeriapsis.cs" />
