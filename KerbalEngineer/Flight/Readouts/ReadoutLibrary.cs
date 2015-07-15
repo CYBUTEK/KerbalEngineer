@@ -91,6 +91,11 @@ namespace KerbalEngineer.Flight.Readouts
                 readouts.Add(new NodeTimeToHalfBurn());
                 readouts.Add(new NodeAngleToPrograde());
                 readouts.Add(new NodeAngleToRetrograde());
+                readouts.Add(new PostBurnApoapsis());
+                readouts.Add(new PostBurnPeriapsis());
+                readouts.Add(new SpeedAtApoapsis());
+                readouts.Add(new SpeedAtPeriapsis());
+                readouts.Add(new TimeToAtmosphere());
 
                 // Surface
                 readouts.Add(new AltitudeSeaLevel());

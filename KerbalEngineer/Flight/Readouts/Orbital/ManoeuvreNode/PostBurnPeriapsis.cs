@@ -19,24 +19,25 @@
 
 #region Using Directives
 
+using System;
+
 using KerbalEngineer.Extensions;
 using KerbalEngineer.Flight.Sections;
-using System;
 
 #endregion
 
-namespace KerbalEngineer.Flight.Readouts.Surface
+namespace KerbalEngineer.Flight.Readouts.Orbital.ManoeuvreNode
 {
-    public class HorizontalSpeed : ReadoutModule
+    public class PostBurnPeriapsis : ReadoutModule
     {
         #region Constructors
 
-        public HorizontalSpeed()
+        public PostBurnPeriapsis()
         {
-            this.Name = "Horizontal Speed";
-            this.Category = ReadoutCategory.GetCategory("Surface");
-            this.HelpString = "Shows the vessel's horizontal speed across a celestial body's surface.";
-            this.IsDefault = true;
+            this.Name = "Post-burn Periapsis";
+            this.Category = ReadoutCategory.GetCategory("Orbital");
+            this.HelpString = String.Empty;
+            this.IsDefault = false;
         }
 
         #endregion
@@ -45,11 +46,22 @@ namespace KerbalEngineer.Flight.Readouts.Surface
 
         public override void Draw(SectionModule section)
         {
-            // Used to do this but the bug-fix to horizontalSrfSpeed in KSP 1.0.3 actually made it worse so workaround
-            //this.DrawLine(FlightGlobals.ActiveVessel.horizontalSrfSpeed.ToSpeed(), section.IsHud);
-            var ves = FlightGlobals.ActiveVessel;
-            double horizSpeed = Math.Sqrt(ves.srfSpeed * ves.srfSpeed - ves.verticalSpeed * ves.verticalSpeed);
-            this.DrawLine(horizSpeed.ToSpeed(), section.IsHud);
+            if (!ManoeuvreProcessor.ShowDetails)
+            {
+                return;
+            }
+
+            this.DrawLine("Post-burn Periapsis", ManoeuvreProcessor.PostBurnPe.ToDistance(), section.IsHud);
+        }
+
+        public override void Reset()
+        {
+            ManoeuvreProcessor.Reset();
+        }
+
+        public override void Update()
+        {
+            ManoeuvreProcessor.RequestUpdate();
         }
 
         #endregion

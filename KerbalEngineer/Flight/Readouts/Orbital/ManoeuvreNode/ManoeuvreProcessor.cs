@@ -63,6 +63,10 @@ namespace KerbalEngineer.Flight.Readouts.Orbital.ManoeuvreNode
 
         public static double NormalDeltaV { get; private set; }
 
+        public static double PostBurnAp { get; private set; }
+
+        public static double PostBurnPe { get; private set; }
+
         public static double ProgradeDeltaV { get; private set; }
 
         public static double RadialDeltaV { get; private set; }
@@ -110,6 +114,8 @@ namespace KerbalEngineer.Flight.Readouts.Orbital.ManoeuvreNode
             NormalDeltaV = deltaV.y;
             RadialDeltaV = deltaV.x;
             TotalDeltaV = node.GetBurnVector(FlightGlobals.ship_orbit).magnitude;
+            PostBurnAp = node.nextPatch != null ? node.nextPatch.ApA : 0;
+            PostBurnPe = node.nextPatch != null ? node.nextPatch.PeA : 0;
 
             UniversalTime = FlightGlobals.ActiveVessel.patchedConicSolver.maneuverNodes[0].UT;
             AngleToPrograde = FlightGlobals.ActiveVessel.patchedConicSolver.maneuverNodes[0].patch.GetAngleToPrograde(UniversalTime);
