@@ -30,6 +30,7 @@ using UnityEngine;
 
 namespace KerbalEngineer.VesselSimulator
 {
+    using System.ComponentModel;
     using CompoundParts;
     using Extensions;
     using Helpers;
@@ -675,21 +676,28 @@ namespace KerbalEngineer.VesselSimulator
             for (int i = 0; i < this.allParts.Count; i++)
             {
                 PartSim part = this.allParts[i];
-                // If the part has a parent
-                if (part.parent != null)
+
+                // Check if part should pass it's mass onto its parent.
+                if (part.isNoPhysics && part.parent != null)
                 {
-                    if (part.isNoPhysics)
+                    PartSim partParent = part.parent;
+
+                    // Loop through all parents until a physically significant parent is found.
+                    while (partParent != null)
                     {
-                        if (part.parent.isNoPhysics && part.parent.parent != null)
+                        // Check if parent is physically significant.
+                        if (partParent.isNoPhysics == false)
                         {
-                            part.baseMass = 0d;
-                            part.baseMassForCoM = 0d;
+                            // Apply the mass to the parent and remove it from the originating part.
+                            partParent.baseMassForCoM += part.baseMassForCoM;
+                            part.baseMassForCoM = 0.0;
+
+                            // Break out of the recursive loop.
+                            break;
                         }
-                        else
-                        {
-                            part.parent.baseMassForCoM += part.baseMassForCoM;
-                            part.baseMassForCoM = 0d;
-                        }
+
+                        // Recursively loop through the parent parts.
+                        partParent = partParent.parent;
                     }
                 }
             }
