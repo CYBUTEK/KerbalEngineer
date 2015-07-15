@@ -1,9 +1,12 @@
 1.0.18.0
     Added: Orbital readouts - "Speed at Periapsis" and "Speed at Apoapsis". (Padishar)
     Added: Manoeuvre readouts - "Post-burn Apoapsis" and "Post-burn Periapsis". (Padishar)
+    Added: Orbital readout - "Time to Atmosphere".
     Fixed: Synched the minimum simulation time sliders and stopped them from snapping back after 999ms. (saybur)
     Fixed: Added workaround for the bug in Vessel.horizontalSrfSpeed (Padishar)
     Fixed: Physically insignificant part mass was not being correctly cascaded down through multiple parent parts.
+    Fixed: Intake air demand calculation not working.
+    Fixed: Some build engineer settings labels do not scale with UI size.
 
 1.0.17.0
     Added: 'Mach Number' readout under the 'Surface' category and included it on the default surface HUD.
