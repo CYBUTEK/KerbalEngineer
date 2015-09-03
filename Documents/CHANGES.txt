@@ -1,3 +1,6 @@
+1.0.18.1
+    Changed: The 'Torque' value in the editor is now precise to two decimal places.
+    
 1.0.18.0
     Added: Orbital readouts - "Speed at Periapsis" and "Speed at Apoapsis". (Padishar)
     Added: Manoeuvre readouts - "Post-burn Apoapsis" and "Post-burn Periapsis". (Padishar)
