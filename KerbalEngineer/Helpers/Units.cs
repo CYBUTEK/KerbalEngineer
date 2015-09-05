@@ -205,7 +205,7 @@ namespace KerbalEngineer.Helpers
 
         public static string ToTorque(double value)
         {
-            return value.ToString((value < 100.0) ? (Math.Abs(value) < Double.Epsilon) ? "N0" : "N1" : "N0") + "kNm";
+            return value.ToString((value < 100.0) ? (Math.Abs(value) < Double.Epsilon) ? "N0" : "N2" : "N0") + "kNm";
         }
     }
 }
