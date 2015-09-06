@@ -50,7 +50,7 @@ namespace KerbalEngineer.Flight.Readouts.Orbital
             String str;
             Orbit orbit = FlightGlobals.ship_orbit;
 
-            if (orbit.referenceBody.atmosphere && orbit.PeA < orbit.referenceBody.atmosphereDepth)
+			if (orbit.referenceBody.atmosphere && orbit.PeA < orbit.referenceBody.atmosphereDepth && orbit.ApA > orbit.referenceBody.atmosphereDepth)
             {
                 double tA = orbit.TrueAnomalyAtRadius(orbit.referenceBody.atmosphereDepth + orbit.referenceBody.Radius);
                 //log.buf.AppendFormat("tA = {0}\n", tA);
@@ -87,7 +87,7 @@ namespace KerbalEngineer.Flight.Readouts.Orbital
             else
             {
                 str = "---s";
-                //log.buf.AppendLine("no atmosphere or pe > atmosphere");
+                //log.buf.AppendLine("no atmosphere, pe > atmosphere, or ap < atmosphere");
             }
 
             //log.Flush();
