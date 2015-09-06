@@ -230,6 +230,8 @@
     <Compile Include="VesselSimulator\SimManager.cs" />
     <Compile Include="VesselSimulator\Simulation.cs" />
     <Compile Include="VesselSimulator\Stage.cs" />
+    <Compile Include="Flight\Readouts\Rendezvous\RelativeRadialVelocity.cs" />
+    <Compile Include="Flight\Readouts\Rendezvous\TimeToRendezvous.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="Assembly-CSharp">

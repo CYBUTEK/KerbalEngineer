@@ -137,6 +137,16 @@ namespace KerbalEngineer.Flight.Readouts.Rendezvous
         public static double TimeToPeriapsis { get; private set; }
 
         /// <summary>
+        ///     Gets the relative radial velocity.
+        /// </summary>
+        public static double RelativeRadialVelocity { get; private set; }
+
+        /// <summary>
+        ///     Gets approximate (linearly) time to the minimum distance between objects.
+        /// </summary>
+        public static double TimeToRendezvous { get; private set; }
+
+        /// <summary>
         ///     Gets and sets whether the updatable object should be updated.
         /// </summary>
         public bool UpdateRequested { get; set; }
@@ -193,6 +203,14 @@ namespace KerbalEngineer.Flight.Readouts.Rendezvous
 
             Distance = Vector3d.Distance(targetOrbit.pos, originOrbit.pos);
             OrbitalPeriod = targetOrbit.period;
+
+            // beware that the order/sign of coordinates is inconsistent across different exposed variables
+            // in particular, v below does not equal to FlightGlobals.ship_tgtVelocity
+            Vector3d x = targetOrbit.pos - originOrbit.pos;
+            Vector3d v = targetOrbit.vel - originOrbit.vel;
+            double xv = Vector3d.Dot(x, v);
+            TimeToRendezvous = - xv / Vector3d.SqrMagnitude(v);
+            RelativeRadialVelocity = xv / Vector3d.Magnitude(x);
         }
 
         private double CalcInterceptAngle()
