@@ -58,31 +58,23 @@ namespace KerbalEngineer.Helpers
         public static string ConvertToString(double seconds, string format = "F1")
         {
             var years = 0;
-            while (seconds >= SecondsPerYear)
-            {
-                years++;
-                seconds -= SecondsPerYear;
-            }
-
             var days = 0;
-            while (seconds >= SecondsPerDay)
-            {
-                days++;
-                seconds -= SecondsPerDay;
-            }
-
             var hours = 0;
-            while (seconds >= SecondsPerHour)
-            {
-                hours++;
-                seconds -= SecondsPerHour;
-            }
-
             var minutes = 0;
-            while (seconds >= SecondsPerMinute)
+
+            if (seconds > 0)
             {
-                minutes++;
-                seconds -= SecondsPerMinute;
+                years = (int)(seconds / SecondsPerYear);
+                seconds -= years * SecondsPerYear;
+
+                days = (int)(seconds / SecondsPerDay);
+                seconds -= days * SecondsPerDay;
+
+                hours = (int)(seconds / SecondsPerHour);
+                seconds -= hours * SecondsPerHour;
+
+                minutes = (int)(seconds / SecondsPerMinute);
+                seconds -= minutes * SecondsPerMinute;
             }
 
             if (years > 0)
