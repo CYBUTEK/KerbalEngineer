@@ -38,7 +38,7 @@ namespace KerbalEngineer.Flight.Readouts.Miscellaneous
         {
             this.Name = "Time Reference Adjuster";
             this.Category = ReadoutCategory.GetCategory("Miscellaneous");
-            this.HelpString = String.Empty;
+            this.HelpString = "Shows a control that will allow you to select if days and years are calculated in Kerbin Time (6 hours/day) or Earth Time (24 hours/day)";
             this.IsDefault = false;
         }
 

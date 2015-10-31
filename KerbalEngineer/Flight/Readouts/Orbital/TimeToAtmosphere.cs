@@ -37,7 +37,7 @@ namespace KerbalEngineer.Flight.Readouts.Orbital
         {
             this.Name = "Time to Atmosphere";
             this.Category = ReadoutCategory.GetCategory("Orbital");
-            this.HelpString = "Shows the time until the vessel enters or leaves atmosphere.";
+            this.HelpString = "Shows the time until the vessel enters or leaves the atmosphere.";
             this.IsDefault = false;
         }
 

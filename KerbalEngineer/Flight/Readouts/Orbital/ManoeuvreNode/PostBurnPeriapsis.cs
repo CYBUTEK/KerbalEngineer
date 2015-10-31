@@ -36,7 +36,7 @@ namespace KerbalEngineer.Flight.Readouts.Orbital.ManoeuvreNode
         {
             this.Name = "Post-burn Periapsis";
             this.Category = ReadoutCategory.GetCategory("Orbital");
-            this.HelpString = String.Empty;
+            this.HelpString = "Closest point of the vessel's ofbit after the burn.";
             this.IsDefault = false;
         }
 

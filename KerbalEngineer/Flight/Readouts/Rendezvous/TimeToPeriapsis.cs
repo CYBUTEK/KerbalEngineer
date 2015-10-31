@@ -34,7 +34,7 @@ namespace KerbalEngineer.Flight.Readouts.Rendezvous
         {
             this.Name = "Time to Periapsis";
             this.Category = ReadoutCategory.GetCategory("Rendezvous");
-            this.HelpString = string.Empty;
+            this.HelpString = "Shows the time until the target reaches periapsis, the lowest point of the orbit.";
             this.IsDefault = false;
         }
 

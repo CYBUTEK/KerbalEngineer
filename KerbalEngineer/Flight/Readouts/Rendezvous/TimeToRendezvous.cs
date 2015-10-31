@@ -34,7 +34,7 @@ namespace KerbalEngineer.Flight.Readouts.Rendezvous
         {
             this.Name = "Time to Rendezvous";
             this.Category = ReadoutCategory.GetCategory("Rendezvous");
-            this.HelpString = "Approximate (linearly) time to the minimum distance between objects";
+            this.HelpString = "Approximate (linearly) time to the minimum distance between objects.";
             this.IsDefault = false;
         }
 

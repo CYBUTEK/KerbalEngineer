@@ -34,7 +34,7 @@ namespace KerbalEngineer.Flight.Readouts.Vessel
         {
             this.Name = "Heading";
             this.Category = ReadoutCategory.GetCategory("Vessel");
-            this.HelpString = string.Empty;
+            this.HelpString = "Shows the current Heading.";
             this.IsDefault = false;
         }
 

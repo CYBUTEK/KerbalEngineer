@@ -34,7 +34,7 @@ namespace KerbalEngineer.Flight.Readouts.Surface
         {
             this.Name = "Impact Time";
             this.Category = ReadoutCategory.GetCategory("Surface");
-            this.HelpString = string.Empty;
+            this.HelpString = "Shows time until the vessel impacts the central object.";
             this.IsDefault = true;
         }
 

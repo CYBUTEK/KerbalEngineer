@@ -36,6 +36,7 @@ namespace KerbalEngineer.Flight.Readouts.Orbital.ManoeuvreNode
         {
             this.Name = "Post-burn Apoapsis";
             this.Category = ReadoutCategory.GetCategory("Orbital");
+            this.HelpString = "Farthest point of the vessel's ofbit after the burn.";
             this.HelpString = String.Empty;
             this.IsDefault = false;
         }

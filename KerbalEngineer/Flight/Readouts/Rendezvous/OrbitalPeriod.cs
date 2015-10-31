@@ -34,7 +34,7 @@ namespace KerbalEngineer.Flight.Readouts.Rendezvous
         {
             this.Name = "Orbital Period";
             this.Category = ReadoutCategory.GetCategory("Rendezvous");
-            this.HelpString = string.Empty;
+            this.HelpString = "Shows the amount of time it will take the target object to complete a full orbit.";
             this.IsDefault = false;
         }
 
