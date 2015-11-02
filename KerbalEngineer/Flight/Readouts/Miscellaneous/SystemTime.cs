@@ -40,7 +40,7 @@ namespace KerbalEngineer.Flight.Readouts.Miscellaneous
         {
             this.Name = "System Time";
             this.Category = ReadoutCategory.GetCategory("Miscellaneous");
-            this.HelpString = String.Empty;
+            this.HelpString = "Shows the System Time in 12 hour format (AM/PM)";
             this.IsDefault = false;
         }
 

@@ -34,7 +34,7 @@ namespace KerbalEngineer.Flight.Readouts.Vessel
         {
             this.Name = "Mass";
             this.Category = ReadoutCategory.GetCategory("Vessel");
-            this.HelpString = string.Empty;
+            this.HelpString = "Displays the total Mass of the Vessel.";
             this.IsDefault = true;
         }
 

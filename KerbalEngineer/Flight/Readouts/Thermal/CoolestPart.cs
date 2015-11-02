@@ -27,7 +27,7 @@ namespace KerbalEngineer.Flight.Readouts.Thermal
         {
             Name = "Coolest Part";
             Category = ReadoutCategory.GetCategory("Thermal");
-            HelpString = string.Empty;
+            HelpString = "The part of the vessel that is enduring the lowest temperature.";
             IsDefault = true;
         }
 

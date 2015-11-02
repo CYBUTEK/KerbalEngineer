@@ -34,7 +34,7 @@ namespace KerbalEngineer.Flight.Readouts.Vessel
         {
             this.Name = "Roll Rate";
             this.Category = ReadoutCategory.GetCategory("Vessel");
-            this.HelpString = string.Empty;
+            this.HelpString = "Shows the current Roll speed.";
             this.IsDefault = false;
         }
 

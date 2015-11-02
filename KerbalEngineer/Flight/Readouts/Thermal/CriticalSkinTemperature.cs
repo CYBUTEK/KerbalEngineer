@@ -28,7 +28,7 @@ namespace KerbalEngineer.Flight.Readouts.Thermal
         {
             Name = "Critical Skin Temperature";
             Category = ReadoutCategory.GetCategory("Thermal");
-            HelpString = string.Empty;
+            HelpString = "Highest external Temperature on the part of the Vessel that is structually most critical.";
             IsDefault = true;
         }
 
