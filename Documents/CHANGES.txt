@@ -1,6 +1,12 @@
-1.0.18.1
+1.0.19.0
+    Added: Added current vessel name readout. (antplant)
+    Added: 'Relative Radial Velocity' and 'Time To Rendezvous' readouts. (itwtx)
+    Added: Readout help strings. (harryyoung)
     Changed: The 'Torque' value in the editor is now precise to two decimal places.
-    
+    Fixed: Optimised time formatting. (itwtx)
+    Fixed: TimeToAtmosphere checks that the Apoapsis is outside atmosphere. (Kerbas-ad-astra)
+    Fixed: Issue with stage priority flow. Caused Rapier calculations to fail if LF and O are drawn from different tanks. (Padishar)
+
 1.0.18.0
     Added: Orbital readouts - "Speed at Periapsis" and "Speed at Apoapsis". (Padishar)
     Added: Manoeuvre readouts - "Post-burn Apoapsis" and "Post-burn Periapsis". (Padishar)
