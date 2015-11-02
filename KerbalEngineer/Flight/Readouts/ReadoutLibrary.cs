@@ -190,7 +190,6 @@ namespace KerbalEngineer.Flight.Readouts
                 readouts.Add(new Separator());
                 readouts.Add(new GuiSizeAdjustor());
                 readouts.Add(new SimulationDelay());
-                readouts.Add(new TimeReference());
                 readouts.Add(new VectoredThrustToggle());
                 readouts.Add(new SystemTime());
 

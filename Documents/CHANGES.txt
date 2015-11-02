@@ -3,9 +3,11 @@
     Added: 'Relative Radial Velocity' and 'Time To Rendezvous' readouts. (itwtx)
     Added: Readout help strings. (harryyoung)
     Changed: The 'Torque' value in the editor is now precise to two decimal places.
+    Changed: Time formatting reference (Kerbin/Earth) is now based on the in-game setting.
     Fixed: Optimised time formatting. (itwtx)
     Fixed: TimeToAtmosphere checks that the Apoapsis is outside atmosphere. (Kerbas-ad-astra)
     Fixed: Issue with stage priority flow. Caused Rapier calculations to fail if LF and O are drawn from different tanks. (Padishar)
+    Removed: Time Formatter readout as it's not required anymore.
 
 1.0.18.0
     Added: Orbital readouts - "Speed at Periapsis" and "Speed at Apoapsis". (Padishar)
