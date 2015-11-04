@@ -8,6 +8,8 @@
     Fixed: TimeToAtmosphere checks that the Apoapsis is outside atmosphere. (Kerbas-ad-astra)
     Fixed: Issue with stage priority flow. Caused Rapier calculations to fail if LF and O are drawn from different tanks. (Padishar)
     Fixed: Issue with angle to prograde/retrograde calculations on highly inclined orbits.
+    Fixed: Editor input locks not being reset when a scene change is forced (e.g. via Kerbal Construction Time).
+    Fixed: Roll axis readout now shows the correct sign.
     Removed: Time Formatter readout as it's not required anymore.
 
 1.0.18.0
