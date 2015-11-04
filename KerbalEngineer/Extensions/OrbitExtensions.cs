@@ -61,12 +61,15 @@ namespace KerbalEngineer.Extensions
                 return 0.0;
             }
 
-            var angle = AngleHelper.GetAngleBetweenVectors(orbit.getRelativePositionAtUT(universalTime),
-                                                           Vector3d.Exclude(orbit.GetOrbitNormal(), orbit.referenceBody.orbit.getRelativePositionAtUT(universalTime)));
+            Vector3d orbitVector = orbit.getRelativePositionAtUT(universalTime);
+            orbitVector.z = 0.0;
 
-            angle = AngleHelper.Clamp360(angle - 90.0);
+            Vector3d bodyVector = orbit.referenceBody.orbit.getOrbitalVelocityAtUT(universalTime);
+            bodyVector.z = 0.0;
 
-            return orbit.inclination > 90.0 ? angle : 360.0 - angle;
+            double angle = AngleHelper.GetAngleBetweenVectors(bodyVector, orbitVector);
+
+            return AngleHelper.Clamp360(orbit.inclination < 90.0 ? angle : 360.0 - angle);
         }
 
         public static double GetAngleToRetrograde(this Orbit orbit)
@@ -81,12 +84,15 @@ namespace KerbalEngineer.Extensions
                 return 0.0;
             }
 
-            var angle = AngleHelper.GetAngleBetweenVectors(orbit.getRelativePositionAtUT(universalTime),
-                                                           Vector3d.Exclude(orbit.GetOrbitNormal(), orbit.referenceBody.orbit.getRelativePositionAtUT(universalTime)));
+            Vector3d orbitVector = orbit.getRelativePositionAtUT(universalTime);
+            orbitVector.z = 0.0;
 
-            angle = AngleHelper.Clamp360(angle + 90.0);
+            Vector3d bodyVector = orbit.referenceBody.orbit.getOrbitalVelocityAtUT(universalTime);
+            bodyVector.z = 0.0;
 
-            return orbit.inclination > 90.0 ? angle : 360.0 - angle;
+            double angle = AngleHelper.GetAngleBetweenVectors(-bodyVector, orbitVector);
+
+            return AngleHelper.Clamp360(orbit.inclination < 90.0 ? angle : 360.0 - angle);
         }
 
         public static double GetAngleToTrueAnomaly(this Orbit orbit, double trueAnomaly)

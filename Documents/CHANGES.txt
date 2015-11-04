@@ -7,6 +7,7 @@
     Fixed: Optimised time formatting. (itwtx)
     Fixed: TimeToAtmosphere checks that the Apoapsis is outside atmosphere. (Kerbas-ad-astra)
     Fixed: Issue with stage priority flow. Caused Rapier calculations to fail if LF and O are drawn from different tanks. (Padishar)
+    Fixed: Issue with angle to prograde/retrograde calculations on highly inclined orbits.
     Removed: Time Formatter readout as it's not required anymore.
 
 1.0.18.0
