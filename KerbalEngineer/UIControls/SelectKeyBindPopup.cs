@@ -166,6 +166,12 @@ namespace KerbalEngineer.UIControls
             for (int i = 0; i < availableBindings.Length; ++i)
             {
                 KeyCode keyCode = (KeyCode)availableBindings.GetValue(i);
+
+                if (keyCode == KeyCode.Mouse0)
+                {
+                    continue;
+                }
+
                 if (Input.GetKeyDown(keyCode))
                 {
                     Binding = keyCode;
