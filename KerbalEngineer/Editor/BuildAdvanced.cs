@@ -21,6 +21,7 @@ namespace KerbalEngineer.Editor
     using Extensions;
     using Flight;
     using Helpers;
+    using KeyBinding;
     using Settings;
     using UIControls;
     using UnityEngine;
@@ -564,11 +565,11 @@ namespace KerbalEngineer.Editor
             GUILayout.BeginHorizontal();
             if (GUILayout.Button("Editor Show/Hide Key: " + KeyBinder.EditorShowHide, buttonStyle, GUILayout.Width(200.0f * GuiDisplaySize.Offset)))
             {
-                SelectKeyBindPopup.Show("Flight Show/Hide", KeyBinder.EditorShowHide, keyCode => KeyBinder.EditorShowHide = keyCode);
+                KeyBindPopup.Show("Flight Show/Hide", KeyBinder.EditorShowHide, keyCode => KeyBinder.EditorShowHide = keyCode);
             }
             if (GUILayout.Button("Flight Show/Hide Key: " + KeyBinder.FlightShowHide, buttonStyle, GUILayout.Width(200.0f * GuiDisplaySize.Offset)))
             {
-                SelectKeyBindPopup.Show("Flight Show/Hide", KeyBinder.FlightShowHide, keyCode => KeyBinder.FlightShowHide = keyCode);
+                KeyBindPopup.Show("Flight Show/Hide", KeyBinder.FlightShowHide, keyCode => KeyBinder.FlightShowHide = keyCode);
             }
             GUILayout.EndHorizontal();
 

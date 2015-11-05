@@ -1,7 +1,7 @@
 ﻿// 
 //     Kerbal Engineer Redux
 // 
-//     Copyright (C) 2014 CYBUTEK
+//     Copyright (C) 2015 CYBUTEK
 // 
 //     This program is free software: you can redistribute it and/or modify
 //     it under the terms of the GNU General Public License as published by
@@ -17,19 +17,14 @@
 //     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // 
 
-using UnityEngine;
-
-namespace KerbalEngineer
+namespace KerbalEngineer.KeyBinding
 {
-    public class KeyBinder
+    using UnityEngine;
+
+    public class KeyBindingsObject
     {
-        public static KeyCode EditorShowHide { get; set; }
+        public KeyCode EditorShowHide { get; set; }
 
-        public static KeyCode FlightShowHide { get; set; }
-
-        static KeyBinder()
-        {
-            EditorShowHide = FlightShowHide = KeyCode.Backslash;
-        }
+        public KeyCode FlightShowHide { get; set; }
     }
 }

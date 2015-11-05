@@ -17,12 +17,12 @@
 //     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // 
 
-namespace KerbalEngineer.UIControls
+namespace KerbalEngineer.KeyBinding
 {
     using System;
     using UnityEngine;
 
-    public class SelectKeyBindPopup : MonoBehaviour
+    public class KeyBindPopup : MonoBehaviour
     {
         private readonly Array availableBindings = Enum.GetValues(typeof(KeyCode));
         private bool isCentred;
@@ -58,10 +58,10 @@ namespace KerbalEngineer.UIControls
                 return;
             }
 
-            SelectKeyBindPopup selectKeyBindPopup = new GameObject("SelectKeyBind").AddComponent<SelectKeyBindPopup>();
-            selectKeyBindPopup.Name = name;
-            selectKeyBindPopup.Binding = currentBinding;
-            selectKeyBindPopup.AcceptClicked = acceptClicked;
+            KeyBindPopup keyBindPopup = new GameObject("SelectKeyBind").AddComponent<KeyBindPopup>();
+            keyBindPopup.Name = name;
+            keyBindPopup.Binding = currentBinding;
+            keyBindPopup.AcceptClicked = acceptClicked;
         }
 
         /// <summary>

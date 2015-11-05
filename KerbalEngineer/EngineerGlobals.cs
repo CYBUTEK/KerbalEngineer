@@ -30,6 +30,7 @@ namespace KerbalEngineer
         private static string assemblyFile;
         private static string assemblyName;
         private static string assemblyPath;
+        private static string settingsPath;
 
         /// <summary>
         ///     Gets the Kerbal Engineer assembly's path including the file name.
@@ -61,6 +62,21 @@ namespace KerbalEngineer
             get
             {
                 return assemblyPath ?? (assemblyPath = AssemblyFile.Replace(new FileInfo(AssemblyFile).Name, ""));
+            }
+        }
+
+        /// <summary>
+        ///     Gets the settings directory path.
+        /// </summary>
+        public static string SettingsPath
+        {
+            get
+            {
+                if (string.IsNullOrEmpty(settingsPath))
+                {
+                    settingsPath = Path.Combine(AssemblyPath, "Settings");
+                }
+                return settingsPath;
             }
         }
     }
