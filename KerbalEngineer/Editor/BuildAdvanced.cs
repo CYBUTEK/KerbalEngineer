@@ -547,6 +547,14 @@ namespace KerbalEngineer.Editor
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
+            GUILayout.Label("Key Bindings:", settingStyle);
+            if (GUILayout.Button("EDIT KEY BINDINGS", buttonStyle, GUILayout.Width(200.0f * GuiDisplaySize.Offset)))
+            {
+                KeyBinder.Show();
+            }
+            GUILayout.EndHorizontal();
+
+            GUILayout.BeginHorizontal();
             GUILayout.Label("GUI Size: " + GuiDisplaySize.Increment, settingStyle);
             if (GUILayout.Button("<", buttonStyle, GUILayout.Width(100.0f * GuiDisplaySize.Offset)))
             {
@@ -561,17 +569,6 @@ namespace KerbalEngineer.Editor
             GUILayout.Label("Minimum delay between simulations: " + SimManager.minSimTime.TotalMilliseconds + "ms", settingStyle);
             GUI.skin = HighLogic.Skin;
             SimManager.minSimTime = TimeSpan.FromMilliseconds(GUILayout.HorizontalSlider((float)SimManager.minSimTime.TotalMilliseconds, 0, 2000.0f));
-
-            GUILayout.BeginHorizontal();
-            if (GUILayout.Button("Editor Show/Hide Key: " + KeyBinder.EditorShowHide, buttonStyle, GUILayout.Width(200.0f * GuiDisplaySize.Offset)))
-            {
-                KeyBindPopup.Show("Flight Show/Hide", KeyBinder.EditorShowHide, keyCode => KeyBinder.EditorShowHide = keyCode);
-            }
-            if (GUILayout.Button("Flight Show/Hide Key: " + KeyBinder.FlightShowHide, buttonStyle, GUILayout.Width(200.0f * GuiDisplaySize.Offset)))
-            {
-                KeyBindPopup.Show("Flight Show/Hide", KeyBinder.FlightShowHide, keyCode => KeyBinder.FlightShowHide = keyCode);
-            }
-            GUILayout.EndHorizontal();
 
             GUI.skin = null;
         }

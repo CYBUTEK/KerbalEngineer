@@ -20,18 +20,16 @@
 namespace KerbalEngineer.KeyBinding
 {
     using System;
+    using Extensions;
     using UnityEngine;
 
     public class KeyBindPopup : MonoBehaviour
     {
+        private const string LOCK_ID = "KER_KeyBindPopup";
+        private static Rect position = new Rect(Screen.width, Screen.height, 250.0f, 0.0f);
+        private static bool hasCentred;
+        private static KeyBindPopup instance;
         private readonly Array availableBindings = Enum.GetValues(typeof(KeyCode));
-        private bool isCentred;
-        private Rect position = new Rect(0.0f, 0.0f, 250.0f, 0.0f);
-
-        /// <summary>
-        ///     Gets whether a key bind popup is already open.
-        /// </summary>
-        public static bool IsOpen { get; private set; }
 
         /// <summary>
         ///     Gets the delegate to be invoked when accepted button is clicked.
@@ -49,19 +47,51 @@ namespace KerbalEngineer.KeyBinding
         public KeyCode Binding { get; private set; }
 
         /// <summary>
+        ///     Gets whether a key bind popup is already open.
+        /// </summary>
+        public static bool IsOpen
+        {
+            get
+            {
+                return (instance != null);
+            }
+        }
+
+        /// <summary>
+        ///     Gets and sets the input lock state.
+        /// </summary>
+        public bool InputLock
+        {
+            get
+            {
+                return InputLockManager.GetControlLock(LOCK_ID) != ControlTypes.None;
+            }
+            set
+            {
+                if (value)
+                {
+                    InputLockManager.SetControlLock(ControlTypes.All, LOCK_ID);
+                }
+                else
+                {
+                    InputLockManager.SetControlLock(ControlTypes.None, LOCK_ID);
+                }
+            }
+        }
+
+        /// <summary>
         ///     Shows a key bind popup allowing the user to select a key for binding.
         /// </summary>
         public static void Show(string name, KeyCode currentBinding, Action<KeyCode> acceptClicked)
         {
-            if (IsOpen)
+            if (instance == null)
             {
-                return;
+                instance = new GameObject("SelectKeyBind").AddComponent<KeyBindPopup>();
             }
 
-            KeyBindPopup keyBindPopup = new GameObject("SelectKeyBind").AddComponent<KeyBindPopup>();
-            keyBindPopup.Name = name;
-            keyBindPopup.Binding = currentBinding;
-            keyBindPopup.AcceptClicked = acceptClicked;
+            instance.Name = name;
+            instance.Binding = currentBinding;
+            instance.AcceptClicked = acceptClicked;
         }
 
         /// <summary>
@@ -89,13 +119,13 @@ namespace KerbalEngineer.KeyBinding
         /// </summary>
         protected virtual void Awake()
         {
-            if (IsOpen)
+            if (instance == null)
+            {
+                instance = this;
+            }
+            else if (instance != this)
             {
                 OnCancel();
-            }
-            else
-            {
-                IsOpen = true;
             }
         }
 
@@ -104,7 +134,7 @@ namespace KerbalEngineer.KeyBinding
         /// </summary>
         protected virtual void OnDestroy()
         {
-            IsOpen = false;
+            InputLock = false;
         }
 
         /// <summary>
@@ -112,7 +142,7 @@ namespace KerbalEngineer.KeyBinding
         /// </summary>
         protected virtual void OnGUI()
         {
-            position = GUILayout.Window(GetInstanceID(), position, RenderWindow, "Select Key Bind", HighLogic.Skin.window);
+            position = GUILayout.Window(GetInstanceID(), position, RenderWindow, "Select Key Bind", HighLogic.Skin.window).ClampToScreen();
             CentreWindow();
         }
 
@@ -123,16 +153,17 @@ namespace KerbalEngineer.KeyBinding
         {
             CentreWindow();
             UpdateBinding();
+            UpdateInputLock();
         }
 
         /// <summary>
         ///     Centres the window on the screen.
         /// </summary>
-        private void CentreWindow()
+        private static void CentreWindow()
         {
-            if (isCentred == false && position.width > 0.0f && position.height > 0.0f)
+            if (hasCentred == false && position.width > 0.0f && position.height > 0.0f)
             {
-                isCentred = true;
+                hasCentred = true;
                 position.center = new Vector2(Screen.width * 0.5f, Screen.height * 0.5f);
             }
         }
@@ -142,6 +173,8 @@ namespace KerbalEngineer.KeyBinding
         /// </summary>
         private void RenderWindow(int id)
         {
+            GUILayout.Label("Press the desired key to change it.");
+
             // Binding labels.
             GUILayout.BeginVertical(HighLogic.Skin.textArea);
             GUILayout.Label("Key Bind: " + Name);
@@ -181,8 +214,29 @@ namespace KerbalEngineer.KeyBinding
 
                 if (Input.GetKeyDown(keyCode))
                 {
-                    Binding = keyCode;
+                    if (Input.GetKeyDown(keyCode))
+                    {
+                        Binding = keyCode;
+                    }
                 }
+            }
+        }
+
+        /// <summary>
+        ///     Updates the input lock.
+        /// </summary>
+        private void UpdateInputLock()
+        {
+            bool mouseOver = position.MouseIsOver();
+            bool inputLock = InputLock;
+
+            if (mouseOver && inputLock == false)
+            {
+                InputLock = true;
+            }
+            else if (mouseOver == false && inputLock)
+            {
+                InputLock = false;
             }
         }
     }

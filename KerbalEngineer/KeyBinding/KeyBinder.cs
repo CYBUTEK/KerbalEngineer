@@ -19,19 +19,29 @@
 
 namespace KerbalEngineer.KeyBinding
 {
+    using System;
     using System.IO;
+    using Extensions;
     using Helpers;
     using UnityEngine;
 
-    public class KeyBinder
+    public class KeyBinder : MonoBehaviour
     {
+        private const string LOCK_ID = "KER_KeyBinder";
         private static readonly string filePath = Path.Combine(EngineerGlobals.SettingsPath, "KeyBinds.xml");
         private static KeyBindingsObject bindings;
+        private static Rect position = new Rect(Screen.width, Screen.height, 500.0f, 0.0f);
+        private static bool hasCentred;
 
         static KeyBinder()
         {
             Load();
         }
+
+        /// <summary>
+        ///     Gets whether the key binder window is open.
+        /// </summary>
+        public static bool IsOpen { get; private set; }
 
         /// <summary>
         ///     Gets and sets the key bindings object.
@@ -88,6 +98,28 @@ namespace KerbalEngineer.KeyBinding
         }
 
         /// <summary>
+        ///     Gets and sets the input lock state.
+        /// </summary>
+        public bool InputLock
+        {
+            get
+            {
+                return InputLockManager.GetControlLock(LOCK_ID) != ControlTypes.None;
+            }
+            set
+            {
+                if (value)
+                {
+                    InputLockManager.SetControlLock(ControlTypes.All, LOCK_ID);
+                }
+                else
+                {
+                    InputLockManager.SetControlLock(ControlTypes.None, LOCK_ID);
+                }
+            }
+        }
+
+        /// <summary>
         ///     Loads the key bindings from disk.
         /// </summary>
         public static void Load()
@@ -101,6 +133,123 @@ namespace KerbalEngineer.KeyBinding
         public static void Save()
         {
             XmlHelper.SaveObject(filePath, Bindings);
+        }
+
+        /// <summary>
+        ///     Shows the key binding window.
+        /// </summary>
+        public static void Show()
+        {
+            if (IsOpen)
+            {
+                return;
+            }
+
+            new GameObject("KeyBinder").AddComponent<KeyBinder>();
+        }
+
+        /// <summary>
+        ///     Called by unity when component is created.
+        /// </summary>
+        protected virtual void Awake()
+        {
+            if (IsOpen)
+            {
+                Destroy(gameObject);
+            }
+            else
+            {
+                IsOpen = true;
+                position.height = 0.0f;
+            }
+        }
+
+        /// <summary>
+        ///     Called by unity when component is destroyed.
+        /// </summary>
+        protected virtual void OnDestroy()
+        {
+            IsOpen = false;
+            InputLock = false;
+        }
+
+        /// <summary>
+        ///     Called by unity to draw the GUI.
+        /// </summary>
+        protected virtual void OnGUI()
+        {
+            position = GUILayout.Window(GetInstanceID(), position, RenderWindow, "Kerbal Engineer Redux - Key Bindings", HighLogic.Skin.window).ClampToScreen();
+            CentreWindow();
+        }
+
+        /// <summary>
+        ///     Called by unity every frame.
+        /// </summary>
+        protected virtual void Update()
+        {
+            UpdateInputLock();
+        }
+
+        /// <summary>
+        ///     Renders a key bind option.
+        /// </summary>
+        private static void RenderKeyBind(string name, KeyCode currentBinding, Action<KeyCode> acceptClicked)
+        {
+            GUILayout.BeginHorizontal();
+            GUILayout.Label(name);
+            if (GUILayout.Button(currentBinding.ToString(), HighLogic.Skin.button, GUILayout.Width(100.0f)))
+            {
+                KeyBindPopup.Show(name, currentBinding, acceptClicked);
+            }
+            GUILayout.EndHorizontal();
+        }
+
+        /// <summary>
+        ///     Centres the window on screen.
+        /// </summary>
+        private void CentreWindow()
+        {
+            if (hasCentred == false && position.width > 0.0f && position.height > 0.0f)
+            {
+                hasCentred = true;
+                position.center = new Vector2(Screen.width * 0.5f, Screen.height * 0.5f);
+            }
+        }
+
+        /// <summary>
+        ///     Renders the GUI window contents.
+        /// </summary>
+        private void RenderWindow(int id)
+        {
+            GUILayout.BeginVertical(HighLogic.Skin.textArea);
+            RenderKeyBind("Editor Show/Hide", EditorShowHide, binding => EditorShowHide = binding);
+            RenderKeyBind("Flight Show/Hide", FlightShowHide, binding => FlightShowHide = binding);
+            GUILayout.EndVertical();
+
+            if (GUILayout.Button("Close", HighLogic.Skin.button))
+            {
+                Destroy(gameObject);
+            }
+
+            GUI.DragWindow();
+        }
+
+        /// <summary>
+        ///     Updates the input lock.
+        /// </summary>
+        private void UpdateInputLock()
+        {
+            bool mouseOver = position.MouseIsOver();
+            bool inputLock = InputLock;
+
+            if (mouseOver && inputLock == false)
+            {
+                InputLock = true;
+            }
+            else if (mouseOver == false && inputLock)
+            {
+                InputLock = false;
+            }
         }
     }
 }

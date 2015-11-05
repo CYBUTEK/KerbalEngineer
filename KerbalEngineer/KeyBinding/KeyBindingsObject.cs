@@ -19,6 +19,7 @@
 
 namespace KerbalEngineer.KeyBinding
 {
+    using System.Xml.Serialization;
     using UnityEngine;
 
     public class KeyBindingsObject
