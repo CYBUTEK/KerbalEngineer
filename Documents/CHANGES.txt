@@ -1,4 +1,5 @@
 1.0.19.0
+    Added: Key binding editor accessible under 'Settings' on the Build Engineer.
     Added: Added current vessel name readout. (antplant)
     Added: 'Relative Radial Velocity' and 'Time To Rendezvous' readouts. (itwtx)
     Added: Readout help strings. (harryyoung)
