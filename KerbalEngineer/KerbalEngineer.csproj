@@ -221,6 +221,7 @@
     <Compile Include="Settings\SettingHandler.cs" />
     <Compile Include="Settings\SettingItem.cs" />
     <Compile Include="TapeDriveAnimator.cs" />
+    <Compile Include="UIControls\InputCheck.cs" />
     <Compile Include="UIControls\WindowObject.cs" />
     <Compile Include="VesselSimulator\AttachNodeSim.cs" />
     <Compile Include="VesselSimulator\EngineSim.cs" />
