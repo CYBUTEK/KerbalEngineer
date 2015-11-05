@@ -53,6 +53,11 @@ namespace KerbalEngineer.UIControls
         /// </summary>
         public static void Show(string name, KeyCode currentBinding, Action<KeyCode> acceptClicked)
         {
+            if (IsOpen)
+            {
+                return;
+            }
+
             SelectKeyBindPopup selectKeyBindPopup = new GameObject("SelectKeyBind").AddComponent<SelectKeyBindPopup>();
             selectKeyBindPopup.Name = name;
             selectKeyBindPopup.Binding = currentBinding;
@@ -84,7 +89,14 @@ namespace KerbalEngineer.UIControls
         /// </summary>
         protected virtual void Awake()
         {
-            IsOpen = true;
+            if (IsOpen)
+            {
+                OnCancel();
+            }
+            else
+            {
+                IsOpen = true;
+            }
         }
 
         /// <summary>
@@ -101,13 +113,7 @@ namespace KerbalEngineer.UIControls
         protected virtual void OnGUI()
         {
             position = GUILayout.Window(GetInstanceID(), position, RenderWindow, "Select Key Bind", HighLogic.Skin.window);
-
-            // Centre the window.
-            if (isCentred == false)
-            {
-                isCentred = true;
-                CentreWindow();
-            }
+            CentreWindow();
         }
 
         /// <summary>
@@ -124,8 +130,9 @@ namespace KerbalEngineer.UIControls
         /// </summary>
         private void CentreWindow()
         {
-            if (position.width > 0.0f && position.height > 0.0f)
+            if (isCentred == false && position.width > 0.0f && position.height > 0.0f)
             {
+                isCentred = true;
                 position.center = new Vector2(Screen.width * 0.5f, Screen.height * 0.5f);
             }
         }
