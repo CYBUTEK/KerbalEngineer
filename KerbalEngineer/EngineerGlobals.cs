@@ -25,11 +25,12 @@ namespace KerbalEngineer
         /// <summary>
         ///     Current version of the Kerbal Engineer assembly.
         /// </summary>
-        public const string ASSEMBLY_VERSION = "1.0.18.1";
+        public const string ASSEMBLY_VERSION = "1.0.19.1";
 
         private static string assemblyFile;
         private static string assemblyName;
         private static string assemblyPath;
+        private static string settingsPath;
 
         /// <summary>
         ///     Gets the Kerbal Engineer assembly's path including the file name.
@@ -61,6 +62,21 @@ namespace KerbalEngineer
             get
             {
                 return assemblyPath ?? (assemblyPath = AssemblyFile.Replace(new FileInfo(AssemblyFile).Name, ""));
+            }
+        }
+
+        /// <summary>
+        ///     Gets the settings directory path.
+        /// </summary>
+        public static string SettingsPath
+        {
+            get
+            {
+                if (string.IsNullOrEmpty(settingsPath))
+                {
+                    settingsPath = Path.Combine(AssemblyPath, "Settings");
+                }
+                return settingsPath;
             }
         }
     }

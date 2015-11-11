@@ -327,6 +327,7 @@ namespace KerbalEngineer.VesselSimulator
                         break;
 
                     case ResourceFlowMode.ALL_VESSEL:
+                    case ResourceFlowMode.ALL_VESSEL_BAlANCE:
                         for (int i = 0; i < allParts.Count; i++)
                         {
                             PartSim aPartSim = allParts[i];
@@ -338,6 +339,7 @@ namespace KerbalEngineer.VesselSimulator
                         break;
 
                     case ResourceFlowMode.STAGE_PRIORITY_FLOW:
+                    case ResourceFlowMode.STAGE_PRIORITY_FLOW_BALANCE:
 
                         foreach (HashSet<PartSim> stagePartSet in stagePartSets.Values)
                         {
@@ -386,6 +388,8 @@ namespace KerbalEngineer.VesselSimulator
                         break;
 
                     case ResourceFlowMode.STACK_PRIORITY_SEARCH:
+                    case ResourceFlowMode.STAGE_STACK_FLOW:
+                    case ResourceFlowMode.STAGE_STACK_FLOW_BALANCE:
                         visited.Clear();
 
                         if (SimManager.logOutput)

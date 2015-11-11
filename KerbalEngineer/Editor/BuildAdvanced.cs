@@ -1,7 +1,5 @@
 ﻿// 
-//     Kerbal Engineer Redux
-// 
-//     Copyright (C) 2014 CYBUTEK
+//     Copyright (C) 2015 CYBUTEK
 // 
 //     This program is free software: you can redistribute it and/or modify
 //     it under the terms of the GNU General Public License as published by
@@ -19,23 +17,26 @@
 
 namespace KerbalEngineer.Editor
 {
-    #region Using Directives
     using System;
     using Extensions;
     using Flight;
     using Helpers;
+    using KeyBinding;
     using Settings;
     using UIControls;
     using UnityEngine;
     using VesselSimulator;
 
-    #endregion
-
     [KSPAddon(KSPAddon.Startup.EditorAny, false)]
     public class BuildAdvanced : MonoBehaviour
     {
-        #region Fields
-        public static float Altitude = 0.0f;
+        public static float Altitude;
+
+        private static Rect compactModeRect = new Rect(0.0f, 5.0f, 0.0f, 20.0f);
+        private static Stage stage;
+        private static int stagesCount;
+        private static int stagesLength;
+        private static string title;
 
         private GUIStyle areaSettingStyle;
         private GUIStyle areaStyle;
@@ -64,9 +65,7 @@ namespace KerbalEngineer.Editor
         private GUIStyle titleStyle;
         private bool visible = true;
         private GUIStyle windowStyle;
-        #endregion
 
-        #region Properties
         /// <summary>
         ///     Gets the current instance if started or returns null.
         /// </summary>
@@ -146,14 +145,6 @@ namespace KerbalEngineer.Editor
                 visible = value;
             }
         }
-        #endregion
-
-        #region Methods
-        private static Rect compactModeRect = new Rect(0.0f, 5.0f, 0.0f, 20.0f);
-        private static Stage stage;
-        private static int stagesCount;
-        private static int stagesLength;
-        private static string title;
 
         protected void Awake()
         {
@@ -179,6 +170,8 @@ namespace KerbalEngineer.Editor
         /// </summary>
         protected void OnDestroy()
         {
+            Logger.Log("BuildAdvanced->OnDestroy");
+
             try
             {
                 SettingHandler handler = new SettingHandler();
@@ -198,6 +191,8 @@ namespace KerbalEngineer.Editor
             {
                 Logger.Exception(ex, "BuildAdvanced.OnDestroy()");
             }
+
+            EditorLock(false);
         }
 
         protected void OnGUI()
@@ -552,6 +547,14 @@ namespace KerbalEngineer.Editor
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
+            GUILayout.Label("Key Bindings:", settingStyle);
+            if (GUILayout.Button("EDIT KEY BINDINGS", buttonStyle, GUILayout.Width(200.0f * GuiDisplaySize.Offset)))
+            {
+                KeyBinder.Show();
+            }
+            GUILayout.EndHorizontal();
+
+            GUILayout.BeginHorizontal();
             GUILayout.Label("GUI Size: " + GuiDisplaySize.Increment, settingStyle);
             if (GUILayout.Button("<", buttonStyle, GUILayout.Width(100.0f * GuiDisplaySize.Offset)))
             {
@@ -566,6 +569,7 @@ namespace KerbalEngineer.Editor
             GUILayout.Label("Minimum delay between simulations: " + SimManager.minSimTime.TotalMilliseconds + "ms", settingStyle);
             GUI.skin = HighLogic.Skin;
             SimManager.minSimTime = TimeSpan.FromMilliseconds(GUILayout.HorizontalSlider((float)SimManager.minSimTime.TotalMilliseconds, 0, 2000.0f));
+
             GUI.skin = null;
         }
 
@@ -706,7 +710,7 @@ namespace KerbalEngineer.Editor
                 fontSize = (int)(11 * GuiDisplaySize.Offset),
                 fontStyle = FontStyle.Bold,
                 alignment = TextAnchor.MiddleCenter,
-                stretchWidth = true,
+                stretchWidth = true
             };
 
             infoStyle = new GUIStyle(HighLogic.Skin.label)
@@ -884,6 +888,5 @@ namespace KerbalEngineer.Editor
                 Logger.Exception(ex, "BuildAdvanced.Window()");
             }
         }
-        #endregion
     }
 }

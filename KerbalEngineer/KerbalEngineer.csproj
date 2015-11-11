@@ -53,7 +53,6 @@
     <Compile Include="Flight\Presets\Preset.cs" />
     <Compile Include="Flight\Readouts\Miscellaneous\SystemTime.cs" />
     <Compile Include="Flight\Readouts\Miscellaneous\VectoredThrustToggle.cs" />
-    <Compile Include="Flight\Readouts\Miscellaneous\TimeReference.cs" />
     <Compile Include="Flight\Readouts\Miscellaneous\Separator.cs" />
     <Compile Include="Flight\Readouts\Miscellaneous\GuiSizeAdjustor.cs" />
     <Compile Include="Flight\Readouts\Orbital\AngleToEquatorialDescendingNode.cs" />
@@ -149,8 +148,10 @@
     <Compile Include="Helpers\TextureHelper.cs" />
     <Compile Include="Helpers\Units.cs" />
     <Compile Include="Helpers\TimeFormatter.cs" />
-    <Compile Include="KeyBinder.cs" />
+    <Compile Include="Helpers\XmlHelper.cs" />
+    <Compile Include="KeyBinding\KeyBinder.cs" />
     <Compile Include="Control\ControlCentre.cs" />
+    <Compile Include="KeyBinding\KeyBindingsObject.cs" />
     <Compile Include="UIControls\DropDown.cs" />
     <Compile Include="Logger.cs" />
     <Compile Include="EngineerGlobals.cs" />
@@ -222,6 +223,7 @@
     <Compile Include="Settings\SettingHandler.cs" />
     <Compile Include="Settings\SettingItem.cs" />
     <Compile Include="TapeDriveAnimator.cs" />
+    <Compile Include="KeyBinding\KeyBindPopup.cs" />
     <Compile Include="UIControls\WindowObject.cs" />
     <Compile Include="VesselSimulator\AttachNodeSim.cs" />
     <Compile Include="VesselSimulator\EngineSim.cs" />
