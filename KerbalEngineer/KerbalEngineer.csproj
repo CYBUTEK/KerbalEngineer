@@ -51,8 +51,10 @@
     <Compile Include="Extensions\StringExtensions.cs" />
     <Compile Include="Flight\ActionMenuGui.cs" />
     <Compile Include="Flight\Presets\Preset.cs" />
+    <Compile Include="Flight\Readouts\Miscellaneous\LogSimToggle.cs" />
     <Compile Include="Flight\Readouts\Miscellaneous\SystemTime.cs" />
     <Compile Include="Flight\Readouts\Miscellaneous\VectoredThrustToggle.cs" />
+    <Compile Include="Flight\Readouts\Miscellaneous\TimeReference.cs" />
     <Compile Include="Flight\Readouts\Miscellaneous\Separator.cs" />
     <Compile Include="Flight\Readouts\Miscellaneous\GuiSizeAdjustor.cs" />
     <Compile Include="Flight\Readouts\Orbital\AngleToEquatorialDescendingNode.cs" />
