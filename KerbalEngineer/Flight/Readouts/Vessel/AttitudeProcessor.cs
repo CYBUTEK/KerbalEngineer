@@ -110,8 +110,8 @@ namespace KerbalEngineer.Flight.Readouts.Vessel
                 ? 360.0f - this.surfaceRotation.eulerAngles.x
                 : -this.surfaceRotation.eulerAngles.x;
             this.roll = this.surfaceRotation.eulerAngles.z > 180.0f
-                ? this.surfaceRotation.eulerAngles.z - 360.0f
-                : this.surfaceRotation.eulerAngles.z;
+                ? 360.0f - this.surfaceRotation.eulerAngles.z
+                : -this.surfaceRotation.eulerAngles.z;
 
             this.headingRate = this.heading - this.previousHeading;
             this.pitchRate = this.pitch - this.previousPitch;

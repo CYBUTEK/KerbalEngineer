@@ -36,7 +36,7 @@ namespace KerbalEngineer.Flight.Readouts.Orbital.ManoeuvreNode
         {
             this.Name = "Manoeuvre Node DeltaV (Prograde)";
             this.Category = ReadoutCategory.GetCategory("Orbital");
-            this.HelpString = String.Empty;
+            this.HelpString = "Prograde/Retrograde component of the total change in velocity.";
             this.IsDefault = true;
         }
 

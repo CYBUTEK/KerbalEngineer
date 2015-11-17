@@ -19,25 +19,23 @@
 
 #region Using Directives
 
-using System;
-
-using KerbalEngineer.Extensions;
 using KerbalEngineer.Flight.Sections;
+using KerbalEngineer.Helpers;
 
 #endregion
 
-namespace KerbalEngineer.Flight.Readouts.Orbital
+namespace KerbalEngineer.Flight.Readouts.Vessel
 {
-    public class AngleToRetrograde : ReadoutModule
+    public class Name : ReadoutModule
     {
         #region Constructors
 
-        public AngleToRetrograde()
+        public Name()
         {
-            this.Name = "Angle to Retrograde";
-            this.Category = ReadoutCategory.GetCategory("Orbital");
-            this.HelpString = "Angular Distance from the vessel to crossing the Orbit of the central body on it's retrograde side.";
-            this.IsDefault = true;
+            Name = "Name";
+            Category = ReadoutCategory.GetCategory("Vessel");
+            HelpString = "Displays the name of the current vessel.";
+            IsDefault = true;
         }
 
         #endregion
@@ -46,7 +44,10 @@ namespace KerbalEngineer.Flight.Readouts.Orbital
 
         public override void Draw(SectionModule section)
         {
-            this.DrawLine(FlightGlobals.ship_orbit.GetAngleToRetrograde().ToAngle(), section.IsHud);
+            if (SimulationProcessor.ShowDetails)
+            {
+                DrawLine(FlightGlobals.ActiveVessel.vesselName);
+            }
         }
 
         #endregion

@@ -19,25 +19,23 @@
 
 #region Using Directives
 
-using System;
-
 using KerbalEngineer.Extensions;
 using KerbalEngineer.Flight.Sections;
 
 #endregion
 
-namespace KerbalEngineer.Flight.Readouts.Orbital
+namespace KerbalEngineer.Flight.Readouts.Rendezvous
 {
-    public class AngleToRetrograde : ReadoutModule
+    public class RelativeRadialVelocity : ReadoutModule
     {
         #region Constructors
 
-        public AngleToRetrograde()
+        public RelativeRadialVelocity()
         {
-            this.Name = "Angle to Retrograde";
-            this.Category = ReadoutCategory.GetCategory("Orbital");
-            this.HelpString = "Angular Distance from the vessel to crossing the Orbit of the central body on it's retrograde side.";
-            this.IsDefault = true;
+            this.Name = "Relative Radial Velocity";
+            this.Category = ReadoutCategory.GetCategory("Rendezvous");
+            this.HelpString = "Relative radial velocity between your vessel and the target object";
+            this.IsDefault = false;
         }
 
         #endregion
@@ -46,7 +44,20 @@ namespace KerbalEngineer.Flight.Readouts.Orbital
 
         public override void Draw(SectionModule section)
         {
-            this.DrawLine(FlightGlobals.ship_orbit.GetAngleToRetrograde().ToAngle(), section.IsHud);
+            if (RendezvousProcessor.ShowDetails)
+            {
+               this.DrawLine(RendezvousProcessor.RelativeRadialVelocity.ToSpeed(), section.IsHud);
+            }
+        }
+
+        public override void Reset()
+        {
+            FlightEngineerCore.Instance.AddUpdatable(RendezvousProcessor.Instance);
+        }
+
+        public override void Update()
+        {
+            RendezvousProcessor.RequestUpdate();
         }
 
         #endregion

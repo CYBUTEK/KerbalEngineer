@@ -36,7 +36,7 @@ namespace KerbalEngineer.Flight.Readouts.Orbital.ManoeuvreNode
         {
             this.Name = "Manoeuvre Node DeltaV (Normal)";
             this.Category = ReadoutCategory.GetCategory("Orbital");
-            this.HelpString = String.Empty;
+            this.HelpString = "Normal component of the total change in velocity.";
             this.IsDefault = true;
         }
 

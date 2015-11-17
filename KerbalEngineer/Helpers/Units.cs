@@ -24,6 +24,8 @@ namespace KerbalEngineer.Helpers
     public static class Units
     {
         public const double GRAVITY = 9.80665;
+        public const double RAD_TO_DEG = 180.0 / Math.PI;
+        public const double DEG_TO_RAD = Math.PI / 180.0;
 
         public static string Concat(int value1, int value2)
         {
@@ -91,7 +93,7 @@ namespace KerbalEngineer.Helpers
             int min = (int)Math.Floor(rem * 60);
             rem -= ((double)min / 60);
             int sec = (int)Math.Floor(rem * 3600);
-            return String.Format("{0:0}° {1:00}' {2:00}\"", deg, min, sec);
+            return string.Format("{0:0}° {1:00}' {2:00}\"", deg, min, sec);
         }
 
         public static string ToDistance(double value, int decimals = 1)
@@ -130,13 +132,13 @@ namespace KerbalEngineer.Helpers
 
         public static string ToForce(double value)
         {
-            return value.ToString((value < 100000.0) ? (value < 10000.0) ? (value < 100.0) ? (Math.Abs(value) < Double.Epsilon) ? "N0" : "N3" : "N2" : "N1" : "N0") + "kN";
+            return value.ToString((value < 100000.0) ? (value < 10000.0) ? (value < 100.0) ? (Math.Abs(value) < double.Epsilon) ? "N0" : "N3" : "N2" : "N1" : "N0") + "kN";
         }
 
         public static string ToForce(double value1, double value2)
         {
-            string format1 = (value1 < 100000.0) ? (value1 < 10000.0) ? (value1 < 100.0) ? (Math.Abs(value1) < Double.Epsilon) ? "N0" : "N3" : "N2" : "N1" : "N0";
-            string format2 = (value2 < 100000.0) ? (value2 < 10000.0) ? (value2 < 100.0) ? (Math.Abs(value2) < Double.Epsilon) ? "N0" : "N3" : "N2" : "N1" : "N0";
+            string format1 = (value1 < 100000.0) ? (value1 < 10000.0) ? (value1 < 100.0) ? (Math.Abs(value1) < double.Epsilon) ? "N0" : "N3" : "N2" : "N1" : "N0";
+            string format2 = (value2 < 100000.0) ? (value2 < 10000.0) ? (value2 < 100.0) ? (Math.Abs(value2) < double.Epsilon) ? "N0" : "N3" : "N2" : "N1" : "N0";
             return value1.ToString(format1) + " / " + value2.ToString(format2) + "kN";
         }
 
@@ -205,7 +207,7 @@ namespace KerbalEngineer.Helpers
 
         public static string ToTorque(double value)
         {
-            return value.ToString((value < 100.0) ? (Math.Abs(value) < Double.Epsilon) ? "N0" : "N2" : "N0") + "kNm";
+            return value.ToString((value < 100.0) ? (Math.Abs(value) < double.Epsilon) ? "N0" : "N2" : "N0") + "kNm";
         }
     }
 }

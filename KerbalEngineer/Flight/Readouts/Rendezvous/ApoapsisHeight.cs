@@ -34,7 +34,7 @@ namespace KerbalEngineer.Flight.Readouts.Rendezvous
         {
             this.Name = "Apoapsis Height";
             this.Category = ReadoutCategory.GetCategory("Rendezvous");
-            this.HelpString = string.Empty;
+            this.HelpString = "Shows the targets's apoapsis height relative to sea level. (Apoapsis is the highest point of an orbit.)";
             this.IsDefault = true;
         }
 

@@ -36,7 +36,7 @@ namespace KerbalEngineer.Flight.Readouts.Orbital
         {
             this.Name = "Angle to Prograde";
             this.Category = ReadoutCategory.GetCategory("Orbital");
-            this.HelpString = String.Empty;
+            this.HelpString = "Angular Distance from the vessel to crossing the Orbit of the central body on it's retrograde side.";
             this.IsDefault = true;
         }
 

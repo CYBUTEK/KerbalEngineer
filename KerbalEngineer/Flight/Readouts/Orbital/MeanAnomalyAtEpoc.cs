@@ -1,7 +1,7 @@
 ﻿// 
 //     Kerbal Engineer Redux
 // 
-//     Copyright (C) 2014 CYBUTEK
+//     Copyright (C) 2015 CYBUTEK
 // 
 //     This program is free software: you can redistribute it and/or modify
 //     it under the terms of the GNU General Public License as published by
@@ -17,38 +17,25 @@
 //     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // 
 
-#region Using Directives
-
-using System;
-
-using KerbalEngineer.Extensions;
-using KerbalEngineer.Flight.Sections;
-
-#endregion
-
 namespace KerbalEngineer.Flight.Readouts.Orbital
 {
+    using Extensions;
+    using Helpers;
+    using Sections;
+
     public class MeanAnomalyAtEpoc : ReadoutModule
     {
-        #region Constructors
-
         public MeanAnomalyAtEpoc()
         {
-            this.Name = "Mean Anomaly at Epoc";
-            this.Category = ReadoutCategory.GetCategory("Orbital");
-            this.HelpString = String.Empty;
-            this.IsDefault = false;
+            Name = "Mean Anomaly at Epoc";
+            Category = ReadoutCategory.GetCategory("Orbital");
+            HelpString = string.Empty;
+            IsDefault = false;
         }
-
-        #endregion
-
-        #region Methods: public
 
         public override void Draw(SectionModule section)
         {
-            this.DrawLine(FlightGlobals.ship_orbit.meanAnomalyAtEpoch.ToAngle(), section.IsHud);
+            DrawLine((FlightGlobals.ship_orbit.meanAnomalyAtEpoch * Units.RAD_TO_DEG).ToAngle(), section.IsHud);
         }
-
-        #endregion
     }
 }

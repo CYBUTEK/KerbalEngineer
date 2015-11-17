@@ -33,6 +33,7 @@ using UnityEngine;
 
 namespace KerbalEngineer.Flight
 {
+    using KeyBinding;
     using Upgradeables;
 
     /// <summary>

@@ -34,7 +34,7 @@ namespace KerbalEngineer.Flight.Readouts.Rendezvous
         {
             this.Name = "Angle to Rel. DN";
             this.Category = ReadoutCategory.GetCategory("Rendezvous");
-            this.HelpString = string.Empty;
+            this.HelpString = "Angular Distance from the vessel to crossing the orbit of the target object, going south of it.";
             this.IsDefault = false;
         }
 

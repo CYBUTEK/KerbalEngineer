@@ -34,7 +34,7 @@ namespace KerbalEngineer.Flight.Readouts.Vessel
         {
             this.Name = "Part Count";
             this.Category = ReadoutCategory.GetCategory("Vessel");
-            this.HelpString = string.Empty;
+            this.HelpString = "Shows the total number of Parts the current and next stage.";
             this.IsDefault = true;
         }
 

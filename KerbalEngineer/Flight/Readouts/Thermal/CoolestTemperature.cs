@@ -28,7 +28,7 @@ namespace KerbalEngineer.Flight.Readouts.Thermal
         {
             Name = "Coolest Temperature";
             Category = ReadoutCategory.GetCategory("Thermal");
-            HelpString = string.Empty;
+            HelpString = "Lowest internal Temperature on the Vessel.";
             IsDefault = true;
         }
 

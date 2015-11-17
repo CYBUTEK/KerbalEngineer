@@ -120,6 +120,7 @@ namespace KerbalEngineer.Flight.Readouts
                 readouts.Add(new ImpactBiome());
 
                 // Vessel
+                readouts.Add(new Name());
                 readouts.Add(new DeltaVStaged());
                 readouts.Add(new DeltaVCurrent());
                 readouts.Add(new DeltaVTotal());
@@ -167,6 +168,8 @@ namespace KerbalEngineer.Flight.Readouts
                 readouts.Add(new Rendezvous.OrbitalPeriod());
                 readouts.Add(new Rendezvous.SemiMajorAxis());
                 readouts.Add(new Rendezvous.SemiMinorAxis());
+                readouts.Add(new Rendezvous.RelativeRadialVelocity());
+                readouts.Add(new Rendezvous.TimeToRendezvous());
 
                 // Thermal
                 readouts.Add(new InternalFlux());
@@ -187,7 +190,6 @@ namespace KerbalEngineer.Flight.Readouts
                 readouts.Add(new Separator());
                 readouts.Add(new GuiSizeAdjustor());
                 readouts.Add(new SimulationDelay());
-                readouts.Add(new TimeReference());
                 readouts.Add(new VectoredThrustToggle());
                 readouts.Add(new SystemTime());
 

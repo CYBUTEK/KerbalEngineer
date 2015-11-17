@@ -273,14 +273,36 @@ namespace KerbalEngineer.VesselSimulator
 
         HashSet<PartSim> visited = new HashSet<PartSim>();
 
+        public void DumpSourcePartSets(String msg)
+        {
+            MonoBehaviour.print("DumpSourcePartSets " + msg);
+            foreach (int type in sourcePartSets.Keys)
+            {
+                MonoBehaviour.print("SourcePartSet for " + ResourceContainer.GetResourceName(type));
+                HashSet<PartSim> sourcePartSet = sourcePartSets[type];
+                if (sourcePartSet.Count > 0)
+                {
+                    foreach (PartSim partSim in sourcePartSet)
+                    {
+                        MonoBehaviour.print("Part " + partSim.name + ":" + partSim.partId);
+                    }
+                }
+                else
+                {
+                    MonoBehaviour.print("No parts");
+                }
+            }
+        }
+
         public bool SetResourceDrains(List<PartSim> allParts, List<PartSim> allFuelLines, HashSet<PartSim> drainingParts)
         {
             LogMsg log = null;
-            
+            //DumpSourcePartSets("before clear");
             foreach (HashSet<PartSim> sourcePartSet in sourcePartSets.Values)
             {
                 sourcePartSet.Clear();
             }
+            //DumpSourcePartSets("after clear");
 
             for (int index = 0; index < this.resourceConsumptions.Types.Count; index++)
             {
@@ -305,6 +327,7 @@ namespace KerbalEngineer.VesselSimulator
                         break;
 
                     case ResourceFlowMode.ALL_VESSEL:
+                    case ResourceFlowMode.ALL_VESSEL_BAlANCE:
                         for (int i = 0; i < allParts.Count; i++)
                         {
                             PartSim aPartSim = allParts[i];
@@ -316,6 +339,7 @@ namespace KerbalEngineer.VesselSimulator
                         break;
 
                     case ResourceFlowMode.STAGE_PRIORITY_FLOW:
+                    case ResourceFlowMode.STAGE_PRIORITY_FLOW_BALANCE:
 
                         foreach (HashSet<PartSim> stagePartSet in stagePartSets.Values)
                         {
@@ -338,25 +362,34 @@ namespace KerbalEngineer.VesselSimulator
                                 maxStage = stage;
                             }
 
-                            if (!stagePartSets.TryGetValue(stage, out sourcePartSet))
+                            HashSet<PartSim> tempPartSet;
+                            if (!stagePartSets.TryGetValue(stage, out tempPartSet))
                             {
-                                sourcePartSet = new HashSet<PartSim>();
-                                stagePartSets.Add(stage, sourcePartSet);
+                                tempPartSet = new HashSet<PartSim>();
+                                stagePartSets.Add(stage, tempPartSet);
                             }
-                            sourcePartSet.Add(aPartSim);
+                            tempPartSet.Add(aPartSim);
                         }
 
-                        for (int j = 0; j <= maxStage; j++)
+                        for (int j = maxStage; j >= 0; j--)
                         {
                             HashSet<PartSim> stagePartSet;
                             if (stagePartSets.TryGetValue(j, out stagePartSet) && stagePartSet.Count > 0)
                             {
-                                sourcePartSet = stagePartSet;
+                                // We have to copy the contents of the set here rather than copying the set reference or 
+                                // bad things (tm) happen
+                                foreach (PartSim aPartSim in stagePartSet)
+                                {
+                                    sourcePartSet.Add(aPartSim);
+                                }
+                                break;
                             }
                         }
                         break;
 
                     case ResourceFlowMode.STACK_PRIORITY_SEARCH:
+                    case ResourceFlowMode.STAGE_STACK_FLOW:
+                    case ResourceFlowMode.STAGE_STACK_FLOW_BALANCE:
                         visited.Clear();
 
                         if (SimManager.logOutput)
@@ -376,11 +409,9 @@ namespace KerbalEngineer.VesselSimulator
                         break;
                 }
 
-
-                if (sourcePartSet.Count > 0)
+                if (SimManager.logOutput)
                 {
-                    sourcePartSets[type] = sourcePartSet;
-                    if (SimManager.logOutput)
+                    if (sourcePartSet.Count > 0)
                     {
                         log = new LogMsg();
                         log.buf.AppendLine("Source parts for " + ResourceContainer.GetResourceName(type) + ":");
@@ -391,6 +422,8 @@ namespace KerbalEngineer.VesselSimulator
                         MonoBehaviour.print(log.buf);
                     }
                 }
+
+                //DumpSourcePartSets("after " + ResourceContainer.GetResourceName(type));
             }
             
             // If we don't have sources for all the needed resources then return false without setting up any drains
@@ -409,6 +442,7 @@ namespace KerbalEngineer.VesselSimulator
                     return false;
                 }
             }
+
             // Now we set the drains on the members of the sets and update the draining parts set
             for (int i = 0; i < this.resourceConsumptions.Types.Count; i++)
             {

@@ -36,7 +36,7 @@ namespace KerbalEngineer.Flight.Readouts.Orbital.ManoeuvreNode
         {
             this.Name = "Time to Manoeuvre Node";
             this.Category = ReadoutCategory.GetCategory("Orbital");
-            this.HelpString = String.Empty;
+            this.HelpString = "Time until the vessel reaches the position of the Manoeuvre Node.";
             this.IsDefault = true;
         }
 
