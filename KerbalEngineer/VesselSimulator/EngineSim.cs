@@ -327,7 +327,7 @@ namespace KerbalEngineer.VesselSimulator
                         break;
 
                     case ResourceFlowMode.ALL_VESSEL:
-                    case ResourceFlowMode.ALL_VESSEL_BAlANCE:
+                    case ResourceFlowMode.ALL_VESSEL_BALANCE:
                         for (int i = 0; i < allParts.Count; i++)
                         {
                             PartSim aPartSim = allParts[i];
