@@ -19,45 +19,34 @@
 
 #region Using Directives
 
+using KerbalEngineer.Extensions;
+using KerbalEngineer.Flight.Sections;
+
 #endregion
 
 namespace KerbalEngineer.Flight.Readouts.Surface
 {
-    #region Using Directives
-
-    using Extensions;
-    using Sections;
-
-    #endregion
-
-    public class AltitudeTerrain : ReadoutModule
+    public class AltitudeUnderWater : ReadoutModule
     {
         #region Constructors
 
-        public AltitudeTerrain()
+        public AltitudeUnderWater()
         {
-			this.Name = "Altitude (Terrain)";
+            this.Name = "Altitude (Terrain Under Water)";
             this.Category = ReadoutCategory.GetCategory("Surface");
-            this.HelpString = "Shows the vessel's altitude above the terrain. Turns off if splashed.";
-            this.IsDefault = true;
+            this.HelpString = "While splashed shows the vessel's altitude to the under water Terrain.";
+            this.IsDefault = false;
         }
 
         #endregion
 
-        #region Methods
+        #region Methods: public
 
         public override void Draw(SectionModule section)
-		{
-			if (ScienceUtil.GetExperimentSituation (FlightGlobals.ActiveVessel) != ExperimentSituations.SrfSplashed) 
+        {
+			if (ScienceUtil.GetExperimentSituation (FlightGlobals.ActiveVessel) == ExperimentSituations.SrfSplashed) 
 			{
-				if (FlightGlobals.ActiveVessel.terrainAltitude > 0.0) 
-				{
-					this.DrawLine ((FlightGlobals.ship_altitude - FlightGlobals.ActiveVessel.terrainAltitude).ToDistance (), section.IsHud);
-				} 
-				else 
-				{
-					this.DrawLine ((FlightGlobals.ship_altitude).ToDistance (), section.IsHud);
-				}
+				this.DrawLine ((-(FlightGlobals.ActiveVessel.terrainAltitude - FlightGlobals.ship_altitude)).ToDistance (), section.IsHud);
 			}
         }
 
