@@ -22,13 +22,13 @@ namespace KerbalEngineer.Flight.Readouts.Thermal
     using Extensions;
     using Sections;
 
-    public class CriticalPercentage : ReadoutModule
+    public class CriticalThermalPercentage : ReadoutModule
     {
-        public CriticalPercentage()
+        public CriticalThermalPercentage()
         {
-            Name = "Critical Percentage";
+            Name = "Critical Thermal Percentage";
             Category = ReadoutCategory.GetCategory("Thermal");
-            HelpString = string.Empty;
+            HelpString = "Shows how high a temperature the critical Part is enduring relative to it's maximal temperature.";
             IsDefault = true;
         }
 

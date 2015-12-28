@@ -53,7 +53,6 @@
     <Compile Include="Flight\Presets\Preset.cs" />
     <Compile Include="Flight\Readouts\Miscellaneous\SystemTime.cs" />
     <Compile Include="Flight\Readouts\Miscellaneous\VectoredThrustToggle.cs" />
-    <Compile Include="Flight\Readouts\Miscellaneous\TimeReference.cs" />
     <Compile Include="Flight\Readouts\Miscellaneous\Separator.cs" />
     <Compile Include="Flight\Readouts\Miscellaneous\GuiSizeAdjustor.cs" />
     <Compile Include="Flight\Readouts\Orbital\AngleToEquatorialDescendingNode.cs" />
@@ -71,11 +70,21 @@
     <Compile Include="Flight\Readouts\Orbital\ManoeuvreNode\NodeAngleToPrograde.cs" />
     <Compile Include="Flight\Readouts\Orbital\ManoeuvreNode\NodeTotalDeltaV.cs" />
     <Compile Include="Flight\Readouts\Orbital\ManoeuvreNode\NodeProgradeDeltaV.cs" />
+    <Compile Include="Flight\Readouts\Orbital\ManoeuvreNode\PostBurnApoapsis.cs" />
+    <Compile Include="Flight\Readouts\Orbital\ManoeuvreNode\PostBurnPeriapsis.cs" />
     <Compile Include="Flight\Readouts\Orbital\MeanAnomalyAtEpoc.cs" />
     <Compile Include="Flight\Readouts\Orbital\MeanAnomaly.cs" />
     <Compile Include="Flight\Readouts\Orbital\EccentricAnomaly.cs" />
     <Compile Include="Flight\Readouts\Orbital\ArgumentOfPeriapsis.cs" />
     <Compile Include="Flight\Readouts\Orbital\CurrentSoi.cs" />
+    <Compile Include="Flight\Readouts\Orbital\SemiMajorAxis.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Flight\Readouts\Orbital\SpeedAtApoapsis.cs" />
+    <Compile Include="Flight\Readouts\Orbital\SpeedAtPeriapsis.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Flight\Readouts\Orbital\TimeToAtmosphere.cs" />
     <Compile Include="Flight\Readouts\Orbital\TrueAnomaly.cs" />
     <Compile Include="Flight\Readouts\Orbital\TimeToEquatorialAscendingNode.cs" />
     <Compile Include="Flight\Readouts\Orbital\TimeToEquatorialDescendingNode.cs" />
@@ -91,17 +100,21 @@
     <Compile Include="Flight\Readouts\Surface\HorizontalAcceleration.cs" />
     <Compile Include="Flight\Readouts\Surface\VerticalAcceleration.cs" />
     <Compile Include="Flight\Readouts\Surface\MachNumber.cs" />
+    <Compile Include="Flight\Readouts\Thermal\CoolestSkinTemperature.cs" />
     <Compile Include="Flight\Readouts\Thermal\CriticalPart.cs" />
     <Compile Include="Flight\Readouts\Thermal\CoolestPart.cs" />
     <Compile Include="Flight\Readouts\Thermal\CoolestTemperature.cs" />
-    <Compile Include="Flight\Readouts\Thermal\CriticalPercentage.cs" />
+    <Compile Include="Flight\Readouts\Thermal\CriticalThermalPercentage.cs" />
+    <Compile Include="Flight\Readouts\Thermal\CriticalSkinTemperature.cs" />
     <Compile Include="Flight\Readouts\Thermal\CriticalTemperature.cs" />
+    <Compile Include="Flight\Readouts\Thermal\HottestSkinTemperature.cs" />
     <Compile Include="Flight\Readouts\Thermal\InternalFlux.cs" />
     <Compile Include="Flight\Readouts\Thermal\RadiationFlux.cs" />
     <Compile Include="Flight\Readouts\Thermal\ConvectionFlux.cs" />
     <Compile Include="Flight\Readouts\Thermal\HottestTemperature.cs" />
     <Compile Include="Flight\Readouts\Thermal\HottestPart.cs" />
     <Compile Include="Flight\Readouts\Thermal\ThermalProcessor.cs" />
+    <Compile Include="Flight\Readouts\Vessel\Name.cs" />
     <Compile Include="Flight\Readouts\Vessel\AttitudeProcessor.cs" />
     <Compile Include="Flight\Readouts\Vessel\DeltaVCurrentTotal.cs" />
     <Compile Include="Flight\Readouts\Vessel\PitchRate.cs" />
@@ -135,8 +148,10 @@
     <Compile Include="Helpers\TextureHelper.cs" />
     <Compile Include="Helpers\Units.cs" />
     <Compile Include="Helpers\TimeFormatter.cs" />
-    <Compile Include="KeyBinder.cs" />
+    <Compile Include="Helpers\XmlHelper.cs" />
+    <Compile Include="KeyBinding\KeyBinder.cs" />
     <Compile Include="Control\ControlCentre.cs" />
+    <Compile Include="KeyBinding\KeyBindingsObject.cs" />
     <Compile Include="UIControls\DropDown.cs" />
     <Compile Include="Logger.cs" />
     <Compile Include="EngineerGlobals.cs" />
@@ -158,7 +173,6 @@
     <Compile Include="Flight\Readouts\Orbital\OrbitalPeriod.cs" />
     <Compile Include="Flight\Readouts\Orbital\OrbitalSpeed.cs" />
     <Compile Include="Flight\Readouts\Orbital\PeriapsisHeight.cs" />
-    <Compile Include="Flight\Readouts\Orbital\SemiMajorAxis.cs" />
     <Compile Include="Flight\Readouts\Orbital\SemiMinorAxis.cs" />
     <Compile Include="Flight\Readouts\Orbital\TimeToApoapsis.cs" />
     <Compile Include="Flight\Readouts\Orbital\TimeToPeriapsis.cs" />
@@ -209,6 +223,7 @@
     <Compile Include="Settings\SettingHandler.cs" />
     <Compile Include="Settings\SettingItem.cs" />
     <Compile Include="TapeDriveAnimator.cs" />
+    <Compile Include="KeyBinding\KeyBindPopup.cs" />
     <Compile Include="UIControls\WindowObject.cs" />
     <Compile Include="VesselSimulator\AttachNodeSim.cs" />
     <Compile Include="VesselSimulator\EngineSim.cs" />
@@ -218,6 +233,8 @@
     <Compile Include="VesselSimulator\SimManager.cs" />
     <Compile Include="VesselSimulator\Simulation.cs" />
     <Compile Include="VesselSimulator\Stage.cs" />
+    <Compile Include="Flight\Readouts\Rendezvous\RelativeRadialVelocity.cs" />
+    <Compile Include="Flight\Readouts\Rendezvous\TimeToRendezvous.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="Assembly-CSharp">

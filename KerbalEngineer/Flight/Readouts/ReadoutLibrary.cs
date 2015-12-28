@@ -1,6 +1,4 @@
 ﻿// 
-//     Kerbal Engineer Redux
-// 
 //     Copyright (C) 2015 CYBUTEK
 // 
 //     This program is free software: you can redistribute it and/or modify
@@ -93,6 +91,11 @@ namespace KerbalEngineer.Flight.Readouts
                 readouts.Add(new NodeTimeToHalfBurn());
                 readouts.Add(new NodeAngleToPrograde());
                 readouts.Add(new NodeAngleToRetrograde());
+                readouts.Add(new PostBurnApoapsis());
+                readouts.Add(new PostBurnPeriapsis());
+                readouts.Add(new SpeedAtApoapsis());
+                readouts.Add(new SpeedAtPeriapsis());
+                readouts.Add(new TimeToAtmosphere());
 
                 // Surface
                 readouts.Add(new AltitudeSeaLevel());
@@ -117,6 +120,7 @@ namespace KerbalEngineer.Flight.Readouts
                 readouts.Add(new ImpactBiome());
 
                 // Vessel
+                readouts.Add(new Name());
                 readouts.Add(new DeltaVStaged());
                 readouts.Add(new DeltaVCurrent());
                 readouts.Add(new DeltaVTotal());
@@ -164,6 +168,8 @@ namespace KerbalEngineer.Flight.Readouts
                 readouts.Add(new Rendezvous.OrbitalPeriod());
                 readouts.Add(new Rendezvous.SemiMajorAxis());
                 readouts.Add(new Rendezvous.SemiMinorAxis());
+                readouts.Add(new Rendezvous.RelativeRadialVelocity());
+                readouts.Add(new Rendezvous.TimeToRendezvous());
 
                 // Thermal
                 readouts.Add(new InternalFlux());
@@ -171,17 +177,19 @@ namespace KerbalEngineer.Flight.Readouts
                 readouts.Add(new RadiationFlux());
                 readouts.Add(new CriticalPart());
                 readouts.Add(new CriticalTemperature());
-                readouts.Add(new CriticalPercentage());
+                readouts.Add(new CriticalSkinTemperature());
+                readouts.Add(new CriticalThermalPercentage());
                 readouts.Add(new HottestPart());
                 readouts.Add(new HottestTemperature());
+                readouts.Add(new HottestSkinTemperature());
                 readouts.Add(new CoolestPart());
                 readouts.Add(new CoolestTemperature());
+                readouts.Add(new CoolestSkinTemperature());
 
                 // Misc
                 readouts.Add(new Separator());
                 readouts.Add(new GuiSizeAdjustor());
                 readouts.Add(new SimulationDelay());
-                readouts.Add(new TimeReference());
                 readouts.Add(new VectoredThrustToggle());
                 readouts.Add(new SystemTime());
 

@@ -42,7 +42,7 @@ namespace KerbalEngineer.Flight.Readouts.Vessel
         {
             this.Name = "Intake Air (Usage)";
             this.Category = ReadoutCategory.GetCategory("Vessel");
-            this.HelpString = string.Empty;
+            this.HelpString = "Displays the consumption of Intake Air.";
             this.IsDefault = true;
         }
 

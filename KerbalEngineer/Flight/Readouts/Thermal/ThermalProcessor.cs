@@ -1,6 +1,4 @@
 ﻿// 
-//     Kerbal Engineer Redux
-// 
 //     Copyright (C) 2015 CYBUTEK
 // 
 //     This program is free software: you can redistribute it and/or modify
@@ -19,6 +17,8 @@
 
 namespace KerbalEngineer.Flight.Readouts.Thermal
 {
+    using System;
+
     public class ThermalProcessor : IUpdatable, IUpdateRequest
     {
         private static readonly ThermalProcessor instance = new ThermalProcessor();
@@ -27,10 +27,16 @@ namespace KerbalEngineer.Flight.Readouts.Thermal
         {
             HottestTemperature = 0.0;
             HottestTemperatureMax = 0.0;
+            HottestSkinTemperature = 0.0;
+            HottestSkinTemperatureMax = 0.0;
             CoolestTemperature = 0.0;
             CoolestTemperatureMax = 0.0;
+            CoolestSkinTemperature = 0.0;
+            CoolestSkinTemperatureMax = 0.0;
             CriticalTemperature = 0.0;
             CriticalTemperatureMax = 0.0;
+            CriticalSkinTemperature = 0.0;
+            CriticalSkinTemperatureMax = 0.0;
             HottestPartName = string.Empty;
             CoolestPartName = string.Empty;
             CriticalPartName = string.Empty;
@@ -40,11 +46,19 @@ namespace KerbalEngineer.Flight.Readouts.Thermal
 
         public static string CoolestPartName { get; private set; }
 
+        public static double CoolestSkinTemperature { get; private set; }
+
+        public static double CoolestSkinTemperatureMax { get; private set; }
+
         public static double CoolestTemperature { get; private set; }
 
         public static double CoolestTemperatureMax { get; private set; }
 
         public static string CriticalPartName { get; private set; }
+
+        public static double CriticalSkinTemperature { get; private set; }
+
+        public static double CriticalSkinTemperatureMax { get; private set; }
 
         public static double CriticalTemperature { get; private set; }
 
@@ -53,6 +67,10 @@ namespace KerbalEngineer.Flight.Readouts.Thermal
         public static double CriticalTemperaturePercentage { get; private set; }
 
         public static string HottestPartName { get; private set; }
+
+        public static double HottestSkinTemperature { get; private set; }
+
+        public static double HottestSkinTemperatureMax { get; private set; }
 
         public static double HottestTemperature { get; private set; }
 
@@ -69,14 +87,8 @@ namespace KerbalEngineer.Flight.Readouts.Thermal
         public static double InternalFlux { get; private set; }
 
         public static double RadiationFlux { get; private set; }
+
         public static bool ShowDetails { get; private set; }
-
-        public bool UpdateRequested { get; set; }
-
-        public static void RequestUpdate()
-        {
-            instance.UpdateRequested = true;
-        }
 
         public void Update()
         {
@@ -92,8 +104,11 @@ namespace KerbalEngineer.Flight.Readouts.Thermal
             RadiationFlux = 0.0;
             InternalFlux = 0.0;
             HottestTemperature = 0.0;
+            HottestSkinTemperature = 0.0;
             CoolestTemperature = double.MaxValue;
+            CoolestSkinTemperature = double.MaxValue;
             CriticalTemperature = double.MaxValue;
+            CriticalSkinTemperature = double.MaxValue;
             CriticalTemperaturePercentage = 0.0;
             HottestPartName = string.Empty;
             CoolestPartName = string.Empty;
@@ -107,26 +122,40 @@ namespace KerbalEngineer.Flight.Readouts.Thermal
                 RadiationFlux = RadiationFlux + part.thermalRadiationFlux;
                 InternalFlux = InternalFlux + part.thermalInternalFluxPrevious;
 
-                if (part.temperature > HottestTemperature)
+                if (part.temperature > HottestTemperature || part.skinTemperature > HottestSkinTemperature)
                 {
                     HottestTemperature = part.temperature;
                     HottestTemperatureMax = part.maxTemp;
+                    HottestSkinTemperature = part.skinTemperature;
+                    HottestSkinTemperatureMax = part.skinMaxTemp;
                     HottestPartName = part.partInfo.title;
                 }
-                if (part.temperature < CoolestTemperature)
+                if (part.temperature < CoolestTemperature || part.skinTemperature < CoolestSkinTemperature)
                 {
                     CoolestTemperature = part.temperature;
                     CoolestTemperatureMax = part.maxTemp;
+                    CoolestSkinTemperature = part.skinTemperature;
+                    CoolestSkinTemperatureMax = part.skinMaxTemp;
                     CoolestPartName = part.partInfo.title;
                 }
-                if (part.temperature / part.maxTemp > CriticalTemperaturePercentage)
+
+                if (part.temperature / part.maxTemp > CriticalTemperaturePercentage || part.skinTemperature / part.skinMaxTemp > CriticalTemperaturePercentage)
                 {
                     CriticalTemperature = part.temperature;
                     CriticalTemperatureMax = part.maxTemp;
-                    CriticalTemperaturePercentage = part.temperature / part.maxTemp;
+                    CriticalSkinTemperature = part.skinTemperature;
+                    CriticalSkinTemperatureMax = part.skinMaxTemp;
+                    CriticalTemperaturePercentage = Math.Max(part.temperature / part.maxTemp, part.skinTemperature / part.skinMaxTemp);
                     CriticalPartName = part.partInfo.title;
                 }
             }
+        }
+
+        public bool UpdateRequested { get; set; }
+
+        public static void RequestUpdate()
+        {
+            instance.UpdateRequested = true;
         }
     }
 }

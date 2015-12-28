@@ -36,7 +36,7 @@ namespace KerbalEngineer.Flight.Readouts.Rendezvous
         {
             this.Name = "Semi-minor Axis";
             this.Category = ReadoutCategory.GetCategory("Rendezvous");
-            this.HelpString = String.Empty;
+            this.HelpString = "Shows the distance from the centre of the target's orbit to the nearest edge.";
             this.IsDefault = false;
         }
 

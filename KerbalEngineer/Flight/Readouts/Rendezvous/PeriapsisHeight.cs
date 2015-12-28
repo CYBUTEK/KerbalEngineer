@@ -34,7 +34,7 @@ namespace KerbalEngineer.Flight.Readouts.Rendezvous
         {
             this.Name = "Periapsis Height";
             this.Category = ReadoutCategory.GetCategory("Rendezvous");
-            this.HelpString = string.Empty;
+            this.HelpString = "Shows the targets's periapsis height relative to sea level. (Periapsis is the lowest point of an orbit.)";
             this.IsDefault = true;
         }
 

@@ -51,7 +51,7 @@ namespace KerbalEngineer.Flight.Readouts.Miscellaneous
             GUILayout.BeginHorizontal();
             GUILayout.Label("Sim Delay", this.NameStyle);
             GUI.skin = HighLogic.Skin;
-            SimManager.minSimTime = new TimeSpan(0, 0, 0, 0, (int)GUILayout.HorizontalSlider(SimManager.minSimTime.Milliseconds, 0, 1000.0f));
+            SimManager.minSimTime = TimeSpan.FromMilliseconds(GUILayout.HorizontalSlider((float)SimManager.minSimTime.TotalMilliseconds, 0, 2000.0f));
             GUI.skin = null;
             GUILayout.EndHorizontal();
         }

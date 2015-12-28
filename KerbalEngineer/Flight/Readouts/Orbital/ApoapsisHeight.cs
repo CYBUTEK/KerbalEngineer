@@ -34,7 +34,7 @@ namespace KerbalEngineer.Flight.Readouts.Orbital
         {
             this.Name = "Apoapsis Height";
             this.Category = ReadoutCategory.GetCategory("Orbital");
-            this.HelpString = "Shows the vessel's apoapsis height relative to sea level.  (Apoapsis is the highest point of an orbit.)";
+            this.HelpString = "Shows the vessel's apoapsis height relative to sea level. (Apoapsis is the highest point of an orbit.)";
             this.IsDefault = true;
         }
 

@@ -142,7 +142,7 @@ namespace KerbalEngineer.Control
             try
             {
                 GUI.skin = null;
-                this.position = GUILayout.Window(this.GetInstanceID(), this.position, this.Window, "KERBAL ENGINEER REDUX " + EngineerGlobals.AssemblyVersion + " - CONTROL CENTRE", HighLogic.Skin.window);
+                this.position = GUILayout.Window(this.GetInstanceID(), this.position, this.Window, "KERBAL ENGINEER REDUX " + EngineerGlobals.ASSEMBLY_VERSION + " - CONTROL CENTRE", HighLogic.Skin.window);
                 this.CentreWindow();
             }
             catch (Exception ex)

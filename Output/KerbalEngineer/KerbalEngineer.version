@@ -1,17 +1,17 @@
 {
-	"NAME":"Kerbal Engineer Redux 1.0",
+	"NAME":"Kerbal Engineer Redux",
 	"URL":"http://ksp-avc.cybutek.net/version.php?id=6",
 	"VERSION":
 	{
 		"MAJOR":1,
 		"MINOR":0,
-		"PATCH":16,
-		"BUILD":6
+		"PATCH":19,
+		"BUILD":2
 	},
 	"KSP_VERSION":
 	{
 		"MAJOR":1,
 		"MINOR":0,
-		"PATCH":2
+		"PATCH":5
 	}
 }

@@ -19,26 +19,22 @@
 
 #region Using Directives
 
-using System;
-
 using KerbalEngineer.Flight.Sections;
 using KerbalEngineer.Helpers;
 
-using UnityEngine;
-
 #endregion
 
-namespace KerbalEngineer.Flight.Readouts.Miscellaneous
+namespace KerbalEngineer.Flight.Readouts.Rendezvous
 {
-    public class TimeReference : ReadoutModule
+    public class TimeToRendezvous : ReadoutModule
     {
         #region Constructors
 
-        public TimeReference()
+        public TimeToRendezvous()
         {
-            this.Name = "Time Reference Adjuster";
-            this.Category = ReadoutCategory.GetCategory("Miscellaneous");
-            this.HelpString = String.Empty;
+            this.Name = "Time to Rendezvous";
+            this.Category = ReadoutCategory.GetCategory("Rendezvous");
+            this.HelpString = "Approximate (linearly) time to the minimum distance between objects.";
             this.IsDefault = false;
         }
 
@@ -48,17 +44,20 @@ namespace KerbalEngineer.Flight.Readouts.Miscellaneous
 
         public override void Draw(SectionModule section)
         {
-            GUILayout.BeginHorizontal();
-            GUILayout.Label("Time Ref.: " + TimeFormatter.Reference, this.NameStyle);
-            if (GUILayout.Button("Earth", this.ButtonStyle))
+            if (RendezvousProcessor.ShowDetails)
             {
-                TimeFormatter.SetReference();
+               this.DrawLine(TimeFormatter.ConvertToString(RendezvousProcessor.TimeToRendezvous), section.IsHud);
             }
-            if (GUILayout.Button("Kerbin", this.ButtonStyle))
-            {
-                TimeFormatter.SetReference(PSystemManager.Instance.localBodies.Find(body => body.bodyName.Equals("Kerbin")));
-            }
-            GUILayout.EndHorizontal();
+        }
+
+        public override void Reset()
+        {
+            FlightEngineerCore.Instance.AddUpdatable(RendezvousProcessor.Instance);
+        }
+
+        public override void Update()
+        {
+            RendezvousProcessor.RequestUpdate();
         }
 
         #endregion

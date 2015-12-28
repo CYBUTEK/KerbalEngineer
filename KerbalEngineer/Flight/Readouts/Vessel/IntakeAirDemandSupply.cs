@@ -42,7 +42,7 @@ namespace KerbalEngineer.Flight.Readouts.Vessel
         {
             this.Name = "Intake Air (D/S)";
             this.Category = ReadoutCategory.GetCategory("Vessel");
-            this.HelpString = string.Empty;
+            this.HelpString = "Displays the Ration between required and available Intake Air.";
             this.IsDefault = false;
         }
 
@@ -55,20 +55,11 @@ namespace KerbalEngineer.Flight.Readouts.Vessel
             var demand = 0.0;
             foreach (var part in FlightGlobals.ActiveVessel.Parts)
             {
-                if (part.Modules.Contains("ModuleEngines"))
+                for (int i = 0; i < part.Modules.Count; i++)
                 {
-                    var engine = part.Modules["ModuleEngines"] as ModuleEngines;
-                    if (engine.isOperational)
-                    {
-                        demand += engine.propellants
-                            .Where(p => p.name == "IntakeAir")
-                            .Sum(p => p.currentRequirement);
-                    }
-                }
-                if (part.Modules.Contains("ModuleEnginesFX"))
-                {
-                    var engine = part.Modules["ModuleEnginesFX"] as ModuleEnginesFX;
-                    if (engine.isOperational)
+                    PartModule partmod = part.Modules[i];
+                    var engine = partmod as ModuleEngines;
+                    if (engine != null && engine.isOperational)
                     {
                         demand += engine.propellants
                             .Where(p => p.name == "IntakeAir")

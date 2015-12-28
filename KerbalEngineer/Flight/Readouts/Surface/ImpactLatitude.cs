@@ -34,7 +34,7 @@ namespace KerbalEngineer.Flight.Readouts.Surface
         {
             this.Name = "Impact Latitude";
             this.Category = ReadoutCategory.GetCategory("Surface");
-            this.HelpString = string.Empty;
+            this.HelpString = "Latitude of the impact position.";
             this.IsDefault = false;
         }
 

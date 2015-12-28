@@ -33,7 +33,7 @@ namespace KerbalEngineer.Flight.Readouts.Vessel
         {
             this.Name = "Specific Impulse";
             this.Category = ReadoutCategory.GetCategory("Vessel");
-            this.HelpString = string.Empty;
+            this.HelpString = "Shows the average Specific Impulse of all engines in the current stage.";
             this.IsDefault = false;
         }
 

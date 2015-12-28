@@ -55,6 +55,7 @@ namespace KerbalEngineer.Extensions
         /// <summary>
         ///     Gets whether the part has fuel.
         /// </summary>
+        /* not used
         public static bool EngineHasFuel(this Part part)
         {
             PartModule cachePartModule = GetModule<ModuleEngines>(part);
@@ -71,7 +72,7 @@ namespace KerbalEngineer.Extensions
 
             return false;
         }
-
+        */
         /// <summary>
         ///     Gets the cost of the part excluding resources.
         /// </summary>
@@ -123,6 +124,7 @@ namespace KerbalEngineer.Extensions
         /// <summary>
         ///     Gets the maximum thrust of the part if it's an engine.
         /// </summary>
+        /* not used
         public static double GetMaxThrust(this Part part)
         {
             PartModule cachePartModule = GetModule<ModuleEngines>(part);
@@ -139,6 +141,7 @@ namespace KerbalEngineer.Extensions
 
             return 0.0;
         }
+        */
 
         /// <summary>
         ///     Gets the first typed PartModule in the part's module list.
@@ -194,10 +197,10 @@ namespace KerbalEngineer.Extensions
             return GetModule<ModuleEngines>(part);
         }
 
-        public static ModuleEnginesFX GetModuleEnginesFx(this Part part)
+/*        public static ModuleEnginesFX GetModuleEnginesFx(this Part part)
         {
             return GetModule<ModuleEnginesFX>(part);
-        }
+        }*/
 
         /// <summary>
         ///     Gets a ModuleGenerator typed PartModule.
@@ -218,16 +221,20 @@ namespace KerbalEngineer.Extensions
         /// <summary>
         ///     Gets the current selected ModuleEnginesFX.
         /// </summary>
-        public static ModuleEnginesFX GetModuleMultiModeEngine(this Part part)
+        public static ModuleEngines GetModuleMultiModeEngine(this Part part)
         {
-            ModuleEnginesFX moduleEngineFx;
-            string mode = GetModule<MultiModeEngine>(part).mode;
-            for (int i = 0; i < part.Modules.Count; ++i)
+            ModuleEngines moduleEngines;
+            MultiModeEngine multiMod = GetModule<MultiModeEngine>(part);
+            if (multiMod != null)
             {
-                moduleEngineFx = part.Modules[i] as ModuleEnginesFX;
-                if (moduleEngineFx != null && moduleEngineFx.engineID == mode)
+                string mode = multiMod.mode;
+                for (int i = 0; i < part.Modules.Count; ++i)
                 {
-                    return moduleEngineFx;
+                    moduleEngines = part.Modules[i] as ModuleEngines;
+                    if (moduleEngines != null && moduleEngines.engineID == mode)
+                    {
+                        return moduleEngines;
+                    }
                 }
             }
             return null;
@@ -343,6 +350,7 @@ namespace KerbalEngineer.Extensions
         /// <summary>
         ///     Gets the current specific impulse for the engine.
         /// </summary>
+        /* not used
         public static double GetSpecificImpulse(this Part part, float atmosphere)
         {
             PartModule cachePartModule = GetModule<ModuleEngines>(part);
@@ -359,6 +367,7 @@ namespace KerbalEngineer.Extensions
 
             return 0.0;
         }
+        */
 
         /// <summary>
         ///     Gets the total mass of the part including resources.
@@ -457,7 +466,7 @@ namespace KerbalEngineer.Extensions
         /// </summary>
         public static bool IsEngine(this Part part)
         {
-            return HasModule<ModuleEngines>(part) || HasModule<ModuleEnginesFX>(part);
+            return HasModule<ModuleEngines>(part);
         }
 
         /// <summary>
@@ -540,7 +549,7 @@ namespace KerbalEngineer.Extensions
         /// </summary>
         public static bool IsSolidRocket(this Part part)
         {
-            return (part.HasModule<ModuleEngines>() && part.GetModuleEngines().throttleLocked) || (part.HasModule<ModuleEnginesFX>() && part.GetModuleEnginesFx().throttleLocked);
+            return (part.HasModule<ModuleEngines>() && part.GetModuleEngines().throttleLocked);
         }
 
         public class ProtoModuleDecoupler
@@ -588,6 +597,12 @@ namespace KerbalEngineer.Extensions
             }
         }
 
+        // This needs updating to handle multi-mode engines and engines with multiple ModuleEngines correctly.
+        // It currently just shows the stats of the currently active module for multi-mode engines and just 
+        // the first ModuleEngines for engines with multiple modules.
+        // It should really show all the modes for multi-mode engines as separate sections.
+        // For other engines with multiple ModuleEngines it should combine the separate modules into a single set of data
+        // The constructor should be changed to take the Part itself.  It can be called if HasModule<ModuleEngines>() is true.
         public class ProtoModuleEngine
         {
             private readonly PartModule module;
@@ -618,19 +633,6 @@ namespace KerbalEngineer.Extensions
             private void SetModuleEngines()
             {
                 ModuleEngines engine = module as ModuleEngines;
-                if (engine == null)
-                {
-                    return;
-                }
-
-                MaximumThrust = engine.maxThrust * (engine.thrustPercentage * 0.01);
-                MinimumThrust = engine.minThrust;
-                Propellants = engine.propellants;
-            }
-
-            private void SetModuleEnginesFx()
-            {
-                ModuleEnginesFX engine = module as ModuleEnginesFX;
                 if (engine == null)
                 {
                     return;

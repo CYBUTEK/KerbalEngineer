@@ -30,6 +30,8 @@ using UnityEngine;
 
 namespace KerbalEngineer.Flight.Readouts.Orbital.ManoeuvreNode
 {
+    using Helpers;
+
     public class ManoeuvreProcessor : IUpdatable, IUpdateRequest
     {
         #region Fields
@@ -60,6 +62,10 @@ namespace KerbalEngineer.Flight.Readouts.Orbital.ManoeuvreNode
         }
 
         public static double NormalDeltaV { get; private set; }
+
+        public static double PostBurnAp { get; private set; }
+
+        public static double PostBurnPe { get; private set; }
 
         public static double ProgradeDeltaV { get; private set; }
 
@@ -108,6 +114,8 @@ namespace KerbalEngineer.Flight.Readouts.Orbital.ManoeuvreNode
             NormalDeltaV = deltaV.y;
             RadialDeltaV = deltaV.x;
             TotalDeltaV = node.GetBurnVector(FlightGlobals.ship_orbit).magnitude;
+            PostBurnAp = node.nextPatch != null ? node.nextPatch.ApA : 0;
+            PostBurnPe = node.nextPatch != null ? node.nextPatch.PeA : 0;
 
             UniversalTime = FlightGlobals.ActiveVessel.patchedConicSolver.maneuverNodes[0].UT;
             AngleToPrograde = FlightGlobals.ActiveVessel.patchedConicSolver.maneuverNodes[0].patch.GetAngleToPrograde(UniversalTime);
@@ -163,7 +171,7 @@ namespace KerbalEngineer.Flight.Readouts.Orbital.ManoeuvreNode
                     deltaVDrain = deltaV.Clamp(0.0, stageDeltaV);
                 }
 
-                var exhaustVelocity = stage.isp * 9.82;
+                var exhaustVelocity = stage.isp * Units.GRAVITY;
                 var flowRate = stage.thrust / exhaustVelocity;
                 var endMass = Math.Exp(Math.Log(startMass) - deltaVDrain / exhaustVelocity);
                 var deltaMass = (startMass - endMass) * Math.Exp(-(deltaVDrain * 0.001) / exhaustVelocity);

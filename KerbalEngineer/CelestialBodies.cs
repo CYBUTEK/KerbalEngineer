@@ -37,7 +37,8 @@ namespace KerbalEngineer
             try
             {
                 SystemBody = new BodyInfo(PSystemManager.Instance.localBodies.Find(b => b.referenceBody == null || b.referenceBody == b));
-                if (!SetSelectedBody("Kerbin"))
+                String homeCBName = Planetarium.fetch.Home.bodyName;
+                if (!SetSelectedBody(homeCBName))
                 {
                     SelectedBody = SystemBody;
                     SelectedBody.SetSelected(true);
