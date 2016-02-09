@@ -519,9 +519,7 @@ namespace KerbalEngineer.VesselSimulator
                     {
                         if (attachSim.nodeType == AttachNode.NodeType.Stack)
                         {
-                            if (
-                                !(this.noCrossFeedNodeKey != null && this.noCrossFeedNodeKey.Length > 0 &&
-                                  attachSim.id.Contains(this.noCrossFeedNodeKey)))
+                            if ((string.IsNullOrEmpty(noCrossFeedNodeKey) == false && attachSim.id.Contains(noCrossFeedNodeKey)) == false)
                             {
                                 if (visited.Contains(attachSim.attachedPartSim))
                                 {
@@ -549,7 +547,7 @@ namespace KerbalEngineer.VesselSimulator
             // type was not disabled [Experiment]) and it contains fuel, it returns itself.
             // Rule 6: If the part is fuel container for searched type of fuel (i.e. it has capability to contain that type of fuel and the fuel 
             // type was not disabled) but it does not contain the requested fuel, it returns empty list. [Experiment]
-            if (resources.HasType(type) && resourceFlowStates[type] != 0)
+            if (resources.HasType(type) && resourceFlowStates[type] > 0.0)
             {
                 if (resources[type] > SimManager.RESOURCE_MIN)
                 {
