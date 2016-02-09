@@ -679,6 +679,11 @@ namespace KerbalEngineer.VesselSimulator
                 if (partSimLookup.TryGetValue(part.parent, out parent))
                 {
                     if (log != null) log.buf.AppendLine("Parent part is " + parent.name + ":" + parent.partId);
+                    if (part.attachMode == AttachModes.SRF_ATTACH && part.attachRules.srfAttach && part.fuelCrossFeed && parent.fuelCrossFeed)
+                    {
+                        if (log != null) log.buf.AppendLine("Added " + name + " to " + parent.name + " fuel targets. (srf_attach with crossfeed)");
+                        parent.fuelTargets.Add(this);
+                    }
                 }
                 else
                 {
