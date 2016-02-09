@@ -1,3 +1,9 @@
+1.0.19.3, 09-02-16
+    Fixed: Fuel cross-feed from surface attached parts.
+
+1.0.19.2, 19-11-15
+    Rebuild for KSP 1.0.5.1028 silent update.
+    
 1.0.19.1, 09-11-15
     Added: Key binding editor accessible under 'Settings' on the Build Engineer.
     Added: Added current vessel name readout. (antplant)
