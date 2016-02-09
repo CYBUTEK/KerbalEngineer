@@ -238,7 +238,7 @@
   </ItemGroup>
   <ItemGroup>
     <Reference Include="Assembly-CSharp">
-      <HintPath>..\Game\KSP_Data\Managed\Assembly-CSharp.dll</HintPath>
+      <HintPath>..\..\Game\KSP_Data\Managed\Assembly-CSharp.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="System">
@@ -250,7 +250,7 @@
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine">
-      <HintPath>..\Game\KSP_Data\Managed\UnityEngine.dll</HintPath>
+      <HintPath>..\..\Game\KSP_Data\Managed\UnityEngine.dll</HintPath>
       <Private>False</Private>
     </Reference>
   </ItemGroup>
@@ -269,7 +269,7 @@
         $(PostBuildEventDependsOn);
         PostBuildMacros;
       </PostBuildEventDependsOn>
-    <PostBuildEvent>xcopy "$(SolutionDir)Output\*" "$(SolutionDir)Game\GameData\*" /E /Y
+    <PostBuildEvent>xcopy "$(SolutionDir)Output\*" "$(SolutionDir)..\Game\GameData\*" /E /Y
 del "$(SolutionDir)Release\*" /Q
 xcopy "$(SolutionDir)Documents\*" "$(SolutionDir)Release\Documents\*" /E /Y
 7z.exe a -tzip -mx3 "$(SolutionDir)Release\$(ProjectName)-@(VersionNumber).zip" "$(SolutionDir)Output\*"
