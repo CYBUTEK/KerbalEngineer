@@ -1,3 +1,6 @@
+1.0.19.4, 12-02-16
+    Fixed: Only 'STAGE_STACK_FLOW' and 'STAGE_STACK_FLOW_BALANCE' resources include surface mounted parts as fuel targets.
+
 1.0.19.3, 09-02-16
     Fixed: Fuel cross-feed from surface attached parts.
 

@@ -42,6 +42,7 @@ namespace KerbalEngineer.VesselSimulator
         public int decoupledInStage;
         public bool fuelCrossFeed;
         public List<PartSim> fuelTargets = new List<PartSim>();
+        public List<PartSim> surfaceMountFuelTargets = new List<PartSim>();
         public bool hasModuleEngines;
         public bool hasMultiModeEngine;
 
@@ -451,7 +452,7 @@ namespace KerbalEngineer.VesselSimulator
         // All functions below this point must not rely on the part member (it may be null)
         //
 
-        public void GetSourceSet(int type, List<PartSim> allParts, HashSet<PartSim> visited, HashSet<PartSim> allSources, LogMsg log, String indent)
+        public void GetSourceSet(int type, bool includeSurfaceMountedParts, List<PartSim> allParts, HashSet<PartSim> visited, HashSet<PartSim> allSources, LogMsg log, String indent)
         {
             if (log != null)
             {
@@ -489,7 +490,29 @@ namespace KerbalEngineer.VesselSimulator
                     {
                         if (log != null) log.buf.AppendLine(indent + "Adding fuel target as source (" + partSim.name + ":" + partSim.partId + ")");
 
-                        partSim.GetSourceSet(type, allParts, visited, allSources, log, indent);
+                        partSim.GetSourceSet(type, includeSurfaceMountedParts, allParts, visited, allSources, log, indent);
+                    }
+                }
+            }
+
+            // check surface mounted fuel targets
+            if (includeSurfaceMountedParts)
+            {
+                for (int i = 0; i < surfaceMountFuelTargets.Count; i++)
+                {
+                    PartSim partSim = this.surfaceMountFuelTargets[i];
+                    if (partSim != null)
+                    {
+                        if (visited.Contains(partSim))
+                        {
+                            if (log != null) log.buf.AppendLine(indent + "Fuel target already visited, skipping (" + partSim.name + ":" + partSim.partId + ")");
+                        }
+                        else
+                        {
+                            if (log != null) log.buf.AppendLine(indent + "Adding fuel target as source (" + partSim.name + ":" + partSim.partId + ")");
+
+                            partSim.GetSourceSet(type, true, allParts, visited, allSources, log, indent);
+                        }
                     }
                 }
             }
@@ -529,7 +552,7 @@ namespace KerbalEngineer.VesselSimulator
                                 {
                                     if (log != null) log.buf.AppendLine(indent + "Adding attached part as source (" + attachSim.attachedPartSim.name + ":" + attachSim.attachedPartSim.partId + ")");
 
-                                    attachSim.attachedPartSim.GetSourceSet(type, allParts, visited, allSources, log, indent);
+                                    attachSim.attachedPartSim.GetSourceSet(type, includeSurfaceMountedParts, allParts, visited, allSources, log, indent);
                                 }
                             }
                         }
@@ -576,7 +599,7 @@ namespace KerbalEngineer.VesselSimulator
                     else
                     {
                         lastCount = allSources.Count;
-                        this.parent.GetSourceSet(type, allParts, visited, allSources, log, indent);
+                        this.parent.GetSourceSet(type, includeSurfaceMountedParts, allParts, visited, allSources, log, indent);
                         if (allSources.Count > lastCount)
                         {
                             if (log != null) log.buf.AppendLine(indent + "Returning " + (allSources.Count  - lastCount) + " parent sources (" + this.name + ":" + this.partId + ")");
@@ -679,10 +702,10 @@ namespace KerbalEngineer.VesselSimulator
                 if (partSimLookup.TryGetValue(part.parent, out parent))
                 {
                     if (log != null) log.buf.AppendLine("Parent part is " + parent.name + ":" + parent.partId);
-                    if (part.attachMode == AttachModes.SRF_ATTACH && part.attachRules.srfAttach && part.fuelCrossFeed && parent.fuelCrossFeed)
+                    if (part.attachMode == AttachModes.SRF_ATTACH && part.attachRules.srfAttach && part.fuelCrossFeed && part.parent.fuelCrossFeed)
                     {
-                        if (log != null) log.buf.AppendLine("Added " + name + " to " + parent.name + " fuel targets. (srf_attach with crossfeed)");
-                        parent.fuelTargets.Add(this);
+                        if (log != null) log.buf.AppendLine("Added " + name + " to " + parent.name + " surface mounted fuel targets.");
+                        parent.surfaceMountFuelTargets.Add(this);
                     }
                 }
                 else
