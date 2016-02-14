@@ -388,6 +388,20 @@ namespace KerbalEngineer.VesselSimulator
                         break;
 
                     case ResourceFlowMode.STACK_PRIORITY_SEARCH:
+                        visited.Clear();
+
+                        if (SimManager.logOutput)
+                        {
+                            log = new LogMsg();
+                            log.buf.AppendLine("Find " + ResourceContainer.GetResourceName(type) + " sources for " + partSim.name + ":" + partSim.partId);
+                        }
+                        partSim.GetSourceSet(type, PhysicsGlobals.Stack_PriUsesSurf, allParts, visited, sourcePartSet, log, "");
+                        if (SimManager.logOutput && log != null)
+                        {
+                            MonoBehaviour.print(log.buf);
+                        }
+                        break;
+
                     case ResourceFlowMode.STAGE_STACK_FLOW:
                     case ResourceFlowMode.STAGE_STACK_FLOW_BALANCE:
                         visited.Clear();
@@ -397,8 +411,8 @@ namespace KerbalEngineer.VesselSimulator
                             log = new LogMsg();
                             log.buf.AppendLine("Find " + ResourceContainer.GetResourceName(type) + " sources for " + partSim.name + ":" + partSim.partId);
                         }
-                        partSim.GetSourceSet(type, allParts, visited, sourcePartSet, log, "");
-                        if (SimManager.logOutput)
+                        partSim.GetSourceSet(type, true, allParts, visited, sourcePartSet, log, "");
+                        if (SimManager.logOutput && log != null)
                         {
                             MonoBehaviour.print(log.buf);
                         }
