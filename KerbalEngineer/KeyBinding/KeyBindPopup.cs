@@ -179,6 +179,10 @@ namespace KerbalEngineer.KeyBinding
             GUILayout.BeginVertical(HighLogic.Skin.textArea);
             GUILayout.Label("Key Bind: " + Name);
             GUILayout.Label("Selected: " + Binding);
+            if (GUILayout.Button("Clear", HighLogic.Skin.button))
+            {
+                Binding = KeyCode.None;
+            }
             GUILayout.EndVertical();
 
             // Window buttons.
