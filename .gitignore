@@ -2,6 +2,11 @@
 [Bb]in/
 [Oo]bj/
 
+# Unity specific
+[Ll]ibrary/
+[Tt]emp/
+*.unityproj
+
 # mstest test results
 TestResults
 
