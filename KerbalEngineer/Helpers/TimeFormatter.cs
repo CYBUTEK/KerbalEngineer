@@ -28,11 +28,11 @@ namespace KerbalEngineer.Helpers
 
             if (seconds > 0.0)
             {
-                years = (int)(seconds / KSPUtil.Year);
-                seconds -= years * KSPUtil.Year;
+                years = (int)(seconds / KSPUtil.dateTimeFormatter.Year);
+                seconds -= years * KSPUtil.dateTimeFormatter.Year;
 
-                days = (int)(seconds / KSPUtil.Day);
-                seconds -= days * KSPUtil.Day;
+                days = (int)(seconds / KSPUtil.dateTimeFormatter.Day);
+                seconds -= days * KSPUtil.dateTimeFormatter.Day;
 
                 hours = (int)(seconds / 3600.0);
                 seconds -= hours * 3600.0;

@@ -83,6 +83,8 @@ namespace KerbalEngineer
         private bool sceneIsEditor;
         private float speed;
         private float targetSpeed;
+        private Renderer renderer;
+        private Light light;
 
         #endregion
 
@@ -120,6 +122,8 @@ namespace KerbalEngineer
 
         public override void OnStart(StartState state)
         {
+            renderer = GetComponent<Renderer>();
+
             this.random = new Random();
 
             this.StopBakedAnimation();
@@ -167,37 +171,37 @@ namespace KerbalEngineer
             if (this.Lights1 != "")
             {
                 this.lights1Transform = this.part.FindModelTransform(this.Lights1);
-                this.lights1ShaderOff = this.lights1Transform.renderer.material.shader;
+                this.lights1ShaderOff = renderer.material.shader;
             }
 
             if (this.Lights2 != "")
             {
                 this.lights2Transform = this.part.FindModelTransform(this.Lights2);
-                this.lights2ShaderOff = this.lights2Transform.renderer.material.shader;
+                this.lights2ShaderOff = renderer.material.shader;
             }
 
             if (this.Lights3 != "")
             {
                 this.lights3Transform = this.part.FindModelTransform(this.Lights3);
-                this.lights3ShaderOff = this.lights3Transform.renderer.material.shader;
+                this.lights3ShaderOff = renderer.material.shader;
             }
 
             if (this.Lights4 != "")
             {
                 this.lights4Transform = this.part.FindModelTransform(this.Lights4);
-                this.lights4ShaderOff = this.lights4Transform.renderer.material.shader;
+                this.lights4ShaderOff = renderer.material.shader;
             }
 
             if (this.Lights5 != "")
             {
                 this.lights5Transform = this.part.FindModelTransform(this.Lights5);
-                this.lights5ShaderOff = this.lights5Transform.renderer.material.shader;
+                this.lights5ShaderOff = renderer.material.shader;
             }
 
             if (this.Lights6 != "")
             {
                 this.lights6Transform = this.part.FindModelTransform(this.Lights6);
-                this.lights6ShaderOff = this.lights6Transform.renderer.material.shader;
+                this.lights6ShaderOff = renderer.material.shader;
             }
 
             this.lightsShaderOn = Shader.Find("Unlit/Texture");
@@ -381,7 +385,7 @@ namespace KerbalEngineer
                 lightsOn = (this.speed == 0);
             }
 
-            lights.renderer.material.shader = lightsOn ? @on : off;
+            lights.GetComponent<Renderer>().material.shader = lightsOn ? @on : off;
         }
 
         #endregion

@@ -27,6 +27,8 @@ using UnityEngine;
 
 namespace KerbalEngineer.Flight
 {
+    using KSP.UI.Screens;
+
     /// <summary>
     ///     Graphical controller for section interaction in the form of a menu system.
     /// </summary>
@@ -90,11 +92,11 @@ namespace KerbalEngineer.Flight
                 {
                     return;
                 }
-                if (FlightEngineerCore.IsDisplayable && this.button.State == RUIToggleButton.ButtonState.DISABLED)
+                if (FlightEngineerCore.IsDisplayable && this.button.toggleButton.Interactable == false)
                 {
                     this.button.Enable();
                 }
-                else if (!FlightEngineerCore.IsDisplayable && this.button.State != RUIToggleButton.ButtonState.DISABLED)
+                else if (!FlightEngineerCore.IsDisplayable && this.button.toggleButton.Interactable)
                 {
                     this.button.Disable();
                 }

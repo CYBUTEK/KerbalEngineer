@@ -28,7 +28,7 @@ namespace KerbalEngineer.Editor
     public class BuildOverlayPartInfo : MonoBehaviour
     {
         private static bool clickToOpen = true;
-        private static ModuleGenerator.GeneratorResource generatorResource;
+        private static ModuleResource generatorResource;
         private static ModuleAlternator moduleAlternator;
         private static ModuleDataTransmitter moduleDataTransmitter;
         private static ModuleDeployableSolarPanel moduleDeployableSolarPanel;
@@ -131,7 +131,7 @@ namespace KerbalEngineer.Editor
                     position.x = Input.mousePosition.x - 3 - position.width;
                 }
 
-                part = EditorLogic.fetch.ship.parts.Find(p => p.stackIcon.highlightIcon) ?? EditorLogic.SelectedPart;
+                part = EditorLogic.fetch.ship.parts.Find(p => p.stackIcon.Highlighted) ?? EditorLogic.SelectedPart;
                 if (part != null)
                 {
                     if (!part.Equals(selectedPart))

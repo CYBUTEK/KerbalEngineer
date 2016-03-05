@@ -27,6 +27,9 @@ using UnityEngine;
 
 namespace KerbalEngineer.Editor
 {
+    using KSP.UI;
+    using KSP.UI.Screens;
+
     [KSPAddon(KSPAddon.Startup.EditorAny, false)]
     public class BuildToolbar : MonoBehaviour
     {
@@ -95,16 +98,16 @@ namespace KerbalEngineer.Editor
 
                 if (EditorLogic.fetch != null && EditorLogic.fetch.ship.parts.Count > 0)
                 {
-                    if (BuildAdvanced.Instance.Visible && this.button.State != RUIToggleButton.ButtonState.TRUE)
+                    if (BuildAdvanced.Instance.Visible && this.button.toggleButton.CurrentState != UIRadioButton.State.True)
                     {
                         this.button.SetTrue();
                     }
-                    else if (!BuildAdvanced.Instance.Visible && this.button.State != RUIToggleButton.ButtonState.FALSE)
+                    else if (!BuildAdvanced.Instance.Visible && this.button.toggleButton.CurrentState != UIRadioButton.State.False)
                     {
                         this.button.SetFalse();
                     }
                 }
-                else if (this.button.State != RUIToggleButton.ButtonState.DISABLED)
+                else if (this.button.toggleButton.Interactable)
                 {
                     this.button.Disable();
                 }
