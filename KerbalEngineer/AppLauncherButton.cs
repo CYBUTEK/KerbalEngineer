@@ -18,45 +18,88 @@
 
 namespace KerbalEngineer
 {
+    using KSP.UI;
     using KSP.UI.Screens;
     using UnityEngine;
 
     public class AppLauncherButton : MonoBehaviour
     {
-        public enum ButtonState
-        {
-            Disabled,
-            On,
-            Off
-        }
-
         private ApplicationLauncherButton m_Button;
 
         /// <summary>
-        ///     Sets the state of the button.
+        ///     Gets or sets the toggle button state.
         /// </summary>
-        public void SetState(ButtonState state)
+        public bool isOn
         {
-            if (m_Button == null)
+            get
             {
-                return;
+                return m_Button != null &&
+                       m_Button.toggleButton.Button.interactable &&
+                       m_Button.toggleButton.CurrentState == UIRadioButton.State.True;
             }
-
-            switch (state)
+            set
             {
-                case ButtonState.Disabled:
-                    Disable();
-                    break;
+                if (m_Button == null)
+                {
+                    return;
+                }
 
-                case ButtonState.On:
-                    Enable();
-                    m_Button.SetTrue();
-                    break;
+                if (value)
+                {
+                    SetOn();
+                }
+                else
+                {
+                    SetOff();
+                }
+            }
+        }
 
-                case ButtonState.Off:
-                    Enable();
-                    m_Button.SetFalse();
-                    break;
+        /// <summary>
+        ///     Disables the button if not already disabled.
+        /// </summary>
+        public void Disable()
+        {
+            if (m_Button != null && m_Button.toggleButton.Button.interactable)
+            {
+                m_Button.Disable();
+            }
+        }
+
+        /// <summary>
+        ///     Enables the button if not already enabled.
+        /// </summary>
+        public void Enable()
+        {
+            if (m_Button != null && m_Button.toggleButton.Button.interactable == false)
+            {
+                m_Button.Enable();
+            }
+        }
+
+        /// <summary>
+        ///     Enables and sets the button to off.
+        /// </summary>
+        public void SetOff()
+        {
+            Enable();
+
+            if (m_Button != null && m_Button.toggleButton.CurrentState != UIRadioButton.State.False)
+            {
+                m_Button.SetTrue();
+            }
+        }
+
+        /// <summary>
+        ///     Enables and sets the button to on.
+        /// </summary>
+        public void SetOn()
+        {
+            Enable();
+
+            if (m_Button != null && m_Button.toggleButton.CurrentState != UIRadioButton.State.True)
+            {
+                m_Button.SetTrue();
             }
         }
 
@@ -113,28 +156,6 @@ namespace KerbalEngineer
         ///     Called after the application launcher is unreadified and the button removed.
         /// </summary>
         protected virtual void OnUnreadifying() { }
-
-        /// <summary>
-        ///     Disables the button if not already disabled.
-        /// </summary>
-        private void Disable()
-        {
-            if (m_Button != null && m_Button.toggleButton.Button.interactable)
-            {
-                m_Button.Disable();
-            }
-        }
-
-        /// <summary>
-        ///     Enables the button if not already enabled.
-        /// </summary>
-        private void Enable()
-        {
-            if (m_Button != null && m_Button.toggleButton.Button.interactable == false)
-            {
-                m_Button.Enable();
-            }
-        }
 
         private void OnGUIApplicationLauncherReady()
         {
