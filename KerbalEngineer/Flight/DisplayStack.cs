@@ -70,7 +70,14 @@ namespace KerbalEngineer.Flight
         public bool ShowControlBar
         {
             get { return this.showControlBar; }
-            set { this.showControlBar = value; }
+            set
+            {
+                if (showControlBar != value)
+                {
+                    this.showControlBar = value;
+                    RequestResize();
+                }
+            }
         }
 
         #endregion
