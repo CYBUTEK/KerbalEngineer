@@ -26,10 +26,10 @@ namespace KerbalEngineer.Unity.Flight
     public class FlightEngineerMenu : CanvasGroupFader, IPointerEnterHandler, IPointerExitHandler
     {
         [SerializeField]
-        private Toggle m_ShowEngineerToggle;
+        private Toggle m_ShowEngineerToggle = null;
 
         [SerializeField]
-        private Toggle m_ControlBarToggle;
+        private Toggle m_ControlBarToggle = null;
 
         [SerializeField]
         private float m_FastFadeDuration = 0.2f;
@@ -126,6 +126,17 @@ namespace KerbalEngineer.Unity.Flight
         }
 
         /// <summary>
+        ///     Sets a given toggle to the specified state with null checking.
+        /// </summary>
+        private static void SetToggle(Toggle toggle, bool state)
+        {
+            if (toggle != null)
+            {
+                toggle.isOn = state;
+            }
+        }
+
+        /// <summary>
         ///     Called when the application launcher button is hovered over.
         /// </summary>
         private void ButtonHover()
@@ -165,14 +176,6 @@ namespace KerbalEngineer.Unity.Flight
         private void MenuClosed()
         {
             FadeTo(0.0f, m_FastFadeDuration, Destroy);
-        }
-
-        private void SetToggle(Toggle toggle, bool state)
-        {
-            if (toggle != null)
-            {
-                toggle.isOn = state;
-            }
         }
     }
 }
