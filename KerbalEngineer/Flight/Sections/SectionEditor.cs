@@ -103,7 +103,6 @@ namespace KerbalEngineer.Flight.Sections
         {
             try
             {
-                RenderingManager.RemoveFromPostDrawQueue(0, this.Draw);
             }
             catch (Exception ex)
             {
@@ -120,7 +119,6 @@ namespace KerbalEngineer.Flight.Sections
             {
                 this.InitialiseStyles();
                 //ReadoutCategory.Selected = ReadoutCategory.GetCategory("Orbital");
-                RenderingManager.AddToPostDrawQueue(0, this.Draw);
             }
             catch (Exception ex)
             {
@@ -135,8 +133,13 @@ namespace KerbalEngineer.Flight.Sections
         /// <summary>
         ///     Called to draw the editor when the UI is enabled.
         /// </summary>
-        private void Draw()
+        private void OnGUI()
         {
+            if (FlightEngineerCore.IsDisplayable == false)
+            {
+                return;
+            }
+
             this.position = GUILayout.Window(this.GetInstanceID(), this.position, this.Window, "EDIT SECTION - " + this.ParentSection.Name.ToUpper(), this.windowStyle).ClampToScreen();
             this.ParentSection.EditorPositionX = this.position.x;
             this.ParentSection.EditorPositionY = this.position.y;

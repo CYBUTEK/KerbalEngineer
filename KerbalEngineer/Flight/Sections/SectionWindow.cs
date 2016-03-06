@@ -116,7 +116,7 @@ namespace KerbalEngineer.Flight.Sections
         /// <summary>
         ///     Called to draw the floating section window when the UI is enabled.
         /// </summary>
-        private void Draw()
+        private void OnGUI()
         {
             if (this.ParentSection == null || !this.ParentSection.IsVisible || (DisplayStack.Instance.Hidden && !this.ParentSection.IsHud) || !FlightEngineerCore.IsDisplayable)
             {
@@ -165,7 +165,6 @@ namespace KerbalEngineer.Flight.Sections
         /// </summary>
         private void OnDestroy()
         {
-            RenderingManager.RemoveFromPostDrawQueue(0, this.Draw);
             GuiDisplaySize.OnSizeChanged -= this.OnSizeChanged;
         }
 
@@ -192,7 +191,7 @@ namespace KerbalEngineer.Flight.Sections
         {
             this.windowId = this.GetHashCode();
             this.InitialiseStyles();
-            RenderingManager.AddToPostDrawQueue(0, this.Draw);
+
             GuiDisplaySize.OnSizeChanged += this.OnSizeChanged;
         }
 
