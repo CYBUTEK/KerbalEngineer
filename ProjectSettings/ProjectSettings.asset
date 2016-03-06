@@ -3,10 +3,11 @@
 --- !u!129 &1
 PlayerSettings:
   m_ObjectHideFlags: 0
-  serializedVersion: 8
+  serializedVersion: 7
   AndroidProfiler: 0
   defaultScreenOrientation: 4
   targetDevice: 2
+  targetResolution: 0
   useOnDemandResources: 0
   accelerometerFrequency: 60
   companyName: CYBUTEK Solutions
@@ -14,7 +15,6 @@ PlayerSettings:
   defaultCursor: {fileID: 0}
   cursorHotspot: {x: 0, y: 0}
   m_ShowUnitySplashScreen: 1
-  m_VirtualRealitySplashScreen: {fileID: 0}
   defaultScreenWidth: 1024
   defaultScreenHeight: 768
   defaultScreenWidthWeb: 960
@@ -56,19 +56,15 @@ PlayerSettings:
   xboxEnableKinectAutoTracking: 0
   xboxEnableFitness: 0
   visibleInBackground: 0
-  allowFullscreenSwitch: 1
   macFullscreenMode: 2
   d3d9FullscreenMode: 1
   d3d11FullscreenMode: 1
   xboxSpeechDB: 0
   xboxEnableHeadOrientation: 0
   xboxEnableGuest: 0
-  xboxEnablePIXSampling: 0
   n3dsDisableStereoscopicView: 0
   n3dsEnableSharedListOpt: 1
   n3dsEnableVSync: 0
-  uiUse16BitDepthBuffer: 0
-  ignoreAlphaClear: 0
   xboxOneResolution: 0
   ps3SplashScreen: {fileID: 0}
   videoMemoryForVertexBuffers: 0
@@ -133,10 +129,6 @@ PlayerSettings:
   iPadHighResPortraitSplashScreen: {fileID: 0}
   iPadLandscapeSplashScreen: {fileID: 0}
   iPadHighResLandscapeSplashScreen: {fileID: 0}
-  appleTVSplashScreen: {fileID: 0}
-  tvOSSmallIconLayers: []
-  tvOSLargeIconLayers: []
-  tvOSTopShelfImageLayers: []
   iOSLaunchScreenType: 0
   iOSLaunchScreenPortrait: {fileID: 0}
   iOSLaunchScreenLandscape: {fileID: 0}
@@ -270,12 +262,9 @@ PlayerSettings:
   playerPrefsSupport: 0
   ps4ReprojectionSupport: 0
   ps4UseAudio3dBackend: 0
-  ps4SocialScreenEnabled: 0
   ps4Audio3dVirtualSpeakerCount: 14
   ps4attribCpuUsage: 0
-  ps4PatchPkgPath: 
-  ps4PatchLatestPkgPath: 
-  ps4PatchChangeinfoPath: 
+  ps4SocialScreenEnabled: 0
   ps4attribUserManagement: 0
   ps4attribMoveSupport: 0
   ps4attrib3DSupport: 0
@@ -332,6 +321,10 @@ PlayerSettings:
   spritePackerPolicy: 
   scriptingDefineSymbols: {}
   metroPackageName: KerbalEngineer-Unity
+  metroPackageLogo: 
+  metroPackageLogo140: 
+  metroPackageLogo180: 
+  metroPackageLogo240: 
   metroPackageVersion: 
   metroCertificatePath: 
   metroCertificatePassword: 
@@ -339,7 +332,44 @@ PlayerSettings:
   metroCertificateIssuer: 
   metroCertificateNotAfter: 0000000000000000
   metroApplicationDescription: KerbalEngineer-Unity
-  wsaImages: {}
+  metroStoreTileLogo80: 
+  metroStoreTileLogo: 
+  metroStoreTileLogo140: 
+  metroStoreTileLogo180: 
+  metroStoreTileWideLogo80: 
+  metroStoreTileWideLogo: 
+  metroStoreTileWideLogo140: 
+  metroStoreTileWideLogo180: 
+  metroStoreTileSmallLogo80: 
+  metroStoreTileSmallLogo: 
+  metroStoreTileSmallLogo140: 
+  metroStoreTileSmallLogo180: 
+  metroStoreSmallTile80: 
+  metroStoreSmallTile: 
+  metroStoreSmallTile140: 
+  metroStoreSmallTile180: 
+  metroStoreLargeTile80: 
+  metroStoreLargeTile: 
+  metroStoreLargeTile140: 
+  metroStoreLargeTile180: 
+  metroStoreSplashScreenImage: 
+  metroStoreSplashScreenImage140: 
+  metroStoreSplashScreenImage180: 
+  metroPhoneAppIcon: 
+  metroPhoneAppIcon140: 
+  metroPhoneAppIcon240: 
+  metroPhoneSmallTile: 
+  metroPhoneSmallTile140: 
+  metroPhoneSmallTile240: 
+  metroPhoneMediumTile: 
+  metroPhoneMediumTile140: 
+  metroPhoneMediumTile240: 
+  metroPhoneWideTile: 
+  metroPhoneWideTile140: 
+  metroPhoneWideTile240: 
+  metroPhoneSplashScreenImage: 
+  metroPhoneSplashScreenImage140: 
+  metroPhoneSplashScreenImage240: 
   metroTileShortName: 
   metroCommandLineArgsFile: 
   metroTileShowName: 0
@@ -348,9 +378,8 @@ PlayerSettings:
   metroWideTileShowName: 0
   metroDefaultTileSize: 1
   metroTileForegroundText: 1
-  metroTileBackgroundColor: {r: 0.13333334, g: 0.17254902, b: 0.21568628, a: 0}
-  metroSplashScreenBackgroundColor: {r: 0.13333334, g: 0.17254902, b: 0.21568628,
-    a: 1}
+  metroTileBackgroundColor: {r: .13333334, g: .172549024, b: .215686277, a: 0}
+  metroSplashScreenBackgroundColor: {r: .13333334, g: .172549024, b: .215686277, a: 1}
   metroSplashScreenUseBackgroundColor: 1
   platformCapabilities: {}
   metroFTAName: 
@@ -419,6 +448,7 @@ PlayerSettings:
   - Android::ScriptingBackend
   - Metro::ScriptingBackend
   - Standalone::ScriptingBackend
+  - WP8::ScriptingBackend
   - WebGL::ScriptingBackend
   - WebGL::audioCompressionFormat
   - WebGL::exceptionSupport
@@ -433,6 +463,7 @@ PlayerSettings:
   Android::ScriptingBackend: 0
   Metro::ScriptingBackend: 2
   Standalone::ScriptingBackend: 0
+  WP8::ScriptingBackend: 2
   WebGL::ScriptingBackend: 1
   WebGL::audioCompressionFormat: 4
   WebGL::exceptionSupport: 1
@@ -460,6 +491,7 @@ PlayerSettings:
   WebGL::emscriptenArgs: 
   WebGL::template: APPLICATION:Default
   additionalIl2CppArgs::additionalIl2CppArgs: 
+  firstStreamedSceneWithResources: 0
   cloudProjectId: 
   projectName: 
   organizationId: 
