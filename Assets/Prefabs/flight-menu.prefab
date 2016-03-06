@@ -258,6 +258,7 @@ MonoBehaviour:
   m_Script: {fileID: 2019631361, guid: a3a55138b08428847a08c7b48fe72efe, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_FadeDuration: .200000003
 --- !u!114 &11423044
 MonoBehaviour:
   m_ObjectHideFlags: 1

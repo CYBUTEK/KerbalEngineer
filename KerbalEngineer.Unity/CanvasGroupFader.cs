@@ -7,6 +7,9 @@
     [RequireComponent(typeof(CanvasGroup))]
     public class CanvasGroupFader : MonoBehaviour
     {
+        [SerializeField]
+        private float m_FadeDuration = 0.2f;
+
         private CanvasGroup m_CanvasGroup;
         private IEnumerator m_FadeCoroutine;
 
@@ -15,18 +18,26 @@
         /// </summary>
         public void FadeTo(float alpha, Action callback = null)
         {
-            if (m_CanvasGroup == null || gameObject.activeInHierarchy == false)
+            FadeTo(alpha, false, callback);
+        }
+
+        /// <summary>
+        ///     Fades the canvas group to a specified alpha using the supplied blocking state during fade with optional callback.
+        /// </summary>
+        public void FadeTo(float alpha, bool blockRaycasts, Action callback = null)
+        {
+            if (m_CanvasGroup == null)
             {
                 return;
             }
 
-            Fade(m_CanvasGroup.alpha, alpha, callback);
+            Fade(m_CanvasGroup.alpha, alpha, false, callback);
         }
 
         /// <summary>
         ///     Sets the alpha value of the canvas group.
         /// </summary>
-        public void SetAlpha(float alpha)
+        public void SetAlpha(float alpha, bool blockRaycasts = false)
         {
             if (m_CanvasGroup == null)
             {
@@ -35,7 +46,7 @@
 
             alpha = Mathf.Clamp01(alpha);
             m_CanvasGroup.alpha = alpha;
-            m_CanvasGroup.interactable = !(alpha < 1.0f);
+            m_CanvasGroup.blocksRaycasts = blockRaycasts || !(alpha < 1.0f);
         }
 
         protected virtual void Awake()
@@ -47,28 +58,28 @@
         /// <summary>
         ///     Starts a fade from one alpha value to another with callback.
         /// </summary>
-        private void Fade(float from, float to, Action callback)
+        private void Fade(float from, float to, bool blockRaycasts, Action callback)
         {
             if (m_FadeCoroutine != null)
             {
                 StopCoroutine(m_FadeCoroutine);
             }
 
-            m_FadeCoroutine = FadeCoroutine(from, to, callback);
+            m_FadeCoroutine = FadeCoroutine(from, to, blockRaycasts, callback);
             StartCoroutine(m_FadeCoroutine);
         }
 
         /// <summary>
         ///     Coroutine that handles the fading.
         /// </summary>
-        private IEnumerator FadeCoroutine(float from, float to, Action callback)
+        private IEnumerator FadeCoroutine(float from, float to, bool blockRaycasts, Action callback)
         {
             float progress = 0.0f;
 
             while (progress <= 1.0f)
             {
-                progress += Time.deltaTime;
-                SetAlpha(Mathf.Lerp(from, to, progress));
+                progress += Time.deltaTime / m_FadeDuration;
+                SetAlpha(Mathf.Lerp(from, to, progress), blockRaycasts);
                 yield return null;
             }
 
