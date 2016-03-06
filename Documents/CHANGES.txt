@@ -1,4 +1,9 @@
+    Added: Asset bundle loading and integration.
     Changed: Thermal flux is now correctly indicated in kilowatts.
+    Changed: Complete rewrite of code underpinning the stock toolbar icons.
+    Changed: Flight Engineer toolbar menu recreated using Unity UI.
+    Changed: Replaced occurances of IMGUI using RenderingManager to use OnGUI directly.
+    Fixed: Toggling the 'Control Bar' now appropriately resizes the display stack.
 
 1.0.19.4, 12-02-16
     Fixed: Only 'STAGE_STACK_FLOW' and 'STAGE_STACK_FLOW_BALANCE' resources include surface mounted parts as fuel targets.
