@@ -32,7 +32,7 @@ namespace KerbalEngineer.Flight
     /// <summary>
     ///     Graphical controller for section interaction in the form of a menu system.
     /// </summary>
-    [KSPAddon(KSPAddon.Startup.Flight, false)]
+    //[KSPAddon(KSPAddon.Startup.Flight, false)]
     public class ActionMenu : MonoBehaviour
     {
         #region Fields
