@@ -1,12 +1,12 @@
 ManifestFileVersion: 0
-CRC: 3110848426
+CRC: 3865026138
 Hashes:
   AssetFileHash:
     serializedVersion: 2
-    Hash: 1222d5da945826ed2afaf4cba65a3f5d
+    Hash: a1b8dff36f3e0d270b7e54a4bbad1967
   TypeTreeHash:
     serializedVersion: 2
-    Hash: c49d0f1c41a1b57d6af1061f875f232a
+    Hash: a41c1d9eb0c122e1a03e76000577e275
 HashAppended: 0
 ClassTypes:
 - Class: 1
@@ -29,6 +29,8 @@ ClassTypes:
   Script: {fileID: 708705254, guid: f5f67c52d1564df4a8936ccd202a3bd8, type: 3}
 - Class: 114
   Script: {fileID: 1297475563, guid: f5f67c52d1564df4a8936ccd202a3bd8, type: 3}
+- Class: 114
+  Script: {fileID: 2019631361, guid: a3a55138b08428847a08c7b48fe72efe, type: 3}
 - Class: 115
   Script: {instanceID: 0}
 - Class: 128
@@ -38,6 +40,8 @@ ClassTypes:
 - Class: 222
   Script: {instanceID: 0}
 - Class: 224
+  Script: {instanceID: 0}
+- Class: 225
   Script: {instanceID: 0}
 Assets:
 - Assets/Prefabs/flight-menu.prefab
