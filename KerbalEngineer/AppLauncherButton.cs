@@ -77,6 +77,23 @@ namespace KerbalEngineer
                 m_Button.Enable();
             }
         }
+        
+        /// <summary>
+        ///     Gets the anchor position for pop-up content.
+        /// </summary>
+        public Vector3 GetAnchor()
+        {
+            if (m_Button == null)
+            {
+                return Vector3.zero;
+            }
+            
+            Vector3 anchor = m_Button.GetAnchor();
+
+            anchor.x -= 3.0f;
+
+            return anchor;
+        }
 
         /// <summary>
         ///     Enables and sets the button to off.
