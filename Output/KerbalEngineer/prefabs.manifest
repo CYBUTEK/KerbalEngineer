@@ -1,12 +1,12 @@
 ManifestFileVersion: 0
-CRC: 909216554
+CRC: 2067172977
 Hashes:
   AssetFileHash:
     serializedVersion: 2
-    Hash: dd3575f8562fec685c6a2d3ff59f045e
+    Hash: 8d52da3e0a65874a41c225bd367499c6
   TypeTreeHash:
     serializedVersion: 2
-    Hash: f4aef6f1ae036c4ba7253f0f0b1e7263
+    Hash: 7225837fc006179772eb644685ace9cf
 HashAppended: 0
 ClassTypes:
 - Class: 1
@@ -18,8 +18,6 @@ ClassTypes:
 - Class: 48
   Script: {instanceID: 0}
 - Class: 114
-  Script: {fileID: 1392445389, guid: f5f67c52d1564df4a8936ccd202a3bd8, type: 3}
-- Class: 114
   Script: {fileID: 1741964061, guid: f5f67c52d1564df4a8936ccd202a3bd8, type: 3}
 - Class: 114
   Script: {fileID: -765806418, guid: f5f67c52d1564df4a8936ccd202a3bd8, type: 3}
@@ -28,14 +26,14 @@ ClassTypes:
 - Class: 114
   Script: {fileID: 708705254, guid: f5f67c52d1564df4a8936ccd202a3bd8, type: 3}
 - Class: 114
+  Script: {fileID: 2109663825, guid: f5f67c52d1564df4a8936ccd202a3bd8, type: 3}
+- Class: 114
   Script: {fileID: 1297475563, guid: f5f67c52d1564df4a8936ccd202a3bd8, type: 3}
 - Class: 114
   Script: {fileID: 2019631361, guid: a3a55138b08428847a08c7b48fe72efe, type: 3}
 - Class: 115
   Script: {instanceID: 0}
 - Class: 128
-  Script: {instanceID: 0}
-- Class: 213
   Script: {instanceID: 0}
 - Class: 222
   Script: {instanceID: 0}
@@ -44,5 +42,5 @@ ClassTypes:
 - Class: 225
   Script: {instanceID: 0}
 Assets:
-- Assets/Prefabs/flight-menu.prefab
+- Assets/Prefabs/FlightMenu.prefab
 Dependencies: []

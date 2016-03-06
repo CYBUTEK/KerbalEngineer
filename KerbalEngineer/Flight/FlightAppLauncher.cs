@@ -34,7 +34,7 @@
             // cache menu prefab
             if (m_MenuPrefab == null && AssetBundleLoader.prefabs != null)
             {
-                m_MenuPrefab = AssetBundleLoader.prefabs.LoadAsset<GameObject>("flight-menu");
+                m_MenuPrefab = AssetBundleLoader.prefabs.LoadAsset<GameObject>("FlightMenu");
             }
         }
 

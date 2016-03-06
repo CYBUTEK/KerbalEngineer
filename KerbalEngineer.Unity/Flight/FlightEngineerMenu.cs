@@ -21,14 +21,67 @@ namespace KerbalEngineer.Unity.Flight
     using KerbalEngineer.Flight;
     using UnityEngine;
     using UnityEngine.EventSystems;
+    using UnityEngine.UI;
 
     public class FlightEngineerMenu : CanvasGroupFader, IPointerEnterHandler, IPointerExitHandler
     {
+        [SerializeField]
+        private Toggle m_ShowEngineerToggle;
+
+        [SerializeField]
+        private Toggle m_ControlBarToggle;
+
         [SerializeField]
         private float m_FastFadeDuration = 0.2f;
 
         [SerializeField]
         private float m_SlowFadeDuration = 1.0f;
+
+        /// <summary>
+        ///     Gets or sets the visibility of the control bar.
+        /// </summary>
+        public bool controlBar
+        {
+            get
+            {
+                if (DisplayStack.Instance != null)
+                {
+                    return DisplayStack.Instance.ShowControlBar;
+                }
+
+                return true;
+            }
+            set
+            {
+                if (DisplayStack.Instance != null)
+                {
+                    DisplayStack.Instance.ShowControlBar = value;
+                }
+            }
+        }
+
+        /// <summary>
+        ///     Gets or sets the visibility of the flight engineer display stack.
+        /// </summary>
+        public bool showEngineer
+        {
+            get
+            {
+                if (DisplayStack.Instance != null)
+                {
+                    return DisplayStack.Instance.Hidden == false;
+                }
+
+                return true;
+            }
+            set
+            {
+                if (DisplayStack.Instance != null)
+                {
+                    DisplayStack.Instance.Hidden = !value;
+                }
+            }
+        }
 
         public void OnPointerEnter(PointerEventData eventData)
         {
@@ -67,6 +120,11 @@ namespace KerbalEngineer.Unity.Flight
             FadeIn();
         }
 
+        protected virtual void Start()
+        {
+            DisplayStackToggles();
+        }
+
         /// <summary>
         ///     Called when the application launcher button is hovered over.
         /// </summary>
@@ -85,6 +143,20 @@ namespace KerbalEngineer.Unity.Flight
             Destroy(gameObject);
         }
 
+        /// <summary>
+        ///     Called when the display stack has loaded its settings.
+        /// </summary>
+        private void DisplayStackToggles()
+        {
+            if (DisplayStack.Instance == null)
+            {
+                return;
+            }
+
+            SetToggle(m_ShowEngineerToggle, DisplayStack.Instance.Hidden == false);
+            SetToggle(m_ControlBarToggle, DisplayStack.Instance.ShowControlBar);
+        }
+
         private void FadeIn()
         {
             FadeTo(1.0f, m_FastFadeDuration);
@@ -93,6 +165,14 @@ namespace KerbalEngineer.Unity.Flight
         private void MenuClosed()
         {
             FadeTo(0.0f, m_FastFadeDuration, Destroy);
+        }
+
+        private void SetToggle(Toggle toggle, bool state)
+        {
+            if (toggle != null)
+            {
+                toggle.isOn = state;
+            }
         }
     }
 }
