@@ -5,6 +5,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KerbalEngineer.CSharp.Edito
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KerbalEngineer", "KerbalEngineer\KerbalEngineer.csproj", "{39806613-E0B7-46E0-89A6-A569EC538CBB}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KerbalEngineer.Unity", "KerbalEngineer.Unity\KerbalEngineer.Unity.csproj", "{5387BB1E-32B1-4BAC-B03F-100570B9554C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -19,6 +21,10 @@ Global
 		{39806613-E0B7-46E0-89A6-A569EC538CBB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{39806613-E0B7-46E0-89A6-A569EC538CBB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{39806613-E0B7-46E0-89A6-A569EC538CBB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5387BB1E-32B1-4BAC-B03F-100570B9554C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5387BB1E-32B1-4BAC-B03F-100570B9554C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5387BB1E-32B1-4BAC-B03F-100570B9554C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5387BB1E-32B1-4BAC-B03F-100570B9554C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
