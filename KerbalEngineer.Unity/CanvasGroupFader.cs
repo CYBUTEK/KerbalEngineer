@@ -28,7 +28,7 @@ namespace KerbalEngineer.Unity
         private CanvasGroup m_CanvasGroup;
         private IEnumerator m_FadeCoroutine;
 
-        public bool fading
+        public bool IsFading
         {
             get
             {
