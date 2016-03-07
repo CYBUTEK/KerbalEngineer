@@ -30,7 +30,7 @@ namespace KerbalEngineer
         /// <summary>
         ///     Gets or sets the toggle button state.
         /// </summary>
-        public bool isOn
+        public bool IsOn
         {
             get
             {
@@ -77,7 +77,7 @@ namespace KerbalEngineer
                 m_Button.Enable();
             }
         }
-        
+
         /// <summary>
         ///     Gets the anchor position for pop-up content.
         /// </summary>
@@ -87,7 +87,7 @@ namespace KerbalEngineer
             {
                 return Vector3.zero;
             }
-            
+
             Vector3 anchor = m_Button.GetAnchor();
 
             anchor.x -= 3.0f;
@@ -124,9 +124,9 @@ namespace KerbalEngineer
         protected virtual void Awake()
         {
             // cache icon texture
-            if (m_IconTexture == null && AssetBundleLoader.images != null)
+            if (m_IconTexture == null && AssetBundleLoader.Images != null)
             {
-                m_IconTexture = AssetBundleLoader.images.LoadAsset<Texture2D>("app-launcher-icon");
+                m_IconTexture = AssetBundleLoader.Images.LoadAsset<Texture2D>("app-launcher-icon");
             }
 
             // subscribe event listeners

@@ -23,11 +23,11 @@ namespace KerbalEngineer.Unity.Flight
 
     public interface IFlightAppLauncher
     {
-        bool controlBar { get; set; }
+        bool IsControlBarVisible { get; set; }
 
-        bool isOn { get; }
+        bool IsDisplayStackVisible { get; set; }
 
-        bool showEngineer { get; set; }
+        bool IsOn { get; }
 
         void ClampToScreen(RectTransform rectTransform);
 

@@ -377,7 +377,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 11415294}
-        m_MethodName: SetControlBar
+        m_MethodName: SetControlBarVisible
         m_Mode: 0
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -835,7 +835,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 11415294}
-        m_MethodName: SetShowEngineer
+        m_MethodName: SetDisplayStackVisible
         m_Mode: 0
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

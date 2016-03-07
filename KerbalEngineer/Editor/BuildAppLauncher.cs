@@ -48,7 +48,7 @@ namespace KerbalEngineer.Editor
             if (EditorLogic.RootPart != null)
             {
                 // set button state based on existing visibility
-                isOn = BuildAdvanced.Instance.Visible;
+                IsOn = BuildAdvanced.Instance.Visible;
             }
             else
             {

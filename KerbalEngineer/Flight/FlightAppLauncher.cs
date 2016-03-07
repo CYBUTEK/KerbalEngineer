@@ -35,7 +35,7 @@ namespace KerbalEngineer.Flight
         /// <summary>
         ///     Gets the current instance of the FlightAppLauncher object.
         /// </summary>
-        public static FlightAppLauncher instance
+        public static FlightAppLauncher Instance
         {
             get
             {
@@ -52,9 +52,25 @@ namespace KerbalEngineer.Flight
         }
 
         /// <summary>
+        ///     Gets a list of custom sections.
+        /// </summary>
+        IList<ISectionModule> IFlightAppLauncher.GetCustomSections()
+        {
+            return new List<ISectionModule>(SectionLibrary.CustomSections.ToArray());
+        }
+
+        /// <summary>
+        ///     Gets a list of stock sections.
+        /// </summary>
+        public IList<ISectionModule> GetStockSections()
+        {
+            return new List<ISectionModule>(SectionLibrary.StockSections.ToArray());
+        }
+
+        /// <summary>
         ///     Gets or sets the control bar's visibility.
         /// </summary>
-        public bool controlBar
+        public bool IsControlBarVisible
         {
             get
             {
@@ -75,25 +91,9 @@ namespace KerbalEngineer.Flight
         }
 
         /// <summary>
-        ///     Gets a list of custom sections.
-        /// </summary>
-        IList<ISectionModule> IFlightAppLauncher.GetCustomSections()
-        {
-            return new List<ISectionModule>(SectionLibrary.CustomSections.ToArray());
-        }
-
-        /// <summary>
-        ///     Gets a list of stock sections.
-        /// </summary>
-        public IList<ISectionModule> GetStockSections()
-        {
-            return new List<ISectionModule>(SectionLibrary.StockSections.ToArray());
-        }
-
-        /// <summary>
         ///     Gets or sets the display stack's visibility.
         /// </summary>
-        public bool showEngineer
+        public bool IsDisplayStackVisible
         {
             get
             {
@@ -140,9 +140,9 @@ namespace KerbalEngineer.Flight
             m_Instance = this;
 
             // cache menu prefab
-            if (m_MenuPrefab == null && AssetBundleLoader.prefabs != null)
+            if (m_MenuPrefab == null && AssetBundleLoader.Prefabs != null)
             {
-                m_MenuPrefab = AssetBundleLoader.prefabs.LoadAsset<GameObject>("FlightMenu");
+                m_MenuPrefab = AssetBundleLoader.Prefabs.LoadAsset<GameObject>("FlightMenu");
             }
         }
 
@@ -158,7 +158,7 @@ namespace KerbalEngineer.Flight
 
         protected override void OnHoverOut()
         {
-            if (isOn == false)
+            if (IsOn == false)
             {
                 Close();
             }

@@ -29,7 +29,7 @@ namespace KerbalEngineer
         /// <summary>
         ///     Gets the loaded images asset bundle.
         /// </summary>
-        public static AssetBundle images
+        public static AssetBundle Images
         {
             get
             {
@@ -40,7 +40,7 @@ namespace KerbalEngineer
         /// <summary>
         ///     Gets the loaded prefabs asset bundle.
         /// </summary>
-        public static AssetBundle prefabs
+        public static AssetBundle Prefabs
         {
             get
             {

@@ -45,7 +45,6 @@ namespace KerbalEngineer.Unity.Flight
         private float m_SlowFadeDuration = 1.0f;
 
         private IFlightAppLauncher m_FlightAppLauncher;
-
         private RectTransform m_RectTransform;
 
         public void OnPointerEnter(PointerEventData eventData)
@@ -56,7 +55,7 @@ namespace KerbalEngineer.Unity.Flight
         public void OnPointerExit(PointerEventData eventData)
         {
             // slow-fade out if the application launcher button is off
-            if (m_FlightAppLauncher != null && m_FlightAppLauncher.isOn == false)
+            if (m_FlightAppLauncher != null && m_FlightAppLauncher.IsOn == false)
             {
                 FadeTo(0.0f, m_SlowFadeDuration, Destroy);
             }
@@ -92,11 +91,22 @@ namespace KerbalEngineer.Unity.Flight
         /// <summary>
         ///     Sets the control bar visiblity.
         /// </summary>
-        public void SetControlBar(bool visible)
+        public void SetControlBarVisible(bool visible)
         {
             if (m_FlightAppLauncher != null)
             {
-                m_FlightAppLauncher.controlBar = visible;
+                m_FlightAppLauncher.IsControlBarVisible = visible;
+            }
+        }
+
+        /// <summary>
+        ///     Sets the display stack visibility.
+        /// </summary>
+        public void SetDisplayStackVisible(bool visible)
+        {
+            if (m_FlightAppLauncher != null)
+            {
+                m_FlightAppLauncher.IsDisplayStackVisible = visible;
             }
         }
 
@@ -115,17 +125,6 @@ namespace KerbalEngineer.Unity.Flight
             // create section controls
             CreateSectionControls(m_FlightAppLauncher.GetStockSections());
             CreateSectionControls(m_FlightAppLauncher.GetCustomSections());
-        }
-
-        /// <summary>
-        ///     Sets the display stack visibility.
-        /// </summary>
-        public void SetShowEngineer(bool visible)
-        {
-            if (m_FlightAppLauncher != null)
-            {
-                m_FlightAppLauncher.showEngineer = visible;
-            }
         }
 
         protected override void Awake()
@@ -151,8 +150,8 @@ namespace KerbalEngineer.Unity.Flight
             }
 
             // set toggle states to match the actual states
-            SetToggle(m_ShowEngineerToggle, m_FlightAppLauncher.showEngineer);
-            SetToggle(m_ControlBarToggle, m_FlightAppLauncher.controlBar);
+            SetToggle(m_ShowEngineerToggle, m_FlightAppLauncher.IsDisplayStackVisible);
+            SetToggle(m_ControlBarToggle, m_FlightAppLauncher.IsControlBarVisible);
 
             // update anchor position
             if (m_RectTransform != null)

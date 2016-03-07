@@ -347,9 +347,13 @@ Prefab:
       propertyPath: m_SizeDelta.y
       value: 54
       objectReference: {fileID: 0}
-    - target: {fileID: 11465882, guid: a41f85cb0b8964f43947e85b3e833c0f, type: 2}
-      propertyPath: m_Text
-      value: NEW CUSTOM SECTION
+    - target: {fileID: 11415068, guid: a41f85cb0b8964f43947e85b3e833c0f, type: 2}
+      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: SetControlBarVisible
+      objectReference: {fileID: 0}
+    - target: {fileID: 11485338, guid: a41f85cb0b8964f43947e85b3e833c0f, type: 2}
+      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: SetDisplayStackVisible
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: a41f85cb0b8964f43947e85b3e833c0f, type: 2}

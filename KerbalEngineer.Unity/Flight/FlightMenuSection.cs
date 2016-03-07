@@ -37,7 +37,7 @@ namespace KerbalEngineer.Unity.Flight
         /// <summary>
         ///     Gets or sets the section's editor visibility.
         /// </summary>
-        public bool editorVisible
+        public bool IsEditorVisible
         {
             get
             {
