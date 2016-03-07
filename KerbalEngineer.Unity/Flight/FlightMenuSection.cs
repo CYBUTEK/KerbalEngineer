@@ -32,97 +32,98 @@ namespace KerbalEngineer.Unity.Flight
         [SerializeField]
         private Toggle m_EditToggle = null;
 
-        //    //private SectionModule m_Section;
+        private ISectionModule m_Section;
 
-        //    /// <summary>
-        //    ///     Gets or sets the section's display visibility.
-        //    /// </summary>
-        //    public bool displayVisible
-        //    {
-        //        get
-        //        {
-        //            if (m_DisplayToggle != null)
-        //            {
-        //                return m_DisplayToggle.isOn;
-        //            }
+        /// <summary>
+        ///     Gets or sets the section's editor visibility.
+        /// </summary>
+        public bool editorVisible
+        {
+            get
+            {
+                if (m_EditToggle != null)
+                {
+                    return m_EditToggle.isOn;
+                }
 
-        //            return true;
-        //        }
-        //        set
-        //        {
-        //            if (m_DisplayToggle != null)
-        //            {
-        //                m_DisplayToggle.isOn = value;
-        //            }
-        //        }
-        //    }
+                return true;
+            }
+            set
+            {
+                if (m_EditToggle != null)
+                {
+                    m_EditToggle.isOn = value;
+                }
+            }
+        }
 
-        //    /// <summary>
-        //    ///     Gets or sets the section's editor visibility.
-        //    /// </summary>
-        //    public bool editorVisible
-        //    {
-        //        get
-        //        {
-        //            if (m_EditToggle != null)
-        //            {
-        //                return m_EditToggle.isOn;
-        //            }
+        /// <summary>
+        ///     Sets the assigned section to be handled by the menu object.
+        /// </summary>
+        public void SetAssignedSection(ISectionModule section)
+        {
+            if (section == null)
+            {
+                return;
+            }
 
-        //            return true;
-        //        }
-        //        set
-        //        {
-        //            if (m_EditToggle != null)
-        //            {
-        //                m_EditToggle.isOn = value;
-        //            }
-        //        }
-        //    }
+            m_Section = section;
+        }
 
-        //    /// <summary>
-        //    ///     Sets the assigned section to be handled by the menu object.
-        //    /// </summary>
-        //    public void SetAssignedSection(ISectionModule section)
-        //    {
-        //        if (section == null)
-        //        {
-        //            return;
-        //        }
+        /// <summary>
+        ///     Sets the section's display visibility.
+        /// </summary>
+        public void SetDisplayVisible(bool visible)
+        {
+            if (m_Section != null)
+            {
+                m_Section.IsVisible = visible;
+            }
+        }
 
-        //        //m_Section = section;
+        /// <summary>
+        ///     Sets the section's editor visibility.
+        /// </summary>
+        public void SetEditorVisible(bool visible)
+        {
+            if (m_Section != null)
+            {
+                m_Section.IsEditorVisible = visible;
+            }
+        }
 
-        //        // set initial toggle states
-        //        SetDisplayVisible(section.IsVisible);
-        //        SetEditorVisible(editorVisible);
+        protected virtual void Update()
+        {
+            UpdateControls();
+        }
 
-        //        //display section name
-        //        if (m_DisplayText != null)
-        //        {
-        //            m_DisplayText.text = section.Name;
-        //        }
-        //    }
+        /// <summary>
+        ///     Updates the menu section's controls.
+        /// </summary>
+        private void UpdateControls()
+        {
+            if (m_Section == null)
+            {
+                return;
+            }
 
-        //    /// <summary>
-        //    ///     Sets the visible state of the section.
-        //    /// </summary>
-        //    public void SetDisplayVisible(bool visible)
-        //    {
-        //        if (m_DisplayToggle != null)
-        //        {
-        //            m_DisplayToggle.isOn = visible;
-        //        }
-        //    }
+            // display visible
+            if (m_DisplayToggle != null)
+            {
+                m_DisplayToggle.isOn = m_Section.IsVisible;
+            }
 
-        //    /// <summary>
-        //    ///     Sets the section's editor visible state.
-        //    /// </summary>
-        //    public void SetEditorVisible(bool visible)
-        //    {
-        //        if (m_EditToggle != null)
-        //        {
-        //            m_EditToggle.isOn = visible;
-        //        }
-        //    }
+            // display name
+            if (m_DisplayText != null)
+            {
+                m_DisplayText.text = m_Section.Name;
+            }
+
+            // editor visible
+            if (m_EditToggle != null)
+            {
+                m_EditToggle.isOn = m_Section.IsEditorVisible;
+            }
+        }
     }
 }

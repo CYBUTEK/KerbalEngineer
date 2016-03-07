@@ -18,6 +18,8 @@
 
 namespace KerbalEngineer.Flight
 {
+    using System.Collections.Generic;
+    using Sections;
     using Unity.Flight;
     using UnityEngine;
 
@@ -28,6 +30,8 @@ namespace KerbalEngineer.Flight
         private FlightMenu m_FlightMenu;
         private GameObject m_MenuObject;
         private GameObject m_MenuPrefab;
+
+        public IList<ISectionModule> GetCustomSections { get; }
 
         /// <summary>
         ///     Gets the current instance of the FlightAppLauncher object.
@@ -61,6 +65,16 @@ namespace KerbalEngineer.Flight
                     DisplayStack.Instance.ShowControlBar = value;
                 }
             }
+        }
+
+        IList<ISectionModule> IFlightAppLauncher.GetCustomSections()
+        {
+            return new List<ISectionModule>(SectionLibrary.CustomSections.ToArray());
+        }
+
+        public IList<ISectionModule> GetStockSections()
+        {
+            return new List<ISectionModule>(SectionLibrary.StockSections.ToArray());
         }
 
         /// <summary>

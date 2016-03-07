@@ -18,6 +18,7 @@
 
 namespace KerbalEngineer.Unity.Flight
 {
+    using System.Collections.Generic;
     using UnityEngine;
     using UnityEngine.EventSystems;
     using UnityEngine.UI;
@@ -29,6 +30,12 @@ namespace KerbalEngineer.Unity.Flight
 
         [SerializeField]
         private Toggle m_ControlBarToggle = null;
+
+        [SerializeField]
+        private GameObject m_MenuSectionPrefab = null;
+
+        [SerializeField]
+        private Transform m_ContentTransform = null;
 
         [SerializeField]
         private float m_FastFadeDuration = 0.2f;
@@ -84,7 +91,16 @@ namespace KerbalEngineer.Unity.Flight
         /// </summary>
         public void SetFlightAppLauncher(IFlightAppLauncher flightAppLauncher)
         {
+            if (flightAppLauncher == null)
+            {
+                return;
+            }
+
             m_FlightAppLauncher = flightAppLauncher;
+
+            // create section controls
+            CreateSectionControls(m_FlightAppLauncher.GetStockSections());
+            CreateSectionControls(m_FlightAppLauncher.GetCustomSections());
         }
 
         /// <summary>
@@ -123,6 +139,40 @@ namespace KerbalEngineer.Unity.Flight
             if (toggle != null)
             {
                 toggle.isOn = state;
+            }
+        }
+
+        /// <summary>
+        ///     Creates a list of section controls from a given list of sections.
+        /// </summary>
+        private void CreateSectionControls(IList<ISectionModule> sections)
+        {
+            if (sections == null || m_MenuSectionPrefab == null || m_ContentTransform == null)
+            {
+                return;
+            }
+
+            for (int i = 0; i < sections.Count; i++)
+            {
+                ISectionModule section = sections[i];
+                if (section == null)
+                {
+                    continue;
+                }
+
+                GameObject menuSectionObject = Instantiate(m_MenuSectionPrefab);
+                if (menuSectionObject == null)
+                {
+                    continue;
+                }
+
+                menuSectionObject.transform.SetParent(m_ContentTransform, false);
+
+                FlightMenuSection menuSection = menuSectionObject.GetComponent<FlightMenuSection>();
+                if (menuSection != null)
+                {
+                    menuSection.SetAssignedSection(section);
+                }
             }
         }
 

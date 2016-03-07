@@ -18,18 +18,12 @@
 
 namespace KerbalEngineer.Unity.Flight
 {
-    using System.Collections.Generic;
-
-    public interface IFlightAppLauncher
+    public interface ISectionModule
     {
-        bool controlBar { get; set; }
+        bool IsEditorVisible { get; set; }
 
-        bool isOn { get; }
+        bool IsVisible { get; set; }
 
-        bool showEngineer { get; set; }
-
-        IList<ISectionModule> GetCustomSections();
-
-        IList<ISectionModule> GetStockSections();
+        string Name { get; }
     }
 }

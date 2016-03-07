@@ -35,6 +35,7 @@
     <Compile Include="Flight\FlightMenu.cs" />
     <Compile Include="Flight\FlightMenuSection.cs" />
     <Compile Include="Flight\IFlightAppLauncher.cs" />
+    <Compile Include="Flight\ISectionModule.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

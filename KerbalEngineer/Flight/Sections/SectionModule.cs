@@ -31,10 +31,11 @@ using UnityEngine;
 
 namespace KerbalEngineer.Flight.Sections
 {
+    using Unity.Flight;
     /// <summary>
     ///     Object for management and display of readout modules.
     /// </summary>
-    public class SectionModule
+    public class SectionModule : ISectionModule
     {
         #region Fields
 
