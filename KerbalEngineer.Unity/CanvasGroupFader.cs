@@ -88,6 +88,9 @@ namespace KerbalEngineer.Unity
         /// </summary>
         private IEnumerator FadeCoroutine(float from, float to, float duration, Action callback)
         {
+            // wait for end of frame so that only the last call to fade that frame is honoured.
+            yield return new WaitForEndOfFrame();
+
             float progress = 0.0f;
 
             while (progress <= 1.0f)
