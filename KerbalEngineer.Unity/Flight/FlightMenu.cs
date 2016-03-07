@@ -18,12 +18,11 @@
 
 namespace KerbalEngineer.Unity.Flight
 {
-    using KerbalEngineer.Flight;
     using UnityEngine;
     using UnityEngine.EventSystems;
     using UnityEngine.UI;
 
-    public class FlightEngineerMenu : CanvasGroupFader, IPointerEnterHandler, IPointerExitHandler
+    public class FlightMenu : CanvasGroupFader, IPointerEnterHandler, IPointerExitHandler
     {
         [SerializeField]
         private Toggle m_ShowEngineerToggle = null;
@@ -37,51 +36,7 @@ namespace KerbalEngineer.Unity.Flight
         [SerializeField]
         private float m_SlowFadeDuration = 1.0f;
 
-        /// <summary>
-        ///     Gets or sets the visibility of the control bar.
-        /// </summary>
-        public bool controlBar
-        {
-            get
-            {
-                if (DisplayStack.Instance != null)
-                {
-                    return DisplayStack.Instance.ShowControlBar;
-                }
-
-                return true;
-            }
-            set
-            {
-                if (DisplayStack.Instance != null)
-                {
-                    DisplayStack.Instance.ShowControlBar = value;
-                }
-            }
-        }
-
-        /// <summary>
-        ///     Gets or sets the visibility of the flight engineer display stack.
-        /// </summary>
-        public bool showEngineer
-        {
-            get
-            {
-                if (DisplayStack.Instance != null)
-                {
-                    return DisplayStack.Instance.Hidden == false;
-                }
-
-                return true;
-            }
-            set
-            {
-                if (DisplayStack.Instance != null)
-                {
-                    DisplayStack.Instance.Hidden = !value;
-                }
-            }
-        }
+        private IFlightAppLauncher m_FlightAppLauncher;
 
         public void OnPointerEnter(PointerEventData eventData)
         {
@@ -91,38 +46,73 @@ namespace KerbalEngineer.Unity.Flight
         public void OnPointerExit(PointerEventData eventData)
         {
             // slow-fade out if the application launcher button is off
-            if (FlightAppLauncher.instance != null && FlightAppLauncher.instance.isOn == false)
+            if (m_FlightAppLauncher != null && m_FlightAppLauncher.isOn == false)
             {
                 FadeTo(0.0f, m_SlowFadeDuration, Destroy);
             }
         }
 
-        protected override void Awake()
+        /// <summary>
+        ///     Fades out and destroys the menu.
+        /// </summary>
+        public void Close()
         {
-            base.Awake();
-
-            // subscribe events
-            FlightAppLauncher.MenuClosed += MenuClosed;
-            FlightAppLauncher.ButtonHover += ButtonHover;
+            FadeTo(0.0f, m_FastFadeDuration, Destroy);
         }
 
-        protected virtual void OnDestroy()
+        /// <summary>
+        ///     Fades in the menu.
+        /// </summary>
+        public void FadeIn()
         {
-            // unsubscribe events
-            FlightAppLauncher.MenuClosed -= MenuClosed;
-            FlightAppLauncher.ButtonHover -= ButtonHover;
+            FadeTo(1.0f, m_FastFadeDuration);
         }
 
-        protected virtual void OnEnable()
+        /// <summary>
+        ///     Sets the control bar visiblity.
+        /// </summary>
+        public void SetControlBar(bool visible)
+        {
+            if (m_FlightAppLauncher != null)
+            {
+                m_FlightAppLauncher.controlBar = visible;
+            }
+        }
+
+        /// <summary>
+        ///     Sets a reference to the flight app launcher object.
+        /// </summary>
+        public void SetFlightAppLauncher(IFlightAppLauncher flightAppLauncher)
+        {
+            m_FlightAppLauncher = flightAppLauncher;
+        }
+
+        /// <summary>
+        ///     Sets the display stack visibility.
+        /// </summary>
+        public void SetShowEngineer(bool visible)
+        {
+            if (m_FlightAppLauncher != null)
+            {
+                m_FlightAppLauncher.showEngineer = visible;
+            }
+        }
+
+        protected virtual void Start()
         {
             // set starting alpha to zero and fade in
             SetAlpha(0.0f);
             FadeIn();
         }
 
-        protected virtual void Start()
+        protected virtual void Update()
         {
-            DisplayStackToggles();
+            // set toggle states to match the actual states
+            if (m_FlightAppLauncher != null)
+            {
+                SetToggle(m_ShowEngineerToggle, m_FlightAppLauncher.showEngineer);
+                SetToggle(m_ControlBarToggle, m_FlightAppLauncher.controlBar);
+            }
         }
 
         /// <summary>
@@ -137,14 +127,6 @@ namespace KerbalEngineer.Unity.Flight
         }
 
         /// <summary>
-        ///     Called when the application launcher button is hovered over.
-        /// </summary>
-        private void ButtonHover()
-        {
-            FadeIn();
-        }
-
-        /// <summary>
         ///     Destroys the game object.
         /// </summary>
         private void Destroy()
@@ -152,30 +134,6 @@ namespace KerbalEngineer.Unity.Flight
             // disable game object first due to an issue within unity 5.2.4f1 that shows a single frame at full opaque alpha just before destruction
             gameObject.SetActive(false);
             Destroy(gameObject);
-        }
-
-        /// <summary>
-        ///     Called when the display stack has loaded its settings.
-        /// </summary>
-        private void DisplayStackToggles()
-        {
-            if (DisplayStack.Instance == null)
-            {
-                return;
-            }
-
-            SetToggle(m_ShowEngineerToggle, DisplayStack.Instance.Hidden == false);
-            SetToggle(m_ControlBarToggle, DisplayStack.Instance.ShowControlBar);
-        }
-
-        private void FadeIn()
-        {
-            FadeTo(1.0f, m_FastFadeDuration);
-        }
-
-        private void MenuClosed()
-        {
-            FadeTo(0.0f, m_FastFadeDuration, Destroy);
         }
     }
 }

@@ -324,7 +324,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 11415294}
-        m_MethodName: set_controlBar
+        m_MethodName: SetControlBar
         m_Mode: 0
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -345,13 +345,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 126098}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 2019631361, guid: a3a55138b08428847a08c7b48fe72efe, type: 3}
+  m_Script: {fileID: 571159103, guid: a3a55138b08428847a08c7b48fe72efe, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   m_ShowEngineerToggle: {fileID: 11485338}
   m_ControlBarToggle: {fileID: 11415068}
   m_FastFadeDuration: .200000003
-  m_SlowFadeDuration: 1
+  m_SlowFadeDuration: .5
 --- !u!114 &11423044
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -645,7 +645,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 11415294}
-        m_MethodName: set_showEngineer
+        m_MethodName: SetShowEngineer
         m_Mode: 0
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -979,7 +979,15 @@ Prefab:
   serializedVersion: 2
   m_Modification:
     m_TransformParent: {fileID: 0}
-    m_Modifications: []
+    m_Modifications:
+    - target: {fileID: 0}
+      propertyPath: m_FastFadeDuration
+      value: .200000003
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: m_SlowFadeDuration
+      value: .5
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 0}
   m_RootGameObject: {fileID: 126098}

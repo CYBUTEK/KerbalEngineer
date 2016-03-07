@@ -32,7 +32,9 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="CanvasGroupFader.cs" />
-    <Compile Include="Flight\FlightEngineerMenu.cs" />
+    <Compile Include="Flight\FlightMenu.cs" />
+    <Compile Include="Flight\FlightMenuSection.cs" />
+    <Compile Include="Flight\IFlightAppLauncher.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -48,13 +50,6 @@
       <HintPath>..\..\game\KSP_Data\Managed\UnityEngine.UI.dll</HintPath>
       <Private>False</Private>
     </Reference>
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\KerbalEngineer\KerbalEngineer.csproj">
-      <Project>{39806613-e0b7-46e0-89a6-a569ec538cbb}</Project>
-      <Name>KerbalEngineer</Name>
-      <Private>False</Private>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

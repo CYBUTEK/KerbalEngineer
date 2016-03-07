@@ -156,8 +156,8 @@ CanvasRenderer:
 RectTransform:
   m_PrefabParentObject: {fileID: 22476196, guid: a41f85cb0b8964f43947e85b3e833c0f,
     type: 2}
-  m_PrefabInternal: {fileID: 1329571933}
---- !u!1001 &1329571933
+  m_PrefabInternal: {fileID: 1220268543}
+--- !u!1001 &1220268543
 Prefab:
   m_ObjectHideFlags: 0
   serializedVersion: 2

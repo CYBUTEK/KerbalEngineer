@@ -18,18 +18,16 @@
 
 namespace KerbalEngineer.Flight
 {
-    using System;
+    using Unity.Flight;
     using UnityEngine;
 
     [KSPAddon(KSPAddon.Startup.Flight, false)]
-    public class FlightAppLauncher : AppLauncherButton
+    public class FlightAppLauncher : AppLauncherButton, IFlightAppLauncher
     {
         private static FlightAppLauncher m_Instance;
+        private FlightMenu m_FlightMenu;
         private GameObject m_MenuObject;
         private GameObject m_MenuPrefab;
-
-        public static event Action ButtonHover;
-        public static event Action MenuClosed;
 
         /// <summary>
         ///     Gets the current instance of the FlightAppLauncher object.
@@ -39,6 +37,52 @@ namespace KerbalEngineer.Flight
             get
             {
                 return m_Instance;
+            }
+        }
+
+        /// <summary>
+        ///     Gets or sets the control bar's visibility.
+        /// </summary>
+        public bool controlBar
+        {
+            get
+            {
+                if (DisplayStack.Instance != null)
+                {
+                    return DisplayStack.Instance.ShowControlBar;
+                }
+
+                return false;
+            }
+            set
+            {
+                if (DisplayStack.Instance != null)
+                {
+                    DisplayStack.Instance.ShowControlBar = value;
+                }
+            }
+        }
+
+        /// <summary>
+        ///     Gets or sets the display stack's visibility.
+        /// </summary>
+        public bool showEngineer
+        {
+            get
+            {
+                if (DisplayStack.Instance != null)
+                {
+                    return DisplayStack.Instance.Hidden == false;
+                }
+
+                return false;
+            }
+            set
+            {
+                if (DisplayStack.Instance != null)
+                {
+                    DisplayStack.Instance.Hidden = !value;
+                }
             }
         }
 
@@ -64,7 +108,6 @@ namespace KerbalEngineer.Flight
         protected override void OnHover()
         {
             Open();
-            ButtonHover?.Invoke();
         }
 
         protected override void OnHoverOut()
@@ -85,14 +128,9 @@ namespace KerbalEngineer.Flight
         /// </summary>
         private void Close()
         {
-            if (m_MenuObject == null)
+            if (m_FlightMenu != null)
             {
-                return;
-            }
-
-            if (MenuClosed != null)
-            {
-                MenuClosed();
+                m_FlightMenu.Close();
             }
             else
             {
@@ -105,6 +143,13 @@ namespace KerbalEngineer.Flight
         /// </summary>
         private void Open()
         {
+            // fade menu in if already open
+            if (m_FlightMenu != null)
+            {
+                m_FlightMenu.FadeIn();
+                return;
+            }
+
             if (m_MenuPrefab == null || m_MenuObject != null)
             {
                 return;
@@ -119,6 +164,13 @@ namespace KerbalEngineer.Flight
 
             // set object as a child of the main canvas
             m_MenuObject.transform.SetParent(MainCanvasUtil.MainCanvas.transform);
+
+            // set menu's reference to this object for cross-communication
+            m_FlightMenu = m_MenuObject.GetComponent<FlightMenu>();
+            if (m_FlightMenu != null)
+            {
+                m_FlightMenu.SetFlightAppLauncher(this);
+            }
         }
     }
 }
