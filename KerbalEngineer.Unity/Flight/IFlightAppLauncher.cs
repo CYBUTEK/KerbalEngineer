@@ -19,6 +19,7 @@
 namespace KerbalEngineer.Unity.Flight
 {
     using System.Collections.Generic;
+    using UnityEngine;
 
     public interface IFlightAppLauncher
     {
@@ -27,6 +28,10 @@ namespace KerbalEngineer.Unity.Flight
         bool isOn { get; }
 
         bool showEngineer { get; set; }
+
+        void ClampToScreen(RectTransform rectTransform);
+
+        Vector3 GetAnchor();
 
         IList<ISectionModule> GetCustomSections();
 

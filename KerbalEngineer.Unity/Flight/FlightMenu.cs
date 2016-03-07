@@ -23,6 +23,7 @@ namespace KerbalEngineer.Unity.Flight
     using UnityEngine.EventSystems;
     using UnityEngine.UI;
 
+    [RequireComponent(typeof(RectTransform))]
     public class FlightMenu : CanvasGroupFader, IPointerEnterHandler, IPointerExitHandler
     {
         [SerializeField]
@@ -44,6 +45,8 @@ namespace KerbalEngineer.Unity.Flight
         private float m_SlowFadeDuration = 1.0f;
 
         private IFlightAppLauncher m_FlightAppLauncher;
+
+        private RectTransform m_RectTransform;
 
         public void OnPointerEnter(PointerEventData eventData)
         {
@@ -114,6 +117,14 @@ namespace KerbalEngineer.Unity.Flight
             }
         }
 
+        protected override void Awake()
+        {
+            base.Awake();
+
+            // cache components
+            m_RectTransform = GetComponent<RectTransform>();
+        }
+
         protected virtual void Start()
         {
             // set starting alpha to zero and fade in
@@ -123,11 +134,20 @@ namespace KerbalEngineer.Unity.Flight
 
         protected virtual void Update()
         {
-            // set toggle states to match the actual states
-            if (m_FlightAppLauncher != null)
+            if (m_FlightAppLauncher == null)
             {
-                SetToggle(m_ShowEngineerToggle, m_FlightAppLauncher.showEngineer);
-                SetToggle(m_ControlBarToggle, m_FlightAppLauncher.controlBar);
+                return;
+            }
+
+            // set toggle states to match the actual states
+            SetToggle(m_ShowEngineerToggle, m_FlightAppLauncher.showEngineer);
+            SetToggle(m_ControlBarToggle, m_FlightAppLauncher.controlBar);
+
+            // update anchor position
+            if (m_RectTransform != null)
+            {
+                m_RectTransform.position = m_FlightAppLauncher.GetAnchor();
+                m_FlightAppLauncher.ClampToScreen(m_RectTransform);
             }
         }
 

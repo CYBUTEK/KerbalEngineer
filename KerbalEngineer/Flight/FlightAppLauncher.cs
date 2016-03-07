@@ -19,6 +19,7 @@
 namespace KerbalEngineer.Flight
 {
     using System.Collections.Generic;
+    using KSP.UI;
     using Sections;
     using Unity.Flight;
     using UnityEngine;
@@ -31,8 +32,6 @@ namespace KerbalEngineer.Flight
         private GameObject m_MenuObject;
         private GameObject m_MenuPrefab;
 
-        public IList<ISectionModule> GetCustomSections { get; }
-
         /// <summary>
         ///     Gets the current instance of the FlightAppLauncher object.
         /// </summary>
@@ -42,6 +41,14 @@ namespace KerbalEngineer.Flight
             {
                 return m_Instance;
             }
+        }
+
+        /// <summary>
+        ///     Clamps the given rect transform within the screen bounds.
+        /// </summary>
+        public void ClampToScreen(RectTransform rectTransform)
+        {
+            UIMasterController.ClampToScreen(rectTransform, Vector2.zero);
         }
 
         /// <summary>
@@ -67,11 +74,17 @@ namespace KerbalEngineer.Flight
             }
         }
 
+        /// <summary>
+        ///     Gets a list of custom sections.
+        /// </summary>
         IList<ISectionModule> IFlightAppLauncher.GetCustomSections()
         {
             return new List<ISectionModule>(SectionLibrary.CustomSections.ToArray());
         }
 
+        /// <summary>
+        ///     Gets a list of stock sections.
+        /// </summary>
         public IList<ISectionModule> GetStockSections()
         {
             return new List<ISectionModule>(SectionLibrary.StockSections.ToArray());
