@@ -236,6 +236,7 @@ namespace KerbalEngineer.Flight.Sections
                 {
                     this.ParentSection.IsFloating = false;
                     this.ParentSection.IsEditorVisible = false;
+                    this.ParentSection.IsDeleted = true;
                     SectionLibrary.CustomSections.Remove(this.ParentSection);
                     DisplayStack.Instance.RequestResize();
                 }

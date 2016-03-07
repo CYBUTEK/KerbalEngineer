@@ -102,8 +102,9 @@ namespace KerbalEngineer.Unity.Flight
         /// </summary>
         private void UpdateControls()
         {
-            if (m_Section == null)
+            if (m_Section == null || m_Section.IsDeleted)
             {
+                Destroy(gameObject);
                 return;
             }
 

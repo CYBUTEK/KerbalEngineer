@@ -159,6 +159,11 @@ namespace KerbalEngineer.Flight.Sections
         }
 
         /// <summary>
+        ///     Gets and sets whether the section module has been deleted.
+        /// </summary>
+        public bool IsDeleted { get; set; }
+
+        /// <summary>
         ///     Gets and sets whether the section module has a background as a HUD.
         /// </summary>
         public bool IsHudBackground { get; set; }
