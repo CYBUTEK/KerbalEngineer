@@ -36,7 +36,7 @@ namespace KerbalEngineer.Unity.Flight
         private GameObject m_MenuSectionPrefab = null;
 
         [SerializeField]
-        private Transform m_ContentTransform = null;
+        private Transform m_SectionsTransform = null;
 
         [SerializeField]
         private float m_FastFadeDuration = 0.2f;
@@ -76,6 +76,17 @@ namespace KerbalEngineer.Unity.Flight
         public void FadeIn()
         {
             FadeTo(1.0f, m_FastFadeDuration);
+        }
+
+        /// <summary>
+        ///     Creates a new custom section.
+        /// </summary>
+        public void NewCustomSection()
+        {
+            if (m_FlightAppLauncher != null)
+            {
+                CreateSectionControl(m_FlightAppLauncher.NewCustomSection());
+            }
         }
 
         /// <summary>
@@ -163,11 +174,29 @@ namespace KerbalEngineer.Unity.Flight
         }
 
         /// <summary>
+        ///     Creates a menu section control.
+        /// </summary>
+        private void CreateSectionControl(ISectionModule section)
+        {
+            GameObject menuSectionObject = Instantiate(m_MenuSectionPrefab);
+            if (menuSectionObject != null)
+            {
+                menuSectionObject.transform.SetParent(m_SectionsTransform, false);
+
+                FlightMenuSection menuSection = menuSectionObject.GetComponent<FlightMenuSection>();
+                if (menuSection != null)
+                {
+                    menuSection.SetAssignedSection(section);
+                }
+            }
+        }
+
+        /// <summary>
         ///     Creates a list of section controls from a given list of sections.
         /// </summary>
         private void CreateSectionControls(IList<ISectionModule> sections)
         {
-            if (sections == null || m_MenuSectionPrefab == null || m_ContentTransform == null)
+            if (sections == null || m_MenuSectionPrefab == null || m_SectionsTransform == null)
             {
                 return;
             }
@@ -175,23 +204,9 @@ namespace KerbalEngineer.Unity.Flight
             for (int i = 0; i < sections.Count; i++)
             {
                 ISectionModule section = sections[i];
-                if (section == null)
+                if (section != null)
                 {
-                    continue;
-                }
-
-                GameObject menuSectionObject = Instantiate(m_MenuSectionPrefab);
-                if (menuSectionObject == null)
-                {
-                    continue;
-                }
-
-                menuSectionObject.transform.SetParent(m_ContentTransform, false);
-
-                FlightMenuSection menuSection = menuSectionObject.GetComponent<FlightMenuSection>();
-                if (menuSection != null)
-                {
-                    menuSection.SetAssignedSection(section);
+                    CreateSectionControl(section);
                 }
             }
         }

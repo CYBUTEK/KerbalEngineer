@@ -113,6 +113,25 @@ namespace KerbalEngineer.Flight
             }
         }
 
+        /// <summary>
+        ///     Creates and initialises a new custom section.
+        /// </summary>
+        public ISectionModule NewCustomSection()
+        {
+            SectionModule section = new SectionModule
+            {
+                Name = "Custom " + (SectionLibrary.CustomSections.Count + 1),
+                Abbreviation = "CUST " + (SectionLibrary.CustomSections.Count + 1),
+                IsVisible = true,
+                IsCustom = true,
+                IsEditorVisible = true
+            };
+
+            SectionLibrary.CustomSections.Add(section);
+
+            return section;
+        }
+
         protected override void Awake()
         {
             base.Awake();

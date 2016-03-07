@@ -36,5 +36,7 @@ namespace KerbalEngineer.Unity.Flight
         IList<ISectionModule> GetCustomSections();
 
         IList<ISectionModule> GetStockSections();
+
+        ISectionModule NewCustomSection();
     }
 }
