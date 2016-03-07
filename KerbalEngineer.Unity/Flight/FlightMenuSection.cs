@@ -117,7 +117,7 @@ namespace KerbalEngineer.Unity.Flight
             // display name
             if (m_DisplayText != null)
             {
-                m_DisplayText.text = m_Section.Name;
+                m_DisplayText.text = m_Section.Name.ToUpperInvariant();
             }
 
             // editor visible
