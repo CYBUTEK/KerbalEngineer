@@ -104,7 +104,7 @@ namespace KerbalEngineer
 
             if (m_Button != null && m_Button.toggleButton.CurrentState != UIRadioButton.State.False)
             {
-                m_Button.SetTrue();
+                m_Button.SetFalse();
             }
         }
 
