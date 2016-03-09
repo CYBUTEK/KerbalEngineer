@@ -113,6 +113,11 @@ namespace KerbalEngineer.Flight
         {
             get
             {
+                if (MainCanvasUtil.MainCanvas.enabled == false)
+                {
+                    return false;
+                }
+
                 if (isCareerMode)
                 {
                     if (isKerbalLimited && FlightGlobals.ActiveVessel.GetVesselCrew().Exists(c => c.experienceTrait.TypeName == "Engineer"))

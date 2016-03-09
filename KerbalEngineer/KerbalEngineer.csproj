@@ -34,22 +34,25 @@
     <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="AppLauncherButton.cs" />
+    <Compile Include="AssetBundleLoader.cs" />
     <Compile Include="Control\IControlPanel.cs" />
     <Compile Include="Control\Panels\BuildOverlayPanel.cs" />
     <Compile Include="Control\Panels\BuildEngineerPanel.cs" />
     <Compile Include="Editor\BuildAdvanced.cs" />
+    <Compile Include="Editor\BuildAppLauncher.cs" />
     <Compile Include="Editor\BuildOverlay.cs" />
     <Compile Include="CelestialBodies.cs" />
     <Compile Include="Editor\BuildOverlayPartInfo.cs" />
     <Compile Include="Editor\BuildOverlayResources.cs" />
     <Compile Include="Editor\BuildOverlayVessel.cs" />
-    <Compile Include="Editor\BuildToolbar.cs" />
     <Compile Include="Editor\PartInfoItem.cs" />
     <Compile Include="Editor\ResourceInfoItem.cs" />
     <Compile Include="Extensions\FloatExtensions.cs" />
     <Compile Include="Extensions\OrbitExtensions.cs" />
     <Compile Include="Extensions\StringExtensions.cs" />
     <Compile Include="Flight\ActionMenuGui.cs" />
+    <Compile Include="Flight\FlightAppLauncher.cs" />
     <Compile Include="Flight\Presets\Preset.cs" />
     <Compile Include="Flight\Readouts\Miscellaneous\LogSimToggle.cs" />
     <Compile Include="Flight\Readouts\Miscellaneous\SystemTime.cs" />
@@ -242,6 +245,22 @@
       <HintPath>..\..\Game\KSP_Data\Managed\Assembly-CSharp.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="Assembly-CSharp-firstpass">
+      <HintPath>..\..\game\KSP_Data\Managed\Assembly-CSharp-firstpass.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="KSPAssets">
+      <HintPath>..\..\game\KSP_Data\Managed\KSPAssets.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="KSPCore">
+      <HintPath>..\..\game\KSP_Data\Managed\KSPCore.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="KSPUtil">
+      <HintPath>..\..\game\KSP_Data\Managed\KSPUtil.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="System">
       <HintPath>..\Game\KSP_Data\Managed\System.dll</HintPath>
       <Private>False</Private>
@@ -254,8 +273,18 @@
       <HintPath>..\..\Game\KSP_Data\Managed\UnityEngine.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="UnityEngine.UI">
+      <HintPath>..\..\game\KSP_Data\Managed\UnityEngine.UI.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="..\KerbalEngineer.Unity\KerbalEngineer.Unity.csproj">
+      <Project>{5387bb1e-32b1-4bac-b03f-100570b9554c}</Project>
+      <Name>KerbalEngineer.Unity</Name>
+      <Private>False</Private>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="PostBuildMacros">
     <GetAssemblyIdentity AssemblyFiles="$(TargetPath)">

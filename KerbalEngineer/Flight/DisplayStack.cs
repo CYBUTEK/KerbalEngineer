@@ -70,7 +70,14 @@ namespace KerbalEngineer.Flight
         public bool ShowControlBar
         {
             get { return this.showControlBar; }
-            set { this.showControlBar = value; }
+            set
+            {
+                if (showControlBar != value)
+                {
+                    this.showControlBar = value;
+                    RequestResize();
+                }
+            }
         }
 
         #endregion
@@ -121,7 +128,6 @@ namespace KerbalEngineer.Flight
             try
             {
                 this.Save();
-                RenderingManager.RemoveFromPostDrawQueue(0, this.Draw);
             }
             catch (Exception ex)
             {
@@ -140,7 +146,6 @@ namespace KerbalEngineer.Flight
                 this.windowId = this.GetHashCode();
                 this.InitialiseStyles();
                 this.Load();
-                RenderingManager.AddToPostDrawQueue(0, this.Draw);
                 Logger.Log("ActionMenu->Start");
             }
             catch (Exception ex)
@@ -176,7 +181,7 @@ namespace KerbalEngineer.Flight
         /// <summary>
         ///     Called to draw the display stack when the UI is enabled.
         /// </summary>
-        private void Draw()
+        private void OnGUI()
         {
             try
             {

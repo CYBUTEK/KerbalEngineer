@@ -1,9 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2013
-VisualStudioVersion = 12.0.30110.0
-MinimumVisualStudioVersion = 10.0.40219.1
+# Visual Studio 2015
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KerbalEngineer.CSharp.Editor", "KerbalEngineer.CSharp.Editor.csproj", "{D7B7C6CE-6B5A-CE40-5B7C-9D0E6583E469}"
+EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KerbalEngineer", "KerbalEngineer\KerbalEngineer.csproj", "{39806613-E0B7-46E0-89A6-A569EC538CBB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KerbalEngineer.Unity", "KerbalEngineer.Unity\KerbalEngineer.Unity.csproj", "{5387BB1E-32B1-4BAC-B03F-100570B9554C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -11,10 +13,18 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{D7B7C6CE-6B5A-CE40-5B7C-9D0E6583E469}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D7B7C6CE-6B5A-CE40-5B7C-9D0E6583E469}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D7B7C6CE-6B5A-CE40-5B7C-9D0E6583E469}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D7B7C6CE-6B5A-CE40-5B7C-9D0E6583E469}.Release|Any CPU.Build.0 = Release|Any CPU
 		{39806613-E0B7-46E0-89A6-A569EC538CBB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{39806613-E0B7-46E0-89A6-A569EC538CBB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{39806613-E0B7-46E0-89A6-A569EC538CBB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{39806613-E0B7-46E0-89A6-A569EC538CBB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5387BB1E-32B1-4BAC-B03F-100570B9554C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5387BB1E-32B1-4BAC-B03F-100570B9554C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5387BB1E-32B1-4BAC-B03F-100570B9554C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5387BB1E-32B1-4BAC-B03F-100570B9554C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
