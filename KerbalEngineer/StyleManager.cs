@@ -24,6 +24,42 @@ namespace KerbalEngineer
 
     public static class StyleManager
     {
+        private static GameObject m_WindowPrefab;
+
+        /// <summary>
+        ///     Creates and returns a new window object.
+        /// </summary>
+        public static Window CreateWindow(string title, Vector2 size)
+        {
+            GameObject windowPrefab = GetWindowPrefab();
+            if (windowPrefab == null)
+            {
+                return null;
+            }
+
+            GameObject windowObject = Object.Instantiate(windowPrefab);
+            if (windowObject == null)
+            {
+                return null;
+            }
+
+            // process style applicators
+            Process(windowObject);
+
+            // assign game object to be a child of the main canvas
+            windowObject.transform.SetParent(MainCanvasUtil.MainCanvas.transform, false);
+
+            // set window values
+            Window window = windowObject.GetComponent<Window>();
+            if (window != null)
+            {
+                window.SetTitle(title);
+                window.SetSize(size);
+            }
+
+            return window;
+        }
+
         /// <summary>
         ///     Processes all of the theme applicators on the supplied game object.
         /// </summary>
@@ -65,6 +101,19 @@ namespace KerbalEngineer
             }
 
             return textStyle;
+        }
+
+        /// <summary>
+        ///     Gets a window prefab object.
+        /// </summary>
+        private static GameObject GetWindowPrefab()
+        {
+            if (m_WindowPrefab == null)
+            {
+                m_WindowPrefab = AssetBundleLoader.Prefabs.LoadAsset<GameObject>("Window");
+            }
+
+            return m_WindowPrefab;
         }
 
         /// <summary>
