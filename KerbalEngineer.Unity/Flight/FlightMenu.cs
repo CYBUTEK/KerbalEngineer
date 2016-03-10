@@ -180,6 +180,9 @@ namespace KerbalEngineer.Unity.Flight
             GameObject menuSectionObject = Instantiate(m_MenuSectionPrefab);
             if (menuSectionObject != null)
             {
+                // apply ksp theme to the created menu section object
+                m_FlightAppLauncher.ApplyTheme(menuSectionObject);
+
                 menuSectionObject.transform.SetParent(m_SectionsTransform, false);
 
                 FlightMenuSection menuSection = menuSectionObject.GetComponent<FlightMenuSection>();
