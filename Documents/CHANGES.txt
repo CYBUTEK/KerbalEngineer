@@ -1,4 +1,6 @@
     Added: Asset bundle loading and integration.
+    Added: Styling system so that Unity UI objects can use KSP stock styles.
+    Added: Unity UI window system.
     Changed: Thermal flux is now correctly indicated in kilowatts.
     Changed: Complete rewrite of code underpinning the stock toolbar icons.
     Changed: Flight Engineer toolbar menu recreated using Unity UI.
