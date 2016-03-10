@@ -62,7 +62,7 @@ namespace KerbalEngineer.Flight
         /// <summary>
         ///     Gets a list of stock sections.
         /// </summary>
-        public IList<ISectionModule> GetStockSections()
+        IList<ISectionModule> IFlightAppLauncher.GetStockSections()
         {
             return new List<ISectionModule>(SectionLibrary.StockSections.ToArray());
         }
@@ -178,7 +178,7 @@ namespace KerbalEngineer.Flight
             {
                 m_FlightMenu.Close();
             }
-            else
+            else if (m_MenuObject != null)
             {
                 Destroy(m_MenuObject);
             }
