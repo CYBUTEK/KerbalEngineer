@@ -29,6 +29,8 @@ namespace KerbalEngineer.Unity.Flight
 
         bool IsOn { get; }
 
+        void ApplyTheme(GameObject gameObject);
+
         void ClampToScreen(RectTransform rectTransform);
 
         Vector3 GetAnchor();

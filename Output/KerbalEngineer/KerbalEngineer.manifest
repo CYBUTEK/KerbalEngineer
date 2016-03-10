@@ -2,8 +2,8 @@ ManifestFileVersion: 0
 AssetBundleManifest:
   AssetBundleInfos:
     Info_0:
-      Name: images
+      Name: prefabs
       Dependencies: {}
     Info_1:
-      Name: prefabs
+      Name: images
       Dependencies: {}

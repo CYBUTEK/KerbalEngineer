@@ -44,6 +44,14 @@ namespace KerbalEngineer.Flight
         }
 
         /// <summary>
+        ///     Applies the KSP theme to a game object and its children.
+        /// </summary>
+        public void ApplyTheme(GameObject gameObject)
+        {
+            StyleManager.Process(gameObject);
+        }
+
+        /// <summary>
         ///     Clamps the given rect transform within the screen bounds.
         /// </summary>
         public void ClampToScreen(RectTransform rectTransform)
@@ -62,7 +70,7 @@ namespace KerbalEngineer.Flight
         /// <summary>
         ///     Gets a list of stock sections.
         /// </summary>
-        public IList<ISectionModule> GetStockSections()
+        IList<ISectionModule> IFlightAppLauncher.GetStockSections()
         {
             return new List<ISectionModule>(SectionLibrary.StockSections.ToArray());
         }
@@ -178,7 +186,7 @@ namespace KerbalEngineer.Flight
             {
                 m_FlightMenu.Close();
             }
-            else
+            else if (m_MenuObject != null)
             {
                 Destroy(m_MenuObject);
             }
@@ -207,6 +215,8 @@ namespace KerbalEngineer.Flight
             {
                 return;
             }
+
+            StyleManager.Process(m_MenuObject);
 
             // set object as a child of the main canvas
             m_MenuObject.transform.SetParent(MainCanvasUtil.MainCanvas.transform);
