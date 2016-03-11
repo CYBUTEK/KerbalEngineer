@@ -18,6 +18,7 @@
 
 namespace KerbalEngineer
 {
+    using Unity;
     using Unity.UI;
     using UnityEngine;
     using UnityEngine.UI;
@@ -25,11 +26,39 @@ namespace KerbalEngineer
     public static class StyleManager
     {
         private static GameObject m_WindowPrefab;
+        private static GameObject m_SettingPrefab;
+
+        /// <summary>
+        ///     Creates a setting on the supplied window.
+        /// </summary>
+        public static Setting CreateSetting(string label, Window window)
+        {
+            Setting setting = null;
+
+            GameObject settingPrefab = GetSettingPrefab();
+
+            if (settingPrefab != null && window != null)
+            {
+                GameObject settingObject = Object.Instantiate(settingPrefab);
+
+                if (settingObject != null)
+                {
+                    setting = settingObject.GetComponent<Setting>();
+                    if (setting != null)
+                    {
+                        setting.SetLabel(label);
+                        window.AddToContent(settingObject);
+                    }
+                }
+            }
+
+            return setting;
+        }
 
         /// <summary>
         ///     Creates and returns a new window object.
         /// </summary>
-        public static Window CreateWindow(string title, Vector2 size)
+        public static Window CreateWindow(string title, float width)
         {
             GameObject windowPrefab = GetWindowPrefab();
             if (windowPrefab == null)
@@ -54,14 +83,14 @@ namespace KerbalEngineer
             if (window != null)
             {
                 window.SetTitle(title);
-                window.SetSize(size);
+                window.SetWidth(width);
             }
 
             return window;
         }
 
         /// <summary>
-        ///     Processes all of the theme applicators on the supplied game object.
+        ///     Processes all of the style applicators on the supplied game object.
         /// </summary>
         public static void Process(GameObject gameObject)
         {
@@ -79,6 +108,30 @@ namespace KerbalEngineer
                     Process(applicators[i]);
                 }
             }
+        }
+
+        /// <summary>
+        ///     Processes all the style applicators on the supplied component's game object.
+        /// </summary>
+        public static void Process(Component component)
+        {
+            if (component != null)
+            {
+                Process(component.gameObject);
+            }
+        }
+
+        /// <summary>
+        ///     Gets a setting prefab object.
+        /// </summary>
+        private static GameObject GetSettingPrefab()
+        {
+            if (m_SettingPrefab == null)
+            {
+                m_SettingPrefab = AssetBundleLoader.Prefabs.LoadAsset<GameObject>("Setting");
+            }
+
+            return m_SettingPrefab;
         }
 
         /// <summary>
@@ -156,6 +209,10 @@ namespace KerbalEngineer
                         skin.button.highlight.background,
                         skin.button.active.background,
                         skin.button.disabled.background);
+                    break;
+
+                case StyleApplicator.ElementTypes.Label:
+                    applicator.SetText(GetTextStyle(skin.label, skin.label.normal));
                     break;
             }
         }

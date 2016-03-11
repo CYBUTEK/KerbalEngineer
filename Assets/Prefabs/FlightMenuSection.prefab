@@ -242,7 +242,7 @@ MonoBehaviour:
     m_DisabledTrigger: Disabled
   m_Interactable: 1
   m_TargetGraphic: {fileID: 11449350}
-  toggleTransition: 1
+  toggleTransition: 0
   graphic: {fileID: 11484356}
   m_Group: {fileID: 0}
   onValueChanged:
@@ -316,7 +316,7 @@ MonoBehaviour:
     m_DisabledTrigger: Disabled
   m_Interactable: 1
   m_TargetGraphic: {fileID: 11461446}
-  toggleTransition: 1
+  toggleTransition: 0
   graphic: {fileID: 11418436}
   m_Group: {fileID: 0}
   onValueChanged:
@@ -706,6 +706,10 @@ Prefab:
     - target: {fileID: 0}
       propertyPath: m_PreferredHeight
       value: 18
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: toggleTransition
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 0}

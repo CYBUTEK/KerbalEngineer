@@ -1,12 +1,12 @@
 ManifestFileVersion: 0
-CRC: 1949956267
+CRC: 1698654434
 Hashes:
   AssetFileHash:
     serializedVersion: 2
-    Hash: 24f63998e920eccb887780f6b0c8bdda
+    Hash: 720182f6f522b8ce002cea3c19195a98
   TypeTreeHash:
     serializedVersion: 2
-    Hash: cd9ba56f0c56497ae4e1d6c613dca0a0
+    Hash: 82e496775b4e38025794c1bd0deaafef
 HashAppended: 0
 ClassTypes:
 - Class: 1
@@ -21,6 +21,8 @@ ClassTypes:
   Script: {fileID: 1392445389, guid: f5f67c52d1564df4a8936ccd202a3bd8, type: 3}
 - Class: 114
   Script: {fileID: 1741964061, guid: f5f67c52d1564df4a8936ccd202a3bd8, type: 3}
+- Class: 114
+  Script: {fileID: -405508275, guid: f5f67c52d1564df4a8936ccd202a3bd8, type: 3}
 - Class: 114
   Script: {fileID: -765806418, guid: f5f67c52d1564df4a8936ccd202a3bd8, type: 3}
 - Class: 114
@@ -39,6 +41,8 @@ ClassTypes:
   Script: {fileID: 323546239, guid: 4ffb1bf511e31af45bdeaa3d272d49d4, type: 3}
 - Class: 114
   Script: {fileID: 604723565, guid: 4ffb1bf511e31af45bdeaa3d272d49d4, type: 3}
+- Class: 114
+  Script: {fileID: 644905346, guid: 4ffb1bf511e31af45bdeaa3d272d49d4, type: 3}
 - Class: 115
   Script: {instanceID: 0}
 - Class: 128
@@ -52,6 +56,9 @@ ClassTypes:
 - Class: 225
   Script: {instanceID: 0}
 Assets:
+- Assets/Prefabs/Setting.prefab
+- Assets/Prefabs/SettingToggle.prefab
+- Assets/Prefabs/SettingButton.prefab
 - Assets/Prefabs/FlightMenuSection.prefab
 - Assets/Prefabs/FlightMenu.prefab
 - Assets/Prefabs/Window.prefab

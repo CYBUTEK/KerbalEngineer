@@ -65,22 +65,22 @@
         }
 
         /// <summary>
+        ///     Adds a game object as a child of the window content.
+        /// </summary>
+        public void AddToContent(GameObject childObject)
+        {
+            if (m_Content != null && childObject != null)
+            {
+                childObject.transform.SetParent(m_Content, false);
+            }
+        }
+
+        /// <summary>
         ///     Closes the window.
         /// </summary>
         public void Close()
         {
             ScaleFade(1.0f, 0.0f, () => Destroy(gameObject));
-        }
-
-        /// <summary>
-        ///     Sets the window size.
-        /// </summary>
-        public void SetSize(Vector2 size)
-        {
-            if (m_RectTransform != null)
-            {
-                m_RectTransform.sizeDelta = size;
-            }
         }
 
         /// <summary>
@@ -91,6 +91,19 @@
             if (m_Title != null)
             {
                 m_Title.text = title;
+            }
+        }
+
+        /// <summary>
+        ///     Sets the window size.
+        /// </summary>
+        public void SetWidth(float width)
+        {
+            if (m_RectTransform != null)
+            {
+                Vector2 size = m_RectTransform.sizeDelta;
+                size.x = width;
+                m_RectTransform.sizeDelta = size;
             }
         }
 

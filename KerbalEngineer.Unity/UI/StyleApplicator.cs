@@ -29,7 +29,8 @@ namespace KerbalEngineer.Unity.UI
             Window,
             Box,
             Button,
-            ButtonToggle
+            ButtonToggle,
+            Label
         }
 
         [SerializeField]
@@ -66,20 +67,7 @@ namespace KerbalEngineer.Unity.UI
         /// </summary>
         public void SetSelectable(TextStyle textStyle, Sprite normal, Sprite highlight, Sprite pressed, Sprite disabled)
         {
-            if (textStyle != null)
-            {
-                Text text = GetComponentInChildren<Text>();
-                if (text != null)
-                {
-                    if (textStyle.Font != null)
-                    {
-                        text.font = textStyle.Font;
-                    }
-                    text.fontStyle = textStyle.Style;
-                    text.fontSize = textStyle.Size;
-                    text.color = textStyle.Colour;
-                }
-            }
+            SetText(textStyle, GetComponentInChildren<Text>());
 
             Selectable selectable = GetComponent<Selectable>();
             if (selectable != null)
@@ -98,6 +86,14 @@ namespace KerbalEngineer.Unity.UI
         }
 
         /// <summary>
+        ///     Sets the applicator to apply a style to an attached text component.
+        /// </summary>
+        public void SetText(TextStyle textStyle)
+        {
+            SetText(textStyle, GetComponent<Text>());
+        }
+
+        /// <summary>
         ///     Sets the applicator to apply the specified values to an attached toggle component.
         /// </summary>
         public void SetToggle(TextStyle textStyle, Sprite normal, Sprite highlight, Sprite pressed, Sprite disabled)
@@ -110,6 +106,25 @@ namespace KerbalEngineer.Unity.UI
                 toggleImage.sprite = pressed;
                 toggleImage.type = Image.Type.Sliced;
             }
+        }
+
+        /// <summary>
+        ///     Sets the applicator to apply a style to the supplied text component.
+        /// </summary>
+        private static void SetText(TextStyle textStyle, Text textComponent)
+        {
+            if (textStyle == null || textComponent == null)
+            {
+                return;
+            }
+
+            if (textStyle.Font != null)
+            {
+                textComponent.font = textStyle.Font;
+            }
+            textComponent.fontSize = textStyle.Size;
+            textComponent.fontStyle = textStyle.Style;
+            textComponent.color = textStyle.Colour;
         }
     }
 }
