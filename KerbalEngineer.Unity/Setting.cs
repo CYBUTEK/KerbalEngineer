@@ -1,5 +1,6 @@
 ﻿namespace KerbalEngineer.Unity
 {
+    using System;
     using UnityEngine;
     using UnityEngine.Events;
     using UnityEngine.UI;
@@ -18,36 +19,53 @@
         [SerializeField]
         private GameObject m_SettingTogglePrefab = null;
 
-        public GameObject AddButton(string text, UnityAction onClick)
+        private Action m_OnUpdate;
+
+        public Button AddButton(string text, float width, UnityAction onClick)
         {
-            GameObject buttonObject = null;
+            Button button = null;
 
             if (m_SettingButtonPrefab != null)
             {
-                buttonObject = Instantiate(m_SettingButtonPrefab);
+                GameObject buttonObject = Instantiate(m_SettingButtonPrefab);
+                if (buttonObject != null)
+                {
+                    button = buttonObject.GetComponent<Button>();
 
-                SetParentTransform(buttonObject, m_ButtonsTransform);
-                SetText(buttonObject, text);
-                SetButton(buttonObject, onClick);
+                    SetParentTransform(buttonObject, m_ButtonsTransform);
+                    SetWidth(buttonObject, width);
+                    SetText(buttonObject, text);
+                    SetButton(buttonObject, onClick);
+                }
             }
 
-            return buttonObject;
+            return button;
         }
 
-        public GameObject AddToggle(string text, UnityAction<bool> onValueChanged)
+        public Toggle AddToggle(string text, float width, UnityAction<bool> onValueChanged)
         {
-            GameObject toggleObject = null;
+            Toggle toggle = null;
 
             if (m_SettingTogglePrefab != null)
             {
-                toggleObject = Instantiate(m_SettingTogglePrefab);
+                GameObject toggleObject = Instantiate(m_SettingTogglePrefab);
+                if (toggleObject != null)
+                {
+                    toggle = toggleObject.GetComponent<Toggle>();
 
-                SetParentTransform(toggleObject, m_ButtonsTransform);
-                SetText(toggleObject, text);
-                SetToggle(toggleObject, onValueChanged);
+                    SetParentTransform(toggleObject, m_ButtonsTransform);
+                    SetWidth(toggleObject, width);
+                    SetText(toggleObject, text);
+                    SetToggle(toggleObject, onValueChanged);
+                }
             }
 
-            return toggleObject;
+            return toggle;
+        }
+
+        public void AddUpdateHandler(Action onUpdate)
+        {
+            m_OnUpdate = onUpdate;
         }
 
         public void SetLabel(string text)
@@ -56,6 +74,11 @@
             {
                 m_Label.text = text;
             }
+        }
+
+        protected virtual void Update()
+        {
+            m_OnUpdate?.Invoke();
         }
 
         private static void SetButton(GameObject buttonObject, UnityAction onClick)
@@ -98,6 +121,25 @@
                 if (toggle != null)
                 {
                     toggle.onValueChanged.AddListener(onValueChanged);
+                }
+            }
+        }
+
+        private static void SetWidth(GameObject parentObject, float width)
+        {
+            if (parentObject != null)
+            {
+                LayoutElement layout = parentObject.GetComponent<LayoutElement>();
+                if (layout != null)
+                {
+                    if (width > 0.0f)
+                    {
+                        layout.preferredWidth = width;
+                    }
+                    else
+                    {
+                        layout.flexibleWidth = 1.0f;
+                    }
                 }
             }
         }
