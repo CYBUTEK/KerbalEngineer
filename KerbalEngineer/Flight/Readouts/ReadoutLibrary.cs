@@ -192,6 +192,7 @@ namespace KerbalEngineer.Flight.Readouts
                 readouts.Add(new SimulationDelay());
                 readouts.Add(new VectoredThrustToggle());
                 readouts.Add(new SystemTime());
+                readouts.Add(new LogSimToggle());
 
                 LoadHelpStrings();
             }

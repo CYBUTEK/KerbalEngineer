@@ -72,26 +72,30 @@ namespace KerbalEngineer.VesselSimulator
         }
 
         public static EngineSim New(PartSim theEngine,
-                         double atmosphere,
-                         float machNumber,
-                         float maxFuelFlow,
-                         float minFuelFlow,
-                         float thrustPercentage,
-                         Vector3 vecThrust,
-                         FloatCurve atmosphereCurve,
-                         bool atmChangeFlow,
-                         FloatCurve atmCurve,
-                         FloatCurve velCurve,
-                         float currentThrottle,
-                         float IspG,
-                         bool throttleLocked,
-                         List<Propellant> propellants,
-                         bool active,
-                         float resultingThrust,
-                         List<Transform> thrustTransforms,
-                        LogMsg log)
+									ModuleEngines engineMod,
+									double atmosphere,
+									float machNumber,
+									bool vectoredThrust,
+									bool fullThrust,
+									LogMsg log)
         {
-            EngineSim engineSim = pool.Borrow();
+            float maxFuelFlow = engineMod.maxFuelFlow;
+            float minFuelFlow = engineMod.minFuelFlow;
+            float thrustPercentage = engineMod.thrustPercentage;
+            Vector3 vecThrust = CalculateThrustVector(vectoredThrust ? engineMod.thrustTransforms : null, log);
+            FloatCurve atmosphereCurve = engineMod.atmosphereCurve;
+            bool atmChangeFlow = engineMod.atmChangeFlow;
+            FloatCurve atmCurve = engineMod.useAtmCurve ? engineMod.atmCurve : null;
+            FloatCurve velCurve = engineMod.useVelCurve ? engineMod.velCurve : null;
+            float currentThrottle = engineMod.currentThrottle;
+            float IspG = engineMod.g;
+            bool throttleLocked = engineMod.throttleLocked || fullThrust;
+            List<Propellant> propellants = engineMod.propellants;
+            bool active = engineMod.isOperational;
+            float resultingThrust = engineMod.resultingThrust;
+            List<Transform> thrustTransforms = engineMod.thrustTransforms;
+			
+			EngineSim engineSim = pool.Borrow();
 
             engineSim.isp = 0.0;
             engineSim.maxMach = 0.0f;
@@ -120,7 +124,7 @@ namespace KerbalEngineer.VesselSimulator
                     log.buf.AppendFormat("actual  = {0:g6}\n", engineSim.actualThrust);
                 }
 
-                if (throttleLocked)
+				if (throttleLocked)
                 {
                     if (log != null) log.buf.AppendLine("throttleLocked is true, using thrust for flowRate");
                     flowRate = GetFlowRate(engineSim.thrust, engineSim.isp);
@@ -129,7 +133,8 @@ namespace KerbalEngineer.VesselSimulator
                 {
                     if (currentThrottle > 0.0f && engineSim.partSim.isLanded == false)
                     {
-                        if (log != null) log.buf.AppendLine("throttled up and not landed, using actualThrust for flowRate");
+						// TODO: This bit doesn't work for RF engines
+						if (log != null) log.buf.AppendLine("throttled up and not landed, using actualThrust for flowRate");
                         flowRate = GetFlowRate(engineSim.actualThrust, engineSim.isp);
                     }
                     else
@@ -203,6 +208,32 @@ namespace KerbalEngineer.VesselSimulator
 
             return engineSim;
         }
+
+		private static Vector3 CalculateThrustVector(List<Transform> thrustTransforms, LogMsg log)
+		{
+			if (thrustTransforms == null)
+			{
+				return Vector3.forward;
+			}
+
+			Vector3 thrustvec = Vector3.zero;
+			for (int i = 0; i < thrustTransforms.Count; ++i)
+			{
+				Transform trans = thrustTransforms[i];
+
+				if (log != null) log.buf.AppendFormat("Transform = ({0:g6}, {1:g6}, {2:g6})   length = {3:g6}\n", trans.forward.x, trans.forward.y, trans.forward.z, trans.forward.magnitude);
+
+				thrustvec -= trans.forward;
+			}
+
+			if (log != null) log.buf.AppendFormat("ThrustVec  = ({0:g6}, {1:g6}, {2:g6})   length = {3:g6}\n", thrustvec.x, thrustvec.y, thrustvec.z, thrustvec.magnitude);
+
+			thrustvec.Normalize();
+
+			if (log != null) log.buf.AppendFormat("ThrustVecN = ({0:g6}, {1:g6}, {2:g6})   length = {3:g6}\n", thrustvec.x, thrustvec.y, thrustvec.z, thrustvec.magnitude);
+
+			return thrustvec;
+		}
 
         public ResourceContainer ResourceConsumptions
         {
