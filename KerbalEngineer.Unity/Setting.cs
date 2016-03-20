@@ -78,7 +78,8 @@
 
         protected virtual void Update()
         {
-            m_OnUpdate?.Invoke();
+            if (m_OnUpdate != null)
+                m_OnUpdate.Invoke();
         }
 
         private static void SetButton(GameObject buttonObject, UnityAction onClick)
