@@ -28,10 +28,18 @@
             {
                 m_Window = StyleManager.CreateWindow("SETTINGS", 600.0f);
 
-                Setting keyBindings = StyleManager.CreateSetting("Key Bindings", m_Window);
-                AddButton(keyBindings, "EDIT KEY BINDINGS", 304.0f, KeyBinder.Show);
+                AddKeyBindingsButton();
+                AddFlightActivationModes();
+                AddBuildOverlayOptions();
 
+                StyleManager.Process(m_Window);
+            }
+        }
 
+        private static void AddBuildOverlayOptions()
+        {
+            if (m_Window != null)
+            {
                 Setting buildOverlay = StyleManager.CreateSetting("Build Engineer Overlay", m_Window);
                 Toggle buildOverlayVisible = AddToggle(buildOverlay, "VISIBLE", 100.0f, value => BuildOverlay.Visible = value);
                 Toggle buildOverlayNamesOnly = AddToggle(buildOverlay, "NAMES ONLY", 100.0f, value => BuildOverlayPartInfo.NamesOnly = value);
@@ -42,17 +50,6 @@
                     buildOverlayNamesOnly.isOn = BuildOverlayPartInfo.NamesOnly;
                     buildOverlayClickToOpen.isOn = BuildOverlayPartInfo.ClickToOpen;
                 });
-
-                Setting flightActivationMode = StyleManager.CreateSetting("Flight Engineer Activation Mode", m_Window);
-                Toggle flightActivationModeCareer = AddToggle(flightActivationMode, "CAREER", 100.0f, value => FlightEngineerCore.IsCareerMode = value);
-                Toggle flightActivationModePartless = AddToggle(flightActivationMode, "PARTLESS", 100.0f, value => FlightEngineerCore.IsCareerMode = !value);
-                AddUpdateHandler(flightActivationMode, () =>
-                {
-                    flightActivationModeCareer.isOn = FlightEngineerCore.IsCareerMode;
-                    flightActivationModePartless.isOn = !FlightEngineerCore.IsCareerMode;
-                });
-
-                StyleManager.Process(m_Window);
             }
         }
 
@@ -62,13 +59,37 @@
 
             if (setting != null)
             {
-                button = setting.AddButton(text,width, onClick);
+                button = setting.AddButton(text, width, onClick);
             }
 
             return button;
         }
 
-        private static Toggle AddToggle(Setting setting, string text,  float width,UnityAction<bool> onValueChanged)
+        private static void AddFlightActivationModes()
+        {
+            if (m_Window != null)
+            {
+                Setting flightActivationMode = StyleManager.CreateSetting("Flight Engineer Activation Mode", m_Window);
+                Toggle flightActivationModeCareer = AddToggle(flightActivationMode, "CAREER", 100.0f, value => FlightEngineerCore.IsCareerMode = value);
+                Toggle flightActivationModePartless = AddToggle(flightActivationMode, "PARTLESS", 100.0f, value => FlightEngineerCore.IsCareerMode = !value);
+                AddUpdateHandler(flightActivationMode, () =>
+                {
+                    flightActivationModeCareer.isOn = FlightEngineerCore.IsCareerMode;
+                    flightActivationModePartless.isOn = !FlightEngineerCore.IsCareerMode;
+                });
+            }
+        }
+
+        private static void AddKeyBindingsButton()
+        {
+            if (m_Window != null)
+            {
+                Setting keyBindings = StyleManager.CreateSetting("Key Bindings", m_Window);
+                AddButton(keyBindings, "EDIT KEY BINDINGS", 304.0f, KeyBinder.Show);
+            }
+        }
+
+        private static Toggle AddToggle(Setting setting, string text, float width, UnityAction<bool> onValueChanged)
         {
             Toggle toggle = null;
 
