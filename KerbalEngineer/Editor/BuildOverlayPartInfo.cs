@@ -137,12 +137,7 @@ namespace KerbalEngineer.Editor
                 }
                 else
                 {
-                    part = null;
-                }
-
-                if (part == null)
-                {
-                    part = EditorLogic.SelectedPart;
+                    part = EditorLogic.fetch.ship.parts.Find(p => p.highlighter.highlighted) ?? EditorLogic.SelectedPart;
                 }
 
                 if (part != null)
