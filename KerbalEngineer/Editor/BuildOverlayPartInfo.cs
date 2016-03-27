@@ -131,7 +131,7 @@ namespace KerbalEngineer.Editor
                     position.x = Input.mousePosition.x - 3 - position.width;
                 }
 
-                part = EditorLogic.fetch.ship.parts.Find(p => p.stackIcon.Highlighted) ?? EditorLogic.SelectedPart;
+                part = EditorLogic.fetch.ship.parts.Find(p => p.HighlightActive) ?? EditorLogic.SelectedPart;
                 if (part != null)
                 {
                     if (!part.Equals(selectedPart))
