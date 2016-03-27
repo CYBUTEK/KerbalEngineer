@@ -1,3 +1,4 @@
+1.1.0.0, XX-XX-16
     Added: Asset bundle loading and integration.
     Added: Styling system so that Unity UI objects can use KSP stock styles.
     Added: Unity UI window system.
@@ -6,6 +7,7 @@
     Changed: Flight Engineer toolbar menu recreated using Unity UI.
     Changed: Replaced occurances of IMGUI using RenderingManager to use OnGUI directly.
     Fixed: Toggling the 'Control Bar' now appropriately resizes the display stack.
+    Fixed: Part info tooltips in the editor remaining open when no part is selected.
 
 1.0.19.4, 12-02-16
     Fixed: Only 'STAGE_STACK_FLOW' and 'STAGE_STACK_FLOW_BALANCE' resources include surface mounted parts as fuel targets.
