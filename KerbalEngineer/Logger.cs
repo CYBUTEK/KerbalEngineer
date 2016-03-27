@@ -94,9 +94,13 @@ namespace KerbalEngineer
                             messages.Add(new[] {"\t", o.ToString()});
                         }
                     }
-                    else
+                    else if (obj != null)
                     {
                         messages.Add(new[] {"Log " + DateTime.Now.TimeOfDay, obj.ToString()});
+                    }
+                    else
+                    {
+                        messages.Add(new[] { "Log " + DateTime.Now.TimeOfDay, "Null" });
                     }
                 }
                 catch (Exception ex)
@@ -120,9 +124,13 @@ namespace KerbalEngineer
                             messages.Add(new[] {"\t", o.ToString()});
                         }
                     }
-                    else
+                    else if (obj != null)
                     {
                         messages.Add(new[] {"Log " + DateTime.Now.TimeOfDay, obj.ToString()});
+                    }
+                    else
+                    {
+                        messages.Add(new[] { "Log " + DateTime.Now.TimeOfDay, "Null" });
                     }
                 }
                 catch (Exception ex)
