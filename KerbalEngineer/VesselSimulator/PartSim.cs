@@ -777,8 +777,7 @@ namespace KerbalEngineer.VesselSimulator
 
         private bool IsDecoupler(Part thePart)
         {
-            return thePart.HasModule<ModuleDecouple>() ||
-                   thePart.HasModule<ModuleAnchoredDecoupler>();
+            return thePart.GetProtoModuleDecoupler()?.IsStageEnabled ?? false;
         }
 
         private bool IsFairing(Part thePart)
