@@ -812,15 +812,15 @@ namespace KerbalEngineer.Editor
                 // When not in compact mode draw the 'All Stages' and 'Atmospheric' toggles.
                 if (!compactMode)
                 {
-                    if (GUI.Button(new Rect(position.width - 143.0f * GuiDisplaySize.Offset, 5.0f, 70.0f * GuiDisplaySize.Offset, 20.0f), "SETTINGS", buttonStyle))
-                    {
-                        SettingsWindow.Open();
-                    }
-                    //if (GUI.Toggle(new Rect(position.width - 143.0f * GuiDisplaySize.Offset, 5.0f, 70.0f * GuiDisplaySize.Offset, 20.0f), showSettings, "SETTINGS", buttonStyle) != showSettings)
+                    //if (GUI.Button(new Rect(position.width - 143.0f * GuiDisplaySize.Offset, 5.0f, 70.0f * GuiDisplaySize.Offset, 20.0f), "SETTINGS", buttonStyle))
                     //{
-                    //    hasChanged = true;
-                    //    showSettings = !showSettings;
+                    //    SettingsWindow.Open();
                     //}
+                    if (GUI.Toggle(new Rect(position.width - 143.0f * GuiDisplaySize.Offset, 5.0f, 70.0f * GuiDisplaySize.Offset, 20.0f), showSettings, "SETTINGS", buttonStyle) != showSettings)
+                    {
+                        hasChanged = true;
+                        showSettings = !showSettings;
+                    }
 
                     if (GUI.Toggle(new Rect(position.width - 226.0f * GuiDisplaySize.Offset, 5.0f, 80.0f * GuiDisplaySize.Offset, 20.0f), showAllStages, "ALL STAGES", buttonStyle) != showAllStages)
                     {
