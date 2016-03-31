@@ -17,32 +17,16 @@
 //     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // 
 
-#region Using Directives
-
-
-
-#endregion
-
 namespace KerbalEngineer.Flight.Readouts.Vessel
 {
-    #region Using Directives
-
     using System;
-
-    #endregion
 
     public class SuicideBurnProcessor : IUpdatable, IUpdateRequest
     {
-        #region Fields
-
         private static readonly SuicideBurnProcessor instance = new SuicideBurnProcessor();
         private double acceleration;
         private double gravity;
         private double radarAltitude;
-
-        #endregion
-
-        #region Properties
 
         public static double Altitude { get; private set; }
 
@@ -52,16 +36,37 @@ namespace KerbalEngineer.Flight.Readouts.Vessel
 
         public static SuicideBurnProcessor Instance
         {
-            get { return instance; }
+            get
+            {
+                return instance;
+            }
         }
 
         public static bool ShowDetails { get; set; }
 
+        public void Update()
+        {
+            if (FlightGlobals.currentMainBody == null || FlightGlobals.ActiveVessel == null || SimulationProcessor.LastStage == null ||
+                FlightGlobals.ship_orbit.PeA >= 0.0 || !SimulationProcessor.ShowDetails)
+            {
+                ShowDetails = false;
+                return;
+            }
+
+            gravity = FlightGlobals.currentMainBody.gravParameter / Math.Pow(FlightGlobals.currentMainBody.Radius, 2.0);
+            acceleration = SimulationProcessor.LastStage.thrust / SimulationProcessor.LastStage.totalMass;
+            radarAltitude = FlightGlobals.ActiveVessel.terrainAltitude > 0.0
+                ? FlightGlobals.ship_altitude - FlightGlobals.ActiveVessel.terrainAltitude
+                : FlightGlobals.ship_altitude;
+
+            DeltaV = Math.Sqrt((2 * gravity * radarAltitude) + Math.Pow(FlightGlobals.ship_verticalSpeed, 2.0));
+            Altitude = Math.Pow(DeltaV, 2.0) / (2.0 * acceleration);
+            Distance = radarAltitude - Altitude;
+
+            ShowDetails = !double.IsInfinity(Distance);
+        }
+
         public bool UpdateRequested { get; set; }
-
-        #endregion
-
-        #region Methods
 
         public static void RequestUpdate()
         {
@@ -74,28 +79,5 @@ namespace KerbalEngineer.Flight.Readouts.Vessel
             FlightEngineerCore.Instance.AddUpdatable(SimulationProcessor.Instance);
             FlightEngineerCore.Instance.AddUpdatable(instance);
         }
-
-        public void Update()
-        {
-            if (FlightGlobals.ship_orbit.PeA >= 0.0 || !SimulationProcessor.ShowDetails)
-            {
-                ShowDetails = false;
-                return;
-            }
-
-            this.gravity = FlightGlobals.currentMainBody.gravParameter / Math.Pow(FlightGlobals.currentMainBody.Radius, 2.0);
-            this.acceleration = SimulationProcessor.LastStage.thrust / SimulationProcessor.LastStage.totalMass;
-            this.radarAltitude = FlightGlobals.ActiveVessel.terrainAltitude > 0.0
-                ? FlightGlobals.ship_altitude - FlightGlobals.ActiveVessel.terrainAltitude
-                : FlightGlobals.ship_altitude;
-
-            DeltaV = Math.Sqrt((2 * this.gravity * this.radarAltitude) + Math.Pow(FlightGlobals.ship_verticalSpeed, 2.0));
-            Altitude = Math.Pow(DeltaV, 2.0) / (2.0 * this.acceleration);
-            Distance = this.radarAltitude - Altitude;
-
-            ShowDetails = !Double.IsInfinity(Distance);
-        }
-
-        #endregion
     }
 }
