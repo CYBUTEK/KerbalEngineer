@@ -23,8 +23,8 @@ namespace KerbalEngineer
     [KSPAddon(KSPAddon.Startup.Instantly, false)]
     public class AssetBundleLoader : MonoBehaviour
     {
-        private static AssetBundle m_Images;
-        private static AssetBundle m_Prefabs;
+        private static AssetBundle s_Images;
+        private static AssetBundle s_Prefabs;
 
         /// <summary>
         ///     Gets the loaded images asset bundle.
@@ -33,7 +33,7 @@ namespace KerbalEngineer
         {
             get
             {
-                return m_Images;
+                return s_Images;
             }
         }
 
@@ -44,7 +44,7 @@ namespace KerbalEngineer
         {
             get
             {
-                return m_Prefabs;
+                return s_Prefabs;
             }
         }
 
@@ -52,8 +52,8 @@ namespace KerbalEngineer
         {
             string bundlePath = EngineerGlobals.AssemblyPath;
 
-            m_Images = AssetBundle.CreateFromFile(bundlePath + "/images");
-            m_Prefabs = AssetBundle.CreateFromFile(bundlePath + "/prefabs");
+            s_Images = AssetBundle.CreateFromFile(bundlePath + "/images");
+            s_Prefabs = AssetBundle.CreateFromFile(bundlePath + "/prefabs");
         }
     }
 }

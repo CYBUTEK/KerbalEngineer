@@ -23,10 +23,10 @@ namespace KerbalEngineer.Flight.Readouts.Vessel
 
     public class SuicideBurnProcessor : IUpdatable, IUpdateRequest
     {
-        private static readonly SuicideBurnProcessor instance = new SuicideBurnProcessor();
-        private double acceleration;
-        private double gravity;
-        private double radarAltitude;
+        private static readonly SuicideBurnProcessor s_Instance = new SuicideBurnProcessor();
+        private double m_Acceleration;
+        private double m_Gravity;
+        private double m_RadarAltitude;
 
         public static double Altitude { get; private set; }
 
@@ -38,7 +38,7 @@ namespace KerbalEngineer.Flight.Readouts.Vessel
         {
             get
             {
-                return instance;
+                return s_Instance;
             }
         }
 
@@ -53,15 +53,15 @@ namespace KerbalEngineer.Flight.Readouts.Vessel
                 return;
             }
 
-            gravity = FlightGlobals.currentMainBody.gravParameter / Math.Pow(FlightGlobals.currentMainBody.Radius, 2.0);
-            acceleration = SimulationProcessor.LastStage.thrust / SimulationProcessor.LastStage.totalMass;
-            radarAltitude = FlightGlobals.ActiveVessel.terrainAltitude > 0.0
+            m_Gravity = FlightGlobals.currentMainBody.gravParameter / Math.Pow(FlightGlobals.currentMainBody.Radius, 2.0);
+            m_Acceleration = SimulationProcessor.LastStage.thrust / SimulationProcessor.LastStage.totalMass;
+            m_RadarAltitude = FlightGlobals.ActiveVessel.terrainAltitude > 0.0
                 ? FlightGlobals.ship_altitude - FlightGlobals.ActiveVessel.terrainAltitude
                 : FlightGlobals.ship_altitude;
 
-            DeltaV = Math.Sqrt((2 * gravity * radarAltitude) + Math.Pow(FlightGlobals.ship_verticalSpeed, 2.0));
-            Altitude = Math.Pow(DeltaV, 2.0) / (2.0 * acceleration);
-            Distance = radarAltitude - Altitude;
+            DeltaV = Math.Sqrt((2 * m_Gravity * m_RadarAltitude) + Math.Pow(FlightGlobals.ship_verticalSpeed, 2.0));
+            Altitude = Math.Pow(DeltaV, 2.0) / (2.0 * m_Acceleration);
+            Distance = m_RadarAltitude - Altitude;
 
             ShowDetails = !double.IsInfinity(Distance);
         }
@@ -70,14 +70,14 @@ namespace KerbalEngineer.Flight.Readouts.Vessel
 
         public static void RequestUpdate()
         {
-            instance.UpdateRequested = true;
+            s_Instance.UpdateRequested = true;
             SimulationProcessor.RequestUpdate();
         }
 
         public static void Reset()
         {
             FlightEngineerCore.Instance.AddUpdatable(SimulationProcessor.Instance);
-            FlightEngineerCore.Instance.AddUpdatable(instance);
+            FlightEngineerCore.Instance.AddUpdatable(s_Instance);
         }
     }
 }

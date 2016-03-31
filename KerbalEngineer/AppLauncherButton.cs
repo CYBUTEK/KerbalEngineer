@@ -24,7 +24,7 @@ namespace KerbalEngineer
 
     public class AppLauncherButton : MonoBehaviour
     {
-        private static Texture m_IconTexture;
+        private static Texture s_IconTexture;
         private ApplicationLauncherButton m_Button;
 
         /// <summary>
@@ -124,9 +124,9 @@ namespace KerbalEngineer
         protected virtual void Awake()
         {
             // cache icon texture
-            if (m_IconTexture == null && AssetBundleLoader.Images != null)
+            if (s_IconTexture == null && AssetBundleLoader.Images != null)
             {
-                m_IconTexture = AssetBundleLoader.Images.LoadAsset<Texture2D>("app-launcher-icon");
+                s_IconTexture = AssetBundleLoader.Images.LoadAsset<Texture2D>("app-launcher-icon");
             }
 
             // subscribe event listeners
@@ -186,7 +186,7 @@ namespace KerbalEngineer
             // create button
             if (ApplicationLauncher.Instance != null)
             {
-                m_Button = ApplicationLauncher.Instance.AddModApplication(OnTrue, OnFalse, OnHover, OnHoverOut, OnEnable, OnDisable, ApplicationLauncher.AppScenes.ALWAYS, m_IconTexture);
+                m_Button = ApplicationLauncher.Instance.AddModApplication(OnTrue, OnFalse, OnHover, OnHoverOut, OnEnable, OnDisable, ApplicationLauncher.AppScenes.ALWAYS, s_IconTexture);
             }
 
             OnReady();
