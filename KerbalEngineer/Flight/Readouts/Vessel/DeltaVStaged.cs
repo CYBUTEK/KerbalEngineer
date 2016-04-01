@@ -28,6 +28,8 @@ using KerbalEngineer.Helpers;
 
 namespace KerbalEngineer.Flight.Readouts.Vessel
 {
+    using KSP.UI.Screens;
+
     public class DeltaVStaged : ReadoutModule
     {
         #region Constructors
@@ -51,7 +53,7 @@ namespace KerbalEngineer.Flight.Readouts.Vessel
                 return;
             }
 
-            foreach (var stage in SimulationProcessor.Stages.Where(stage => stage.deltaV > 0 || stage.number == Staging.CurrentStage))
+            foreach (var stage in SimulationProcessor.Stages.Where(stage => stage.deltaV > 0 || stage.number == StageManager.CurrentStage))
             {
                 this.DrawLine("DeltaV (S" + stage.number + ")", stage.deltaV.ToString("N0") + "m/s (" + TimeFormatter.ConvertToString(stage.time) + ")", section.IsHud);
             }
