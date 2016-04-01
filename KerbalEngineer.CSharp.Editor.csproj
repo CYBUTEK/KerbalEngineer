@@ -121,9 +121,77 @@
     <Reference Include="KerbalEngineer.Unity">
       <HintPath>Assets\Plugins\KerbalEngineer.Unity.dll</HintPath>
     </Reference>
+    <Reference Include="KSPAssetCompiler">
+      <HintPath>Assets\Plugins\KSPAssets\KSPAssetCompiler.dll</HintPath>
+    </Reference>
+    <Reference Include="KSPAssets">
+      <HintPath>Assets\Plugins\KSPAssets\KSPAssets.dll</HintPath>
+    </Reference>
+    <Reference Include="PartTools">
+      <HintPath>Assets\PartTools\Lib\PartTools.dll</HintPath>
+    </Reference>
+    <Reference Include="PartToolsEditor">
+      <HintPath>Assets\PartTools\Lib\PartToolsEditor.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Assets\PartTools\Editor\InternalSpaceEditor.cs" />
+    <Compile Include="Assets\PartTools\Editor\KSPParticleEmitterEditor.cs" />
+    <Compile Include="Assets\PartTools\Editor\PartToolsEditor.cs" />
+    <Compile Include="Assets\PartTools\Editor\PartToolsWindows.cs" />
+    <Compile Include="Assets\PartTools\Editor\PropEditor.cs" />
     <Compile Include="Assets\Scripts\Editor\BuildAssetBundles.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Assets\PartTools\Shaders\Alpha.shader" />
+    <None Include="Assets\PartTools\Shaders\AlphaAdditive.shader" />
+    <None Include="Assets\PartTools\Shaders\AlphaSpecular.shader" />
+    <None Include="Assets\PartTools\Shaders\Bumped.shader" />
+    <None Include="Assets\PartTools\Shaders\BumpedSpecular.shader" />
+    <None Include="Assets\PartTools\Shaders\Cutoff.shader" />
+    <None Include="Assets\PartTools\Shaders\CutoffBumped.shader" />
+    <None Include="Assets\PartTools\Shaders\DepthMask.shader" />
+    <None Include="Assets\PartTools\Shaders\Diffuse.shader" />
+    <None Include="Assets\PartTools\Shaders\Emissive.shader" />
+    <None Include="Assets\PartTools\Shaders\EmissiveBumpedSpecular.shader" />
+    <None Include="Assets\PartTools\Shaders\EmissiveSpecular.shader" />
+    <None Include="Assets\PartTools\Shaders\InternalBumpedSpecular 1.shader" />
+    <None Include="Assets\PartTools\Shaders\InternalBumpedSpecular.shader" />
+    <None Include="Assets\PartTools\Shaders\KSPParticle AddSmooth.shader" />
+    <None Include="Assets\PartTools\Shaders\LightingKSP.cginc" />
+    <None Include="Assets\PartTools\Shaders\LightwrapSpecular.shader" />
+    <None Include="Assets\PartTools\Shaders\PBR\KSP_Standard_Bumped.shader" />
+    <None Include="Assets\PartTools\Shaders\ParticleAdd.shader" />
+    <None Include="Assets\PartTools\Shaders\ParticleAdditiveFresnel.shader" />
+    <None Include="Assets\PartTools\Shaders\ParticleAlpha.shader" />
+    <None Include="Assets\PartTools\Shaders\ScrollingUnlit.shader" />
+    <None Include="Assets\PartTools\Shaders\SolidColorAlpha.shader" />
+    <None Include="Assets\PartTools\Shaders\Specular.shader" />
+    <None Include="Assets\PartTools\Shaders\SpecularBumpTransparent.shader" />
+    <None Include="Assets\PartTools\Shaders\SpecularTransparent.shader" />
+    <None Include="Assets\PartTools\Shaders\Unlit.shader" />
+    <None Include="Assets\PartTools\Shaders\UnlitColor.shader" />
+    <None Include="Assets\PartTools\Shaders\UnlitTransparent.shader" />
+    <None Include="Assets\Plugins\KSPAssets\ReadMe.txt" />
+    <None Include="Assets\SquadCore\Shaders\Alpha.shader" />
+    <None Include="Assets\SquadCore\Shaders\AlphaSpecular.shader" />
+    <None Include="Assets\SquadCore\Shaders\Bumped.shader" />
+    <None Include="Assets\SquadCore\Shaders\BumpedSpecular.shader" />
+    <None Include="Assets\SquadCore\Shaders\Cutoff.shader" />
+    <None Include="Assets\SquadCore\Shaders\CutoffBumped.shader" />
+    <None Include="Assets\SquadCore\Shaders\Diffuse.shader" />
+    <None Include="Assets\SquadCore\Shaders\Emissive.shader" />
+    <None Include="Assets\SquadCore\Shaders\EmissiveBumpedSpecular.shader" />
+    <None Include="Assets\SquadCore\Shaders\EmissiveSpecular.shader" />
+    <None Include="Assets\SquadCore\Shaders\KSPParticle AddSmooth.shader" />
+    <None Include="Assets\SquadCore\Shaders\ParticleAdd.shader" />
+    <None Include="Assets\SquadCore\Shaders\ParticleAlpha.shader" />
+    <None Include="Assets\SquadCore\Shaders\SolidColorAlpha.shader" />
+    <None Include="Assets\SquadCore\Shaders\Specular.shader" />
+    <None Include="Assets\SquadCore\Shaders\SpecularBumpTransparent.shader" />
+    <None Include="Assets\SquadCore\Shaders\SpecularTransparent.shader" />
+    <None Include="Assets\SquadCore\Shaders\Unlit.shader" />
+    <None Include="Assets\SquadCore\Shaders\UnlitTransparent.shader" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\SyntaxTree\UnityVS\2015\UnityVS.CSharp.targets" />
 </Project>
