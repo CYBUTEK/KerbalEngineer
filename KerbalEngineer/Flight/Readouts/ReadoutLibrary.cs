@@ -98,8 +98,9 @@ namespace KerbalEngineer.Flight.Readouts
                 readouts.Add(new TimeToAtmosphere());
 
                 // Surface
-                readouts.Add(new AltitudeSeaLevel());
-                readouts.Add(new AltitudeTerrain());
+				readouts.Add(new AltitudeSeaLevel());
+				readouts.Add(new AltitudeTerrain());
+				readouts.Add(new AltitudeUnderWater());
                 readouts.Add(new VerticalSpeed());
                 readouts.Add(new VerticalAcceleration());
                 readouts.Add(new HorizontalSpeed());
