@@ -82,7 +82,11 @@ namespace KerbalEngineer.VesselSimulator
             float maxFuelFlow = engineMod.maxFuelFlow;
             float minFuelFlow = engineMod.minFuelFlow;
             float thrustPercentage = engineMod.thrustPercentage;
-            Vector3 vecThrust = CalculateThrustVector(vectoredThrust ? engineMod.thrustTransforms : null, log);
+            List<Transform> thrustTransforms = engineMod.thrustTransforms;
+            List<float> thrustTransformMultipliers = engineMod.thrustTransformMultipliers;
+            Vector3 vecThrust = CalculateThrustVector(vectoredThrust ? thrustTransforms : null,
+                                                        vectoredThrust ? thrustTransformMultipliers : null,
+                                                        log);
             FloatCurve atmosphereCurve = engineMod.atmosphereCurve;
             bool atmChangeFlow = engineMod.atmChangeFlow;
             FloatCurve atmCurve = engineMod.useAtmCurve ? engineMod.atmCurve : null;
@@ -93,7 +97,6 @@ namespace KerbalEngineer.VesselSimulator
             List<Propellant> propellants = engineMod.propellants;
             bool active = engineMod.isOperational;
             float resultingThrust = engineMod.resultingThrust;
-            List<Transform> thrustTransforms = engineMod.thrustTransforms;
 			
 			EngineSim engineSim = pool.Borrow();
 
@@ -195,21 +198,20 @@ namespace KerbalEngineer.VesselSimulator
                 engineSim.resourceFlowModes.Add(propellant.id, (double)propellant.GetFlowMode());
             }
 
-            double thrustPerThrustTransform = engineSim.thrust / thrustTransforms.Count;
             for (int i = 0; i < thrustTransforms.Count; i++)
             {
                 Transform thrustTransform = thrustTransforms[i];
                 Vector3d direction = thrustTransform.forward.normalized;
                 Vector3d position = thrustTransform.position;
 
-                AppliedForce appliedForce = AppliedForce.New(direction * thrustPerThrustTransform, position);
+                AppliedForce appliedForce = AppliedForce.New(direction * engineSim.thrust * thrustTransformMultipliers[i], position);
                 engineSim.appliedForces.Add(appliedForce);
             }
 
             return engineSim;
         }
 
-		private static Vector3 CalculateThrustVector(List<Transform> thrustTransforms, LogMsg log)
+		private static Vector3 CalculateThrustVector(List<Transform> thrustTransforms, List<float> thrustTransformMultipliers, LogMsg log)
 		{
 			if (thrustTransforms == null)
 			{
@@ -223,7 +225,7 @@ namespace KerbalEngineer.VesselSimulator
 
 				if (log != null) log.buf.AppendFormat("Transform = ({0:g6}, {1:g6}, {2:g6})   length = {3:g6}\n", trans.forward.x, trans.forward.y, trans.forward.z, trans.forward.magnitude);
 
-				thrustvec -= trans.forward;
+				thrustvec -= (trans.forward * thrustTransformMultipliers[i]);
 			}
 
 			if (log != null) log.buf.AppendFormat("ThrustVec  = ({0:g6}, {1:g6}, {2:g6})   length = {3:g6}\n", thrustvec.x, thrustvec.y, thrustvec.z, thrustvec.magnitude);
