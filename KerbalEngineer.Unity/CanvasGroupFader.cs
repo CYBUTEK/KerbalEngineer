@@ -100,8 +100,8 @@ namespace KerbalEngineer.Unity
                 yield return null;
             }
 
-            if (callback != null)
-				callback.Invoke();
+            //print(m_CanvasGroup.alpha);
+            callback?.Invoke();
 
             m_FadeCoroutine = null;
         }
