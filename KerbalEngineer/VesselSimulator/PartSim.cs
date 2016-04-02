@@ -389,9 +389,9 @@ namespace KerbalEngineer.VesselSimulator
                 mass += resources.GetResourceMass(resources.Types[i]);
             }
 
-            if (isFairing && currentStage <= inverseStage)
+            if (isFairing && currentStage > inverseStage)
             {
-                mass -= fairingMass;
+                mass += fairingMass;
             }
 
             return mass;

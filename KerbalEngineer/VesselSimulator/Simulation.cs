@@ -34,6 +34,7 @@ namespace KerbalEngineer.VesselSimulator
     using CompoundParts;
     using Extensions;
     using Helpers;
+    using KSP.UI.Screens;
 
     public class Simulation
     {
@@ -147,7 +148,7 @@ namespace KerbalEngineer.VesselSimulator
             this.gravity = theGravity;
             this.atmosphere = theAtmosphere;
             this.mach = theMach;
-            this.lastStage = Staging.lastStage;
+            this.lastStage = StageManager.LastStage;
             this.maxMach = 1.0f;
             //MonoBehaviour.print("lastStage = " + lastStage);
 

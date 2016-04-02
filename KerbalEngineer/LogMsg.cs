@@ -1,7 +1,5 @@
 ﻿using System.Text;
 
-using UnityEngine;
-
 namespace KerbalEngineer
 {
     public class LogMsg
@@ -16,7 +14,9 @@ namespace KerbalEngineer
         public void Flush()
         {
             if (this.buf.Length > 0)
-                MonoBehaviour.print(this.buf);
+            {
+                Logger.Log(this.buf);
+            }
             this.buf.Length = 0;
         }
     }

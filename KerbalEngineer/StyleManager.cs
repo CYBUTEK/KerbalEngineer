@@ -25,8 +25,8 @@ namespace KerbalEngineer
 
     public static class StyleManager
     {
-        private static GameObject m_WindowPrefab;
-        private static GameObject m_SettingPrefab;
+        private static GameObject s_WindowPrefab;
+        private static GameObject s_SettingPrefab;
 
         /// <summary>
         ///     Creates a setting on the supplied window.
@@ -126,12 +126,12 @@ namespace KerbalEngineer
         /// </summary>
         private static GameObject GetSettingPrefab()
         {
-            if (m_SettingPrefab == null)
+            if (s_SettingPrefab == null)
             {
-                m_SettingPrefab = AssetBundleLoader.Prefabs.LoadAsset<GameObject>("Setting");
+                s_SettingPrefab = AssetBundleLoader.Prefabs.LoadAsset<GameObject>("Setting");
             }
 
-            return m_SettingPrefab;
+            return s_SettingPrefab;
         }
 
         /// <summary>
@@ -161,12 +161,12 @@ namespace KerbalEngineer
         /// </summary>
         private static GameObject GetWindowPrefab()
         {
-            if (m_WindowPrefab == null)
+            if (s_WindowPrefab == null)
             {
-                m_WindowPrefab = AssetBundleLoader.Prefabs.LoadAsset<GameObject>("Window");
+                s_WindowPrefab = AssetBundleLoader.Prefabs.LoadAsset<GameObject>("Window");
             }
 
-            return m_WindowPrefab;
+            return s_WindowPrefab;
         }
 
         /// <summary>
