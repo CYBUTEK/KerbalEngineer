@@ -119,7 +119,6 @@ namespace KerbalEngineer.VesselSimulator
             partSim.isFuelLine = partSim.part.HasModule<CModuleFuelLine>();
             partSim.isFuelTank = partSim.part is FuelTank;
             partSim.isSepratron = partSim.IsSepratron();
-            partSim.isFairing = partSim.IsFairing(partSim.part);
             partSim.inverseStage = partSim.part.inverseStage;
             //MonoBehaviour.print("inverseStage = " + inverseStage);
 
@@ -145,13 +144,13 @@ namespace KerbalEngineer.VesselSimulator
             else
             {
                 partSim.realMass = partSim.part.mass;
-                if (log != null) log.buf.AppendLine("Using part.mass of " + partSim.part.mass);
+                if (log != null)
+                {
+                    log.buf.AppendLine("Using part.mass" + partSim.part.mass);
+                }
             }
 
-            if (partSim.isFairing)
-            {
-                partSim.fairingMass = partSim.part.GetModuleMass((float)partSim.realMass);
-            }
+            partSim.fairingMass = partSim.part.GetModule<ModuleProceduralFairing>()?.GetModuleMass(partSim.part.mass) ?? 0.0f;
 
             for (int i = 0; i < partSim.part.Resources.Count; i++)
             {
@@ -417,9 +416,9 @@ namespace KerbalEngineer.VesselSimulator
                 mass += resources.GetResourceMass(resources.Types[i]);
             }
 
-            if (isFairing && currentStage > inverseStage)
+            if (fairingMass > 0.0 && currentStage <= inverseStage)
             {
-                mass += fairingMass;
+                mass -= fairingMass;
             }
 
             return mass;
@@ -778,11 +777,6 @@ namespace KerbalEngineer.VesselSimulator
         private bool IsDecoupler(Part thePart)
         {
             return thePart.GetProtoModuleDecoupler()?.IsStageEnabled ?? false;
-        }
-
-        private bool IsFairing(Part thePart)
-        {
-            return thePart.HasModule<ModuleProceduralFairing>();
         }
 
         private bool IsSepratron()
