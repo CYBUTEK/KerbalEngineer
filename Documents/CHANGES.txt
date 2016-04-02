@@ -1,4 +1,5 @@
 1.1.0.2
+    Added: Altitude (terrain) readout now shows the altitude above underwater terrain when splashed down.
     Fixed: Log spam and physics issue caused when using the EngineerChip part due to a convex mesh collider (now uses a box collider).
 
 1.1.0.1, 2016-04-01, KSP Build #1179
