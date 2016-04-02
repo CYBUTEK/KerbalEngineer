@@ -100,8 +100,7 @@ namespace KerbalEngineer.Unity.UI
         {
             SetSelectable(textStyle, normal, highlight, pressed, disabled);
 
-            Toggle toggle = GetComponent<Toggle>();
-            Image toggleImage = (toggle != null) ? toggle.graphic as Image : null;
+            Image toggleImage = GetComponent<Toggle>()?.graphic as Image;
             if (toggleImage != null)
             {
                 toggleImage.sprite = pressed;

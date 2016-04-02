@@ -159,8 +159,7 @@
                 yield return null;
             }
 
-            if (callback != null)
-                callback.Invoke();
+            callback?.Invoke();
 
             m_ScaleFadeCoroutine = null;
         }
