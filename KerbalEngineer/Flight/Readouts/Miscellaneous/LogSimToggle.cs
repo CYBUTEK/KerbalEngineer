@@ -17,48 +17,38 @@
 //     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // 
 
-#region Using Directives
-
-using KerbalEngineer.Extensions;
-using KerbalEngineer.Flight.Sections;
-using KerbalEngineer.Helpers;
-
-#endregion
-
-namespace KerbalEngineer.Flight.Readouts.Surface
+namespace KerbalEngineer.Flight.Readouts.Miscellaneous
 {
-    public class ImpactLatitude : ReadoutModule
+    #region Using Directives
+
+    using Sections;
+    using UnityEngine;
+    using VesselSimulator;
+
+    #endregion
+
+    public class LogSimToggle : ReadoutModule
     {
         #region Constructors
 
-        public ImpactLatitude()
+        public LogSimToggle()
         {
-            this.Name = "Impact Latitude";
-            this.Category = ReadoutCategory.GetCategory("Surface");
-            this.HelpString = "Latitude of the impact position.";
+            this.Name = "Log Simulation";
+            this.Category = ReadoutCategory.GetCategory("Miscellaneous");
+            this.HelpString = "Shows a button that allows you to make the next run of the simulation code dump extra debugging output.";
             this.IsDefault = false;
         }
 
         #endregion
 
-        #region Methods: public
+        #region Methods
 
         public override void Draw(SectionModule section)
         {
-            if (ImpactProcessor.ShowDetails)
-            {
-                this.DrawLine(Units.ToAngleDMS(ImpactProcessor.Latitude) + (ImpactProcessor.Latitude < 0 ? " S" : " N"), section.IsHud);
-            }
-        }
-
-        public override void Reset()
-        {
-            FlightEngineerCore.Instance.AddUpdatable(ImpactProcessor.Instance);
-        }
-
-        public override void Update()
-        {
-            ImpactProcessor.RequestUpdate();
+            GUILayout.BeginHorizontal();
+            GUILayout.Label("Log Simulation: ", this.NameStyle);
+            SimManager.logOutput = GUILayout.Toggle(SimManager.logOutput, "ENABLED", this.ButtonStyle);
+            GUILayout.EndHorizontal();
         }
 
         #endregion

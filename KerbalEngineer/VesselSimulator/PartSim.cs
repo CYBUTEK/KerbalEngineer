@@ -233,27 +233,13 @@ namespace KerbalEngineer.VesselSimulator
                     {
                         if (log != null) log.buf.AppendLine("Module: " + engine.moduleName);
 
-                        Vector3 thrustvec = this.CalculateThrustVector(vectoredThrust ? engine.thrustTransforms : null, log);
-
                         EngineSim engineSim = EngineSim.New(
                             this,
-                            atmosphere,
+							engine,
+							atmosphere,
                             (float)mach,
-                            engine.maxFuelFlow,
-                            engine.minFuelFlow,
-                            engine.thrustPercentage,
-                            thrustvec,
-                            engine.atmosphereCurve,
-                            engine.atmChangeFlow,
-                            engine.useAtmCurve ? engine.atmCurve : null,
-                            engine.useVelCurve ? engine.velCurve : null,
-                            engine.currentThrottle,
-                            engine.g,
-                            engine.throttleLocked || fullThrust,
-                            engine.propellants,
-                            engine.isOperational,
-                            engine.resultingThrust,
-                            engine.thrustTransforms,
+							vectoredThrust,
+							fullThrust,
                             log);
                         allEngines.Add(engineSim);
                     }
@@ -267,28 +253,14 @@ namespace KerbalEngineer.VesselSimulator
                     ModuleEngines engine = engines[i];
                     if (log != null) log.buf.AppendLine("Module: " + engine.moduleName);
 
-                    Vector3 thrustvec = this.CalculateThrustVector(vectoredThrust ? engine.thrustTransforms : null, log);
-
                     EngineSim engineSim = EngineSim.New(
                         this,
+						engine,
                         atmosphere,
                         (float)mach,
-                        engine.maxFuelFlow,
-                        engine.minFuelFlow,
-                        engine.thrustPercentage,
-                        thrustvec,
-                        engine.atmosphereCurve,
-                        engine.atmChangeFlow,
-                        engine.useAtmCurve ? engine.atmCurve : null,
-                        engine.useVelCurve ? engine.velCurve : null,
-                        engine.currentThrottle,
-                        engine.g,
-                        engine.throttleLocked || fullThrust,
-                        engine.propellants,
-                        engine.isOperational,
-                        engine.resultingThrust,
-                        engine.thrustTransforms,
-                        log);
+						vectoredThrust,
+						fullThrust,
+						log);
                     allEngines.Add(engineSim);
                 }
             }
