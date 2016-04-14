@@ -100,7 +100,7 @@ namespace KerbalEngineer.Extensions
             {
                 PartModule pm = part.Modules[i];
                 if (pm is IPartCostModifier)
-                    cost += (pm as IPartCostModifier).GetModuleCost(defaultCost);
+                    cost += (pm as IPartCostModifier).GetModuleCost(defaultCost, ModifierStagingSituation.CURRENT);
             }
             return cost;
         }

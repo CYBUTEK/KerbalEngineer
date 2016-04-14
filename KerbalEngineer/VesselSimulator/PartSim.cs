@@ -150,7 +150,7 @@ namespace KerbalEngineer.VesselSimulator
                 }
             }
 
-            partSim.fairingMass = partSim.part.GetModule<ModuleProceduralFairing>()?.GetModuleMass(partSim.part.mass) ?? 0.0f;
+            partSim.fairingMass = partSim.part.GetModule<ModuleProceduralFairing>()?.GetModuleMass(partSim.part.mass, ModifierStagingSituation.CURRENT) ?? 0.0f;
 
             for (int i = 0; i < partSim.part.Resources.Count; i++)
             {
