@@ -35,7 +35,7 @@ namespace KerbalEngineer
             get
             {
                 return m_Button != null &&
-                       m_Button.toggleButton.Button.interactable &&
+                       //m_Button.toggleButton.Button.interactable &&
                        m_Button.toggleButton.CurrentState == UIRadioButton.State.True;
             }
             set
@@ -61,7 +61,7 @@ namespace KerbalEngineer
         /// </summary>
         public void Disable()
         {
-            if (m_Button != null && m_Button.toggleButton.Button.interactable)
+            if (m_Button != null /*&& m_Button.toggleButton.Button.interactable*/)
             {
                 m_Button.Disable();
             }
@@ -72,7 +72,7 @@ namespace KerbalEngineer
         /// </summary>
         public void Enable()
         {
-            if (m_Button != null && m_Button.toggleButton.Button.interactable == false)
+            if (m_Button != null /*&& m_Button.toggleButton.Button.interactable == false*/)
             {
                 m_Button.Enable();
             }
