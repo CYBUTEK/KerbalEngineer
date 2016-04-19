@@ -1,6 +1,10 @@
 1.1.0.2
     Added: Altitude (terrain) readout now shows the altitude above underwater terrain when splashed down.
+    Added: Usage of the stock IPartMassModifier for handling the modifying of part module staged mass.
+    Changed: Fairing specific mass adjustments now make use of the generic staged mass modifier implementation.
+    Changed: App launcher button handling works with KSP build 1205 changes.
     Fixed: Log spam and physics issue caused when using the EngineerChip part due to a convex mesh collider (now uses a box collider).
+    Fixed: Issues with the disabling/enabling of the toolbar app launcher button in flight when in career mode.
 
 1.1.0.1, 2016-04-01, KSP Build #1179
     Fixed: Heat shields acting as staged decouplers when not set to be staged.
