@@ -27,7 +27,7 @@ namespace KerbalEngineer.Flight
     [KSPAddon(KSPAddon.Startup.Flight, false)]
     public class FlightAppLauncher : AppLauncherButton, IFlightAppLauncher
     {
-        private static FlightAppLauncher m_Instance;
+        private static FlightAppLauncher s_Instance;
         private FlightMenu m_FlightMenu;
         private GameObject m_MenuObject;
         private GameObject m_MenuPrefab;
@@ -39,7 +39,7 @@ namespace KerbalEngineer.Flight
         {
             get
             {
-                return m_Instance;
+                return s_Instance;
             }
         }
 
@@ -145,7 +145,7 @@ namespace KerbalEngineer.Flight
             base.Awake();
 
             // set singleton instance
-            m_Instance = this;
+            s_Instance = this;
 
             // cache menu prefab
             if (m_MenuPrefab == null && AssetBundleLoader.Prefabs != null)
@@ -175,6 +175,18 @@ namespace KerbalEngineer.Flight
         protected override void OnTrue()
         {
             Open();
+        }
+
+        protected virtual void Update()
+        {
+            if (FlightEngineerCore.IsDisplayable && Button.IsEnabled == false)
+            {
+                Enable();
+            }
+            else if (FlightEngineerCore.IsDisplayable == false && Button.IsEnabled)
+            {
+                Disable();
+            }
         }
 
         /// <summary>

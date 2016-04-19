@@ -28,6 +28,17 @@ namespace KerbalEngineer
         private ApplicationLauncherButton m_Button;
 
         /// <summary>
+        ///     Gets the wrapped application launcher button object.
+        /// </summary>
+        public ApplicationLauncherButton Button
+        {
+            get
+            {
+                return m_Button;
+            }
+        }
+
+        /// <summary>
         ///     Gets or sets the toggle button state.
         /// </summary>
         public bool IsOn
