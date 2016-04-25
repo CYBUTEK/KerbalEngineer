@@ -351,6 +351,9 @@ namespace KerbalEngineer.Flight
         /// </summary>
         private void Update()
         {
+            if (FlightGlobals.ActiveVessel == null)
+                return;
+
             try
             {
                 SectionLibrary.Update();
@@ -367,6 +370,9 @@ namespace KerbalEngineer.Flight
         /// </summary>
         private void UpdateModules()
         {
+            if (FlightGlobals.ActiveVessel == null)
+                return;
+
             try
             {
                 foreach (var updatable in this.UpdatableModules)
