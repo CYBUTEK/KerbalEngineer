@@ -30,9 +30,10 @@ using UnityEngine;
 
 namespace KerbalEngineer.Flight.Readouts.Vessel
 {
-	using System;
+    using Helpers;
+    using System;
 
-	public class DecellerationProcessor : IUpdatable, IUpdateRequest // Shamelessly Stolen From Maneuver Node Processor
+    public class DecellerationProcessor : IUpdatable, IUpdateRequest // Shamelessly Stolen From Maneuver Node Processor
 	{
 		#region Properties
 
@@ -81,15 +82,19 @@ namespace KerbalEngineer.Flight.Readouts.Vessel
 				return;
 			}
 
+            var dtime = 0.0;
+
 			m_Gravity = FlightGlobals.currentMainBody.gravParameter / Math.Pow(FlightGlobals.currentMainBody.Radius, 2.0);
 			m_RadarAltitude = FlightGlobals.ActiveVessel.terrainAltitude > 0.0
 				? FlightGlobals.ship_altitude - FlightGlobals.ActiveVessel.terrainAltitude
 				: FlightGlobals.ship_altitude;
 			ProgradeDeltaV = FlightGlobals.ActiveVessel.horizontalSrfSpeed;
 			RadialDeltaV = Math.Sqrt((2 * m_Gravity * m_RadarAltitude) + Math.Pow(FlightGlobals.ship_verticalSpeed, 2.0));
-			DecellerationDeltaV = Math.Sqrt(Math.Exp(ProgradeDeltaV, 2.0)+Math.Pow(RadialDeltaV, 2.0));
-			HasDeltaV = GetSuicideBurnTime(DecellerationDeltaV, ref DecellerationTime);
-		}
+			DecellerationDeltaV = Math.Sqrt(Math.Pow(ProgradeDeltaV, 2.0)+Math.Pow(RadialDeltaV, 2.0));
+			HasDeltaV = GetSuicideBurnTime(DecellerationDeltaV, ref dtime);
+            DecellerationTime = dtime;
+
+        }
 
 		#endregion
 
@@ -103,7 +108,7 @@ namespace KerbalEngineer.Flight.Readouts.Vessel
 				var stageDeltaV = stage.deltaV;
 				var startMass = stage.totalMass;
 
-				ProcessStageDrain:
+				//ProcessStageDrain
 				if (deltaV <= Double.Epsilon)
 				{
 					break;

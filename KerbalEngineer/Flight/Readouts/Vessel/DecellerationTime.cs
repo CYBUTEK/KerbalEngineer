@@ -37,7 +37,7 @@ namespace KerbalEngineer.Flight.Readouts.Vessel
 			this.Name = "Decelleration Time";
 			this.Category = ReadoutCategory.GetCategory("Vessel");
 			this.HelpString = "Time Required at 100% burn to kill all surface velocity.";
-			this.IsDefault = False;
+			this.IsDefault = false;
 		}
 
 		#endregion
@@ -51,7 +51,7 @@ namespace KerbalEngineer.Flight.Readouts.Vessel
 				return;
 			}
 
-			this.DrawLine("Decelleration Time", TimeFormatter.ConvertToString(DecellerationProcessor.BurnTime), section.IsHud);
+			this.DrawLine("Decelleration Time", TimeFormatter.ConvertToString(DecellerationProcessor.DecellerationTime), section.IsHud);
 		}
 
 		public override void Reset()
