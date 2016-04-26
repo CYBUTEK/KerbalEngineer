@@ -21,22 +21,22 @@
 
 using System;
 
+using KerbalEngineer.Extensions;
 using KerbalEngineer.Flight.Sections;
-using KerbalEngineer.Helpers;
 
 #endregion
 
 namespace KerbalEngineer.Flight.Readouts.Vessel
 {
-	public class DecellerationTime : ReadoutModule
+	public class DecelerationDeltaV : ReadoutModule
 	{
 		#region Constructors
 
-		public DecellerationTime()
+		public DecelerationDeltaV()
 		{
-			this.Name = "Decelleration Time";
+			this.Name = "Deceleration DeltaV";
 			this.Category = ReadoutCategory.GetCategory("Vessel");
-			this.HelpString = "Time Required at 100% burn to kill all surface velocity.";
+			this.HelpString = "Total change in velocity to kill al surface velocity.";
 			this.IsDefault = false;
 		}
 
@@ -46,22 +46,22 @@ namespace KerbalEngineer.Flight.Readouts.Vessel
 
 		public override void Draw(SectionModule section)
 		{
-			if (!DecellerationProcessor.ShowDetails)
+			if (!DecelerationProcessor.ShowDetails)
 			{
 				return;
 			}
 
-			this.DrawLine("Decelleration Time", TimeFormatter.ConvertToString(DecellerationProcessor.DecellerationTime), section.IsHud);
+			this.DrawLine("Deceleration DeltaV", DecelerationProcessor.DecelerationDeltaV.ToSpeed() + " (" + (DecelerationProcessor.HasDeltaV ? "S" + DecelerationProcessor.FinalStage : "X") + ")", section.IsHud);
 		}
 
 		public override void Reset()
 		{
-			DecellerationProcessor.Reset();
+			DecelerationProcessor.Reset();
 		}
 
 		public override void Update()
 		{
-			DecellerationProcessor.RequestUpdate();
+			DecelerationProcessor.RequestUpdate();
 		}
 
 		#endregion
