@@ -241,6 +241,9 @@
     <Compile Include="VesselSimulator\Stage.cs" />
     <Compile Include="Flight\Readouts\Rendezvous\RelativeRadialVelocity.cs" />
     <Compile Include="Flight\Readouts\Rendezvous\TimeToRendezvous.cs" />
+    <Compile Include="Flight\Readouts\Vessel\DecellerationProcessor.cs" />
+    <Compile Include="Flight\Readouts\Vessel\DecellerationDeltaV.cs" />
+    <Compile Include="Flight\Readouts\Vessel\DecellerationTime.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="Assembly-CSharp">
