@@ -122,8 +122,10 @@ namespace KerbalEngineer.Flight.Readouts
                 readouts.Add(new ImpactBiome());
 
                 // Vessel
-                readouts.Add(new Name());
-                readouts.Add(new DeltaVStaged());
+				readouts.Add(new Name());
+				readouts.Add(new DecellerationDeltaV());
+				readouts.Add(new DecellerationTime());
+				readouts.Add(new DeltaVStaged());
                 readouts.Add(new DeltaVCurrent());
                 readouts.Add(new DeltaVTotal());
                 readouts.Add(new DeltaVCurrentTotal());
