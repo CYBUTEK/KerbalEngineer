@@ -33,15 +33,15 @@ namespace KerbalEngineer.Flight.Readouts.Vessel
     using Helpers;
     using System;
 
-    public class DecellerationProcessor : IUpdatable, IUpdateRequest // Shamelessly Stolen From Maneuver Node Processor
+    public class DecelerationProcessor : IUpdatable, IUpdateRequest // Shamelessly Stolen From Maneuver Node Processor
 	{
 		#region Properties
 
-		private static readonly DecellerationProcessor instance = new DecellerationProcessor();
+		private static readonly DecelerationProcessor instance = new DecelerationProcessor();
 
 		public static double AvailableDeltaV { get; private set; }
 
-		public static double DecellerationTime { get; private set; }
+		public static double DecelerationTime { get; private set; }
 
 		public static int FinalStage { get; private set; }
 
@@ -54,7 +54,7 @@ namespace KerbalEngineer.Flight.Readouts.Vessel
 		private double m_RadarAltitude;
 
 		public static bool ShowDetails { get; set; }
-		public static double DecellerationDeltaV { get; private set; }
+		public static double DecelerationDeltaV { get; private set; }
 
 		public bool UpdateRequested { get; set; }
 
@@ -90,9 +90,11 @@ namespace KerbalEngineer.Flight.Readouts.Vessel
 				: FlightGlobals.ship_altitude;
 			ProgradeDeltaV = FlightGlobals.ActiveVessel.horizontalSrfSpeed;
 			RadialDeltaV = Math.Sqrt((2 * m_Gravity * m_RadarAltitude) + Math.Pow(FlightGlobals.ship_verticalSpeed, 2.0));
-			DecellerationDeltaV = Math.Sqrt(Math.Pow(ProgradeDeltaV, 2.0)+Math.Pow(RadialDeltaV, 2.0));
-			HasDeltaV = GetSuicideBurnTime(DecellerationDeltaV, ref dtime);
-            DecellerationTime = dtime;
+			DecelerationDeltaV = Math.Sqrt(Math.Pow(ProgradeDeltaV, 2.0)+Math.Pow(RadialDeltaV, 2.0));
+			HasDeltaV = GetSuicideBurnTime(DecelerationDeltaV, ref dtime);
+            DecelerationTime = dtime;
+
+            ShowDetails = true;
 
         }
 
