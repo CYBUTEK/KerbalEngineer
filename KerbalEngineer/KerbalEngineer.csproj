@@ -122,6 +122,15 @@
     <Compile Include="Flight\Readouts\Thermal\HottestTemperature.cs" />
     <Compile Include="Flight\Readouts\Thermal\HottestPart.cs" />
     <Compile Include="Flight\Readouts\Thermal\ThermalProcessor.cs" />
+    <Compile Include="Flight\Readouts\Vessel\DecelerationAltitude.cs" />
+    <Compile Include="Flight\Readouts\Vessel\DecelerationAltitudeOverGround.cs" />
+    <Compile Include="Flight\Readouts\Vessel\DecelerationBiome.cs" />
+    <Compile Include="Flight\Readouts\Vessel\DecelerationDistanceHorizontal.cs" />
+    <Compile Include="Flight\Readouts\Vessel\DecelerationDistanceTotal.cs" />
+    <Compile Include="Flight\Readouts\Vessel\DecelerationDistanceVertical.cs" />
+    <Compile Include="Flight\Readouts\Vessel\DecelerationLatitude.cs" />
+    <Compile Include="Flight\Readouts\Vessel\DecelerationLongditude.cs" />
+    <Compile Include="Flight\Readouts\Vessel\DecelerationSlope.cs" />
     <Compile Include="Flight\Readouts\Vessel\Name.cs" />
     <Compile Include="Flight\Readouts\Vessel\AttitudeProcessor.cs" />
     <Compile Include="Flight\Readouts\Vessel\DeltaVCurrentTotal.cs" />
