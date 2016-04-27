@@ -121,8 +121,17 @@ namespace KerbalEngineer.Flight.Readouts
 
                 // Vessel
 				readouts.Add(new Name());
-				readouts.Add(new DecelerationDeltaV());
-				readouts.Add(new DecelerationTime());
+                readouts.Add(new DecelerationAltitude());
+                readouts.Add(new DecelerationAltitudeOverGround());
+                readouts.Add(new DecelerationBiome());
+                readouts.Add(new DecelerationDeltaV());
+                readouts.Add(new DecelerationDistanceHorizontal());
+                readouts.Add(new DecelerationDistanceTotal());
+                readouts.Add(new DecelerationDistanceVertical());
+                readouts.Add(new DecelerationLatitude());
+                readouts.Add(new DecelerationLongitude());
+                readouts.Add(new DecelerationSlope());
+                readouts.Add(new DecelerationTime());
 				readouts.Add(new DeltaVStaged());
                 readouts.Add(new DeltaVCurrent());
                 readouts.Add(new DeltaVTotal());

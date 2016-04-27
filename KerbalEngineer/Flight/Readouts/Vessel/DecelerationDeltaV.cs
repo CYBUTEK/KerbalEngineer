@@ -36,7 +36,7 @@ namespace KerbalEngineer.Flight.Readouts.Vessel
 		{
 			this.Name = "Deceleration DeltaV";
 			this.Category = ReadoutCategory.GetCategory("Vessel");
-			this.HelpString = "Total change in velocity to kill al surface velocity.";
+			this.HelpString = "Total change in velocity to kill all surface velocity.";
 			this.IsDefault = false;
 		}
 
