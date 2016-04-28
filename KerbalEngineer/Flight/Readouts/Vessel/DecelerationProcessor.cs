@@ -52,7 +52,6 @@ namespace KerbalEngineer.Flight.Readouts.Vessel
         private static double RadialDeltaV;
         private double m_Gravity;
         private double m_RadarAltitude;
-        private Vector3d impactpos;
 
         // Additional DeltaV Information
         public static int FinalStage { get; private set; }
@@ -70,6 +69,7 @@ namespace KerbalEngineer.Flight.Readouts.Vessel
         private double impactAltitude;
         private double impactLatitude;
         private double impactLongitude;
+        private Quaternion surfaceRotation;
 
         // Execution Info
         public static bool ShowDetails { get; set; }
@@ -117,48 +117,28 @@ namespace KerbalEngineer.Flight.Readouts.Vessel
             DecelerationTime = dtime;
 
             // Get Distance Traveled during Burn. Since we kill velocity I can assume average Velocity over burn.
-            HorizontalDistance = 0.5 * ProgradeDeltaV / DecelerationTime;
-            VerticalDistance = 0.5 * RadialDeltaV / DecelerationTime;
-            TotalDistance = 0.5 * DecelerationDeltaV / DecelerationTime;
+            HorizontalDistance = 0.5 * ProgradeDeltaV * DecelerationTime;
+            VerticalDistance = 0.5 * RadialDeltaV * DecelerationTime;
+            TotalDistance = 0.5 * DecelerationDeltaV * DecelerationTime;
 
             #endregion
 
             #region Landing Point Calculations
 
             // I now know my horizontal Distance and I know my Heading, so I should be able to calculate a Landing Point, get it's slope and Altitude and from that predict the radar altitude after the burn.
-            // Time to go steal again from Impact Processor
-
             if (FlightGlobals.ActiveVessel.mainBody.pqsController != null)
             {
-                //do impact site calculations
-                this.impactLongitude = 0;
-                this.impactLatitude = 0;
-                this.impactAltitude = 0;
-                //get current position direction vector
-                var currentpos = this.RadiusDirection(FlightGlobals.ActiveVessel.orbit.trueAnomaly * 180.0 / Math.PI);
-                //calculate longitude in inertial reference frame from that
-                var currentirflong = 180 * Math.Atan2(currentpos.x, currentpos.y) / Math.PI;
-
-
-
-
-
-                
-                // Get impact Position from Travel Distance
-                impactpos.x = HorizontalDistance * Math.Sin(FlightGlobals.ActiveVessel.orbit.inclination);
-                impactpos.y = Math.Sqrt(Math.Pow(HorizontalDistance, 2.0) - Math.Pow(impactpos.y - HorizontalDistance, 2.0));
-                impactpos.z = VerticalDistance;
-                //calculate longitude of impact site in inertial reference frame
-                var impactirflong = 180 * Math.Atan2(impactpos.x, impactpos.y) / Math.PI;
-                var deltairflong = impactirflong - currentirflong;
-                //get body rotation until impact
+                //do impact site calculations, special thanks to Muddr for Pointing me to http://www.movable-type.co.uk/scripts/latlong.html
+                surfaceRotation = GetSurfaceRotation();
+                var incl = surfaceRotation.eulerAngles.y;
+                var currentlat = FlightGlobals.ActiveVessel.latitude;
+                var currentlon = FlightGlobals.ActiveVessel.longitude;
+                var angdst = 360 * HorizontalDistance / (2 * Math.PI * FlightGlobals.currentMainBody.Radius);
                 var bodyrot = 360 * DecelerationTime / FlightGlobals.ActiveVessel.mainBody.rotationPeriod;
-                //get current longitude in body coordinates
-                var currentlong = FlightGlobals.ActiveVessel.longitude;
-                //finally, calculate the impact longitude in body coordinates
-                this.impactLongitude = this.NormAngle(currentlong - deltairflong - bodyrot);
-                //calculate impact latitude from impact position
-                this.impactLatitude = 180 * Math.Asin(impactpos.z / impactpos.magnitude) / Math.PI;
+
+                impactLatitude = currentlat + Math.Asin(Math.Sin(currentlat)*Math.Cos(angdst)+Math.Cos(currentlat)*Math.Sin(angdst)*Math.Cos(incl));
+                impactLongitude = 360 + bodyrot + currentlon + Math.Atan2(Math.Sin(incl)*Math.Sin(angdst)*Math.Cos(currentlat), Math.Cos(angdst)-Math.Sin(currentlat)*Math.Sin(impactLatitude));
+
                 //calculate the actual altitude of the impact site
                 //altitude for long/lat code stolen from some ISA MapSat forum post; who knows why this works, but it seems to.
                 var rad = QuaternionD.AngleAxis(this.impactLongitude, Vector3d.down) * QuaternionD.AngleAxis(this.impactLatitude, Vector3d.forward) * Vector3d.right;
@@ -173,7 +153,7 @@ namespace KerbalEngineer.Flight.Readouts.Vessel
             Longitude = this.impactLongitude;
             Latitude = this.impactLatitude;
             Altitude = this.impactAltitude;
-            Slope = GetSlopeAngleAndHeadingLanding(impactpos);
+            //Slope = GetSlopeAngleAndHeadingLanding(impactpos);
             AltitudeOverGround = FlightGlobals.ship_altitude - Altitude - VerticalDistance;
             Biome = ScienceUtil.GetExperimentBiome(FlightGlobals.ActiveVessel.mainBody, this.impactLatitude, this.impactLongitude);
 
@@ -186,43 +166,6 @@ namespace KerbalEngineer.Flight.Readouts.Vessel
         #endregion
 
         #region Methods: private Additional Calculations
-
-        // Angles for Lat/Long
-        private double NormAngle(double ang)
-        {
-            if (ang > 180)
-            {
-                ang -= 360 * Math.Ceiling((ang - 180) / 360);
-            }
-            if (ang <= -180)
-            {
-                ang -= 360 * Math.Floor((ang + 180) / 360);
-            }
-
-            return ang;
-        }
-
-        private Vector3d RadiusDirection(double theta)
-        {
-            theta = Math.PI * theta / 180;
-            var omega = Math.PI * FlightGlobals.ActiveVessel.orbit.argumentOfPeriapsis / 180;
-            var incl = Math.PI * FlightGlobals.ActiveVessel.orbit.inclination / 180;
-
-            var costheta = Math.Cos(theta);
-            var sintheta = Math.Sin(theta);
-            var cosomega = Math.Cos(omega);
-            var sinomega = Math.Sin(omega);
-            var cosincl = Math.Cos(incl);
-            var sinincl = Math.Sin(incl);
-
-            Vector3d result;
-
-            result.x = cosomega * costheta - sinomega * sintheta;
-            result.y = cosincl * (sinomega * costheta + cosomega * sintheta);
-            result.z = sinincl * (sinomega * costheta + cosomega * sintheta);
-
-            return result;
-        }
 
         //Suicide Burn time
         private static bool GetSuicideBurnTime(double deltaV, ref double burnTime)
@@ -260,6 +203,18 @@ namespace KerbalEngineer.Flight.Readouts.Vessel
 			return deltaV <= Double.Epsilon;
         }
 
+        // Helper to get locas Surface Rotation, Required to get Heading, Taken From attitudeprocessor
+        private Quaternion GetSurfaceRotation()
+        {
+            // This code was derived from MechJeb2's implementation for getting the vessel's surface relative rotation.
+            var centreOfMass = FlightGlobals.ActiveVessel.findWorldCenterOfMass();
+            var up = (centreOfMass - FlightGlobals.ActiveVessel.mainBody.position).normalized;
+            var north = Vector3.ProjectOnPlane((FlightGlobals.ActiveVessel.mainBody.position + FlightGlobals.ActiveVessel.mainBody.transform.up * (float)FlightGlobals.ActiveVessel.mainBody.Radius) - centreOfMass, up).normalized;
+
+            return Quaternion.Inverse(Quaternion.Euler(90.0f, 0.0f, 0.0f) * Quaternion.Inverse(FlightGlobals.ActiveVessel.transform.rotation) * Quaternion.LookRotation(north, up));
+        }
+
+        /*
         // Slope at landing Point
         private string GetSlopeAngleAndHeadingLanding(Vector3d LandingPoint)
         {
@@ -312,6 +267,7 @@ namespace KerbalEngineer.Flight.Readouts.Vessel
                 return "--° @ ---°";
             }
         }
+        */
 
         #endregion
     }
