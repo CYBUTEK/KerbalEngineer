@@ -52,7 +52,7 @@ namespace KerbalEngineer.Flight.Readouts.Vessel
             {
                 return;
             }
-            this.DrawLine(DecelerationProcessor.Slope, section.IsHud);
+            this.DrawLine("DISABLED", section.IsHud);
         }
 
         public override void Reset()
