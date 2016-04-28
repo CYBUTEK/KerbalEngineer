@@ -51,7 +51,10 @@ namespace KerbalEngineer.VesselSimulator
             return nodeSim;
         }
 
-        static private void Reset(AttachNodeSim attachNodeSim) { }
+        static private void Reset(AttachNodeSim attachNodeSim)
+        {
+            attachNodeSim.attachedPartSim = null;
+        }
 
 
         public void Release()

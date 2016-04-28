@@ -54,6 +54,7 @@ namespace KerbalEngineer.VesselSimulator
         {
             engineSim.resourceConsumptions.Reset();
             engineSim.resourceFlowModes.Reset();
+            engineSim.partSim = null;
             engineSim.actualThrust = 0;
             engineSim.isActive = false;
             engineSim.isp = 0;
