@@ -1,3 +1,13 @@
+1.1.1.0, 2016-04-29, KSP Build #1250
+    Added: Missing cleanup of some contained references within various pooled classes.
+    Fixed: Jet engine simulation data is no longer included when IntakeAir deprived (i.e. in space).
+    Fixed: NullReferenceException when entering the flight scene within the FlightAppLauncher.
+    Fixed: Corrected an exception logging typo within the DisplayStack class.
+    Fixed: NullReferenceException within the DeltaVStaged resource upon exiting the flight scene.
+    Fixed: Flamed out engines are no longer perceived as active engines within the vessel simulation.
+    Removed: Redundant button enabled check within the FlightAppLauncher.
+    Removed: '?.' syntax sugar for easier compilation within non VS2015 IDEs.
+
 1.1.0.2, 2016-04-19, KSP Build #1230
     Added: Altitude (terrain) readout now shows the altitude above underwater terrain when splashed down.
     Added: Usage of the stock IPartMassModifier for handling the modifying of part module staged mass.
