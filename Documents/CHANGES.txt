@@ -3,7 +3,7 @@
     Fixed: Jet engine simulation data is no longer included when IntakeAir deprived (i.e. in space).
     Fixed: NullReferenceException when entering the flight scene within the FlightAppLauncher.
     Fixed: Corrected an exception logging typo within the DisplayStack class.
-    Fixed: NullReferenceException within the DeltaVStaged resource upon exiting the flight scene.
+    Fixed: NullReferenceException within the DeltaVStaged readout upon exiting the flight scene.
     Fixed: Flamed out engines are no longer perceived as active engines within the vessel simulation.
     Removed: Redundant button enabled check within the FlightAppLauncher.
     Removed: '?.' syntax sugar for easier compilation within non VS2015 IDEs.
