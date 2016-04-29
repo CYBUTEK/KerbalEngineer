@@ -30,7 +30,6 @@ using UnityEngine;
 
 namespace KerbalEngineer.VesselSimulator
 {
-    using System.ComponentModel;
     using CompoundParts;
     using Extensions;
     using Helpers;
@@ -792,7 +791,7 @@ namespace KerbalEngineer.VesselSimulator
             for (int i = 0; i < allEngines.Count; ++i)
             {
                 EngineSim engine = allEngines[i];
-                if (engine.isActive)
+                if (engine.isActive && engine.isFlamedOut == false)
                 {
                     this.activeEngines.Add(engine);
                 }

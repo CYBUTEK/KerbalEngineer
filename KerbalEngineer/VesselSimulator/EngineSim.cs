@@ -39,6 +39,7 @@ namespace KerbalEngineer.VesselSimulator
         public PartSim partSim;
         public List<AppliedForce> appliedForces = new List<AppliedForce>();
         public float maxMach;
+        public bool isFlamedOut;
 
         public double thrust = 0;
 
@@ -65,6 +66,7 @@ namespace KerbalEngineer.VesselSimulator
             engineSim.appliedForces.Clear();
             engineSim.thrust = 0;
             engineSim.maxMach = 0f;
+            engineSim.isFlamedOut = false;
         }
 
         public void Release()
@@ -98,6 +100,7 @@ namespace KerbalEngineer.VesselSimulator
             List<Propellant> propellants = engineMod.propellants;
             bool active = engineMod.isOperational;
             float resultingThrust = engineMod.resultingThrust;
+            bool isFlamedOut = engineMod.flameout;
 			
 			EngineSim engineSim = pool.Borrow();
 
@@ -107,6 +110,7 @@ namespace KerbalEngineer.VesselSimulator
             engineSim.partSim = theEngine;
             engineSim.isActive = active;
             engineSim.thrustVec = vecThrust;
+            engineSim.isFlamedOut = isFlamedOut;
             engineSim.resourceConsumptions.Reset();
             engineSim.resourceFlowModes.Reset();
             engineSim.appliedForces.Clear();
