@@ -86,9 +86,11 @@ namespace KerbalEngineer.VesselSimulator
             }
             partSim.attachNodes.Clear();
             partSim.fuelTargets.Clear();
+            partSim.surfaceMountFuelTargets.Clear();
             partSim.resourceDrains.Reset();
             partSim.resourceFlowStates.Reset();
             partSim.resources.Reset();
+            partSim.parent = null;
             partSim.baseCost = 0d;
             partSim.baseMass = 0d;
             partSim.baseMassForCoM = 0d;
@@ -624,6 +626,17 @@ namespace KerbalEngineer.VesselSimulator
                 if (fuelTargetSim != null && partSims.Contains(fuelTargetSim))
                 {
                     this.fuelTargets[i] = null;
+                }
+            }
+
+            // Loop through the surface attached fuel targets (surface attached parts for new flow modes)
+            for (int i = 0; i < this.surfaceMountFuelTargets.Count; i++)
+            {
+                PartSim fuelTargetSim = this.surfaceMountFuelTargets[i];
+                // If the part is in the set then "remove" it by clearing the PartSim reference
+                if (fuelTargetSim != null && partSims.Contains(fuelTargetSim))
+                {
+                    this.surfaceMountFuelTargets[i] = null;
                 }
             }
         }

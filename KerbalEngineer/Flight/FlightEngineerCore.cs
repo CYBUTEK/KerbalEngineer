@@ -290,6 +290,9 @@ namespace KerbalEngineer.Flight
         /// </summary>
         private void FixedUpdate()
         {
+            if (FlightGlobals.ActiveVessel == null)
+                return;
+
             try
             {
                 SectionLibrary.FixedUpdate();
@@ -351,6 +354,9 @@ namespace KerbalEngineer.Flight
         /// </summary>
         private void Update()
         {
+            if (FlightGlobals.ActiveVessel == null)
+                return;
+
             try
             {
                 SectionLibrary.Update();
