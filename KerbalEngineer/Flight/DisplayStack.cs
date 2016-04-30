@@ -369,7 +369,7 @@ namespace KerbalEngineer.Flight
             }
             catch (Exception ex)
             {
-                Logger.Exception(ex, "DisplayStack->Widnow");
+                Logger.Exception(ex, "DisplayStack->Window");
             }
         }
 

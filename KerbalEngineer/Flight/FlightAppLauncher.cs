@@ -179,14 +179,11 @@ namespace KerbalEngineer.Flight
 
         protected virtual void Update()
         {
-            if (Button == null)
-                return;
-
-            if (FlightEngineerCore.IsDisplayable && Button.IsEnabled == false)
+            if (FlightEngineerCore.IsDisplayable)
             {
                 Enable();
             }
-            else if (FlightEngineerCore.IsDisplayable == false && Button.IsEnabled)
+            else if (FlightEngineerCore.IsDisplayable == false)
             {
                 Disable();
             }

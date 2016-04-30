@@ -86,9 +86,11 @@ namespace KerbalEngineer.VesselSimulator
             }
             partSim.attachNodes.Clear();
             partSim.fuelTargets.Clear();
+            partSim.surfaceMountFuelTargets.Clear();
             partSim.resourceDrains.Reset();
             partSim.resourceFlowStates.Reset();
             partSim.resources.Reset();
+            partSim.parent = null;
             partSim.baseCost = 0d;
             partSim.baseMass = 0d;
             partSim.baseMassForCoM = 0d;
@@ -626,6 +628,17 @@ namespace KerbalEngineer.VesselSimulator
                     this.fuelTargets[i] = null;
                 }
             }
+
+            // Loop through the surface attached fuel targets (surface attached parts for new flow modes)
+            for (int i = 0; i < this.surfaceMountFuelTargets.Count; i++)
+            {
+                PartSim fuelTargetSim = this.surfaceMountFuelTargets[i];
+                // If the part is in the set then "remove" it by clearing the PartSim reference
+                if (fuelTargetSim != null && partSims.Contains(fuelTargetSim))
+                {
+                    this.surfaceMountFuelTargets[i] = null;
+                }
+            }
         }
 
         public void SetupAttachNodes(Dictionary<Part, PartSim> partSimLookup, LogMsg log)
@@ -764,7 +777,8 @@ namespace KerbalEngineer.VesselSimulator
 
         private bool IsDecoupler(Part thePart)
         {
-            return thePart.GetProtoModuleDecoupler()?.IsStageEnabled ?? false;
+            PartExtensions.ProtoModuleDecoupler protoDecoupler = thePart.GetProtoModuleDecoupler();
+            return protoDecoupler != null && protoDecoupler.IsStageEnabled;
         }
 
         private bool IsSepratron()
