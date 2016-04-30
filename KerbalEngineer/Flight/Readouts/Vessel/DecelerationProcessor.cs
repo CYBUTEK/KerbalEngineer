@@ -92,12 +92,19 @@ namespace KerbalEngineer.Flight.Readouts.Vessel
 		}
 
         public void Update()
-		{ 	
-			if (FlightGlobals.currentMainBody == null || FlightGlobals.ActiveVessel == null || SimulationProcessor.LastStage == null || !SimulationProcessor.ShowDetails)
-			{
-				ShowDetails = false;
-				return;
-			}
+        {
+            //Check Background Logistics
+            if (FlightGlobals.currentMainBody == null || FlightGlobals.ActiveVessel == null || SimulationProcessor.LastStage == null || !SimulationProcessor.ShowDetails)
+            {
+                ShowDetails = false;
+                return;
+            }
+            // Check if we are actually moving
+            if (ScienceUtil.GetExperimentSituation(FlightGlobals.ActiveVessel) == ExperimentSituations.SrfLanded || ScienceUtil.GetExperimentSituation(FlightGlobals.ActiveVessel) == ExperimentSituations.SrfSplashed)
+            {
+                ShowDetails = false;
+                return;
+            }
 
             var dtime = 0.0;
 
@@ -125,7 +132,7 @@ namespace KerbalEngineer.Flight.Readouts.Vessel
 
             #region Landing Point Calculations
 
-            // I now know my horizontal Distance and I know my Heading, so I should be able to calculate a Landing Point, get it's slope and Altitude and from that predict the radar altitude after the burn.
+            // I now know my horizontal Distance and I know my Heading, so I can calculate a Landing Point, get it's slope and Altitude and from that predict the radar altitude after the burn.
             if (FlightGlobals.ActiveVessel.mainBody.pqsController != null)
             {
                 //do impact site calculations, special thanks to Muddr for Pointing me to http://www.movable-type.co.uk/scripts/latlong.html
@@ -136,8 +143,8 @@ namespace KerbalEngineer.Flight.Readouts.Vessel
                 var angdst = 360 * HorizontalDistance / (2 * Math.PI * FlightGlobals.currentMainBody.Radius);
                 var bodyrot = 360 * DecelerationTime / FlightGlobals.ActiveVessel.mainBody.rotationPeriod;
 
-                impactLatitude = currentlat + Math.Asin(Math.Sin(currentlat)*Math.Cos(angdst)+Math.Cos(currentlat)*Math.Sin(angdst)*Math.Cos(incl));
-                impactLongitude = 360 + bodyrot + currentlon + Math.Atan2(Math.Sin(incl)*Math.Sin(angdst)*Math.Cos(currentlat), Math.Cos(angdst)-Math.Sin(currentlat)*Math.Sin(impactLatitude));
+                impactLatitude = currentlat + Math.Sin(incl) * angdst;
+                impactLongitude = currentlon + Math.Cos(incl) * angdst;
 
                 //calculate the actual altitude of the impact site
                 //altitude for long/lat code stolen from some ISA MapSat forum post; who knows why this works, but it seems to.
@@ -153,7 +160,7 @@ namespace KerbalEngineer.Flight.Readouts.Vessel
             Longitude = this.impactLongitude;
             Latitude = this.impactLatitude;
             Altitude = this.impactAltitude;
-            //Slope = GetSlopeAngleAndHeadingLanding(impactpos);
+            Slope = GetSlopeAngleAndHeadingLanding(FlightGlobals.currentMainBody.GetRelSurfacePosition(impactLatitude, impactLongitude, impactAltitude));
             AltitudeOverGround = FlightGlobals.ship_altitude - Altitude - VerticalDistance;
             Biome = ScienceUtil.GetExperimentBiome(FlightGlobals.ActiveVessel.mainBody, this.impactLatitude, this.impactLongitude);
 
@@ -213,8 +220,7 @@ namespace KerbalEngineer.Flight.Readouts.Vessel
 
             return Quaternion.Inverse(Quaternion.Euler(90.0f, 0.0f, 0.0f) * Quaternion.Inverse(FlightGlobals.ActiveVessel.transform.rotation) * Quaternion.LookRotation(north, up));
         }
-
-        /*
+        
         // Slope at landing Point
         private string GetSlopeAngleAndHeadingLanding(Vector3d LandingPoint)
         {
@@ -267,7 +273,6 @@ namespace KerbalEngineer.Flight.Readouts.Vessel
                 return "--° @ ---°";
             }
         }
-        */
 
         #endregion
     }

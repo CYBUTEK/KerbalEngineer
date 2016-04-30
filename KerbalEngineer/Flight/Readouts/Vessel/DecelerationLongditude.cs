@@ -47,10 +47,11 @@ namespace KerbalEngineer.Flight.Readouts.Vessel
         {
             if (DecelerationProcessor.ShowDetails)
             {
-                this.DrawLine(Units.ToAngleDMS(DecelerationProcessor.Longitude) + (DecelerationProcessor.Longitude < 0.0 ? " W" : " E"), section.IsHud);
+                double angle = AngleHelper.Clamp180(DecelerationProcessor.Longitude);
+                DrawLine(Units.ToAngleDMS(angle) + (angle < 0.0 ? " W" : " E"), section.IsHud);
             }
         }
-
+        
         public override void Reset()
         {
             DecelerationProcessor.Reset();

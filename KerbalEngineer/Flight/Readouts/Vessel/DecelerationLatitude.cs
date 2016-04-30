@@ -47,7 +47,7 @@ namespace KerbalEngineer.Flight.Readouts.Vessel
         {
             if (DecelerationProcessor.ShowDetails)
             {
-                this.DrawLine(Units.ToAngleDMS(DecelerationProcessor.Latitude) + (DecelerationProcessor.Latitude < 0.0 ? " N" : " S"), section.IsHud);
+                this.DrawLine(Units.ToAngleDMS(DecelerationProcessor.Latitude) + (DecelerationProcessor.Latitude < 0.0 ? " S" : " N"), section.IsHud);
             }
         }
 
