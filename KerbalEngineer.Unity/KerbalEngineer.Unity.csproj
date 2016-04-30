@@ -48,11 +48,11 @@
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine">
-      <HintPath>..\..\..\..\Desktop\kspdev\KSP_x64_Data\Managed\UnityEngine.dll</HintPath>
+      <HintPath>..\..\..\..\Game\KSP_Data\Managed\UnityEngine.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.UI">
-      <HintPath>..\..\..\..\Desktop\kspdev\KSP_x64_Data\Managed\UnityEngine.UI.dll</HintPath>
+      <HintPath>..\..\..\..\Game\KSP_Data\Managed\UnityEngine.UI.dll</HintPath>
       <Private>False</Private>
     </Reference>
   </ItemGroup>
