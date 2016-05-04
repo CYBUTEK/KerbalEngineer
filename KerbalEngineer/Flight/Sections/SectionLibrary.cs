@@ -75,7 +75,15 @@ namespace KerbalEngineer.Flight.Sections
                 ReadoutModules = ReadoutLibrary.GetCategory(ReadoutCategory.GetCategory("Thermal")).Where(r => r.IsDefault).ToList(),
                 IsCustom = true
             });
-            
+
+            CustomSections.Add(new SectionModule
+            {
+                Name = "BODY",
+                Abbreviation = "BODY",
+                ReadoutModules = ReadoutLibrary.GetCategory(ReadoutCategory.GetCategory("Body")).Where(r => r.IsDefault).ToList(),
+                IsCustom = true
+            });
+
             SectionModule hud1 = new SectionModule
             {
                 Name = "HUD 1",
