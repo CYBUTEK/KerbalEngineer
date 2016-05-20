@@ -188,7 +188,16 @@ namespace KerbalEngineer.Flight.Readouts.Surface
                 Longitude = this.impactLongitude;
                 Latitude = this.impactLatitude;
                 Altitude = this.impactAltitude;
-                Biome = ScienceUtil.GetExperimentBiome(FlightGlobals.ActiveVessel.mainBody, this.impactLatitude, this.impactLongitude);
+                try
+                {
+                    Biome = ScienceUtil.GetExperimentBiome(FlightGlobals.ActiveVessel.mainBody, this.impactLatitude, this.impactLongitude);
+                }
+                catch (Exception ex)
+                {
+                    Logger.Log("GetExperimentBiome(" + FlightGlobals.ActiveVessel.mainBody.name + ", " + this.impactLatitude + ", " + this.impactLongitude + ") died");
+                    Logger.Exception(ex);
+                    Biome = "<failed>";
+                }
             }
             else
             {

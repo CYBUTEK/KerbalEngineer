@@ -63,6 +63,12 @@ namespace KerbalEngineer.Flight.Readouts.Rendezvous
         /// </summary>
         public override void Draw(SectionModule section)
         {
+            if (FlightGlobals.fetch == null)
+            {
+                Logger.Log("FlightGlobals.fetch returned null in TargetSelector.Draw");
+                return;
+            }
+
             if (FlightGlobals.fetch.VesselTarget == null)
             {
                 if (this.vesselType == VesselType.Unknown && !this.typeIsBody)
