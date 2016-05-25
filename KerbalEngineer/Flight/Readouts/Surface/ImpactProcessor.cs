@@ -151,7 +151,12 @@ namespace KerbalEngineer.Flight.Readouts.Surface
                     if (e > 0)
                     {
                         //in this step, we are using the calculated impact altitude of the last step, to refine the impact site position
-                        impacttheta = -180 * Math.Acos((FlightGlobals.ActiveVessel.orbit.PeR * (1 + e) / (FlightGlobals.ActiveVessel.mainBody.Radius + this.impactAltitude) - 1) / e) / Math.PI;
+                        double costheta = (FlightGlobals.ActiveVessel.orbit.PeR * (1 + e) / (FlightGlobals.ActiveVessel.mainBody.Radius + this.impactAltitude) - 1) / e;
+                        if (costheta < -1d)
+                            costheta = -1d;
+                        else if (costheta > 1d)
+                            costheta = 1d;
+                        impacttheta = -180 * Math.Acos(costheta) / Math.PI;
                     }
 
                     //calculate time to impact
