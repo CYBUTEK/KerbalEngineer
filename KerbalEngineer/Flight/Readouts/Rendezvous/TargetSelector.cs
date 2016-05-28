@@ -63,12 +63,6 @@ namespace KerbalEngineer.Flight.Readouts.Rendezvous
         /// </summary>
         public override void Draw(SectionModule section)
         {
-            if (FlightGlobals.fetch == null)
-            {
-                Logger.Log("FlightGlobals.fetch returned null in TargetSelector.Draw");
-                return;
-            }
-
             if (FlightGlobals.fetch.VesselTarget == null)
             {
                 if (this.vesselType == VesselType.Unknown && !this.typeIsBody)
@@ -215,15 +209,19 @@ namespace KerbalEngineer.Flight.Readouts.Rendezvous
                 this.ResizeRequested = true;
             }
 
-            if (!(FlightGlobals.fetch.VesselTarget is CelestialBody) && GUILayout.Button("Switch to Target", this.ButtonStyle, GUILayout.Width(this.ContentWidth)))
+            var target = FlightGlobals.fetch.VesselTarget;
+            if (target != null)
             {
-                FlightGlobals.SetActiveVessel(FlightGlobals.fetch.VesselTarget.GetVessel());
-                this.ResizeRequested = true;
+                if (!(target is CelestialBody) && GUILayout.Button("Switch to Target", this.ButtonStyle, GUILayout.Width(this.ContentWidth)))
+                {
+                    FlightGlobals.SetActiveVessel(target.GetVessel());
+                    this.ResizeRequested = true;
+                }
+
+                GUILayout.Space(3f);
+
+                this.DrawLine("Selected Target", target.GetName(), section.IsHud);
             }
-
-            GUILayout.Space(3f);
-
-            this.DrawLine("Selected Target", FlightGlobals.fetch.VesselTarget.GetName(), section.IsHud);
         }
 
         /// <summary>
