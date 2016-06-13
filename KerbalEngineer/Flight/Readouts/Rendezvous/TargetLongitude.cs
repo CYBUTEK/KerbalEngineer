@@ -29,7 +29,7 @@ namespace KerbalEngineer.Flight.Readouts.Surface
             Name = "Target Longitude";
             Category = ReadoutCategory.GetCategory("Rendezvous");
             HelpString = "Shows the target vessel's longitude around a celestial body. Longitude is the angle from the bodies prime meridian.";
-            IsDefault = true;
+            IsDefault = false;
         }
 
         public override void Draw(SectionModule section)
