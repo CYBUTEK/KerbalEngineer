@@ -96,6 +96,8 @@
     <Compile Include="Flight\Readouts\Rendezvous\RelativeVelocity.cs" />
     <Compile Include="Flight\Readouts\Rendezvous\SemiMinorAxis.cs" />
     <Compile Include="Flight\Readouts\Rendezvous\SemiMajorAxis.cs" />
+    <Compile Include="Flight\Readouts\Rendezvous\TargetLatitude.cs" />
+    <Compile Include="Flight\Readouts\Rendezvous\TargetLongitude.cs" />
     <Compile Include="Flight\Readouts\Rendezvous\TimeToRelativeDescendingNode.cs" />
     <Compile Include="Flight\Readouts\Rendezvous\TimeToRelativeAscendingNode.cs" />
     <Compile Include="Flight\Readouts\Surface\ImpactBiome.cs" />
