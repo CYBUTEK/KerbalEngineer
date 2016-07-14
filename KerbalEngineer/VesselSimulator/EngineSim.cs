@@ -394,7 +394,7 @@ namespace KerbalEngineer.VesselSimulator
                                 continue;
                             }
 
-                            int stage = aPartSim.DecouplerCount();
+                            int stage = aPartSim.inverseStage;
                             if (stage > maxStage)
                             {
                                 maxStage = stage;
