@@ -49,14 +49,12 @@ namespace KerbalEngineer.VesselSimulator
         public bool hasVessel;
         public String initialVesselName;
         public int inverseStage;
-        public bool isDecoupler;
         public bool isEngine;
         public bool isFuelLine;
         public bool isFuelTank;
         public bool isLanded;
         public bool isNoPhysics;
         public bool isSepratron;
-        //public bool isFairing;
         public float postStageMassAdjust;
         public int stageIndex;
         public String name;
@@ -287,22 +285,6 @@ namespace KerbalEngineer.VesselSimulator
             {
                 log.Flush();
             }
-        }
-
-        public int DecouplerCount()
-        {
-            int count = 0;
-            PartSim partSim = this;
-            while (partSim != null)
-            {
-                if (partSim.isDecoupler)
-                {
-                    count++;
-                }
-
-                partSim = partSim.parent;
-            }
-            return count;
         }
 
         public void DrainResources(double time)
