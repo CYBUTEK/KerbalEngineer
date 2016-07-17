@@ -24,6 +24,7 @@ namespace KerbalEngineer.Editor
     using KeyBinding;
     using Settings;
     using UIControls;
+    using Unity;
     using UnityEngine;
     using VesselSimulator;
 
@@ -811,6 +812,10 @@ namespace KerbalEngineer.Editor
                 // When not in compact mode draw the 'All Stages' and 'Atmospheric' toggles.
                 if (!compactMode)
                 {
+                    //if (GUI.Button(new Rect(position.width - 143.0f * GuiDisplaySize.Offset, 5.0f, 70.0f * GuiDisplaySize.Offset, 20.0f), "SETTINGS", buttonStyle))
+                    //{
+                    //    SettingsWindow.Open();
+                    //}
                     if (GUI.Toggle(new Rect(position.width - 143.0f * GuiDisplaySize.Offset, 5.0f, 70.0f * GuiDisplaySize.Offset, 20.0f), showSettings, "SETTINGS", buttonStyle) != showSettings)
                     {
                         hasChanged = true;

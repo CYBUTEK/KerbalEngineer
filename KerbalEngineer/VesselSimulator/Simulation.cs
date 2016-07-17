@@ -30,10 +30,10 @@ using UnityEngine;
 
 namespace KerbalEngineer.VesselSimulator
 {
-    using System.ComponentModel;
     using CompoundParts;
     using Extensions;
     using Helpers;
+    using KSP.UI.Screens;
 
     public class Simulation
     {
@@ -147,7 +147,7 @@ namespace KerbalEngineer.VesselSimulator
             this.gravity = theGravity;
             this.atmosphere = theAtmosphere;
             this.mach = theMach;
-            this.lastStage = Staging.lastStage;
+            this.lastStage = StageManager.LastStage;
             this.maxMach = 1.0f;
             //MonoBehaviour.print("lastStage = " + lastStage);
 
@@ -791,7 +791,7 @@ namespace KerbalEngineer.VesselSimulator
             for (int i = 0; i < allEngines.Count; ++i)
             {
                 EngineSim engine = allEngines[i];
-                if (engine.isActive)
+                if (engine.isActive && engine.isFlamedOut == false)
                 {
                     this.activeEngines.Add(engine);
                 }

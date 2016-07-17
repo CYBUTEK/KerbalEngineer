@@ -1,7 +1,7 @@
 ﻿// 
 //     Kerbal Engineer Redux
 // 
-//     Copyright (C) 2014 CYBUTEK
+//     Copyright (C) 2016 CYBUTEK
 // 
 //     This program is free software: you can redistribute it and/or modify
 //     it under the terms of the GNU General Public License as published by
@@ -12,48 +12,38 @@
 //     but WITHOUT ANY WARRANTY; without even the implied warranty of
 //     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //     GNU General Public License for more details.
-// 
 //     You should have received a copy of the GNU General Public License
 //     along with this program.  If not, see <http://www.gnu.org/licenses/>.
-// 
-
-#region Using Directives
-
-using System.Linq;
-
-using KerbalEngineer.Flight.Sections;
-using KerbalEngineer.Helpers;
-
-#endregion
+//  
 
 namespace KerbalEngineer.Flight.Readouts.Vessel
 {
+    using System.Linq;
+    using Helpers;
+    using KSP.UI.Screens;
+    using Sections;
+    using VesselSimulator;
+
     public class DeltaVStaged : ReadoutModule
     {
-        #region Constructors
-
         public DeltaVStaged()
         {
-            this.Name = "DeltaV Staged";
-            this.Category = ReadoutCategory.GetCategory("Vessel");
-            this.HelpString = "Shows the vessel's delta velocity for each stage.";
-            this.IsDefault = true;
+            Name = "DeltaV Staged";
+            Category = ReadoutCategory.GetCategory("Vessel");
+            HelpString = "Shows the vessel's delta velocity for each stage.";
+            IsDefault = true;
         }
-
-        #endregion
-
-        #region Methods: public
 
         public override void Draw(SectionModule section)
         {
-            if (!SimulationProcessor.ShowDetails)
+            if (SimulationProcessor.ShowDetails == false || StageManager.Instance == null)
             {
                 return;
             }
 
-            foreach (var stage in SimulationProcessor.Stages.Where(stage => stage.deltaV > 0 || stage.number == Staging.CurrentStage))
+            foreach (Stage stage in SimulationProcessor.Stages.Where(stage => stage.deltaV > 0 || stage.number == StageManager.CurrentStage))
             {
-                this.DrawLine("DeltaV (S" + stage.number + ")", stage.deltaV.ToString("N0") + "m/s (" + TimeFormatter.ConvertToString(stage.time) + ")", section.IsHud);
+                DrawLine("DeltaV (S" + stage.number + ")", stage.deltaV.ToString("N0") + "m/s (" + TimeFormatter.ConvertToString(stage.time) + ")", section.IsHud);
             }
         }
 
@@ -66,7 +56,5 @@ namespace KerbalEngineer.Flight.Readouts.Vessel
         {
             SimulationProcessor.RequestUpdate();
         }
-
-        #endregion
     }
 }

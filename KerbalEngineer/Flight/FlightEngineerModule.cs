@@ -23,8 +23,17 @@
 
 namespace KerbalEngineer.Flight
 {
+    using VesselSimulator;
+
     /// <summary>
     ///     Module that can be attached to parts, giving them FlightEngineerCore management.
     /// </summary>
-    public class FlightEngineerModule : PartModule { }
+    public class FlightEngineerModule : PartModule
+    {
+        [KSPEvent(guiName = "Verbose Simulation Log", guiActive = true, guiActiveEditor = true)]
+        public void SimulationDump()
+        {
+            SimManager.logOutput = true;
+        }
+    }
 }

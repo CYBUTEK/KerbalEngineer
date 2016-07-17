@@ -1,0 +1,20 @@
+ManifestFileVersion: 0
+CRC: 3711738391
+Hashes:
+  AssetFileHash:
+    serializedVersion: 2
+    Hash: ed55962395cdf8d8940a4674b73fa9cb
+  TypeTreeHash:
+    serializedVersion: 2
+    Hash: 00ffc586b3c4c12c72c7fed589b81235
+HashAppended: 0
+ClassTypes:
+- Class: 28
+  Script: {instanceID: 0}
+- Class: 213
+  Script: {instanceID: 0}
+Assets:
+- Assets/Images/ui-drop-down.psd
+- Assets/Images/app-launcher-icon.psd
+- Assets/Images/flight-menu-background.psd
+Dependencies: []

@@ -31,10 +31,11 @@ using UnityEngine;
 
 namespace KerbalEngineer.Flight.Sections
 {
+    using Unity.Flight;
     /// <summary>
     ///     Object for management and display of readout modules.
     /// </summary>
-    public class SectionModule
+    public class SectionModule : ISectionModule
     {
         #region Fields
 
@@ -156,6 +157,11 @@ namespace KerbalEngineer.Flight.Sections
                 }
             }
         }
+
+        /// <summary>
+        ///     Gets and sets whether the section module has been deleted.
+        /// </summary>
+        public bool IsDeleted { get; set; }
 
         /// <summary>
         ///     Gets and sets whether the section module has a background as a HUD.

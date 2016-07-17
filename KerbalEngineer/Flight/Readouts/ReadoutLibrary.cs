@@ -98,8 +98,8 @@ namespace KerbalEngineer.Flight.Readouts
                 readouts.Add(new TimeToAtmosphere());
 
                 // Surface
-                readouts.Add(new AltitudeSeaLevel());
-                readouts.Add(new AltitudeTerrain());
+				readouts.Add(new AltitudeSeaLevel());
+				readouts.Add(new AltitudeTerrain());
                 readouts.Add(new VerticalSpeed());
                 readouts.Add(new VerticalAcceleration());
                 readouts.Add(new HorizontalSpeed());
@@ -170,6 +170,8 @@ namespace KerbalEngineer.Flight.Readouts
                 readouts.Add(new Rendezvous.SemiMinorAxis());
                 readouts.Add(new Rendezvous.RelativeRadialVelocity());
                 readouts.Add(new Rendezvous.TimeToRendezvous());
+                readouts.Add(new TargetLatitude());
+                readouts.Add(new TargetLongitude());
 
                 // Thermal
                 readouts.Add(new InternalFlux());
@@ -192,6 +194,7 @@ namespace KerbalEngineer.Flight.Readouts
                 readouts.Add(new SimulationDelay());
                 readouts.Add(new VectoredThrustToggle());
                 readouts.Add(new SystemTime());
+                readouts.Add(new LogSimToggle());
 
                 LoadHelpStrings();
             }

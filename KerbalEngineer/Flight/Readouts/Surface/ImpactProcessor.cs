@@ -22,6 +22,7 @@
 using System;
 
 using UnityEngine;
+using KerbalEngineer.Helpers;
 
 #endregion
 
@@ -113,7 +114,7 @@ namespace KerbalEngineer.Flight.Readouts.Surface
                 this.impactAltitude = 0;
                 var e = FlightGlobals.ActiveVessel.orbit.eccentricity;
                 //get current position direction vector
-                var currentpos = this.RadiusDirection(FlightGlobals.ActiveVessel.orbit.trueAnomaly);
+                var currentpos = this.RadiusDirection(FlightGlobals.ActiveVessel.orbit.trueAnomaly * Units.RAD_TO_DEG);
                 //calculate longitude in inertial reference frame from that
                 var currentirflong = 180 * Math.Atan2(currentpos.x, currentpos.y) / Math.PI;
 

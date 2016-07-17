@@ -113,6 +113,11 @@ namespace KerbalEngineer.Flight
         {
             get
             {
+                if (MainCanvasUtil.MainCanvas.enabled == false)
+                {
+                    return false;
+                }
+
                 if (isCareerMode)
                 {
                     if (isKerbalLimited && FlightGlobals.ActiveVessel.GetVesselCrew().Exists(c => c.experienceTrait.TypeName == "Engineer"))
@@ -285,6 +290,11 @@ namespace KerbalEngineer.Flight
         /// </summary>
         private void FixedUpdate()
         {
+            if (FlightGlobals.ActiveVessel == null)
+            {
+                return;
+            }
+
             try
             {
                 SectionLibrary.FixedUpdate();
@@ -346,6 +356,11 @@ namespace KerbalEngineer.Flight
         /// </summary>
         private void Update()
         {
+            if (FlightGlobals.ActiveVessel == null)
+            {
+                return;
+            }
+
             try
             {
                 SectionLibrary.Update();

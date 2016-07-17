@@ -56,8 +56,8 @@ namespace KerbalEngineer.VesselSimulator
         public bool isLanded;
         public bool isNoPhysics;
         public bool isSepratron;
-        public bool isFairing;
-        public float fairingMass;
+        //public bool isFairing;
+        public float postStageMassAdjust;
         public int stageIndex;
         public String name;
         public String noCrossFeedNodeKey;
@@ -86,9 +86,11 @@ namespace KerbalEngineer.VesselSimulator
             }
             partSim.attachNodes.Clear();
             partSim.fuelTargets.Clear();
+            partSim.surfaceMountFuelTargets.Clear();
             partSim.resourceDrains.Reset();
             partSim.resourceFlowStates.Reset();
             partSim.resources.Reset();
+            partSim.parent = null;
             partSim.baseCost = 0d;
             partSim.baseMass = 0d;
             partSim.baseMassForCoM = 0d;
@@ -100,62 +102,77 @@ namespace KerbalEngineer.VesselSimulator
             pool.Release(this);
         }
 
-        public static PartSim New(Part thePart, int id, double atmosphere, LogMsg log)
+        public static PartSim New(Part p, int id, double atmosphere, LogMsg log)
         {
             PartSim partSim = pool.Borrow();
 
-            partSim.part = thePart;
-            partSim.centerOfMass = thePart.transform.TransformPoint(thePart.CoMOffset);
+            partSim.part = p;
+            partSim.centerOfMass = p.transform.TransformPoint(p.CoMOffset);
             partSim.partId = id;
-            partSim.name = partSim.part.partInfo.name;
+            partSim.name = p.partInfo.name;
 
             if (log != null) log.buf.AppendLine("Create PartSim for " + partSim.name);
 
             partSim.parent = null;
-            partSim.parentAttach = partSim.part.attachMode;
-            partSim.fuelCrossFeed = partSim.part.fuelCrossFeed;
-            partSim.noCrossFeedNodeKey = partSim.part.NoCrossFeedNodeKey;
-            partSim.decoupledInStage = partSim.DecoupledInStage(partSim.part);
-            partSim.isFuelLine = partSim.part.HasModule<CModuleFuelLine>();
-            partSim.isFuelTank = partSim.part is FuelTank;
+            partSim.parentAttach = p.attachMode;
+            partSim.fuelCrossFeed = p.fuelCrossFeed;
+            partSim.noCrossFeedNodeKey = p.NoCrossFeedNodeKey;
+            partSim.decoupledInStage = partSim.DecoupledInStage(p);
+            partSim.isFuelLine = p.HasModule<CModuleFuelLine>();
+            partSim.isFuelTank = p is FuelTank;
             partSim.isSepratron = partSim.IsSepratron();
-            partSim.isFairing = partSim.IsFairing(partSim.part);
-            partSim.inverseStage = partSim.part.inverseStage;
+            partSim.inverseStage = p.inverseStage;
             //MonoBehaviour.print("inverseStage = " + inverseStage);
 
-            partSim.baseCost = partSim.part.GetCostDry();
+            partSim.baseCost = p.GetCostDry();
 
             if (log != null)
             {
-                log.buf.AppendLine("Parent part = " + (partSim.part.parent == null ? "null" : partSim.part.parent.partInfo.name));
-                log.buf.AppendLine("physicalSignificance = " + partSim.part.physicalSignificance);
-                log.buf.AppendLine("PhysicsSignificance = " + partSim.part.PhysicsSignificance);
+                log.buf.AppendLine("Parent part = " + (p.parent == null ? "null" : p.parent.partInfo.name));
+                log.buf.AppendLine("physicalSignificance = " + p.physicalSignificance);
+                log.buf.AppendLine("PhysicsSignificance = " + p.PhysicsSignificance);
             }
 
             // Work out if the part should have no physical significance
             // The root part is never "no physics"
-            partSim.isNoPhysics = partSim.part.physicalSignificance == Part.PhysicalSignificance.NONE ||
-                                    partSim.part.PhysicsSignificance == 1;
+            partSim.isNoPhysics = p.physicalSignificance == Part.PhysicalSignificance.NONE ||
+                                    p.PhysicsSignificance == 1;
 
-            if (partSim.part.HasModule<LaunchClamp>())
+            if (p.HasModule<LaunchClamp>())
             {
                 partSim.realMass = 0d;
                 if (log != null) log.buf.AppendLine("Ignoring mass of launch clamp");
             }
             else
             {
-                partSim.realMass = partSim.part.mass;
-                if (log != null) log.buf.AppendLine("Using part.mass of " + partSim.part.mass);
+                partSim.realMass = p.mass;
+                if (log != null) log.buf.AppendLine("Using part.mass of " + p.mass);
             }
 
-            if (partSim.isFairing)
+            partSim.postStageMassAdjust = 0f;
+            if (log != null) log.buf.AppendLine("Calculating postStageMassAdjust, prefabMass = " + p.prefabMass);
+            int count = p.Modules.Count;
+            for (int i = 0; i < count; i++)
             {
-                partSim.fairingMass = partSim.part.GetModuleMass((float)partSim.realMass);
+                if (log != null) log.buf.AppendLine("Module: " + p.Modules[i].moduleName);
+                IPartMassModifier partMassModifier = p.Modules[i] as IPartMassModifier;
+                if (partMassModifier != null)
+                {
+                    if (log != null) log.buf.AppendLine("ChangeWhen = " + partMassModifier.GetModuleMassChangeWhen());
+                    if (partMassModifier.GetModuleMassChangeWhen() == ModifierChangeWhen.STAGED)
+                    {
+                        float preStage = partMassModifier.GetModuleMass(p.prefabMass, ModifierStagingSituation.UNSTAGED);
+                        float postStage = partMassModifier.GetModuleMass(p.prefabMass, ModifierStagingSituation.STAGED);
+                        if (log != null) log.buf.AppendLine("preStage = " + preStage + "   postStage = " + postStage);
+                        partSim.postStageMassAdjust += (postStage - preStage);
+                    }
+                }
             }
+            if (log != null) log.buf.AppendLine("postStageMassAdjust = " + partSim.postStageMassAdjust);
 
-            for (int i = 0; i < partSim.part.Resources.Count; i++)
+            for (int i = 0; i < p.Resources.Count; i++)
             {
-                PartResource resource = partSim.part.Resources[i];
+                PartResource resource = p.Resources[i];
 
                 // Make sure it isn't NaN as this messes up the part mass and hence most of the values
                 // This can happen if a resource capacity is 0 and tweakable
@@ -173,17 +190,17 @@ namespace KerbalEngineer.VesselSimulator
                 }
             }
 
-            partSim.hasVessel = (partSim.part.vessel != null);
-            partSim.isLanded = partSim.hasVessel && partSim.part.vessel.Landed;
+            partSim.hasVessel = (p.vessel != null);
+            partSim.isLanded = partSim.hasVessel && p.vessel.Landed;
             if (partSim.hasVessel)
             {
-                partSim.vesselName = partSim.part.vessel.vesselName;
-                partSim.vesselType = partSim.part.vesselType;
+                partSim.vesselName = p.vessel.vesselName;
+                partSim.vesselType = p.vesselType;
             }
-            partSim.initialVesselName = partSim.part.initialVesselName;
+            partSim.initialVesselName = p.initialVesselName;
 
-            partSim.hasMultiModeEngine = partSim.part.HasModule<MultiModeEngine>();
-            partSim.hasModuleEngines = partSim.part.HasModule<ModuleEngines>();
+            partSim.hasMultiModeEngine = p.HasModule<MultiModeEngine>();
+            partSim.hasModuleEngines = p.HasModule<ModuleEngines>();
 
             partSim.isEngine = partSim.hasMultiModeEngine || partSim.hasModuleEngines;
 
@@ -234,27 +251,13 @@ namespace KerbalEngineer.VesselSimulator
                     {
                         if (log != null) log.buf.AppendLine("Module: " + engine.moduleName);
 
-                        Vector3 thrustvec = this.CalculateThrustVector(vectoredThrust ? engine.thrustTransforms : null, log);
-
                         EngineSim engineSim = EngineSim.New(
                             this,
-                            atmosphere,
+							engine,
+							atmosphere,
                             (float)mach,
-                            engine.maxFuelFlow,
-                            engine.minFuelFlow,
-                            engine.thrustPercentage,
-                            thrustvec,
-                            engine.atmosphereCurve,
-                            engine.atmChangeFlow,
-                            engine.useAtmCurve ? engine.atmCurve : null,
-                            engine.useVelCurve ? engine.velCurve : null,
-                            engine.currentThrottle,
-                            engine.g,
-                            engine.throttleLocked || fullThrust,
-                            engine.propellants,
-                            engine.isOperational,
-                            engine.resultingThrust,
-                            engine.thrustTransforms,
+							vectoredThrust,
+							fullThrust,
                             log);
                         allEngines.Add(engineSim);
                     }
@@ -268,28 +271,14 @@ namespace KerbalEngineer.VesselSimulator
                     ModuleEngines engine = engines[i];
                     if (log != null) log.buf.AppendLine("Module: " + engine.moduleName);
 
-                    Vector3 thrustvec = this.CalculateThrustVector(vectoredThrust ? engine.thrustTransforms : null, log);
-
                     EngineSim engineSim = EngineSim.New(
                         this,
+						engine,
                         atmosphere,
                         (float)mach,
-                        engine.maxFuelFlow,
-                        engine.minFuelFlow,
-                        engine.thrustPercentage,
-                        thrustvec,
-                        engine.atmosphereCurve,
-                        engine.atmChangeFlow,
-                        engine.useAtmCurve ? engine.atmCurve : null,
-                        engine.useVelCurve ? engine.velCurve : null,
-                        engine.currentThrottle,
-                        engine.g,
-                        engine.throttleLocked || fullThrust,
-                        engine.propellants,
-                        engine.isOperational,
-                        engine.resultingThrust,
-                        engine.thrustTransforms,
-                        log);
+						vectoredThrust,
+						fullThrust,
+						log);
                     allEngines.Add(engineSim);
                 }
             }
@@ -417,9 +406,9 @@ namespace KerbalEngineer.VesselSimulator
                 mass += resources.GetResourceMass(resources.Types[i]);
             }
 
-            if (isFairing && currentStage <= inverseStage)
+            if (postStageMassAdjust != 0.0 && currentStage <= inverseStage)
             {
-                mass -= fairingMass;
+                mass += postStageMassAdjust;
             }
 
             return mass;
@@ -639,6 +628,17 @@ namespace KerbalEngineer.VesselSimulator
                     this.fuelTargets[i] = null;
                 }
             }
+
+            // Loop through the surface attached fuel targets (surface attached parts for new flow modes)
+            for (int i = 0; i < this.surfaceMountFuelTargets.Count; i++)
+            {
+                PartSim fuelTargetSim = this.surfaceMountFuelTargets[i];
+                // If the part is in the set then "remove" it by clearing the PartSim reference
+                if (fuelTargetSim != null && partSims.Contains(fuelTargetSim))
+                {
+                    this.surfaceMountFuelTargets[i] = null;
+                }
+            }
         }
 
         public void SetupAttachNodes(Dictionary<Part, PartSim> partSimLookup, LogMsg log)
@@ -777,13 +777,8 @@ namespace KerbalEngineer.VesselSimulator
 
         private bool IsDecoupler(Part thePart)
         {
-            return thePart.HasModule<ModuleDecouple>() ||
-                   thePart.HasModule<ModuleAnchoredDecoupler>();
-        }
-
-        private bool IsFairing(Part thePart)
-        {
-            return thePart.HasModule<ModuleProceduralFairing>();
+            PartExtensions.ProtoModuleDecoupler protoDecoupler = thePart.GetProtoModuleDecoupler();
+            return protoDecoupler != null && protoDecoupler.IsStageEnabled;
         }
 
         private bool IsSepratron()

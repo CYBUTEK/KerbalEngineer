@@ -127,7 +127,7 @@ namespace KerbalEngineer.Helpers
 
         public static string ToFlux(double value)
         {
-            return value.ToString("#,0.00") + "W";
+            return value.ToString("#,0.00") + "kW";
         }
 
         public static string ToForce(double value)

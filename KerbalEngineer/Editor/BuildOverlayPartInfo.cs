@@ -1,7 +1,7 @@
 ﻿// 
 //     Kerbal Engineer Redux
 // 
-//     Copyright (C) 2014 CYBUTEK
+//     Copyright (C) 2016 CYBUTEK
 // 
 //     This program is free software: you can redistribute it and/or modify
 //     it under the terms of the GNU General Public License as published by
@@ -12,10 +12,9 @@
 //     but WITHOUT ANY WARRANTY; without even the implied warranty of
 //     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //     GNU General Public License for more details.
-// 
 //     You should have received a copy of the GNU General Public License
 //     along with this program.  If not, see <http://www.gnu.org/licenses/>.
-// 
+//  
 
 namespace KerbalEngineer.Editor
 {
@@ -28,7 +27,7 @@ namespace KerbalEngineer.Editor
     public class BuildOverlayPartInfo : MonoBehaviour
     {
         private static bool clickToOpen = true;
-        private static ModuleGenerator.GeneratorResource generatorResource;
+        private static ModuleResource generatorResource;
         private static ModuleAlternator moduleAlternator;
         private static ModuleDataTransmitter moduleDataTransmitter;
         private static ModuleDeployableSolarPanel moduleDeployableSolarPanel;
@@ -102,7 +101,7 @@ namespace KerbalEngineer.Editor
                     return;
                 }
 
-                position = GUILayout.Window(GetInstanceID(), position, Window, String.Empty, BuildOverlay.WindowStyle);
+                position = GUILayout.Window(GetInstanceID(), position, Window, string.Empty, BuildOverlay.WindowStyle);
             }
             catch (Exception ex)
 
@@ -131,7 +130,16 @@ namespace KerbalEngineer.Editor
                     position.x = Input.mousePosition.x - 3 - position.width;
                 }
 
-                part = EditorLogic.fetch.ship.parts.Find(p => p.stackIcon.highlightIcon) ?? EditorLogic.SelectedPart;
+                RaycastHit rayHit;
+                if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out rayHit))
+                {
+                    part = rayHit.transform.GetComponent<Part>();
+                }
+                else
+                {
+                    part = EditorLogic.fetch.ship.parts.Find(p => p.highlighter.highlighted) ?? EditorLogic.SelectedPart;
+                }
+
                 if (part != null)
                 {
                     if (!part.Equals(selectedPart))

@@ -45,11 +45,12 @@ namespace KerbalEngineer.Flight.Readouts.Surface
 
         public override void Draw(SectionModule section)
         {
-            // Used to do this but the bug-fix to horizontalSrfSpeed in KSP 1.0.3 actually made it worse so workaround
-            //this.DrawLine(FlightGlobals.ActiveVessel.horizontalSrfSpeed.ToSpeed(), section.IsHud);
-            var ves = FlightGlobals.ActiveVessel;
-            double horizSpeed = Math.Sqrt(ves.srfSpeed * ves.srfSpeed - ves.verticalSpeed * ves.verticalSpeed);
-            this.DrawLine(horizSpeed.ToSpeed(), section.IsHud);
+            this.DrawLine(FlightGlobals.ActiveVessel.horizontalSrfSpeed.ToSpeed(), section.IsHud);
+
+            // This workaround was used for KSP 1.0.3 and 1.0.4 where horizontalSrfSpeed was really badly broken
+            //var ves = FlightGlobals.ActiveVessel;
+            //double horizSpeed = Math.Sqrt(ves.srfSpeed * ves.srfSpeed - ves.verticalSpeed * ves.verticalSpeed);
+            //this.DrawLine(horizSpeed.ToSpeed(), section.IsHud);
         }
 
         #endregion

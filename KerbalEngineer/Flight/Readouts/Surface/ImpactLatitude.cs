@@ -21,6 +21,7 @@
 
 using KerbalEngineer.Extensions;
 using KerbalEngineer.Flight.Sections;
+using KerbalEngineer.Helpers;
 
 #endregion
 
@@ -46,7 +47,7 @@ namespace KerbalEngineer.Flight.Readouts.Surface
         {
             if (ImpactProcessor.ShowDetails)
             {
-                this.DrawLine(ImpactProcessor.Latitude.ToAngle(), section.IsHud);
+                this.DrawLine(Units.ToAngleDMS(ImpactProcessor.Latitude) + (ImpactProcessor.Latitude < 0 ? " S" : " N"), section.IsHud);
             }
         }
 

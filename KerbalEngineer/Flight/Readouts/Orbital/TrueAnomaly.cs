@@ -22,6 +22,7 @@
 using System;
 
 using KerbalEngineer.Extensions;
+using KerbalEngineer.Helpers;
 using KerbalEngineer.Flight.Sections;
 
 #endregion
@@ -46,7 +47,7 @@ namespace KerbalEngineer.Flight.Readouts.Orbital
 
         public override void Draw(SectionModule section)
         {
-            this.DrawLine(FlightGlobals.ship_orbit.trueAnomaly.ToAngle(), section.IsHud);
+            this.DrawLine((FlightGlobals.ship_orbit.trueAnomaly * Units.RAD_TO_DEG).ToAngle(), section.IsHud);
         }
 
         #endregion

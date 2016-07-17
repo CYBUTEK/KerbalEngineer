@@ -100,7 +100,7 @@ namespace KerbalEngineer.Extensions
             {
                 PartModule pm = part.Modules[i];
                 if (pm is IPartCostModifier)
-                    cost += (pm as IPartCostModifier).GetModuleCost(defaultCost);
+                    cost += (pm as IPartCostModifier).GetModuleCost(defaultCost, ModifierStagingSituation.CURRENT);
             }
             return cost;
         }
@@ -572,6 +572,7 @@ namespace KerbalEngineer.Extensions
 
             public double EjectionForce { get; private set; }
             public bool IsOmniDecoupler { get; private set; }
+            public bool IsStageEnabled { get; private set; }
 
             private void SetModuleAnchoredDecoupler()
             {
@@ -582,6 +583,7 @@ namespace KerbalEngineer.Extensions
                 }
 
                 EjectionForce = decoupler.ejectionForce;
+                IsStageEnabled = decoupler.stagingEnabled;
             }
 
             private void SetModuleDecouple()
@@ -594,6 +596,7 @@ namespace KerbalEngineer.Extensions
 
                 EjectionForce = decoupler.ejectionForce;
                 IsOmniDecoupler = decoupler.isOmniDecoupler;
+                IsStageEnabled = decoupler.stagingEnabled;
             }
         }
 

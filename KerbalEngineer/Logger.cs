@@ -19,31 +19,30 @@
 
 #region Using Directives
 
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.IO;
-using System.Reflection;
-
-using UnityEngine;
-
 #endregion
 
 namespace KerbalEngineer
 {
+    using System;
+    using System.Collections;
+    using System.Collections.Generic;
+    using System.IO;
+    using System.Reflection;
+    using UnityEngine;
+
     [KSPAddon(KSPAddon.Startup.Instantly, false)]
     public class Logger : MonoBehaviour
     {
+        #region Fields
+
+        private static readonly List<string[]> messages = new List<string[]>();
+
+        #endregion
+
         #region Constants
 
         private static readonly string fileName;
         private static readonly AssemblyName assemblyName;
-
-        #endregion
-
-        #region Fields
-
-        private static readonly List<string[]> messages = new List<string[]>();
 
         #endregion
 
@@ -86,18 +85,7 @@ namespace KerbalEngineer
             {
                 try
                 {
-                    if (obj is IEnumerable)
-                    {
-                        messages.Add(new[] {"Log " + DateTime.Now.TimeOfDay, obj.ToString()});
-                        foreach (var o in obj as IEnumerable)
-                        {
-                            messages.Add(new[] {"\t", o.ToString()});
-                        }
-                    }
-                    else
-                    {
-                        messages.Add(new[] {"Log " + DateTime.Now.TimeOfDay, obj.ToString()});
-                    }
+                    messages.Add(new[] {"Log " + DateTime.Now.TimeOfDay, GetObjString(obj)});
                 }
                 catch (Exception ex)
                 {
@@ -112,24 +100,43 @@ namespace KerbalEngineer
             {
                 try
                 {
-                    if (obj is IEnumerable)
-                    {
-                        messages.Add(new[] {"Log " + DateTime.Now.TimeOfDay, name});
-                        foreach (var o in obj as IEnumerable)
-                        {
-                            messages.Add(new[] {"\t", o.ToString()});
-                        }
-                    }
-                    else
-                    {
-                        messages.Add(new[] {"Log " + DateTime.Now.TimeOfDay, obj.ToString()});
-                    }
+                    messages.Add(new[] {"Log " + DateTime.Now.TimeOfDay, name + "\n" + GetObjString(obj)});
                 }
                 catch (Exception ex)
                 {
                     Exception(ex);
                 }
             }
+        }
+
+        private static string GetObjString(object obj, int tabs = 0)
+        {
+            string objString;
+            string tabString = string.Empty;
+            for (int i = 0; i < tabs; i++)
+            {
+                tabString += " ";
+            }
+
+            if (obj != null)
+            {
+                objString = tabString + obj;
+
+                IEnumerable items = obj as IEnumerable;
+                if (items != null)
+                {
+                    foreach (object item in items)
+                    {
+                        objString += "\n" + GetObjString(item, tabs + 1);
+                    }
+                }
+            }
+            else
+            {
+                objString = "Null";
+            }
+
+            return objString;
         }
 
         public static void Log(string message)
@@ -186,9 +193,9 @@ namespace KerbalEngineer
             {
                 if (messages.Count > 0)
                 {
-                    using (var file = File.AppendText(fileName))
+                    using (StreamWriter file = File.AppendText(fileName))
                     {
-                        foreach (var message in messages)
+                        foreach (string[] message in messages)
                         {
                             file.WriteLine(message.Length > 0 ? message.Length > 1 ? "[" + message[0] + "]: " + message[1] : message[0] : string.Empty);
                             if (message.Length > 0)

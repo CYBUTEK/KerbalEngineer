@@ -2,6 +2,11 @@
 [Bb]in/
 [Oo]bj/
 
+# Unity specific
+[Ll]ibrary/
+[Tt]emp/
+*.unityproj
+
 # mstest test results
 TestResults
 
@@ -19,7 +24,6 @@ x64/
 *_i.c
 *_p.c
 *.ilk
-*.meta
 *.obj
 *.pch
 *.pdb
