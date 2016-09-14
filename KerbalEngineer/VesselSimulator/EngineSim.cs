@@ -40,6 +40,7 @@ namespace KerbalEngineer.VesselSimulator
         public List<AppliedForce> appliedForces = new List<AppliedForce>();
         public float maxMach;
         public bool isFlamedOut;
+        public bool dontDecoupleActive = true;
 
         public double thrust = 0;
 
@@ -118,7 +119,7 @@ namespace KerbalEngineer.VesselSimulator
             double flowRate = 0.0;
             if (engineSim.partSim.hasVessel)
             {
-                if (log != null) log.buf.AppendLine("hasVessel is true"); 
+                log?.AppendLine("hasVessel is true"); 
 
                 float flowModifier = GetFlowModifier(atmChangeFlow, atmCurve, engineSim.partSim.part.atmDensity, velCurve, machNumber, ref engineSim.maxMach);
                 engineSim.isp = atmosphereCurve.Evaluate((float)atmosphere);
@@ -134,7 +135,7 @@ namespace KerbalEngineer.VesselSimulator
 
 				if (throttleLocked)
                 {
-                    if (log != null) log.buf.AppendLine("throttleLocked is true, using thrust for flowRate");
+                    log?.AppendLine("throttleLocked is true, using thrust for flowRate");
                     flowRate = GetFlowRate(engineSim.thrust, engineSim.isp);
                 }
                 else
@@ -142,19 +143,19 @@ namespace KerbalEngineer.VesselSimulator
                     if (currentThrottle > 0.0f && engineSim.partSim.isLanded == false)
                     {
 						// TODO: This bit doesn't work for RF engines
-						if (log != null) log.buf.AppendLine("throttled up and not landed, using actualThrust for flowRate");
+						log?.AppendLine("throttled up and not landed, using actualThrust for flowRate");
                         flowRate = GetFlowRate(engineSim.actualThrust, engineSim.isp);
                     }
                     else
                     {
-                        if (log != null) log.buf.AppendLine("throttled down or landed, using thrust for flowRate");
+                        log?.AppendLine("throttled down or landed, using thrust for flowRate");
                         flowRate = GetFlowRate(engineSim.thrust, engineSim.isp);
                     }
                 }
             }
             else
             {
-                if (log != null) log.buf.AppendLine("hasVessel is false");
+                log?.buf.AppendLine("hasVessel is false");
                 float flowModifier = GetFlowModifier(atmChangeFlow, atmCurve, CelestialBodies.SelectedBody.GetDensity(BuildAdvanced.Altitude), velCurve, machNumber, ref engineSim.maxMach);
                 engineSim.isp = atmosphereCurve.Evaluate((float)atmosphere);
                 engineSim.thrust = GetThrust(Mathf.Lerp(minFuelFlow, maxFuelFlow, GetThrustPercent(thrustPercentage)) * flowModifier, engineSim.isp);
@@ -165,13 +166,13 @@ namespace KerbalEngineer.VesselSimulator
                     log.buf.AppendFormat("isp     = {0:g6}\n", engineSim.isp);
                     log.buf.AppendFormat("thrust  = {0:g6}\n", engineSim.thrust);
                     log.buf.AppendFormat("actual  = {0:g6}\n", engineSim.actualThrust);
+                    log.AppendLine("no vessel, using thrust for flowRate");
                 }
 
-                if (log != null) log.buf.AppendLine("no vessel, using thrust for flowRate");
                 flowRate = GetFlowRate(engineSim.thrust, engineSim.isp);
             }
 
-            if (log != null) log.buf.AppendFormat("flowRate = {0:g6}\n", flowRate);
+            log?.buf.AppendFormat("flowRate = {0:g6}\n", flowRate);
 
             float flowMass = 0f;
             for (int i = 0; i < propellants.Count; ++i)
@@ -181,7 +182,7 @@ namespace KerbalEngineer.VesselSimulator
                     flowMass += propellant.ratio * ResourceContainer.GetResourceDensity(propellant.id);
             }
 
-            if (log != null) log.buf.AppendFormat("flowMass = {0:g6}\n", flowMass);
+            log?.buf.AppendFormat("flowMass = {0:g6}\n", flowMass);
 
             for (int i = 0; i < propellants.Count; ++i)
             {
@@ -193,7 +194,7 @@ namespace KerbalEngineer.VesselSimulator
                 }
 
                 double consumptionRate = propellant.ratio * flowRate / flowMass;
-                if (log != null) log.buf.AppendFormat(
+                log?.buf.AppendFormat(
                         "Add consumption({0}, {1}:{2:d}) = {3:g6}\n",
                         ResourceContainer.GetResourceName(propellant.id),
                         theEngine.name,
@@ -228,16 +229,16 @@ namespace KerbalEngineer.VesselSimulator
 			{
 				Transform trans = thrustTransforms[i];
 
-				if (log != null) log.buf.AppendFormat("Transform = ({0:g6}, {1:g6}, {2:g6})   length = {3:g6}\n", trans.forward.x, trans.forward.y, trans.forward.z, trans.forward.magnitude);
+				log?.buf.AppendFormat("Transform = ({0:g6}, {1:g6}, {2:g6})   length = {3:g6}\n", trans.forward.x, trans.forward.y, trans.forward.z, trans.forward.magnitude);
 
 				thrustvec -= (trans.forward * thrustTransformMultipliers[i]);
 			}
 
-			if (log != null) log.buf.AppendFormat("ThrustVec  = ({0:g6}, {1:g6}, {2:g6})   length = {3:g6}\n", thrustvec.x, thrustvec.y, thrustvec.z, thrustvec.magnitude);
+			log?.buf.AppendFormat("ThrustVec  = ({0:g6}, {1:g6}, {2:g6})   length = {3:g6}\n", thrustvec.x, thrustvec.y, thrustvec.z, thrustvec.magnitude);
 
 			thrustvec.Normalize();
 
-			if (log != null) log.buf.AppendFormat("ThrustVecN = ({0:g6}, {1:g6}, {2:g6})   length = {3:g6}\n", thrustvec.x, thrustvec.y, thrustvec.z, thrustvec.magnitude);
+			log?.buf.AppendFormat("ThrustVecN = ({0:g6}, {1:g6}, {2:g6})   length = {3:g6}\n", thrustvec.x, thrustvec.y, thrustvec.z, thrustvec.magnitude);
 
 			return thrustvec;
 		}
@@ -298,10 +299,9 @@ namespace KerbalEngineer.VesselSimulator
             return thrustPercentage * 0.01f;
         }
 
-        public void DumpEngineToBuffer(StringBuilder buffer, String prefix)
+        public void DumpEngineToLog(LogMsg log)
         {
-            buffer.Append(prefix);
-            buffer.AppendFormat("[thrust = {0:g6}, actual = {1:g6}, isp = {2:g6}\n", thrust, actualThrust, isp);
+            log?.buf.AppendFormat("[thrust = {0:g6}, actual = {1:g6}, isp = {2:g6}\n", thrust, actualThrust, isp);
         }
 
         // A dictionary to hold a set of parts for each resource
@@ -311,12 +311,12 @@ namespace KerbalEngineer.VesselSimulator
 
         HashSet<PartSim> visited = new HashSet<PartSim>();
 
-        public void DumpSourcePartSets(String msg)
+        public void DumpSourcePartSets(LogMsg log, String msg)
         {
-            MonoBehaviour.print("DumpSourcePartSets " + msg);
+            log.AppendLine("DumpSourcePartSets ", msg);
             foreach (int type in sourcePartSets.Keys)
             {
-                MonoBehaviour.print("SourcePartSet for " + ResourceContainer.GetResourceName(type));
+                log.AppendLine("SourcePartSet for " + ResourceContainer.GetResourceName(type));
                 HashSet<PartSim> sourcePartSet = sourcePartSets[type];
                 if (sourcePartSet.Count > 0)
                 {

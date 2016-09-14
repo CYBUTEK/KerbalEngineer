@@ -300,58 +300,59 @@ namespace KerbalEngineer.VesselSimulator
             }
         }
 
-        public String DumpPartAndParentsToBuffer(StringBuilder buffer, String prefix)
+        public String DumpPartAndParentsToLog(LogMsg log, String prefix)
         {
             if (parent != null)
             {
-                prefix = parent.DumpPartAndParentsToBuffer(buffer, prefix) + " ";
+                prefix = parent.DumpPartAndParentsToLog(log, prefix) + " ";
             }
 
-            DumpPartToBuffer(buffer, prefix);
+            DumpPartToLog(log, prefix);
 
             return prefix;
         }
 
-        public void DumpPartToBuffer(StringBuilder buffer, String prefix, List<PartSim> allParts = null)
+        public void DumpPartToLog(LogMsg log, String prefix, List<PartSim> allParts = null)
         {
-            buffer.Append(prefix);
-            buffer.Append(name);
-            buffer.AppendFormat(":[id = {0:d}, decouple = {1:d}, invstage = {2:d}", partId, decoupledInStage, inverseStage);
+            log.Append(prefix);
+            log.Append(name);
+            log.Append(":[id = ", partId, ", decouple = ", decoupledInStage);
+            log.Append(", invstage = ", inverseStage);
 
-            //buffer.AppendFormat(", vesselName = '{0}'", vesselName);
-            //buffer.AppendFormat(", vesselType = {0}", SimManager.GetVesselTypeString(vesselType));
-            //buffer.AppendFormat(", initialVesselName = '{0}'", initialVesselName);
+            //log.Append(", vesselName = '", vesselName, "'");
+            //log.Append(", vesselType = ", SimManager.GetVesselTypeString(vesselType));
+            //log.Append(", initialVesselName = '", initialVesselName, "'");
 
-            buffer.AppendFormat(", isNoPhys = {0}", isNoPhysics);
-            buffer.AppendFormat(", baseMass = {0}", baseMass);
-            buffer.AppendFormat(", baseMassForCoM = {0}", baseMassForCoM);
+            log.Append(", isNoPhys = ", isNoPhysics);
+            log.buf.AppendFormat(", baseMass = {0}", baseMass);
+            log.buf.AppendFormat(", baseMassForCoM = {0}", baseMassForCoM);
 
-            buffer.AppendFormat(", fuelCF = {0}", fuelCrossFeed);
-            buffer.AppendFormat(", noCFNKey = '{0}'", noCrossFeedNodeKey);
+            log.Append(", fuelCF = {0}", fuelCrossFeed);
+            log.Append(", noCFNKey = '{0}'", noCrossFeedNodeKey);
 
-            buffer.AppendFormat(", isSep = {0}", isSepratron);
+            log.Append(", isSep = {0}", isSepratron);
 
             for (int i = 0; i < resources.Types.Count; i++)
             {
                 int type = resources.Types[i];
-                buffer.AppendFormat(", {0} = {1:g6}", ResourceContainer.GetResourceName(type), resources[type]);
+                log.buf.AppendFormat(", {0} = {1:g6}", ResourceContainer.GetResourceName(type), resources[type]);
             }
 
             if (attachNodes.Count > 0)
             {
-                buffer.Append(", attached = <");
-                attachNodes[0].DumpToBuffer(buffer);
+                log.Append(", attached = <");
+                attachNodes[0].DumpToLog(log);
                 for (int i = 1; i < attachNodes.Count; i++)
                 {
-                    buffer.Append(", ");
-                    attachNodes[i].DumpToBuffer(buffer);
+                    log.Append(", ");
+                    attachNodes[i].DumpToLog(log);
                 }
-                buffer.Append(">");
+                log.Append(">");
             }
 
             // Add more info here
 
-            buffer.Append("]\n");
+            log.AppendLine("]");
 
             if (allParts != null)
             {
@@ -360,7 +361,7 @@ namespace KerbalEngineer.VesselSimulator
                 {
                     PartSim partSim = allParts[i];
                     if (partSim.parent == this)
-                        partSim.DumpPartToBuffer(buffer, newPrefix, allParts);
+                        partSim.DumpPartToLog(log, newPrefix, allParts);
                 }
             }
         }
