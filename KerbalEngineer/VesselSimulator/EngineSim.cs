@@ -433,7 +433,9 @@ namespace KerbalEngineer.VesselSimulator
                             log = new LogMsg();
                             log.buf.AppendLine("Find " + ResourceContainer.GetResourceName(type) + " sources for " + partSim.name + ":" + partSim.partId);
                         }
-                        partSim.GetSourceSet(type, PhysicsGlobals.Stack_PriUsesSurf, allParts, visited, sourcePartSet, log, "");
+
+                        // TODO: check fuel flow as 'PhysicsGlobals.Stack_PriUsesSurf' changed to false to subdue error
+                        partSim.GetSourceSet(type, false, allParts, visited, sourcePartSet, log, "");
                         if (SimManager.logOutput && log != null)
                         {
                             MonoBehaviour.print(log.buf);

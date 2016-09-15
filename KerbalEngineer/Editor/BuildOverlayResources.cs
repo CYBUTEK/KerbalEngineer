@@ -87,7 +87,7 @@ namespace KerbalEngineer.Editor
             }
             catch (Exception ex)
             {
-                Logger.Exception(ex);
+                MyLogger.Exception(ex);
             }
         }
 
@@ -100,7 +100,7 @@ namespace KerbalEngineer.Editor
             }
             catch (Exception ex)
             {
-                Logger.Exception(ex);
+                MyLogger.Exception(ex);
             }
         }
 
@@ -118,7 +118,7 @@ namespace KerbalEngineer.Editor
             }
             catch (Exception ex)
             {
-                Logger.Exception(ex);
+                MyLogger.Exception(ex);
             }
         }
         #endregion
@@ -135,9 +135,9 @@ namespace KerbalEngineer.Editor
             for (int i = 0; i < EditorLogic.fetch.ship.parts.Count; ++i)
             {
                 part = EditorLogic.fetch.ship.parts[i];
-                for (int j = 0; j < part.Resources.list.Count; ++j)
+                for (int j = 0; j < part.Resources.dict.Count; ++j)
                 {
-                    partResource = part.Resources.list[j];
+                    partResource = part.Resources.dict.At(j);
 
                     if (resources.ContainsKey(partResource.info.id))
                     {
@@ -206,7 +206,7 @@ namespace KerbalEngineer.Editor
             }
             catch (Exception ex)
             {
-                Logger.Exception(ex);
+                MyLogger.Exception(ex);
             }
         }
         #endregion

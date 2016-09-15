@@ -1,0 +1,68 @@
+ManifestFileVersion: 0
+CRC: 2968365130
+Hashes:
+  AssetFileHash:
+    serializedVersion: 2
+    Hash: 02a2d09886efb9a467857320aea9167f
+  TypeTreeHash:
+    serializedVersion: 2
+    Hash: f34bf2aa2d8f763a2a8ef79868dfc1b4
+HashAppended: 0
+ClassTypes:
+- Class: 1
+  Script: {instanceID: 0}
+- Class: 21
+  Script: {instanceID: 0}
+- Class: 28
+  Script: {instanceID: 0}
+- Class: 48
+  Script: {instanceID: 0}
+- Class: 49
+  Script: {instanceID: 0}
+- Class: 114
+  Script: {fileID: 1392445389, guid: f5f67c52d1564df4a8936ccd202a3bd8, type: 3}
+- Class: 114
+  Script: {fileID: 1741964061, guid: f5f67c52d1564df4a8936ccd202a3bd8, type: 3}
+- Class: 114
+  Script: {fileID: -405508275, guid: f5f67c52d1564df4a8936ccd202a3bd8, type: 3}
+- Class: 114
+  Script: {fileID: -765806418, guid: f5f67c52d1564df4a8936ccd202a3bd8, type: 3}
+- Class: 114
+  Script: {fileID: 1679637790, guid: f5f67c52d1564df4a8936ccd202a3bd8, type: 3}
+- Class: 114
+  Script: {fileID: 708705254, guid: f5f67c52d1564df4a8936ccd202a3bd8, type: 3}
+- Class: 114
+  Script: {fileID: 2109663825, guid: f5f67c52d1564df4a8936ccd202a3bd8, type: 3}
+- Class: 114
+  Script: {fileID: 1297475563, guid: f5f67c52d1564df4a8936ccd202a3bd8, type: 3}
+- Class: 114
+  Script: {fileID: 571159103, guid: 4ffb1bf511e31af45bdeaa3d272d49d4, type: 3}
+- Class: 114
+  Script: {fileID: -1842827791, guid: 4ffb1bf511e31af45bdeaa3d272d49d4, type: 3}
+- Class: 114
+  Script: {fileID: 644905346, guid: 4ffb1bf511e31af45bdeaa3d272d49d4, type: 3}
+- Class: 114
+  Script: {fileID: 323546239, guid: 4ffb1bf511e31af45bdeaa3d272d49d4, type: 3}
+- Class: 114
+  Script: {fileID: 604723565, guid: 4ffb1bf511e31af45bdeaa3d272d49d4, type: 3}
+- Class: 115
+  Script: {instanceID: 0}
+- Class: 128
+  Script: {instanceID: 0}
+- Class: 213
+  Script: {instanceID: 0}
+- Class: 222
+  Script: {instanceID: 0}
+- Class: 224
+  Script: {instanceID: 0}
+- Class: 225
+  Script: {instanceID: 0}
+Assets:
+- Assets/Prefabs/Setting.prefab
+- Assets/Prefabs/SettingToggle.prefab
+- Assets/XML/prefabs_bundle.xml
+- Assets/Prefabs/SettingButton.prefab
+- Assets/Prefabs/FlightMenuSection.prefab
+- Assets/Prefabs/FlightMenu.prefab
+- Assets/Prefabs/Window.prefab
+Dependencies: []

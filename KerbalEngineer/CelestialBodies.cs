@@ -46,7 +46,7 @@ namespace KerbalEngineer
             }
             catch (Exception ex)
             {
-                Logger.Exception(ex);
+                MyLogger.Exception(ex);
             }
         }
 
@@ -64,7 +64,7 @@ namespace KerbalEngineer
             }
             catch (Exception ex)
             {
-                Logger.Exception(ex);
+                MyLogger.Exception(ex);
             }
             return null;
         }
@@ -90,7 +90,7 @@ namespace KerbalEngineer
             }
             catch (Exception ex)
             {
-                Logger.Exception(ex);
+                MyLogger.Exception(ex);
             }
             return false;
         }
@@ -118,7 +118,7 @@ namespace KerbalEngineer
                 }
                 catch (Exception ex)
                 {
-                    Logger.Exception(ex);
+                    MyLogger.Exception(ex);
                 }
             }
 
@@ -152,7 +152,7 @@ namespace KerbalEngineer
                 }
                 catch (Exception ex)
                 {
-                    Logger.Exception(ex);
+                    MyLogger.Exception(ex);
                 }
 
                 // A body with the specified name was not found.

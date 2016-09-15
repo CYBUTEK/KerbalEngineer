@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<KSPBundleDefinition xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" UrlName="images" Name="images" CreatedTime="-8587276745316957000">
+  <Author />
+  <Info />
+  <Assets>
+    <Asset Name="app-launcher-icon" Path="Assets/Images/app-launcher-icon.psd" Type="Texture2D" Url="Images/app-launcher-icon" AutoLoad="false" />
+    <Asset Name="flight-menu-background" Path="Assets/Images/flight-menu-background.psd" Type="Texture2D" Url="Images/flight-menu-background" AutoLoad="false" />
+    <Asset Name="ui-drop-down" Path="Assets/Images/ui-drop-down.psd" Type="Texture2D" Url="Images/ui-drop-down" AutoLoad="false" />
+  </Assets>
+  <Dependencies />
+</KSPBundleDefinition>
