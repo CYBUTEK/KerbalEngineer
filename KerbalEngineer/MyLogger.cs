@@ -31,7 +31,7 @@ namespace KerbalEngineer
     using UnityEngine;
 
     [KSPAddon(KSPAddon.Startup.Instantly, false)]
-    public class Logger : MonoBehaviour
+    public class MyLogger : MonoBehaviour
     {
         #region Fields
 
@@ -48,7 +48,7 @@ namespace KerbalEngineer
 
         #region Initialisation
 
-        static Logger()
+        static MyLogger()
         {
             assemblyName = Assembly.GetExecutingAssembly().GetName();
             fileName = Path.ChangeExtension(Assembly.GetExecutingAssembly().Location, "log");
@@ -56,8 +56,8 @@ namespace KerbalEngineer
 
             lock (messages)
             {
-                messages.Add(new[] {"Executing: " + assemblyName.Name + " - " + assemblyName.Version});
-                messages.Add(new[] {"Assembly: " + Assembly.GetExecutingAssembly().Location});
+                messages.Add(new[] { "Executing: " + assemblyName.Name + " - " + assemblyName.Version });
+                messages.Add(new[] { "Assembly: " + Assembly.GetExecutingAssembly().Location });
             }
             Blank();
         }
@@ -75,7 +75,7 @@ namespace KerbalEngineer
         {
             lock (messages)
             {
-                messages.Add(new string[] {});
+                messages.Add(new string[] { });
             }
         }
 
@@ -85,7 +85,7 @@ namespace KerbalEngineer
             {
                 try
                 {
-                    messages.Add(new[] {"Log " + DateTime.Now.TimeOfDay, GetObjString(obj)});
+                    messages.Add(new[] { "Log " + DateTime.Now.TimeOfDay, GetObjString(obj) });
                 }
                 catch (Exception ex)
                 {
@@ -100,7 +100,7 @@ namespace KerbalEngineer
             {
                 try
                 {
-                    messages.Add(new[] {"Log " + DateTime.Now.TimeOfDay, name + "\n" + GetObjString(obj)});
+                    messages.Add(new[] { "Log " + DateTime.Now.TimeOfDay, name + "\n" + GetObjString(obj) });
                 }
                 catch (Exception ex)
                 {
@@ -143,7 +143,7 @@ namespace KerbalEngineer
         {
             lock (messages)
             {
-                messages.Add(new[] {"Log " + DateTime.Now.TimeOfDay, message});
+                messages.Add(new[] { "Log " + DateTime.Now.TimeOfDay, message });
             }
         }
 
@@ -151,7 +151,7 @@ namespace KerbalEngineer
         {
             lock (messages)
             {
-                messages.Add(new[] {"Warning " + DateTime.Now.TimeOfDay, message});
+                messages.Add(new[] { "Warning " + DateTime.Now.TimeOfDay, message });
             }
         }
 
@@ -159,7 +159,7 @@ namespace KerbalEngineer
         {
             lock (messages)
             {
-                messages.Add(new[] {"Error " + DateTime.Now.TimeOfDay, message});
+                messages.Add(new[] { "Error " + DateTime.Now.TimeOfDay, message });
             }
         }
 
@@ -167,8 +167,8 @@ namespace KerbalEngineer
         {
             lock (messages)
             {
-                messages.Add(new[] {"Exception " + DateTime.Now.TimeOfDay, ex.Message});
-                messages.Add(new[] {string.Empty, ex.StackTrace});
+                messages.Add(new[] { "Exception " + DateTime.Now.TimeOfDay, ex.Message });
+                messages.Add(new[] { string.Empty, ex.StackTrace });
                 Blank();
             }
         }
@@ -177,8 +177,8 @@ namespace KerbalEngineer
         {
             lock (messages)
             {
-                messages.Add(new[] {"Exception " + DateTime.Now.TimeOfDay, location + " // " + ex.Message});
-                messages.Add(new[] {string.Empty, ex.StackTrace});
+                messages.Add(new[] { "Exception " + DateTime.Now.TimeOfDay, location + " // " + ex.Message });
+                messages.Add(new[] { string.Empty, ex.StackTrace });
                 Blank();
             }
         }
@@ -223,7 +223,7 @@ namespace KerbalEngineer
             Flush();
         }
 
-        ~Logger()
+        ~MyLogger()
         {
             Flush();
         }

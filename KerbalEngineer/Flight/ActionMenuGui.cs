@@ -56,11 +56,11 @@ namespace KerbalEngineer.Flight
             try
             {
                 this.enabled = false;
-                Logger.Log("ActionMenuGui was created.");
+                MyLogger.Log("ActionMenuGui was created.");
             }
             catch (Exception ex)
             {
-                Logger.Exception(ex);
+                MyLogger.Exception(ex);
             }
         }
 
@@ -72,7 +72,7 @@ namespace KerbalEngineer.Flight
             }
             catch (Exception ex)
             {
-                Logger.Exception(ex);
+                MyLogger.Exception(ex);
             }
         }
 
@@ -117,7 +117,7 @@ namespace KerbalEngineer.Flight
             }
             catch (Exception ex)
             {
-                Logger.Exception(ex, "ActionMenu->InitialiseStyles");
+                MyLogger.Exception(ex, "ActionMenu->InitialiseStyles");
             }
         }
 
@@ -159,7 +159,7 @@ namespace KerbalEngineer.Flight
             }
             catch (Exception ex)
             {
-                Logger.Exception(ex);
+                MyLogger.Exception(ex);
             }
         }
 
@@ -183,7 +183,7 @@ namespace KerbalEngineer.Flight
             }
             catch (Exception ex)
             {
-                Logger.Exception(ex);
+                MyLogger.Exception(ex);
             }
         }
 
@@ -205,7 +205,7 @@ namespace KerbalEngineer.Flight
             }
             catch (Exception ex)
             {
-                Logger.Exception(ex);
+                MyLogger.Exception(ex);
             }
         }
 
@@ -226,7 +226,7 @@ namespace KerbalEngineer.Flight
             }
             catch (Exception ex)
             {
-                Logger.Exception(ex);
+                MyLogger.Exception(ex);
             }
         }
 
@@ -254,7 +254,7 @@ namespace KerbalEngineer.Flight
             }
             catch (Exception ex)
             {
-                Logger.Exception(ex);
+                MyLogger.Exception(ex);
             }
         }
 
@@ -266,11 +266,11 @@ namespace KerbalEngineer.Flight
         {
             try
             {
-                Logger.Log("ActionMenuGui was destroyed.");
+                MyLogger.Log("ActionMenuGui was destroyed.");
             }
             catch (Exception ex)
             {
-                Logger.Exception(ex);
+                MyLogger.Exception(ex);
             }
         }
 

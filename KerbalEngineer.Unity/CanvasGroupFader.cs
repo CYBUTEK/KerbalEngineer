@@ -25,14 +25,14 @@ namespace KerbalEngineer.Unity
     [RequireComponent(typeof(CanvasGroup))]
     public class CanvasGroupFader : MonoBehaviour
     {
-        private CanvasGroup m_CanvasGroup;
-        private IEnumerator m_FadeCoroutine;
+        private CanvasGroup canvasGroup;
+        private IEnumerator fadeCoroutine;
 
         public bool IsFading
         {
             get
             {
-                return m_FadeCoroutine != null;
+                return fadeCoroutine != null;
             }
         }
 
@@ -41,12 +41,12 @@ namespace KerbalEngineer.Unity
         /// </summary>
         public void FadeTo(float alpha, float duration, Action callback = null)
         {
-            if (m_CanvasGroup == null)
+            if (canvasGroup == null)
             {
                 return;
             }
 
-            Fade(m_CanvasGroup.alpha, alpha, duration, callback);
+            Fade(canvasGroup.alpha, alpha, duration, callback);
         }
 
         /// <summary>
@@ -54,19 +54,19 @@ namespace KerbalEngineer.Unity
         /// </summary>
         public void SetAlpha(float alpha)
         {
-            if (m_CanvasGroup == null)
+            if (canvasGroup == null)
             {
                 return;
             }
 
             alpha = Mathf.Clamp01(alpha);
-            m_CanvasGroup.alpha = alpha;
+            canvasGroup.alpha = alpha;
         }
 
         protected virtual void Awake()
         {
             // cache components
-            m_CanvasGroup = GetComponent<CanvasGroup>();
+            canvasGroup = GetComponent<CanvasGroup>();
         }
 
         /// <summary>
@@ -74,13 +74,13 @@ namespace KerbalEngineer.Unity
         /// </summary>
         private void Fade(float from, float to, float duration, Action callback)
         {
-            if (m_FadeCoroutine != null)
+            if (fadeCoroutine != null)
             {
-                StopCoroutine(m_FadeCoroutine);
+                StopCoroutine(fadeCoroutine);
             }
 
-            m_FadeCoroutine = FadeCoroutine(from, to, duration, callback);
-            StartCoroutine(m_FadeCoroutine);
+            fadeCoroutine = FadeCoroutine(from, to, duration, callback);
+            StartCoroutine(fadeCoroutine);
         }
 
         /// <summary>
@@ -105,7 +105,7 @@ namespace KerbalEngineer.Unity
                 callback.Invoke();
             }
 
-            m_FadeCoroutine = null;
+            fadeCoroutine = null;
         }
     }
 }

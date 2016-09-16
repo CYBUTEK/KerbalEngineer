@@ -24,6 +24,6 @@ public class BuildAssetBundles : MonoBehaviour
     [MenuItem("Build/Asset Bundles")]
     public static void Build()
     {
-        BuildPipeline.BuildAssetBundles(Application.dataPath + "/../Output/KerbalEngineer", BuildAssetBundleOptions.UncompressedAssetBundle);
+        BuildPipeline.BuildAssetBundles(Application.dataPath + "/../AssetBundles", BuildAssetBundleOptions.UncompressedAssetBundle, BuildTarget.StandaloneWindows);
     }
 }

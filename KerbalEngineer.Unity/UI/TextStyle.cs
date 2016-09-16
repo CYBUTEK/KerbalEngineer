@@ -4,20 +4,20 @@
 
     public class TextStyle
     {
-        private Color m_Colour;
-        private Font m_Font;
-        private int m_Size;
-        private FontStyle m_Style;
+        private Color colour;
+        private Font font;
+        private int size;
+        private FontStyle style;
 
         public Color Colour
         {
             get
             {
-                return m_Colour;
+                return colour;
             }
             set
             {
-                m_Colour = value;
+                colour = value;
             }
         }
 
@@ -25,11 +25,11 @@
         {
             get
             {
-                return m_Font;
+                return font;
             }
             set
             {
-                m_Font = value;
+                font = value;
             }
         }
 
@@ -37,11 +37,11 @@
         {
             get
             {
-                return m_Size;
+                return size;
             }
             set
             {
-                m_Size = value;
+                size = value;
             }
         }
 
@@ -49,11 +49,11 @@
         {
             get
             {
-                return m_Style;
+                return style;
             }
             set
             {
-                m_Style = value;
+                style = value;
             }
         }
     }

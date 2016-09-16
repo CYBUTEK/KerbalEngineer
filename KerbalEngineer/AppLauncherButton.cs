@@ -24,8 +24,8 @@ namespace KerbalEngineer
 
     public class AppLauncherButton : MonoBehaviour
     {
-        private static Texture s_IconTexture;
-        private ApplicationLauncherButton m_Button;
+        private static Texture iconTexture;
+        private ApplicationLauncherButton button;
 
         /// <summary>
         ///     Gets the wrapped application launcher button object.
@@ -34,7 +34,7 @@ namespace KerbalEngineer
         {
             get
             {
-                return m_Button;
+                return button;
             }
         }
 
@@ -45,13 +45,13 @@ namespace KerbalEngineer
         {
             get
             {
-                return m_Button != null &&
-                       m_Button.IsEnabled &&
-                       m_Button.toggleButton.CurrentState == UIRadioButton.State.True;
+                return button != null &&
+                       button.IsEnabled &&
+                       button.toggleButton.CurrentState == UIRadioButton.State.True;
             }
             set
             {
-                if (m_Button == null)
+                if (button == null)
                 {
                     return;
                 }
@@ -72,9 +72,9 @@ namespace KerbalEngineer
         /// </summary>
         public void Disable()
         {
-            if (m_Button != null && m_Button.IsEnabled)
+            if (button != null && button.IsEnabled)
             {
-                m_Button.Disable();
+                button.Disable();
             }
         }
 
@@ -83,9 +83,9 @@ namespace KerbalEngineer
         /// </summary>
         public void Enable()
         {
-            if (m_Button != null && !m_Button.IsEnabled)
+            if (button != null && !button.IsEnabled)
             {
-                m_Button.Enable();
+                button.Enable();
             }
         }
 
@@ -94,12 +94,12 @@ namespace KerbalEngineer
         /// </summary>
         public Vector3 GetAnchor()
         {
-            if (m_Button == null)
+            if (button == null)
             {
                 return Vector3.zero;
             }
 
-            Vector3 anchor = m_Button.GetAnchor();
+            Vector3 anchor = button.GetAnchor();
 
             anchor.x -= 3.0f;
 
@@ -113,9 +113,9 @@ namespace KerbalEngineer
         {
             Enable();
 
-            if (m_Button != null && m_Button.toggleButton.CurrentState != UIRadioButton.State.False)
+            if (button != null && button.toggleButton.CurrentState != UIRadioButton.State.False)
             {
-                m_Button.SetFalse();
+                button.SetFalse();
             }
         }
 
@@ -126,18 +126,18 @@ namespace KerbalEngineer
         {
             Enable();
 
-            if (m_Button != null && m_Button.toggleButton.CurrentState != UIRadioButton.State.True)
+            if (button != null && button.toggleButton.CurrentState != UIRadioButton.State.True)
             {
-                m_Button.SetTrue();
+                button.SetTrue();
             }
         }
 
         protected virtual void Awake()
         {
             // cache icon texture
-            if (s_IconTexture == null && AssetBundleLoader.Images != null)
+            if (iconTexture == null && AssetBundleLoader.Images != null)
             {
-                s_IconTexture = AssetBundleLoader.Images.LoadAsset<Texture2D>("app-launcher-icon");
+                iconTexture = AssetBundleLoader.Images.LoadAsset<Texture2D>("app-launcher-icon");
             }
 
             // subscribe event listeners
@@ -197,7 +197,7 @@ namespace KerbalEngineer
             // create button
             if (ApplicationLauncher.Instance != null)
             {
-                m_Button = ApplicationLauncher.Instance.AddModApplication(OnTrue, OnFalse, OnHover, OnHoverOut, OnEnable, OnDisable, ApplicationLauncher.AppScenes.ALWAYS, s_IconTexture);
+                button = ApplicationLauncher.Instance.AddModApplication(OnTrue, OnFalse, OnHover, OnHoverOut, OnEnable, OnDisable, ApplicationLauncher.AppScenes.ALWAYS, iconTexture);
             }
 
             OnReady();
@@ -206,9 +206,9 @@ namespace KerbalEngineer
         private void OnGUIApplicationLauncherUnreadifying(GameScenes scene)
         {
             // remove button
-            if (ApplicationLauncher.Instance != null && m_Button != null)
+            if (ApplicationLauncher.Instance != null && button != null)
             {
-                ApplicationLauncher.Instance.RemoveModApplication(m_Button);
+                ApplicationLauncher.Instance.RemoveModApplication(button);
             }
 
             OnUnreadifying();

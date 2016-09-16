@@ -27,10 +27,10 @@ namespace KerbalEngineer.Flight
     [KSPAddon(KSPAddon.Startup.Flight, false)]
     public class FlightAppLauncher : AppLauncherButton, IFlightAppLauncher
     {
-        private static FlightAppLauncher s_Instance;
-        private FlightMenu m_FlightMenu;
-        private GameObject m_MenuObject;
-        private GameObject m_MenuPrefab;
+        private static FlightAppLauncher instance;
+        private FlightMenu flightMenu;
+        private GameObject menuObject;
+        private GameObject menuPrefab;
 
         /// <summary>
         ///     Gets the current instance of the FlightAppLauncher object.
@@ -39,7 +39,7 @@ namespace KerbalEngineer.Flight
         {
             get
             {
-                return s_Instance;
+                return instance;
             }
         }
 
@@ -145,12 +145,12 @@ namespace KerbalEngineer.Flight
             base.Awake();
 
             // set singleton instance
-            s_Instance = this;
+            instance = this;
 
             // cache menu prefab
-            if (m_MenuPrefab == null && AssetBundleLoader.Prefabs != null)
+            if (menuPrefab == null && AssetBundleLoader.Prefabs != null)
             {
-                m_MenuPrefab = AssetBundleLoader.Prefabs.LoadAsset<GameObject>("FlightMenu");
+                menuPrefab = AssetBundleLoader.Prefabs.LoadAsset<GameObject>("FlightMenu");
             }
         }
 
@@ -194,13 +194,13 @@ namespace KerbalEngineer.Flight
         /// </summary>
         private void Close()
         {
-            if (m_FlightMenu != null)
+            if (flightMenu != null)
             {
-                m_FlightMenu.Close();
+                flightMenu.Close();
             }
-            else if (m_MenuObject != null)
+            else if (menuObject != null)
             {
-                Destroy(m_MenuObject);
+                Destroy(menuObject);
             }
         }
 
@@ -210,34 +210,34 @@ namespace KerbalEngineer.Flight
         private void Open()
         {
             // fade menu in if already open
-            if (m_FlightMenu != null)
+            if (flightMenu != null)
             {
-                m_FlightMenu.FadeIn();
+                flightMenu.FadeIn();
                 return;
             }
 
-            if (m_MenuPrefab == null || m_MenuObject != null)
+            if (menuPrefab == null || menuObject != null)
             {
                 return;
             }
 
             // create object
-            m_MenuObject = Instantiate(m_MenuPrefab, GetAnchor(), Quaternion.identity) as GameObject;
-            if (m_MenuObject == null)
+            menuObject = Instantiate(menuPrefab, GetAnchor(), Quaternion.identity) as GameObject;
+            if (menuObject == null)
             {
                 return;
             }
 
-            StyleManager.Process(m_MenuObject);
+            StyleManager.Process(menuObject);
 
             // set object as a child of the main canvas
-            m_MenuObject.transform.SetParent(MainCanvasUtil.MainCanvas.transform);
+            menuObject.transform.SetParent(MainCanvasUtil.MainCanvas.transform);
 
             // set menu's reference to this object for cross-communication
-            m_FlightMenu = m_MenuObject.GetComponent<FlightMenu>();
-            if (m_FlightMenu != null)
+            flightMenu = menuObject.GetComponent<FlightMenu>();
+            if (flightMenu != null)
             {
-                m_FlightMenu.SetFlightAppLauncher(this);
+                flightMenu.SetFlightAppLauncher(this);
             }
         }
     }

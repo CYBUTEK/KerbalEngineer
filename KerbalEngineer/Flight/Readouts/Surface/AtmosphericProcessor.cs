@@ -140,7 +140,7 @@ namespace KerbalEngineer.Flight.Readouts.Surface
             }
             catch (Exception ex)
             {
-                Logger.Exception(ex, "AtmosphericProcessor->Update");
+                MyLogger.Exception(ex, "AtmosphericProcessor->Update");
             }
         }
 
@@ -182,19 +182,19 @@ namespace KerbalEngineer.Flight.Readouts.Surface
                         case "FerramAerospaceResearch":
                             this.farTerminalVelocity = loadedAssembly.assembly.GetType("ferram4.FARAPI").GetMethod("GetActiveControlSys_TermVel");
                             FarInstalled = true;
-                            Logger.Log("FAR detected!");
+                            MyLogger.Log("FAR detected!");
                             break;
 
                         case "NEAR":
                             NearInstalled = true;
-                            Logger.Log("NEAR detected! Turning off atmospheric details!");
+                            MyLogger.Log("NEAR detected! Turning off atmospheric details!");
                             break;
                     }
                 }
             }
             catch (Exception ex)
             {
-                Logger.Exception(ex, "AtmosphericProcessor->CheckAeroMods");
+                MyLogger.Exception(ex, "AtmosphericProcessor->CheckAeroMods");
             }
         }
 

@@ -73,7 +73,7 @@ namespace KerbalEngineer.Flight
             }
             catch (Exception ex)
             {
-                Logger.Exception(ex);
+                MyLogger.Exception(ex);
             }
         }
 
@@ -101,7 +101,7 @@ namespace KerbalEngineer.Flight
                 }
                 catch (Exception ex)
                 {
-                    Logger.Exception(ex);
+                    MyLogger.Exception(ex);
                 }
             }
         }
@@ -155,7 +155,7 @@ namespace KerbalEngineer.Flight
                 }
                 catch (Exception ex)
                 {
-                    Logger.Exception(ex);
+                    MyLogger.Exception(ex);
                 }
             }
         }
@@ -180,7 +180,7 @@ namespace KerbalEngineer.Flight
                 }
                 catch (Exception ex)
                 {
-                    Logger.Exception(ex);
+                    MyLogger.Exception(ex);
                 }
             }
         }
@@ -219,7 +219,7 @@ namespace KerbalEngineer.Flight
             }
             catch (Exception ex)
             {
-                Logger.Exception(ex);
+                MyLogger.Exception(ex);
                 return null;
             }
         }
@@ -239,7 +239,7 @@ namespace KerbalEngineer.Flight
             }
             catch (Exception ex)
             {
-                Logger.Exception(ex);
+                MyLogger.Exception(ex);
                 return null;
             }
         }
@@ -258,7 +258,7 @@ namespace KerbalEngineer.Flight
             }
             catch (Exception ex)
             {
-                Logger.Exception(ex);
+                MyLogger.Exception(ex);
             }
         }
 
@@ -277,11 +277,11 @@ namespace KerbalEngineer.Flight
 
                 SimManager.UpdateModSettings();
 
-                Logger.Log("FlightEngineerCore->Awake");
+                MyLogger.Log("FlightEngineerCore->Awake");
             }
             catch (Exception ex)
             {
-                Logger.Exception(ex);
+                MyLogger.Exception(ex);
             }
         }
 
@@ -301,7 +301,7 @@ namespace KerbalEngineer.Flight
             }
             catch (Exception ex)
             {
-                Logger.Exception(ex);
+                MyLogger.Exception(ex);
             }
         }
 
@@ -326,11 +326,11 @@ namespace KerbalEngineer.Flight
                     Destroy(editor);
                 }
 
-                Logger.Log("FlightEngineerCore->OnDestroy");
+                MyLogger.Log("FlightEngineerCore->OnDestroy");
             }
             catch (Exception ex)
             {
-                Logger.Exception(ex);
+                MyLogger.Exception(ex);
             }
         }
 
@@ -343,11 +343,11 @@ namespace KerbalEngineer.Flight
             {
                 SectionLibrary.Load();
                 ReadoutLibrary.Reset();
-                Logger.Log("FlightEngineerCore->Start");
+                MyLogger.Log("FlightEngineerCore->Start");
             }
             catch (Exception ex)
             {
-                Logger.Exception(ex);
+                MyLogger.Exception(ex);
             }
         }
 
@@ -368,7 +368,7 @@ namespace KerbalEngineer.Flight
             }
             catch (Exception ex)
             {
-                Logger.Exception(ex);
+                MyLogger.Exception(ex);
             }
         }
 
@@ -398,7 +398,7 @@ namespace KerbalEngineer.Flight
             }
             catch (Exception ex)
             {
-                Logger.Exception(ex);
+                MyLogger.Exception(ex);
             }
         }
 
