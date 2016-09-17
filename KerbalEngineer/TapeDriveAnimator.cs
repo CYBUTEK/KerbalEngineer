@@ -122,7 +122,6 @@ namespace KerbalEngineer
             get
             {
                 return isRunning;
-                return isRunning;
             }
             set
             {
