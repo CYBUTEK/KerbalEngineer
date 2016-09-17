@@ -10,16 +10,16 @@
     public class Window : MonoBehaviour, IBeginDragHandler, IDragHandler
     {
         [SerializeField]
-        private Text m_Title = null;
+        private Text title = null;
 
         [SerializeField]
-        private Transform m_Content = null;
+        private Transform content = null;
 
-        private Vector2 m_BeginMousePosition;
-        private Vector3 m_BeginWindowPosition;
-        private CanvasGroup m_CanvasGroup;
-        private RectTransform m_RectTransform;
-        private IEnumerator m_ScaleFadeCoroutine;
+        private Vector2 beginMousePosition;
+        private Vector3 beginWindowPosition;
+        private CanvasGroup canvasGroup;
+        private RectTransform rectTransform;
+        private IEnumerator scaleFadeCoroutine;
 
         /// <summary>
         ///     Gets the content transform.
@@ -28,7 +28,7 @@
         {
             get
             {
-                return m_Content;
+                return content;
             }
         }
 
@@ -39,28 +39,28 @@
         {
             get
             {
-                return m_RectTransform;
+                return rectTransform;
             }
         }
 
         public void OnBeginDrag(PointerEventData eventData)
         {
-            if (m_RectTransform == null)
+            if (rectTransform == null)
             {
                 return;
             }
 
             // cache starting positions
-            m_BeginMousePosition = eventData.position;
-            m_BeginWindowPosition = m_RectTransform.position;
+            beginMousePosition = eventData.position;
+            beginWindowPosition = rectTransform.position;
         }
 
         public void OnDrag(PointerEventData eventData)
         {
-            if (m_RectTransform != null)
+            if (rectTransform != null)
             {
                 // new position is the starting window position plus the delta of the current and starting mouse positions
-                m_RectTransform.position = m_BeginWindowPosition + (Vector3)(eventData.position - m_BeginMousePosition);
+                rectTransform.position = beginWindowPosition + (Vector3)(eventData.position - beginMousePosition);
             }
         }
 
@@ -69,9 +69,9 @@
         /// </summary>
         public void AddToContent(GameObject childObject)
         {
-            if (m_Content != null && childObject != null)
+            if (content != null && childObject != null)
             {
-                childObject.transform.SetParent(m_Content, false);
+                childObject.transform.SetParent(content, false);
             }
         }
 
@@ -88,9 +88,9 @@
         /// </summary>
         public void SetTitle(string title)
         {
-            if (m_Title != null)
+            if (this.title != null)
             {
-                m_Title.text = title;
+                this.title.text = title;
             }
         }
 
@@ -99,19 +99,19 @@
         /// </summary>
         public void SetWidth(float width)
         {
-            if (m_RectTransform != null)
+            if (rectTransform != null)
             {
-                Vector2 size = m_RectTransform.sizeDelta;
+                Vector2 size = rectTransform.sizeDelta;
                 size.x = width;
-                m_RectTransform.sizeDelta = size;
+                rectTransform.sizeDelta = size;
             }
         }
 
         protected virtual void Awake()
         {
             // component caching
-            m_RectTransform = GetComponent<RectTransform>();
-            m_CanvasGroup = GetComponent<CanvasGroup>();
+            rectTransform = GetComponent<RectTransform>();
+            canvasGroup = GetComponent<CanvasGroup>();
         }
 
         protected virtual void OnEnable()
@@ -125,13 +125,13 @@
         /// </summary>
         private void ScaleFade(float from, float to, Action callback)
         {
-            if (m_ScaleFadeCoroutine != null)
+            if (scaleFadeCoroutine != null)
             {
-                StopCoroutine(m_ScaleFadeCoroutine);
+                StopCoroutine(scaleFadeCoroutine);
             }
 
-            m_ScaleFadeCoroutine = ScaleFadeCoroutine(from, to, callback);
-            StartCoroutine(m_ScaleFadeCoroutine);
+            scaleFadeCoroutine = ScaleFadeCoroutine(from, to, callback);
+            StartCoroutine(scaleFadeCoroutine);
         }
 
         /// <summary>
@@ -151,9 +151,9 @@
                 transform.localScale = Vector3.one * value;
 
                 // fade if a canvas group is attached
-                if (m_CanvasGroup != null)
+                if (canvasGroup != null)
                 {
-                    m_CanvasGroup.alpha = Mathf.Clamp01(value);
+                    canvasGroup.alpha = Mathf.Clamp01(value);
                 }
 
                 yield return null;
@@ -164,7 +164,7 @@
                 callback.Invoke();
             }
 
-            m_ScaleFadeCoroutine = null;
+            scaleFadeCoroutine = null;
         }
     }
 }

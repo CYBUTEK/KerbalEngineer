@@ -61,7 +61,7 @@ namespace KerbalEngineer.UIControls
             }
             catch (Exception ex)
             {
-                Logger.Exception(ex);
+                MyLogger.Exception(ex);
             }
         }
 
@@ -73,7 +73,7 @@ namespace KerbalEngineer.UIControls
             }
             catch (Exception ex)
             {
-                Logger.Exception(ex);
+                MyLogger.Exception(ex);
             }
         }
 
@@ -100,7 +100,7 @@ namespace KerbalEngineer.UIControls
             }
             catch (Exception ex)
             {
-                Logger.Exception(ex);
+                MyLogger.Exception(ex);
             }
         }
 
@@ -119,7 +119,7 @@ namespace KerbalEngineer.UIControls
             }
             catch (Exception ex)
             {
-                Logger.Exception(ex);
+                MyLogger.Exception(ex);
             }
         }
 
@@ -142,7 +142,7 @@ namespace KerbalEngineer.UIControls
             }
             catch (Exception ex)
             {
-                Logger.Exception(ex);
+                MyLogger.Exception(ex);
             }
         }
 
@@ -155,7 +155,7 @@ namespace KerbalEngineer.UIControls
             }
             catch (Exception ex)
             {
-                Logger.Exception(ex);
+                MyLogger.Exception(ex);
             }
         }
 
@@ -174,7 +174,7 @@ namespace KerbalEngineer.UIControls
             }
             catch (Exception ex)
             {
-                Logger.Exception(ex);
+                MyLogger.Exception(ex);
             }
         }
 

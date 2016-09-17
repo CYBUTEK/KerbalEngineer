@@ -58,7 +58,7 @@ namespace KerbalEngineer
             }
             catch (Exception ex)
             {
-                Logger.Exception(ex, "GuiDisplaySize->GuiDisplaySize");
+                MyLogger.Exception(ex, "GuiDisplaySize->GuiDisplaySize");
             }
         }
 
@@ -87,7 +87,7 @@ namespace KerbalEngineer
                 }
                 catch (Exception ex)
                 {
-                    Logger.Exception(ex, "GuiDisplaySize->Multiplier");
+                    MyLogger.Exception(ex, "GuiDisplaySize->Multiplier");
                 }
             }
         }
@@ -113,7 +113,7 @@ namespace KerbalEngineer
                 }
                 catch (Exception ex)
                 {
-                    Logger.Exception(ex, "GuiDisplaySize->Increment");
+                    MyLogger.Exception(ex, "GuiDisplaySize->Increment");
                 }
             }
         }

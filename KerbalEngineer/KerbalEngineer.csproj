@@ -96,6 +96,8 @@
     <Compile Include="Flight\Readouts\Rendezvous\RelativeVelocity.cs" />
     <Compile Include="Flight\Readouts\Rendezvous\SemiMinorAxis.cs" />
     <Compile Include="Flight\Readouts\Rendezvous\SemiMajorAxis.cs" />
+    <Compile Include="Flight\Readouts\Rendezvous\TargetLatitude.cs" />
+    <Compile Include="Flight\Readouts\Rendezvous\TargetLongitude.cs" />
     <Compile Include="Flight\Readouts\Rendezvous\TimeToRelativeDescendingNode.cs" />
     <Compile Include="Flight\Readouts\Rendezvous\TimeToRelativeAscendingNode.cs" />
     <Compile Include="Flight\Readouts\Surface\ImpactBiome.cs" />
@@ -168,7 +170,7 @@
     <Compile Include="Settings\SettingsWindow.cs" />
     <Compile Include="StyleManager.cs" />
     <Compile Include="UIControls\DropDown.cs" />
-    <Compile Include="Logger.cs" />
+    <Compile Include="MyLogger.cs" />
     <Compile Include="EngineerGlobals.cs" />
     <Compile Include="Extensions\DoubleExtensions.cs" />
     <Compile Include="Extensions\PartExtensions.cs" />
@@ -256,23 +258,15 @@
   </ItemGroup>
   <ItemGroup>
     <Reference Include="Assembly-CSharp">
-      <HintPath>..\..\Game\KSP_Data\Managed\Assembly-CSharp.dll</HintPath>
+      <HintPath>..\..\Game\KSP_x64_Data\Managed\Assembly-CSharp.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Assembly-CSharp-firstpass">
-      <HintPath>..\..\game\KSP_Data\Managed\Assembly-CSharp-firstpass.dll</HintPath>
+      <HintPath>..\..\Game\KSP_x64_Data\Managed\Assembly-CSharp-firstpass.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="KSPAssets">
-      <HintPath>..\..\game\KSP_Data\Managed\KSPAssets.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="KSPCore">
-      <HintPath>..\..\game\KSP_Data\Managed\KSPCore.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="KSPUtil">
-      <HintPath>..\..\game\KSP_Data\Managed\KSPUtil.dll</HintPath>
+      <HintPath>..\..\Game\KSP_x64_Data\Managed\KSPAssets.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="System">
@@ -284,11 +278,11 @@
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine">
-      <HintPath>..\..\Game\KSP_Data\Managed\UnityEngine.dll</HintPath>
+      <HintPath>..\..\Game\KSP_x64_Data\Managed\UnityEngine.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.UI">
-      <HintPath>..\..\game\KSP_Data\Managed\UnityEngine.UI.dll</HintPath>
+      <HintPath>..\..\Game\KSP_x64_Data\Managed\UnityEngine.UI.dll</HintPath>
       <Private>False</Private>
     </Reference>
   </ItemGroup>
@@ -296,7 +290,7 @@
     <ProjectReference Include="..\KerbalEngineer.Unity\KerbalEngineer.Unity.csproj">
       <Project>{5387bb1e-32b1-4bac-b03f-100570b9554c}</Project>
       <Name>KerbalEngineer.Unity</Name>
-      <Private>False</Private>
+      <Private>True</Private>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
@@ -313,7 +307,8 @@
         $(PostBuildEventDependsOn);
         PostBuildMacros;
       </PostBuildEventDependsOn>
-    <PostBuildEvent>xcopy "$(SolutionDir)Output\*" "$(SolutionDir)..\Game\GameData\*" /E /Y
+    <PostBuildEvent>xcopy "$(SolutionDir)AssetBundles\*" "$(SolutionDir)Output\KerbalEngineer\AssetBundles\*" /E /Y
+xcopy "$(SolutionDir)Output\*" "$(SolutionDir)..\Game\GameData\*" /E /Y
 del "$(SolutionDir)Release\*" /Q
 xcopy "$(SolutionDir)Documents\*" "$(SolutionDir)Release\Documents\*" /E /Y
 7z.exe a -tzip -mx3 "$(SolutionDir)Release\$(ProjectName)-@(VersionNumber).zip" "$(SolutionDir)Output\*"

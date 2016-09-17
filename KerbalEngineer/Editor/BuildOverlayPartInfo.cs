@@ -106,7 +106,7 @@ namespace KerbalEngineer.Editor
             catch (Exception ex)
 
             {
-                Logger.Exception(ex);
+                MyLogger.Exception(ex);
             }
         }
 
@@ -137,7 +137,7 @@ namespace KerbalEngineer.Editor
                 }
                 else
                 {
-                    part = EditorLogic.fetch.ship.parts.Find(p => p.highlighter.highlighted) ?? EditorLogic.SelectedPart;
+                    part = EditorLogic.fetch.ship.parts.Find(p => p.HighlightActive) ?? EditorLogic.SelectedPart;
                 }
 
                 if (part != null)
@@ -192,7 +192,7 @@ namespace KerbalEngineer.Editor
             }
             catch (Exception ex)
             {
-                Logger.Exception(ex);
+                MyLogger.Exception(ex);
             }
         }
 
@@ -210,9 +210,9 @@ namespace KerbalEngineer.Editor
             if (moduleAlternator != null)
             {
                 infoItems.Add(PartInfoItem.Create("Alternator"));
-                for (int i = 0; i < moduleAlternator.outputResources.Count; ++i)
+                for (int i = 0; i < moduleAlternator.resHandler.outputResources.Count; ++i)
                 {
-                    moduleResource = moduleAlternator.outputResources[i];
+                    moduleResource = moduleAlternator.resHandler.outputResources[i];
                     infoItems.Add(PartInfoItem.Create("\t" + moduleResource.name, moduleResource.rate.ToRate()));
                 }
             }
@@ -267,21 +267,21 @@ namespace KerbalEngineer.Editor
             moduleGenerator = selectedPart.GetModule<ModuleGenerator>();
             if (moduleGenerator != null)
             {
-                if (moduleGenerator.inputList.Count > 0)
+                if (moduleGenerator.resHandler.inputResources.Count > 0)
                 {
                     infoItems.Add(PartInfoItem.Create("Generator Input"));
-                    for (int i = 0; i < moduleGenerator.inputList.Count; ++i)
+                    for (int i = 0; i < moduleGenerator.resHandler.inputResources.Count; ++i)
                     {
-                        generatorResource = moduleGenerator.inputList[i];
+                        generatorResource = moduleGenerator.resHandler.inputResources[i];
                         infoItems.Add(PartInfoItem.Create("\t" + generatorResource.name, generatorResource.rate.ToRate()));
                     }
                 }
-                if (moduleGenerator.outputList.Count > 0)
+                if (moduleGenerator.resHandler.outputResources.Count > 0)
                 {
                     infoItems.Add(PartInfoItem.Create("Generator Output"));
-                    for (int i = 0; i < moduleGenerator.outputList.Count; ++i)
+                    for (int i = 0; i < moduleGenerator.resHandler.outputResources.Count; ++i)
                     {
-                        generatorResource = moduleGenerator.outputList[i];
+                        generatorResource = moduleGenerator.resHandler.outputResources[i];
                         infoItems.Add(PartInfoItem.Create("\t" + generatorResource.name, generatorResource.rate.ToRate()));
                     }
                 }
@@ -339,9 +339,9 @@ namespace KerbalEngineer.Editor
                 infoItems.Add(PartInfoItem.Create("\tPitch", moduleReactionWheel.PitchTorque.ToTorque()));
                 infoItems.Add(PartInfoItem.Create("\tRoll", moduleReactionWheel.RollTorque.ToTorque()));
                 infoItems.Add(PartInfoItem.Create("\tYaw", moduleReactionWheel.YawTorque.ToTorque()));
-                for (int i = 0; i < moduleReactionWheel.inputResources.Count; ++i)
+                for (int i = 0; i < moduleReactionWheel.resHandler.inputResources.Count; ++i)
                 {
-                    moduleResource = moduleReactionWheel.inputResources[i];
+                    moduleResource = moduleReactionWheel.resHandler.inputResources[i];
                     infoItems.Add(PartInfoItem.Create("\t" + moduleResource.name, moduleResource.rate.ToRate()));
                 }
             }
@@ -350,9 +350,9 @@ namespace KerbalEngineer.Editor
         private void SetResourceItems()
         {
             bool visibleResources = false;
-            for (int i = 0; i < selectedPart.Resources.list.Count; ++i)
+            for (int i = 0; i < selectedPart.Resources.dict.Count; ++i)
             {
-                if (selectedPart.Resources.list[i].hideFlow == false)
+                if (selectedPart.Resources.dict.At(i).hideFlow == false)
                 {
                     visibleResources = true;
                     break;
@@ -361,9 +361,9 @@ namespace KerbalEngineer.Editor
             if (visibleResources)
             {
                 infoItems.Add(PartInfoItem.Create("Resources"));
-                for (int i = 0; i < selectedPart.Resources.list.Count; ++i)
+                for (int i = 0; i < selectedPart.Resources.dict.Count; ++i)
                 {
-                    partResource = selectedPart.Resources.list[i];
+                    partResource = selectedPart.Resources.dict.At(i);
 
                     if (partResource.hideFlow == false)
                     {
@@ -423,7 +423,7 @@ namespace KerbalEngineer.Editor
                 {
                     infoItems.Add(PartInfoItem.Create("Breakable"));
                 }
-                if (moduleDeployableSolarPanel.sunTracking)
+                if (moduleDeployableSolarPanel.trackingBody == Sun.Instance)
                 {
                     infoItems.Add(PartInfoItem.Create("Sun Tracking"));
                 }
@@ -437,7 +437,9 @@ namespace KerbalEngineer.Editor
             {
                 infoItems.Add(PartInfoItem.Create("Packet Size", moduleDataTransmitter.packetSize.ToString("F2") + " Mits"));
                 infoItems.Add(PartInfoItem.Create("Bandwidth", (moduleDataTransmitter.packetInterval * moduleDataTransmitter.packetSize).ToString("F2") + "Mits/sec"));
-                infoItems.Add(PartInfoItem.Create(moduleDataTransmitter.requiredResource, moduleDataTransmitter.packetResourceCost.ToString("F2") + "/Packet"));
+
+                // TODO: allow for multiple consumed resources
+                infoItems.Add(PartInfoItem.Create(moduleDataTransmitter.GetConsumedResources()[0].name, moduleDataTransmitter.packetResourceCost.ToString("F2") + "/Packet"));
             }
         }
 
@@ -474,7 +476,7 @@ namespace KerbalEngineer.Editor
             }
             catch (Exception ex)
             {
-                Logger.Exception(ex);
+                MyLogger.Exception(ex);
             }
         }
     }

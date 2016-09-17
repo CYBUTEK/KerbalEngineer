@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<KSPBundleDefinition xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" UrlName="squadcore" Name="squadcore" CreatedTime="-8587276745312185024">
+  <Author />
+  <Info />
+  <Assets>
+    <Asset Name="BackgroundBlack" Path="Assets/SquadCore/KSPedia/Backgrounds/BackgroundBlack.png" Type="Texture2D" Url="SquadCore/KSPedia/Backgrounds/BackgroundBlack" AutoLoad="false" />
+    <Asset Name="BackgroundBlue" Path="Assets/SquadCore/KSPedia/Backgrounds/BackgroundBlue.png" Type="Texture2D" Url="SquadCore/KSPedia/Backgrounds/BackgroundBlue" AutoLoad="false" />
+    <Asset Name="BackgroundBlueGrid" Path="Assets/SquadCore/KSPedia/Backgrounds/BackgroundBlueGrid.png" Type="Texture2D" Url="SquadCore/KSPedia/Backgrounds/BackgroundBlueGrid" AutoLoad="false" />
+    <Asset Name="BackgroundKSC" Path="Assets/SquadCore/KSPedia/Backgrounds/BackgroundKSC.png" Type="Texture2D" Url="SquadCore/KSPedia/Backgrounds/BackgroundKSC" AutoLoad="false" />
+    <Asset Name="BackgroundWhite" Path="Assets/SquadCore/KSPedia/Backgrounds/BackgroundWhite.png" Type="Texture2D" Url="SquadCore/KSPedia/Backgrounds/BackgroundWhite" AutoLoad="false" />
+    <Asset Name="KSP/Alpha/Translucent" Path="Assets/SquadCore/Shaders/Alpha.shader" Type="Shader" Url="SquadCore/Shaders/Alpha" AutoLoad="false" />
+    <Asset Name="KSP/Alpha/Translucent Specular" Path="Assets/SquadCore/Shaders/AlphaSpecular.shader" Type="Shader" Url="SquadCore/Shaders/AlphaSpecular" AutoLoad="false" />
+    <Asset Name="KSP/Bumped" Path="Assets/SquadCore/Shaders/Bumped.shader" Type="Shader" Url="SquadCore/Shaders/Bumped" AutoLoad="false" />
+    <Asset Name="KSP/Bumped Specular" Path="Assets/SquadCore/Shaders/BumpedSpecular.shader" Type="Shader" Url="SquadCore/Shaders/BumpedSpecular" AutoLoad="false" />
+    <Asset Name="KSP/Alpha/Cutoff" Path="Assets/SquadCore/Shaders/Cutoff.shader" Type="Shader" Url="SquadCore/Shaders/Cutoff" AutoLoad="false" />
+    <Asset Name="KSP/Alpha/Cutoff Bumped" Path="Assets/SquadCore/Shaders/CutoffBumped.shader" Type="Shader" Url="SquadCore/Shaders/CutoffBumped" AutoLoad="false" />
+    <Asset Name="KSP/Diffuse" Path="Assets/SquadCore/Shaders/Diffuse.shader" Type="Shader" Url="SquadCore/Shaders/Diffuse" AutoLoad="false" />
+    <Asset Name="KSP/Emissive/Diffuse" Path="Assets/SquadCore/Shaders/Emissive.shader" Type="Shader" Url="SquadCore/Shaders/Emissive" AutoLoad="false" />
+    <Asset Name="KSP/Emissive/Bumped Specular" Path="Assets/SquadCore/Shaders/EmissiveBumpedSpecular.shader" Type="Shader" Url="SquadCore/Shaders/EmissiveBumpedSpecular" AutoLoad="false" />
+    <Asset Name="KSP/Emissive/Specular" Path="Assets/SquadCore/Shaders/EmissiveSpecular.shader" Type="Shader" Url="SquadCore/Shaders/EmissiveSpecular" AutoLoad="false" />
+    <Asset Name="KSP/Particles/Additive (Soft)" Path="Assets/SquadCore/Shaders/KSPParticle AddSmooth.shader" Type="Shader" Url="SquadCore/Shaders/KSPParticle AddSmooth" AutoLoad="false" />
+    <Asset Name="KSP/Particles/Additive" Path="Assets/SquadCore/Shaders/ParticleAdd.shader" Type="Shader" Url="SquadCore/Shaders/ParticleAdd" AutoLoad="false" />
+    <Asset Name="KSP/Particles/Alpha Blended" Path="Assets/SquadCore/Shaders/ParticleAlpha.shader" Type="Shader" Url="SquadCore/Shaders/ParticleAlpha" AutoLoad="false" />
+    <Asset Name="Solid Color (Alpha)" Path="Assets/SquadCore/Shaders/SolidColorAlpha.shader" Type="Shader" Url="SquadCore/Shaders/SolidColorAlpha" AutoLoad="false" />
+    <Asset Name="KSP/Specular" Path="Assets/SquadCore/Shaders/Specular.shader" Type="Shader" Url="SquadCore/Shaders/Specular" AutoLoad="false" />
+    <Asset Name="KSP/Bumped Specular (Transparent)" Path="Assets/SquadCore/Shaders/SpecularBumpTransparent.shader" Type="Shader" Url="SquadCore/Shaders/SpecularBumpTransparent" AutoLoad="false" />
+    <Asset Name="KSP/Specular (Transparent)" Path="Assets/SquadCore/Shaders/SpecularTransparent.shader" Type="Shader" Url="SquadCore/Shaders/SpecularTransparent" AutoLoad="false" />
+    <Asset Name="KSP/Unlit" Path="Assets/SquadCore/Shaders/Unlit.shader" Type="Shader" Url="SquadCore/Shaders/Unlit" AutoLoad="false" />
+    <Asset Name="KSP/Alpha/Unlit Transparent" Path="Assets/SquadCore/Shaders/UnlitTransparent.shader" Type="Shader" Url="SquadCore/Shaders/UnlitTransparent" AutoLoad="false" />
+  </Assets>
+  <Dependencies />
+</KSPBundleDefinition>

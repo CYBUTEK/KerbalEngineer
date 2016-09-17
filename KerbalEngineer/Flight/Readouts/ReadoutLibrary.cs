@@ -181,6 +181,8 @@ namespace KerbalEngineer.Flight.Readouts
                 readouts.Add(new Rendezvous.SemiMinorAxis());
                 readouts.Add(new Rendezvous.RelativeRadialVelocity());
                 readouts.Add(new Rendezvous.TimeToRendezvous());
+                readouts.Add(new TargetLatitude());
+                readouts.Add(new TargetLongitude());
 
                 // Thermal
                 readouts.Add(new InternalFlux());
@@ -209,7 +211,7 @@ namespace KerbalEngineer.Flight.Readouts
             }
             catch (Exception ex)
             {
-                Logger.Exception(ex);
+                MyLogger.Exception(ex);
             }
         }
 
@@ -271,7 +273,7 @@ namespace KerbalEngineer.Flight.Readouts
             }
             catch (Exception ex)
             {
-                Logger.Exception(ex);
+                MyLogger.Exception(ex);
             }
         }
     }

@@ -92,7 +92,7 @@ namespace KerbalEngineer.Flight.Sections
             }
             catch (Exception ex)
             {
-                Logger.Exception(ex);
+                MyLogger.Exception(ex);
             }
         }
 
@@ -106,7 +106,7 @@ namespace KerbalEngineer.Flight.Sections
             }
             catch (Exception ex)
             {
-                Logger.Exception(ex);
+                MyLogger.Exception(ex);
             }
         }
 
@@ -122,7 +122,7 @@ namespace KerbalEngineer.Flight.Sections
             }
             catch (Exception ex)
             {
-                Logger.Exception(ex);
+                MyLogger.Exception(ex);
             }
         }
 
@@ -519,7 +519,7 @@ namespace KerbalEngineer.Flight.Sections
             }
             catch (Exception ex)
             {
-                Logger.Exception(ex);
+                MyLogger.Exception(ex);
             }
         }
 

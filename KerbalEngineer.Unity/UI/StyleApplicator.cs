@@ -34,7 +34,7 @@ namespace KerbalEngineer.Unity.UI
         }
 
         [SerializeField]
-        private ElementTypes m_ElementType = ElementTypes.None;
+        private ElementTypes elementType = ElementTypes.None;
 
         /// <summary>
         ///     Gets the UI element type used by the ThemeManager for selecting how to apply the theme.
@@ -43,7 +43,7 @@ namespace KerbalEngineer.Unity.UI
         {
             get
             {
-                return m_ElementType;
+                return elementType;
             }
         }
 

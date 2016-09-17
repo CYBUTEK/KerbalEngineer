@@ -97,7 +97,7 @@ namespace KerbalEngineer.Extensions
 
         public static double GetAngleToTrueAnomaly(this Orbit orbit, double trueAnomaly)
         {
-            return AngleHelper.Clamp360(trueAnomaly - orbit.trueAnomaly);
+            return AngleHelper.Clamp360(trueAnomaly - (orbit.trueAnomaly * Units.RAD_TO_DEG));
         }
 
         public static double GetAngleToVector(this Orbit orbit, Vector3d vector)

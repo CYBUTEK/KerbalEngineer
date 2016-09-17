@@ -52,9 +52,9 @@ namespace KerbalEngineer.Flight
             }
             catch (Exception ex)
             {
-                Logger.Exception(ex);
+                MyLogger.Exception(ex);
             }
-            Logger.Log("ActionMenu was created.");
+            MyLogger.Log("ActionMenu was created.");
         }
 
         protected void Start()
@@ -79,9 +79,9 @@ namespace KerbalEngineer.Flight
             }
             catch (Exception ex)
             {
-                Logger.Exception(ex);
+                MyLogger.Exception(ex);
             }
-            Logger.Log("ActionMenu was destroyed.");
+            MyLogger.Log("ActionMenu was destroyed.");
         }
 
         protected void Update()
@@ -103,7 +103,7 @@ namespace KerbalEngineer.Flight
             }
             catch (Exception ex)
             {
-                Logger.Exception(ex);
+                MyLogger.Exception(ex);
             }
         }
 
@@ -120,7 +120,7 @@ namespace KerbalEngineer.Flight
             }
             catch (Exception ex)
             {
-                Logger.Exception(ex);
+                MyLogger.Exception(ex);
             }
         }
 
@@ -145,7 +145,7 @@ namespace KerbalEngineer.Flight
             }
             catch (Exception ex)
             {
-                Logger.Exception(ex);
+                MyLogger.Exception(ex);
             }
         }
 
@@ -157,7 +157,7 @@ namespace KerbalEngineer.Flight
             }
             catch (Exception ex)
             {
-                Logger.Exception(ex);
+                MyLogger.Exception(ex);
             }
         }
 
@@ -170,7 +170,7 @@ namespace KerbalEngineer.Flight
             }
             catch (Exception ex)
             {
-                Logger.Exception(ex);
+                MyLogger.Exception(ex);
             }
         }
 
@@ -182,7 +182,7 @@ namespace KerbalEngineer.Flight
             }
             catch (Exception ex)
             {
-                Logger.Exception(ex);
+                MyLogger.Exception(ex);
             }
         }
 
@@ -194,7 +194,7 @@ namespace KerbalEngineer.Flight
             }
             catch (Exception ex)
             {
-                Logger.Exception(ex);
+                MyLogger.Exception(ex);
             }
         }
 
@@ -207,7 +207,7 @@ namespace KerbalEngineer.Flight
             }
             catch (Exception ex)
             {
-                Logger.Exception(ex);
+                MyLogger.Exception(ex);
             }
         }
 

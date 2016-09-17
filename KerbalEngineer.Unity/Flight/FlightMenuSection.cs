@@ -24,15 +24,15 @@ namespace KerbalEngineer.Unity.Flight
     public class FlightMenuSection : MonoBehaviour
     {
         [SerializeField]
-        private Toggle m_DisplayToggle = null;
+        private Toggle displayToggle = null;
 
         [SerializeField]
-        private Text m_DisplayText = null;
+        private Text displayText = null;
 
         [SerializeField]
-        private Toggle m_EditToggle = null;
+        private Toggle editToggle = null;
 
-        private ISectionModule m_Section;
+        private ISectionModule section;
 
         /// <summary>
         ///     Gets or sets the section's editor visibility.
@@ -41,18 +41,18 @@ namespace KerbalEngineer.Unity.Flight
         {
             get
             {
-                if (m_EditToggle != null)
+                if (editToggle != null)
                 {
-                    return m_EditToggle.isOn;
+                    return editToggle.isOn;
                 }
 
                 return true;
             }
             set
             {
-                if (m_EditToggle != null)
+                if (editToggle != null)
                 {
-                    m_EditToggle.isOn = value;
+                    editToggle.isOn = value;
                 }
             }
         }
@@ -67,7 +67,7 @@ namespace KerbalEngineer.Unity.Flight
                 return;
             }
 
-            m_Section = section;
+            this.section = section;
         }
 
         /// <summary>
@@ -75,9 +75,9 @@ namespace KerbalEngineer.Unity.Flight
         /// </summary>
         public void SetDisplayVisible(bool visible)
         {
-            if (m_Section != null)
+            if (section != null)
             {
-                m_Section.IsVisible = visible;
+                section.IsVisible = visible;
             }
         }
 
@@ -86,9 +86,9 @@ namespace KerbalEngineer.Unity.Flight
         /// </summary>
         public void SetEditorVisible(bool visible)
         {
-            if (m_Section != null)
+            if (section != null)
             {
-                m_Section.IsEditorVisible = visible;
+                section.IsEditorVisible = visible;
             }
         }
 
@@ -102,28 +102,28 @@ namespace KerbalEngineer.Unity.Flight
         /// </summary>
         private void UpdateControls()
         {
-            if (m_Section == null || m_Section.IsDeleted)
+            if (section == null || section.IsDeleted)
             {
                 Destroy(gameObject);
                 return;
             }
 
             // display visible
-            if (m_DisplayToggle != null)
+            if (displayToggle != null)
             {
-                m_DisplayToggle.isOn = m_Section.IsVisible;
+                displayToggle.isOn = section.IsVisible;
             }
 
             // display name
-            if (m_DisplayText != null)
+            if (displayText != null)
             {
-                m_DisplayText.text = m_Section.Name.ToUpperInvariant();
+                displayText.text = section.Name.ToUpperInvariant();
             }
 
             // editor visible
-            if (m_EditToggle != null)
+            if (editToggle != null)
             {
-                m_EditToggle.isOn = m_Section.IsEditorVisible;
+                editToggle.isOn = section.IsEditorVisible;
             }
         }
     }

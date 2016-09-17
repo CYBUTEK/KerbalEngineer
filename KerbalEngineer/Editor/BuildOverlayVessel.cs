@@ -18,11 +18,13 @@
 // 
 
 #region Using Directives
+
 #endregion
 
 namespace KerbalEngineer.Editor
 {
     #region Using Directives
+
     using System;
     using System.Collections.Generic;
     using Helpers;
@@ -34,10 +36,13 @@ namespace KerbalEngineer.Editor
     public class BuildOverlayVessel : MonoBehaviour
     {
         #region Constants
+
         private const float Width = 175.0f;
+
         #endregion
 
         #region Fields
+
         private static bool visible = true;
 
         private readonly List<PartInfoItem> infoItems = new List<PartInfoItem>();
@@ -49,9 +54,11 @@ namespace KerbalEngineer.Editor
         private Rect tabPosition;
         private Vector2 tabSize;
         private Rect windowPosition = new Rect(330.0f, 0.0f, Width, 0.0f);
+
         #endregion
 
         #region Properties
+
         public static bool Visible
         {
             get
@@ -95,9 +102,11 @@ namespace KerbalEngineer.Editor
                 windowPosition.x = value;
             }
         }
+
         #endregion
 
         #region Methods
+
         protected void Awake()
         {
             try
@@ -107,7 +116,7 @@ namespace KerbalEngineer.Editor
             }
             catch (Exception ex)
             {
-                Logger.Exception(ex);
+                MyLogger.Exception(ex);
             }
         }
 
@@ -123,12 +132,12 @@ namespace KerbalEngineer.Editor
                 open = GUI.Toggle(tabPosition, open, tabContent, BuildOverlay.TabStyle);
                 if (openPercent > 0.0)
                 {
-                    windowPosition = GUILayout.Window(GetInstanceID(), windowPosition, VesselWindow, String.Empty, BuildOverlay.WindowStyle);
+                    windowPosition = GUILayout.Window(GetInstanceID(), windowPosition, VesselWindow, string.Empty, BuildOverlay.WindowStyle);
                 }
             }
             catch (Exception ex)
             {
-                Logger.Exception(ex);
+                MyLogger.Exception(ex);
             }
         }
 
@@ -141,7 +150,7 @@ namespace KerbalEngineer.Editor
             }
             catch (Exception ex)
             {
-                Logger.Exception(ex);
+                MyLogger.Exception(ex);
             }
         }
 
@@ -163,7 +172,7 @@ namespace KerbalEngineer.Editor
             }
             catch (Exception ex)
             {
-                Logger.Exception(ex);
+                MyLogger.Exception(ex);
             }
         }
 
@@ -250,9 +259,10 @@ namespace KerbalEngineer.Editor
             }
             catch (Exception ex)
             {
-                Logger.Exception(ex);
+                MyLogger.Exception(ex);
             }
         }
+
         #endregion
     }
 }

@@ -1,0 +1,16 @@
+ManifestFileVersion: 0
+CRC: 1712066589
+AssetBundleManifest:
+  AssetBundleInfos:
+    Info_0:
+      Name: prefabs
+      Dependencies: {}
+    Info_1:
+      Name: images
+      Dependencies: {}
+    Info_2:
+      Name: squadcore
+      Dependencies: {}
+    Info_3:
+      Name: models
+      Dependencies: {}

@@ -27,25 +27,25 @@ namespace KerbalEngineer.Unity.Flight
     public class FlightMenu : CanvasGroupFader, IPointerEnterHandler, IPointerExitHandler
     {
         [SerializeField]
-        private Toggle m_ShowEngineerToggle = null;
+        private Toggle showEngineerToggle = null;
 
         [SerializeField]
-        private Toggle m_ControlBarToggle = null;
+        private Toggle controlBarToggle = null;
 
         [SerializeField]
-        private GameObject m_MenuSectionPrefab = null;
+        private GameObject menuSectionPrefab = null;
 
         [SerializeField]
-        private Transform m_SectionsTransform = null;
+        private Transform sectionsTransform = null;
 
         [SerializeField]
-        private float m_FastFadeDuration = 0.2f;
+        private float fastFadeDuration = 0.2f;
 
         [SerializeField]
-        private float m_SlowFadeDuration = 1.0f;
+        private float slowFadeDuration = 1.0f;
 
-        private IFlightAppLauncher m_FlightAppLauncher;
-        private RectTransform m_RectTransform;
+        private IFlightAppLauncher flightAppLauncher;
+        private RectTransform rectTransform;
 
         public void OnPointerEnter(PointerEventData eventData)
         {
@@ -55,9 +55,9 @@ namespace KerbalEngineer.Unity.Flight
         public void OnPointerExit(PointerEventData eventData)
         {
             // slow-fade out if the application launcher button is off
-            if (m_FlightAppLauncher != null && m_FlightAppLauncher.IsOn == false)
+            if (flightAppLauncher != null && flightAppLauncher.IsOn == false)
             {
-                FadeTo(0.0f, m_SlowFadeDuration, Destroy);
+                FadeTo(0.0f, slowFadeDuration, Destroy);
             }
         }
 
@@ -66,7 +66,7 @@ namespace KerbalEngineer.Unity.Flight
         /// </summary>
         public void Close()
         {
-            FadeTo(0.0f, m_FastFadeDuration, Destroy);
+            FadeTo(0.0f, fastFadeDuration, Destroy);
         }
 
         /// <summary>
@@ -74,7 +74,7 @@ namespace KerbalEngineer.Unity.Flight
         /// </summary>
         public void FadeIn()
         {
-            FadeTo(1.0f, m_FastFadeDuration);
+            FadeTo(1.0f, fastFadeDuration);
         }
 
         /// <summary>
@@ -82,9 +82,9 @@ namespace KerbalEngineer.Unity.Flight
         /// </summary>
         public void NewCustomSection()
         {
-            if (m_FlightAppLauncher != null)
+            if (flightAppLauncher != null)
             {
-                CreateSectionControl(m_FlightAppLauncher.NewCustomSection());
+                CreateSectionControl(flightAppLauncher.NewCustomSection());
             }
         }
 
@@ -93,9 +93,9 @@ namespace KerbalEngineer.Unity.Flight
         /// </summary>
         public void SetControlBarVisible(bool visible)
         {
-            if (m_FlightAppLauncher != null)
+            if (flightAppLauncher != null)
             {
-                m_FlightAppLauncher.IsControlBarVisible = visible;
+                flightAppLauncher.IsControlBarVisible = visible;
             }
         }
 
@@ -104,9 +104,9 @@ namespace KerbalEngineer.Unity.Flight
         /// </summary>
         public void SetDisplayStackVisible(bool visible)
         {
-            if (m_FlightAppLauncher != null)
+            if (flightAppLauncher != null)
             {
-                m_FlightAppLauncher.IsDisplayStackVisible = visible;
+                flightAppLauncher.IsDisplayStackVisible = visible;
             }
         }
 
@@ -120,11 +120,11 @@ namespace KerbalEngineer.Unity.Flight
                 return;
             }
 
-            m_FlightAppLauncher = flightAppLauncher;
+            this.flightAppLauncher = flightAppLauncher;
 
             // create section controls
-            CreateSectionControls(m_FlightAppLauncher.GetStockSections());
-            CreateSectionControls(m_FlightAppLauncher.GetCustomSections());
+            CreateSectionControls(this.flightAppLauncher.GetStockSections());
+            CreateSectionControls(this.flightAppLauncher.GetCustomSections());
         }
 
         protected override void Awake()
@@ -132,7 +132,7 @@ namespace KerbalEngineer.Unity.Flight
             base.Awake();
 
             // cache components
-            m_RectTransform = GetComponent<RectTransform>();
+            rectTransform = GetComponent<RectTransform>();
         }
 
         protected virtual void Start()
@@ -144,20 +144,20 @@ namespace KerbalEngineer.Unity.Flight
 
         protected virtual void Update()
         {
-            if (m_FlightAppLauncher == null)
+            if (flightAppLauncher == null)
             {
                 return;
             }
 
             // set toggle states to match the actual states
-            SetToggle(m_ShowEngineerToggle, m_FlightAppLauncher.IsDisplayStackVisible);
-            SetToggle(m_ControlBarToggle, m_FlightAppLauncher.IsControlBarVisible);
+            SetToggle(showEngineerToggle, flightAppLauncher.IsDisplayStackVisible);
+            SetToggle(controlBarToggle, flightAppLauncher.IsControlBarVisible);
 
             // update anchor position
-            if (m_RectTransform != null)
+            if (rectTransform != null)
             {
-                m_RectTransform.position = m_FlightAppLauncher.GetAnchor();
-                m_FlightAppLauncher.ClampToScreen(m_RectTransform);
+                rectTransform.position = flightAppLauncher.GetAnchor();
+                flightAppLauncher.ClampToScreen(rectTransform);
             }
         }
 
@@ -177,13 +177,13 @@ namespace KerbalEngineer.Unity.Flight
         /// </summary>
         private void CreateSectionControl(ISectionModule section)
         {
-            GameObject menuSectionObject = Instantiate(m_MenuSectionPrefab);
+            GameObject menuSectionObject = Instantiate(menuSectionPrefab);
             if (menuSectionObject != null)
             {
                 // apply ksp theme to the created menu section object
-                m_FlightAppLauncher.ApplyTheme(menuSectionObject);
+                flightAppLauncher.ApplyTheme(menuSectionObject);
 
-                menuSectionObject.transform.SetParent(m_SectionsTransform, false);
+                menuSectionObject.transform.SetParent(sectionsTransform, false);
 
                 FlightMenuSection menuSection = menuSectionObject.GetComponent<FlightMenuSection>();
                 if (menuSection != null)
@@ -198,7 +198,7 @@ namespace KerbalEngineer.Unity.Flight
         /// </summary>
         private void CreateSectionControls(IList<ISectionModule> sections)
         {
-            if (sections == null || m_MenuSectionPrefab == null || m_SectionsTransform == null)
+            if (sections == null || menuSectionPrefab == null || sectionsTransform == null)
             {
                 return;
             }

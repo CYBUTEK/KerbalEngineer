@@ -25,20 +25,42 @@ namespace KerbalEngineer.Helpers
     {
         public static double Clamp180(double angle)
         {
-            angle = Clamp360(angle);
-            if (angle > 180.0)
+            if (angle < -180.0)
             {
-                angle = angle - 360.0;
+                do
+                {
+                    angle += 360.0;
+                }
+                while (angle < -180.0);
+            }
+            else if (angle > 180.0)
+            {
+                do
+                {
+                    angle -= 360.0;
+                }
+                while (angle > 180.0);
             }
             return angle;
         }
 
         public static double Clamp360(double angle)
         {
-            angle = angle % 360.0;
             if (angle < 0.0)
             {
-                angle = angle + 360.0;
+                do
+                {
+                    angle += 360.0;
+                }
+                while (angle < 0.0);
+            }
+            else if (angle > 360.0)
+            {
+                do
+                {
+                    angle -= 360.0;
+                }
+                while (angle > 360.0);
             }
             return angle;
         }

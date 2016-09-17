@@ -102,7 +102,7 @@ namespace KerbalEngineer.Flight.Readouts.Surface
             }
             catch (Exception ex)
             {
-                Logger.Exception(ex, "Surface->Slope->GetSlopeAngleAndHeading");
+                MyLogger.Exception(ex, "Surface->Slope->GetSlopeAngleAndHeading");
                 return "--° @ ---°";
             }
         }
