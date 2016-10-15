@@ -544,9 +544,9 @@ namespace KerbalEngineer.VesselSimulator
                     allSources.Add(this);
 
                     if (log != null) log.buf.AppendLine(indent + "Returning enabled tank as only source (" + name + ":" + partId + ")");
-                }
 
-                return;
+                    return;
+                }
             }
             else
             {
