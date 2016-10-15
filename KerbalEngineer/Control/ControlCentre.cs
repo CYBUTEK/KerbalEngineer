@@ -133,7 +133,7 @@ namespace KerbalEngineer.Control
             }
             catch (Exception ex)
             {
-                Logger.Exception(ex);
+                MyLogger.Exception(ex);
             }
         }
 
@@ -147,7 +147,7 @@ namespace KerbalEngineer.Control
             }
             catch (Exception ex)
             {
-                Logger.Exception(ex);
+                MyLogger.Exception(ex);
             }
         }
 
@@ -160,7 +160,7 @@ namespace KerbalEngineer.Control
             }
             catch (Exception ex)
             {
-                Logger.Exception(ex);
+                MyLogger.Exception(ex);
             }
         }
 
@@ -236,7 +236,7 @@ namespace KerbalEngineer.Control
             }
             catch (Exception ex)
             {
-                Logger.Exception(ex);
+                MyLogger.Exception(ex);
             }
         }
 

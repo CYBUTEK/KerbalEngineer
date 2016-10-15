@@ -15,7 +15,7 @@ namespace KerbalEngineer
         {
             if (buf.Length > 0)
             {
-                Logger.Log(buf);
+                MyLogger.Log(buf);
             }
             buf.Length = 0;
         }

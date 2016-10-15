@@ -117,7 +117,6 @@ namespace KerbalEngineer.VesselSimulator
             partSim.noCrossFeedNodeKey = p.NoCrossFeedNodeKey;
             partSim.decoupledInStage = partSim.DecoupledInStage(p);
             partSim.isFuelLine = p.HasModule<CModuleFuelLine>();
-            partSim.isFuelTank = p is FuelTank;
             partSim.isSepratron = partSim.IsSepratron();
             partSim.inverseStage = p.inverseStage;
             //MonoBehaviour.print("inverseStage = " + inverseStage);
@@ -771,23 +770,9 @@ namespace KerbalEngineer.VesselSimulator
                 return false;
             }
 
-            if (part is SolidRocket)
-            {
-                return true;
-            }
-
             IEnumerable<ModuleEngines> modList = part.Modules.OfType<ModuleEngines>();
-            if (modList.Count() == 0)
-            {
-                return false;
-            }
 
-            if (modList.First().throttleLocked)
-            {
-                return true;
-            }
-
-            return false;
+            return modList.Any(module => module.throttleLocked);
         }
     }
 }

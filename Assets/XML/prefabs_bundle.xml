@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<KSPBundleDefinition xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" UrlName="prefabs" Name="prefabs" CreatedTime="-8587276745314578606">
+  <Author />
+  <Info />
+  <Assets>
+    <Asset Name="FlightMenu" Path="Assets/Prefabs/FlightMenu.prefab" Type="GameObject" Url="Prefabs/FlightMenu" AutoLoad="false" />
+    <Asset Name="FlightMenuSection" Path="Assets/Prefabs/FlightMenuSection.prefab" Type="GameObject" Url="Prefabs/FlightMenuSection" AutoLoad="false" />
+    <Asset Name="Setting" Path="Assets/Prefabs/Setting.prefab" Type="GameObject" Url="Prefabs/Setting" AutoLoad="false" />
+    <Asset Name="SettingButton" Path="Assets/Prefabs/SettingButton.prefab" Type="GameObject" Url="Prefabs/SettingButton" AutoLoad="false" />
+    <Asset Name="SettingToggle" Path="Assets/Prefabs/SettingToggle.prefab" Type="GameObject" Url="Prefabs/SettingToggle" AutoLoad="false" />
+    <Asset Name="Window" Path="Assets/Prefabs/Window.prefab" Type="GameObject" Url="Prefabs/Window" AutoLoad="false" />
+  </Assets>
+  <Dependencies />
+</KSPBundleDefinition>

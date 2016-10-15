@@ -25,7 +25,7 @@
                 }
                 catch (Exception ex)
                 {
-                    Logger.Exception(ex);
+                    MyLogger.Exception(ex);
                 }
             }
 
@@ -60,7 +60,7 @@
             }
             catch (Exception ex)
             {
-                Logger.Exception(ex);
+                MyLogger.Exception(ex);
             }
         }
     }

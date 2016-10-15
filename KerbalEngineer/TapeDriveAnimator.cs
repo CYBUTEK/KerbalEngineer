@@ -98,36 +98,37 @@ namespace KerbalEngineer
         [KSPField]
         public bool UseBakedAnimation = false;
 
-        private Shader m_ButtonLightOffShader;
-        private Shader m_ButtonLightOnShader;
-        private Material m_ButtonSet1Material;
-        private Material m_ButtonSet2Material;
-        private Material m_ButtonSet3Material;
-        private Material m_ButtonSet4Material;
-        private Material m_ButtonSet5Material;
-        private Material m_ButtonSet6Material;
-        private float m_CurrentTime;
-        private float m_DeltaTime;
-        private bool m_IsRunning;
-        private Random m_Random;
-        private Transform m_Reel1Transform;
-        private Transform m_Reel2Transform;
-        private float m_RepeatTime;
-        private bool m_SceneIsEditor;
-        private float m_Speed;
-        private float m_TargetSpeed;
+        private Shader buttonLightOffShader;
+        private Shader buttonLightOnShader;
+        private Material buttonSet1Material;
+        private Material buttonSet2Material;
+        private Material buttonSet3Material;
+        private Material buttonSet4Material;
+        private Material buttonSet5Material;
+        private Material buttonSet6Material;
+        private float currentTime;
+        private float deltaTime;
+        private bool isRunning;
+        private Random random;
+        private Transform reel1Transform;
+        private Transform reel2Transform;
+        private float repeatTime;
+        private bool sceneIsEditor;
+        private float speed;
+        private float targetSpeed;
 
         public bool IsRunning
         {
             get
             {
-                return m_IsRunning;
+                return isRunning;
+                return isRunning;
             }
             set
             {
-                m_IsRunning = value;
+                isRunning = value;
 
-                if (m_IsRunning)
+                if (isRunning)
                 {
                     if (UseBakedAnimation)
                     {
@@ -146,7 +147,7 @@ namespace KerbalEngineer
 
         public override void OnStart(StartState state)
         {
-            m_Random = new Random();
+            random = new Random();
 
             StopBakedAnimation();
             IsRunning = false;
@@ -156,7 +157,7 @@ namespace KerbalEngineer
                 part.OnEditorAttach += OnEditorAttach;
                 part.OnEditorDetach += OnEditorDetach;
 
-                m_SceneIsEditor = true;
+                sceneIsEditor = true;
 
                 if (part.parent != null)
                 {
@@ -182,7 +183,7 @@ namespace KerbalEngineer
                 return;
             }
 
-            m_DeltaTime = m_SceneIsEditor ? Time.deltaTime : TimeWarp.deltaTime;
+            deltaTime = sceneIsEditor ? Time.deltaTime : TimeWarp.deltaTime;
 
             if (TimeWarp.CurrentRate != 1.0f && TimeWarp.WarpMode != TimeWarp.Modes.LOW)
             {
@@ -198,9 +199,9 @@ namespace KerbalEngineer
             }
             else
             {
-                m_TargetSpeed = 0;
+                targetSpeed = 0;
 
-                if (m_Speed != 0)
+                if (speed != 0)
                 {
                     UpdateSpeed();
                     UpdateReels();
@@ -244,27 +245,27 @@ namespace KerbalEngineer
 
         private void InitialiseLights()
         {
-            m_ButtonSet1Material = GetMaterialOnModelTransform(Lights1);
-            m_ButtonSet2Material = GetMaterialOnModelTransform(Lights2);
-            m_ButtonSet3Material = GetMaterialOnModelTransform(Lights3);
-            m_ButtonSet4Material = GetMaterialOnModelTransform(Lights4);
-            m_ButtonSet5Material = GetMaterialOnModelTransform(Lights5);
-            m_ButtonSet6Material = GetMaterialOnModelTransform(Lights6);
+            buttonSet1Material = GetMaterialOnModelTransform(Lights1);
+            buttonSet2Material = GetMaterialOnModelTransform(Lights2);
+            buttonSet3Material = GetMaterialOnModelTransform(Lights3);
+            buttonSet4Material = GetMaterialOnModelTransform(Lights4);
+            buttonSet5Material = GetMaterialOnModelTransform(Lights5);
+            buttonSet6Material = GetMaterialOnModelTransform(Lights6);
 
-            m_ButtonLightOffShader = Shader.Find("KSP/Specular");
-            m_ButtonLightOnShader = Shader.Find("KSP/Unlit");
+            buttonLightOffShader = Shader.Find("KSP/Specular");
+            buttonLightOnShader = Shader.Find("KSP/Unlit");
         }
 
         private void InitialiseReels()
         {
             if (string.IsNullOrEmpty(Reel1) == false)
             {
-                m_Reel1Transform = part.FindModelTransform(Reel1);
+                reel1Transform = part.FindModelTransform(Reel1);
             }
 
             if (string.IsNullOrEmpty(Reel2) == false)
             {
-                m_Reel2Transform = part.FindModelTransform(Reel2);
+                reel2Transform = part.FindModelTransform(Reel2);
             }
         }
 
@@ -296,7 +297,7 @@ namespace KerbalEngineer
 
         private void Update()
         {
-            if (m_SceneIsEditor)
+            if (sceneIsEditor)
             {
                 OnUpdate();
             }
@@ -313,90 +314,90 @@ namespace KerbalEngineer
 
             if (targetSpeed > 0)
             {
-                lightsOn = (m_Speed > targetSpeed);
+                lightsOn = (speed > targetSpeed);
             }
             else if (targetSpeed < 0)
             {
-                lightsOn = (m_Speed < targetSpeed);
+                lightsOn = (speed < targetSpeed);
             }
             else
             {
-                lightsOn = (m_Speed == 0);
+                lightsOn = (speed == 0);
             }
 
-            SetShaderOnMaterial(material, lightsOn ? m_ButtonLightOnShader : m_ButtonLightOffShader);
+            SetShaderOnMaterial(material, lightsOn ? buttonLightOnShader : buttonLightOffShader);
         }
 
         private void UpdateLights()
         {
-            UpdateButtonMaterial(m_ButtonSet1Material, Lights1Speed);
-            UpdateButtonMaterial(m_ButtonSet2Material, Lights2Speed);
-            UpdateButtonMaterial(m_ButtonSet3Material, Lights3Speed);
-            UpdateButtonMaterial(m_ButtonSet4Material, Lights4Speed);
-            UpdateButtonMaterial(m_ButtonSet5Material, Lights5Speed);
-            UpdateButtonMaterial(m_ButtonSet6Material, Lights6Speed);
+            UpdateButtonMaterial(buttonSet1Material, Lights1Speed);
+            UpdateButtonMaterial(buttonSet2Material, Lights2Speed);
+            UpdateButtonMaterial(buttonSet3Material, Lights3Speed);
+            UpdateButtonMaterial(buttonSet4Material, Lights4Speed);
+            UpdateButtonMaterial(buttonSet5Material, Lights5Speed);
+            UpdateButtonMaterial(buttonSet6Material, Lights6Speed);
         }
 
         private void UpdateReels()
         {
-            if (m_Reel1Transform != null && m_Speed != 0)
+            if (reel1Transform != null && speed != 0)
             {
-                m_Reel1Transform.transform.Rotate(Vector3.right, m_Speed * Reel1SpeedRatio);
+                reel1Transform.transform.Rotate(Vector3.right, speed * Reel1SpeedRatio);
             }
 
-            if (m_Reel2Transform != null && m_Speed != 0)
+            if (reel2Transform != null && speed != 0)
             {
-                m_Reel2Transform.transform.Rotate(Vector3.right, m_Speed * Reel2SpeedRatio);
+                reel2Transform.transform.Rotate(Vector3.right, speed * Reel2SpeedRatio);
             }
         }
 
         private void UpdateSpeed()
         {
-            if (m_Speed < m_TargetSpeed)
+            if (speed < targetSpeed)
             {
-                if (m_Speed < m_TargetSpeed - SpeedDeadZone)
+                if (speed < targetSpeed - SpeedDeadZone)
                 {
-                    m_Speed += SpeedChangeAmount * m_DeltaTime;
+                    speed += SpeedChangeAmount * deltaTime;
                 }
                 else
                 {
-                    m_Speed = m_TargetSpeed;
+                    speed = targetSpeed;
                 }
             }
-            else if (m_Speed > m_TargetSpeed)
+            else if (speed > targetSpeed)
             {
-                if (m_Speed > m_TargetSpeed + SpeedDeadZone)
+                if (speed > targetSpeed + SpeedDeadZone)
                 {
-                    m_Speed -= SpeedChangeAmount * m_DeltaTime;
+                    speed -= SpeedChangeAmount * deltaTime;
                 }
                 else
                 {
-                    m_Speed = m_TargetSpeed;
+                    speed = targetSpeed;
                 }
             }
         }
 
         private void UpdateTimerCycle()
         {
-            m_CurrentTime += m_DeltaTime;
+            currentTime += deltaTime;
 
-            if (m_CurrentTime >= m_RepeatTime)
+            if (currentTime >= repeatTime)
             {
-                m_TargetSpeed = m_Random.Next(MinReelSpeed, MaxReelSpeed);
+                targetSpeed = random.Next(MinReelSpeed, MaxReelSpeed);
 
-                if (m_TargetSpeed > -SpeedStopZone && m_TargetSpeed < SpeedStopZone)
+                if (targetSpeed > -SpeedStopZone && targetSpeed < SpeedStopZone)
                 {
-                    m_TargetSpeed = 0;
+                    targetSpeed = 0;
                 }
 
-                m_RepeatTime = m_Random.Next(MinRepeatTime, MaxRepeatTime);
+                repeatTime = random.Next(MinRepeatTime, MaxRepeatTime);
 
                 if (RepeatTimeDenominator != 0)
                 {
-                    m_RepeatTime /= RepeatTimeDenominator;
+                    repeatTime /= RepeatTimeDenominator;
                 }
 
-                m_CurrentTime -= m_RepeatTime;
+                currentTime -= repeatTime;
             }
         }
     }

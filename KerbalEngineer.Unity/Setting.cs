@@ -8,31 +8,31 @@
     public class Setting : MonoBehaviour
     {
         [SerializeField]
-        private Text m_Label = null;
+        private Text label = null;
 
         [SerializeField]
-        private Transform m_ButtonsTransform = null;
+        private Transform buttonsTransform = null;
 
         [SerializeField]
-        private GameObject m_SettingButtonPrefab = null;
+        private GameObject settingButtonPrefab = null;
 
         [SerializeField]
-        private GameObject m_SettingTogglePrefab = null;
+        private GameObject settingTogglePrefab = null;
 
-        private Action m_OnUpdate;
+        private Action onUpdate;
 
         public Button AddButton(string text, float width, UnityAction onClick)
         {
             Button button = null;
 
-            if (m_SettingButtonPrefab != null)
+            if (settingButtonPrefab != null)
             {
-                GameObject buttonObject = Instantiate(m_SettingButtonPrefab);
+                GameObject buttonObject = Instantiate(settingButtonPrefab);
                 if (buttonObject != null)
                 {
                     button = buttonObject.GetComponent<Button>();
 
-                    SetParentTransform(buttonObject, m_ButtonsTransform);
+                    SetParentTransform(buttonObject, buttonsTransform);
                     SetWidth(buttonObject, width);
                     SetText(buttonObject, text);
                     SetButton(buttonObject, onClick);
@@ -46,14 +46,14 @@
         {
             Toggle toggle = null;
 
-            if (m_SettingTogglePrefab != null)
+            if (settingTogglePrefab != null)
             {
-                GameObject toggleObject = Instantiate(m_SettingTogglePrefab);
+                GameObject toggleObject = Instantiate(settingTogglePrefab);
                 if (toggleObject != null)
                 {
                     toggle = toggleObject.GetComponent<Toggle>();
 
-                    SetParentTransform(toggleObject, m_ButtonsTransform);
+                    SetParentTransform(toggleObject, buttonsTransform);
                     SetWidth(toggleObject, width);
                     SetText(toggleObject, text);
                     SetToggle(toggleObject, onValueChanged);
@@ -65,22 +65,22 @@
 
         public void AddUpdateHandler(Action onUpdate)
         {
-            m_OnUpdate = onUpdate;
+            this.onUpdate = onUpdate;
         }
 
         public void SetLabel(string text)
         {
-            if (m_Label != null)
+            if (label != null)
             {
-                m_Label.text = text;
+                label.text = text;
             }
         }
 
         protected virtual void Update()
         {
-            if (m_OnUpdate != null)
+            if (onUpdate != null)
             {
-                m_OnUpdate.Invoke();
+                onUpdate.Invoke();
             }
         }
 

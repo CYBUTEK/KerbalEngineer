@@ -42,9 +42,9 @@ namespace KerbalEngineer.Extensions
         /// </summary>
         public static bool ContainsResources(this Part part)
         {
-            for (int i = 0; i < part.Resources.list.Count; ++i)
+            for (int i = 0; i < part.Resources.dict.Count; ++i)
             {
-                if (part.Resources.list[i].amount > 0.0)
+                if (part.Resources.dict.At(i).amount > 0.0)
                 {
                     return true;
                 }
@@ -311,9 +311,9 @@ namespace KerbalEngineer.Extensions
         public static double GetResourceCost(this Part part)
         {
             double cost = 0.0;
-            for (int i = 0; i < part.Resources.list.Count; ++i)
+            for (int i = 0; i < part.Resources.dict.Count; ++i)
             {
-                PartResource cachePartResource = part.Resources.list[i];
+                PartResource cachePartResource = part.Resources.dict.At(i);
                 cost = cost + (cachePartResource.amount * cachePartResource.info.unitCost);
             }
             return cost;
@@ -325,9 +325,9 @@ namespace KerbalEngineer.Extensions
         public static double GetResourceCostInverted(this Part part)
         {
             double sum = 0;
-            for (int i = 0; i < part.Resources.list.Count; i++)
+            for (int i = 0; i < part.Resources.dict.Count; i++)
             {
-                PartResource r = part.Resources.list[i];
+                PartResource r = part.Resources.dict.At(i);
                 sum += (r.maxAmount - r.amount) * r.info.unitCost;
             }
             return sum;
@@ -339,9 +339,9 @@ namespace KerbalEngineer.Extensions
         public static double GetResourceCostMax(this Part part)
         {
             double cost = 0.0;
-            for (int i = 0; i < part.Resources.list.Count; ++i)
+            for (int i = 0; i < part.Resources.dict.Count; ++i)
             {
-                PartResource cachePartResource = part.Resources.list[i];
+                PartResource cachePartResource = part.Resources.dict.At(i);
                 cost = cost + (cachePartResource.maxAmount * cachePartResource.info.unitCost);
             }
             return cost;

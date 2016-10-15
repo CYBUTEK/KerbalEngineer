@@ -162,7 +162,7 @@ namespace KerbalEngineer.Editor
             }
             catch (Exception ex)
             {
-                Logger.Exception(ex, "BuildAdvanced.Awake()");
+                MyLogger.Exception(ex, "BuildAdvanced.Awake()");
             }
         }
 
@@ -171,7 +171,7 @@ namespace KerbalEngineer.Editor
         /// </summary>
         protected void OnDestroy()
         {
-            Logger.Log("BuildAdvanced->OnDestroy");
+            MyLogger.Log("BuildAdvanced->OnDestroy");
 
             try
             {
@@ -190,7 +190,7 @@ namespace KerbalEngineer.Editor
             }
             catch (Exception ex)
             {
-                Logger.Exception(ex, "BuildAdvanced.OnDestroy()");
+                MyLogger.Exception(ex, "BuildAdvanced.OnDestroy()");
             }
 
             EditorLock(false);
@@ -258,7 +258,7 @@ namespace KerbalEngineer.Editor
             }
             catch (Exception ex)
             {
-                Logger.Exception(ex, "BuildAdvanced.OnGUI()");
+                MyLogger.Exception(ex, "BuildAdvanced.OnGUI()");
             }
         }
 
@@ -271,7 +271,7 @@ namespace KerbalEngineer.Editor
             }
             catch (Exception ex)
             {
-                Logger.Exception(ex, "BuildAdvanced.Start()");
+                MyLogger.Exception(ex, "BuildAdvanced.Start()");
             }
         }
 
@@ -313,7 +313,7 @@ namespace KerbalEngineer.Editor
             }
             catch (Exception ex)
             {
-                Logger.Exception(ex, "BuildAdvanced.Update()");
+                MyLogger.Exception(ex, "BuildAdvanced.Update()");
             }
         }
 
@@ -359,7 +359,7 @@ namespace KerbalEngineer.Editor
             }
             catch (Exception ex)
             {
-                Logger.Exception(ex, "BuildAdvanced.DrawAtmosphericDetails()");
+                MyLogger.Exception(ex, "BuildAdvanced.DrawAtmosphericDetails()");
             }
         }
 
@@ -781,7 +781,7 @@ namespace KerbalEngineer.Editor
             }
             catch (Exception ex)
             {
-                Logger.Exception(ex, "BuildAdvanced.Load()");
+                MyLogger.Exception(ex, "BuildAdvanced.Load()");
             }
         }
 
@@ -890,7 +890,7 @@ namespace KerbalEngineer.Editor
             }
             catch (Exception ex)
             {
-                Logger.Exception(ex, "BuildAdvanced.Window()");
+                MyLogger.Exception(ex, "BuildAdvanced.Window()");
             }
         }
     }
