@@ -314,7 +314,7 @@
   </SettingItem>
   <SettingItem>
     <Name>Vessel.IntakeAirDemandSupply</Name>
-    <Value xsi:type="string">Displays the Ration between required and available Intake Air.</Value>
+    <Value xsi:type="string">Displays the Ratio between required and available Intake Air.</Value>
   </SettingItem>
   <SettingItem>
     <Name>Vessel.PartCount</Name>
