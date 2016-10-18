@@ -30,11 +30,11 @@
   </SettingItem>
   <SettingItem>
     <Name>Orbital.AngleToEquatorialAscendingNode</Name>
-    <Value xsi:type="string">Angular distance from the vessel to the northward equator crossing of the central body</Value>
+    <Value xsi:type="string">Angular distance from the vessel to the northward equator crossing of the central body.</Value>
   </SettingItem>
   <SettingItem>
     <Name>Orbital.AngleToEquatorialDescendingNode</Name>
-    <Value xsi:type="string">Angular distance from the vessel to the southward equator crossing of the central body</Value>
+    <Value xsi:type="string">Angular distance from the vessel to the southward equator crossing of the central body.</Value>
   </SettingItem>
   <SettingItem>
     <Name>Orbital.Eccentricity</Name>
@@ -498,7 +498,7 @@
   </SettingItem>
   <SettingItem>
     <Name>Miscellaneous.SystemTime</Name>
-    <Value xsi:type="string">Shows the System Time in 12 hour format (AM/PM)</Value>
+    <Value xsi:type="string">Shows the System Time in 12 hour format (AM/PM).</Value>
   </SettingItem>
   <SettingItem>
     <Name>Miscellaneous.LogSimToggle</Name>
