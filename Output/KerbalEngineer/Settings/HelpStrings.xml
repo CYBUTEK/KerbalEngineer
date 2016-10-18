@@ -18,23 +18,23 @@
   </SettingItem>
   <SettingItem>
     <Name>Orbital.Inclination</Name>
-    <Value xsi:type="string">Shows the vessel's orbital inclination relative to the Equator.</Value>
+    <Value xsi:type="string">Shows the vessel's orbital inclination relative to the equator.</Value>
   </SettingItem>
   <SettingItem>
     <Name>Orbital.TimeToEquatorialAscendingNode</Name>
-    <Value xsi:type="string">Shows the time until the vessel crosses northward over the Equator.</Value>
+    <Value xsi:type="string">Shows the time until the vessel crosses northward over the equator.</Value>
   </SettingItem>
   <SettingItem>
     <Name>Orbital.TimeToEquatorialDescendingNode</Name>
-    <Value xsi:type="string">Shows the time until the vessel crosses southward over the Equator.</Value>
+    <Value xsi:type="string">Shows the time until the vessel crosses southward over the equator.</Value>
   </SettingItem>
   <SettingItem>
     <Name>Orbital.AngleToEquatorialAscendingNode</Name>
-    <Value xsi:type="string">Angular Distance from the vessel to the northward Equator crossing of the central body</Value>
+    <Value xsi:type="string">Angular distance from the vessel to the northward equator crossing of the central body</Value>
   </SettingItem>
   <SettingItem>
     <Name>Orbital.AngleToEquatorialDescendingNode</Name>
-    <Value xsi:type="string">Angular Distance from the vessel to the southward Equator crossing of the central body</Value>
+    <Value xsi:type="string">Angular distance from the vessel to the southward equator crossing of the central body</Value>
   </SettingItem>
   <SettingItem>
     <Name>Orbital.Eccentricity</Name>
@@ -90,11 +90,11 @@
   </SettingItem>
   <SettingItem>
     <Name>Orbital.AngleToPrograde</Name>
-    <Value xsi:type="string">Angular Distance from the vessel to crossing the Orbit of the central body on it's retrograde side.</Value>
+    <Value xsi:type="string">Angular Distance from the vessel to crossing the orbit of the central body on its retrograde side.</Value>
   </SettingItem>
   <SettingItem>
     <Name>Orbital.AngleToRetrograde</Name>
-    <Value xsi:type="string">Angular Distance from the vessel to crossing the Orbit of the central body on it's retrograde side.</Value>
+    <Value xsi:type="string">Angular Distance from the vessel to crossing the Orbit of the central body on its retrograde side.</Value>
   </SettingItem>
   <SettingItem>
     <Name>Orbital.NodeProgradeDeltaV</Name>
@@ -118,43 +118,43 @@
   </SettingItem>
   <SettingItem>
     <Name>Orbital.NodeHalfBurnTime</Name>
-    <Value xsi:type="string">Half of the burn's total duration.</Value>
+    <Value xsi:type="string">Half the burn's total duration.</Value>
   </SettingItem>
   <SettingItem>
     <Name>Orbital.NodeTimeToManoeuvre</Name>
-    <Value xsi:type="string">Time until the vessel reaches the position of the Manoeuvre Node.</Value>
+    <Value xsi:type="string">Time until the vessel reaches the manoeuvre node.</Value>
   </SettingItem>
   <SettingItem>
     <Name>Orbital.NodeTimeToHalfBurn</Name>
-    <Value xsi:type="string">Time until the Manoeuvre should be started.</Value>
+    <Value xsi:type="string">Time until the manoeuvre should be started.</Value>
   </SettingItem>
   <SettingItem>
     <Name>Orbital.NodeAngleToPrograde</Name>
-    <Value xsi:type="string">Angular Distance from the Node to crossing the Orbit of the central body on it's prograde side.</Value>
+    <Value xsi:type="string">Angular distance from the node, to crossing the orbit of the central body on it's prograde side.</Value>
   </SettingItem>
   <SettingItem>
     <Name>Orbital.NodeAngleToRetrograde</Name>
-    <Value xsi:type="string">Angular Distance from the Node to crossing the Orbit of the central body on it's retrograde side.</Value>
+    <Value xsi:type="string">Angular Distance from the node, to crossing the orbit of the central body on it's retrograde side.</Value>
   </SettingItem>
   <SettingItem>
     <Name>Orbital.PostBurnApoapsis</Name>
-    <Value xsi:type="string">Farthest point of the vessel's ofbit after the burn.</Value>
+    <Value xsi:type="string">Farthest point of the vessel's orbit after the burn.</Value>
   </SettingItem>
   <SettingItem>
     <Name>Orbital.PostBurnPeriapsis</Name>
-    <Value xsi:type="string">Closest point of the vessel's ofbit after the burn.</Value>
+    <Value xsi:type="string">Closest point of the vessel's orbit after the burn.</Value>
   </SettingItem>
   <SettingItem>
     <Name>Orbital.SpeedAtApoapsis</Name>
-    <Value xsi:type="string">Shows the orbital speed of the vessel when at apoapsis, the highest point of the orbit.</Value>
+    <Value xsi:type="string" />
   </SettingItem>
   <SettingItem>
     <Name>Orbital.SpeedAtPeriapsis</Name>
-    <Value xsi:type="string">Shows the orbital speed of the vessel when at periapsis, the lowest point of the orbit.</Value>
+    <Value xsi:type="string" />
   </SettingItem>
   <SettingItem>
     <Name>Orbital.TimeToAtmosphere</Name>
-    <Value xsi:type="string">Shows the time until the vessel enters or leaves the atmosphere.</Value>
+    <Value xsi:type="string">Time until the vessel enters or leaves the atmosphere.</Value>
   </SettingItem>
   <SettingItem>
     <Name>Surface.AltitudeSeaLevel</Name>
@@ -182,7 +182,7 @@
   </SettingItem>
   <SettingItem>
     <Name>Surface.MachNumber</Name>
-    <Value xsi:type="string">Shows the vessel's mach number.</Value>
+    <Value xsi:type="string" />
   </SettingItem>
   <SettingItem>
     <Name>Surface.Latitude</Name>
@@ -202,15 +202,15 @@
   </SettingItem>
   <SettingItem>
     <Name>Surface.AtmosphericEfficiency</Name>
-    <Value xsi:type="string">Shows you vessel's efficiency as a ratio of the current velocity and terminal velocity.  Less than 100% means that you are losing efficiency due to gravity and greater than 100% is due to drag.</Value>
+    <Value xsi:type="string">Shows your vessel's efficiency as a ratio of the current velocity and terminal velocity.  Less than 100% means that you are losing efficiency due to gravity and greater than 100% is due to drag.</Value>
   </SettingItem>
   <SettingItem>
     <Name>Surface.Biome</Name>
-    <Value xsi:type="string">Shows the biome which the vessel is currently flying over.</Value>
+    <Value xsi:type="string">Shows the biome currently below the vessel.</Value>
   </SettingItem>
   <SettingItem>
     <Name>Surface.Situation</Name>
-    <Value xsi:type="string">Shows the vessel's current scientific situation. (Landed, Splashed, Flying Low/High, In Space Low/High)</Value>
+    <Value xsi:type="string">Shows the vessel's current scientific situation (Landed, Splashed, Flying Low/High, In Space Low/High).</Value>
   </SettingItem>
   <SettingItem>
     <Name>Surface.Slope</Name>
@@ -218,11 +218,11 @@
   </SettingItem>
   <SettingItem>
     <Name>Surface.ImpactTime</Name>
-    <Value xsi:type="string">Shows time until the vessel impacts the central object.</Value>
+    <Value xsi:type="string">Shows how much time until your ship impacts the surface.</Value>
   </SettingItem>
   <SettingItem>
     <Name>Surface.ImpactLongitude</Name>
-    <Value xsi:type="string">Longditude of the impact position.</Value>
+    <Value xsi:type="string">Longitude of the impact position.</Value>
   </SettingItem>
   <SettingItem>
     <Name>Surface.ImpactLatitude</Name>
@@ -230,15 +230,15 @@
   </SettingItem>
   <SettingItem>
     <Name>Surface.ImpactAltitude</Name>
-    <Value xsi:type="string">Altitude at which the Vessel will impact.</Value>
+    <Value xsi:type="string">Altitude at which the vessel will impact the surface.</Value>
   </SettingItem>
   <SettingItem>
     <Name>Surface.ImpactBiome</Name>
-    <Value xsi:type="string">Biome the Vessel will impact in.</Value>
+    <Value xsi:type="string">Biome the vessel will impact in.</Value>
   </SettingItem>
   <SettingItem>
     <Name>Vessel.Name</Name>
-    <Value xsi:type="string">Displays the name of the current vessel.</Value>
+    <Value xsi:type="string">Name of the current vessel.</Value>
   </SettingItem>
   <SettingItem>
     <Name>Vessel.DeltaVStaged</Name>
@@ -258,15 +258,15 @@
   </SettingItem>
   <SettingItem>
     <Name>Vessel.SpecificImpulse</Name>
-    <Value xsi:type="string">Shows the average Specific Impulse of all engines in the current stage.</Value>
+    <Value xsi:type="string">The combined ISP of your vessel.</Value>
   </SettingItem>
   <SettingItem>
     <Name>Vessel.Mass</Name>
-    <Value xsi:type="string">Displays the total Mass of the Vessel.</Value>
+    <Value xsi:type="string">The total mass of your vessel.</Value>
   </SettingItem>
   <SettingItem>
     <Name>Vessel.Thrust</Name>
-    <Value xsi:type="string">Shows the current and maximum thrust the vessel can put out.</Value>
+    <Value xsi:type="string">Shows the current and maximum thrust the vessel can produce.</Value>
   </SettingItem>
   <SettingItem>
     <Name>Vessel.ThrustToWeight</Name>
@@ -274,11 +274,11 @@
   </SettingItem>
   <SettingItem>
     <Name>Vessel.ThrustOffsetAngle</Name>
-    <Value xsi:type="string">Thrust angle offset due to vessel asymmetries and gimballing</Value>
+    <Value xsi:type="string">Thrust angle offset due to vessel asymmetries and gimballing.</Value>
   </SettingItem>
   <SettingItem>
     <Name>Vessel.ThrustTorque</Name>
-    <Value xsi:type="string">Thrust torque due to vessel asymmetries and gimballing</Value>
+    <Value xsi:type="string">Thrust torque due to vessel asymmetries and gimballing.</Value>
   </SettingItem>
   <SettingItem>
     <Name>Vessel.SurfaceThrustToWeight</Name>
@@ -302,47 +302,47 @@
   </SettingItem>
   <SettingItem>
     <Name>Vessel.IntakeAirUsage</Name>
-    <Value xsi:type="string">Displays the consumption of Intake Air.</Value>
+    <Value xsi:type="string">Displays the consumption of intake air.</Value>
   </SettingItem>
   <SettingItem>
     <Name>Vessel.IntakeAirDemand</Name>
-    <Value xsi:type="string">Displays the Amount of Intake Air required.</Value>
+    <Value xsi:type="string">Displays the amount of intake air required.</Value>
   </SettingItem>
   <SettingItem>
     <Name>Vessel.IntakeAirSupply</Name>
-    <Value xsi:type="string">Displays the available Intake Air.</Value>
+    <Value xsi:type="string">Displays the available intake air.</Value>
   </SettingItem>
   <SettingItem>
     <Name>Vessel.IntakeAirDemandSupply</Name>
-    <Value xsi:type="string">Displays the Ratio between required and available Intake Air.</Value>
+    <Value xsi:type="string">Displays the ratio between required and available intake air.</Value>
   </SettingItem>
   <SettingItem>
     <Name>Vessel.PartCount</Name>
-    <Value xsi:type="string">Shows the total number of Parts the current and next stage.</Value>
+    <Value xsi:type="string">Shows the total number of parts in the current and next stage.</Value>
   </SettingItem>
   <SettingItem>
     <Name>Vessel.Heading</Name>
-    <Value xsi:type="string">Shows the current Heading.</Value>
+    <Value xsi:type="string">Shows the current heading.</Value>
   </SettingItem>
   <SettingItem>
     <Name>Vessel.Pitch</Name>
-    <Value xsi:type="string">Shows the current Pitch angle.</Value>
+    <Value xsi:type="string">Shows the current pitch angle.</Value>
   </SettingItem>
   <SettingItem>
     <Name>Vessel.Roll</Name>
-    <Value xsi:type="string">Shows the current Roll angle.</Value>
+    <Value xsi:type="string">Shows the current roll angle.</Value>
   </SettingItem>
   <SettingItem>
     <Name>Vessel.HeadingRate</Name>
-    <Value xsi:type="string">Shows the current change in Heading.</Value>
+    <Value xsi:type="string">Shows the current change in heading.</Value>
   </SettingItem>
   <SettingItem>
     <Name>Vessel.PitchRate</Name>
-    <Value xsi:type="string">Shows the current Pitch speed.</Value>
+    <Value xsi:type="string">Shows the current pitch speed.</Value>
   </SettingItem>
   <SettingItem>
     <Name>Vessel.RollRate</Name>
-    <Value xsi:type="string">Shows the current Roll speed.</Value>
+    <Value xsi:type="string">Shows the current roll speed.</Value>
   </SettingItem>
   <SettingItem>
     <Name>Rendezvous.TargetSelector</Name>
@@ -378,11 +378,11 @@
   </SettingItem>
   <SettingItem>
     <Name>Rendezvous.AngleToRelativeAscendingNode</Name>
-    <Value xsi:type="string">Angular Distance from the vessel to crossing the orbit of the target object, going north of it.</Value>
+    <Value xsi:type="string">Angular distance from the vessel to crossing the orbit of the target object, going north of it.</Value>
   </SettingItem>
   <SettingItem>
     <Name>Rendezvous.AngleToRelativeDescendingNode</Name>
-    <Value xsi:type="string">Angular Distance from the vessel to crossing the orbit of the target object, going south of it.</Value>
+    <Value xsi:type="string">Angular distance from the vessel to crossing the orbit of the target object, going south of it.</Value>
   </SettingItem>
   <SettingItem>
     <Name>Rendezvous.AltitudeSeaLevel</Name>
@@ -390,11 +390,11 @@
   </SettingItem>
   <SettingItem>
     <Name>Rendezvous.ApoapsisHeight</Name>
-    <Value xsi:type="string">Shows the targets's apoapsis height relative to sea level. (Apoapsis is the highest point of an orbit.)</Value>
+    <Value xsi:type="string">Shows the targets's apoapsis height relative to sea level (Apoapsis is the highest point of an orbit).</Value>
   </SettingItem>
   <SettingItem>
     <Name>Rendezvous.PeriapsisHeight</Name>
-    <Value xsi:type="string">Shows the targets's periapsis height relative to sea level. (Periapsis is the lowest point of an orbit.)</Value>
+    <Value xsi:type="string">Shows the targets's periapsis height relative to sea level (Periapsis is the lowest point of an orbit).</Value>
   </SettingItem>
   <SettingItem>
     <Name>Rendezvous.TimeToApoapsis</Name>
@@ -422,7 +422,7 @@
   </SettingItem>
   <SettingItem>
     <Name>Rendezvous.RelativeRadialVelocity</Name>
-    <Value xsi:type="string">Relative radial velocity between your vessel and the target object</Value>
+    <Value xsi:type="string">Relative radial velocity between your vessel and the target object.</Value>
   </SettingItem>
   <SettingItem>
     <Name>Rendezvous.TimeToRendezvous</Name>
@@ -442,19 +442,19 @@
   </SettingItem>
   <SettingItem>
     <Name>Thermal.CriticalPart</Name>
-    <Value xsi:type="string">This part is structually most critical. If it endures too high temperature there is a high chance for major structual failure!</Value>
+    <Value xsi:type="string">Shows which part is closest to its maximum temperature.</Value>
   </SettingItem>
   <SettingItem>
     <Name>Thermal.CriticalTemperature</Name>
-    <Value xsi:type="string">Internal Temperature on the part of the Vessel that is structually most critical.</Value>
+    <Value xsi:type="string">Internal temperature on the part of the vessel that is closest to its maximal temperature.</Value>
   </SettingItem>
   <SettingItem>
     <Name>Thermal.CriticalSkinTemperature</Name>
-    <Value xsi:type="string">Highest external Temperature on the part of the Vessel that is structually most critical.</Value>
+    <Value xsi:type="string">Highest external temperature on the critical part.</Value>
   </SettingItem>
   <SettingItem>
     <Name>Thermal.CriticalThermalPercentage</Name>
-    <Value xsi:type="string">Shows how high a temperature the critical Part is enduring relative to it's maximal temperature.</Value>
+    <Value xsi:type="string">Shows how high a temperature the critical part is enduring relative to it's maximal temperature.</Value>
   </SettingItem>
   <SettingItem>
     <Name>Thermal.HottestPart</Name>
@@ -462,27 +462,27 @@
   </SettingItem>
   <SettingItem>
     <Name>Thermal.HottestTemperature</Name>
-    <Value xsi:type="string">Highest internal Temperature on the Vessel.</Value>
+    <Value xsi:type="string">Highest internal temperature on the vessel.</Value>
   </SettingItem>
   <SettingItem>
     <Name>Thermal.HottestSkinTemperature</Name>
-    <Value xsi:type="string">Highest external Temperature on the Vessel.</Value>
+    <Value xsi:type="string">Highest external temperature on the vessel.</Value>
   </SettingItem>
   <SettingItem>
     <Name>Thermal.CoolestPart</Name>
-    <Value xsi:type="string">The part of the vessel that is enduring the lowest temperature.</Value>
+    <Value xsi:type="string" />
   </SettingItem>
   <SettingItem>
     <Name>Thermal.CoolestTemperature</Name>
-    <Value xsi:type="string">Lowest internal Temperature on the Vessel.</Value>
+    <Value xsi:type="string">Lowest internal temperature on the vessel.</Value>
   </SettingItem>
   <SettingItem>
     <Name>Thermal.CoolestSkinTemperature</Name>
-    <Value xsi:type="string">Lowest external Temperature on the Vessel.</Value>
+    <Value xsi:type="string">Lowest external temperature on the vessel.</Value>
   </SettingItem>
   <SettingItem>
     <Name>Miscellaneous.Separator</Name>
-    <Value xsi:type="string">Creats a line to help seperate subsections in a module.</Value>
+    <Value xsi:type="string">Creates a line to help seperate subsections in a module.</Value>
   </SettingItem>
   <SettingItem>
     <Name>Miscellaneous.GuiSizeAdjustor</Name>
