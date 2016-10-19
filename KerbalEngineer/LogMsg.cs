@@ -56,6 +56,16 @@ namespace KerbalEngineer
             return this;
         }
 
+        public LogMsg Append<T, U, V, W, X>(T val, U val2, V val3, W val4, X val5)
+        {
+            buf.Append(val);
+            buf.Append(val2);
+            buf.Append(val3);
+            buf.Append(val4);
+            buf.Append(val5);
+            return this;
+        }
+
         public LogMsg AppendLine<T>(T val)
         {
             buf.Append(val);
@@ -86,6 +96,17 @@ namespace KerbalEngineer
             buf.Append(val2);
             buf.Append(val3);
             buf.Append(val4);
+            buf.AppendLine();
+            return this;
+        }
+
+        public LogMsg AppendLine<T, U, V, W, X>(T val, U val2, V val3, W val4, X val5)
+        {
+            buf.Append(val);
+            buf.Append(val2);
+            buf.Append(val3);
+            buf.Append(val4);
+            buf.Append(val5);
             buf.AppendLine();
             return this;
         }

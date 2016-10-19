@@ -133,11 +133,7 @@ namespace KerbalEngineer.VesselSimulator
         public bool PrepareSimulation(LogMsg _log, List<Part> parts, double theGravity, double theAtmosphere = 0, double theMach = 0, bool dumpTree = false, bool vectoredThrust = false, bool fullThrust = false)
         {
             log = _log;
-            if (log != null)
-            {
-                log.AppendLine("PrepareSimulation started");
-                dumpTree = true;
-            }
+            log?.AppendLine("PrepareSimulation started");
 
             _timer.Reset();
             _timer.Start();
@@ -265,17 +261,11 @@ namespace KerbalEngineer.VesselSimulator
             partList = null;
 
             _timer.Stop();
-            if (log != null)
-            {
-                log.AppendLine("PrepareSimulation: ", _timer.ElapsedMilliseconds, "ms");
-                log.Flush();
-                log = null;
-            }
+            log?.AppendLine("PrepareSimulation: ", _timer.ElapsedMilliseconds, "ms");
+            log?.Flush();
 
-            if (dumpTree)
-            {
-                Dump();
-            }
+            Dump();
+            log = null;
 
             return true;
         }
@@ -355,8 +345,8 @@ namespace KerbalEngineer.VesselSimulator
             {
                 if (log != null)
                 {
-                    log.buf.AppendLine("Simulating stage " + currentStage);
-                    log.Flush();
+                    log?.AppendLine("Simulating stage ", currentStage);
+                    log?.Flush();
                     _timer.Reset();
                     _timer.Start();
                 }
@@ -385,11 +375,11 @@ namespace KerbalEngineer.VesselSimulator
 
                 // Store various things in the Stage object
                 stage.thrust = totalStageThrust;
-                if (log != null) log.buf.AppendLine("stage.thrust = " + stage.thrust);
+                log?.AppendLine("stage.thrust = ", stage.thrust);
                 stage.thrustToWeight = totalStageThrust / (stageStartMass * gravity);
                 stage.maxThrustToWeight = stage.thrustToWeight;
-                if (log != null) log.buf.AppendLine("StageMass = " + stageStartMass);
-                if (log != null) log.buf.AppendLine("Initial maxTWR = " + stage.maxThrustToWeight);
+                log?.AppendLine("StageMass = ", stageStartMass);
+                log?.AppendLine("Initial maxTWR = ", stage.maxThrustToWeight);
                 stage.actualThrust = totalStageActualThrust;
                 stage.actualThrustToWeight = totalStageActualThrust / (stageStartMass * gravity);
 
@@ -445,11 +435,11 @@ namespace KerbalEngineer.VesselSimulator
 
                 if (log != null)
                 {
-                    log.buf.AppendLine("Stage setup took " + _timer.ElapsedMilliseconds + "ms");
+                    log.AppendLine("Stage setup took ", _timer.ElapsedMilliseconds, "ms");
 
                     if (dontStageParts.Count > 0)
                     {
-                        log.buf.AppendLine("Parts preventing staging:");
+                        log.AppendLine("Parts preventing staging:");
                         for (int i = 0; i < dontStageParts.Count; i++)
                         {
                             PartSim partSim = dontStageParts[i];
@@ -458,7 +448,7 @@ namespace KerbalEngineer.VesselSimulator
                     }
                     else
                     {
-                        log.buf.AppendLine("No parts preventing staging");
+                        log.AppendLine("No parts preventing staging");
                     }
 
                     log.Flush();
@@ -470,13 +460,13 @@ namespace KerbalEngineer.VesselSimulator
                 while (!AllowedToStage())
                 {
                     loopCounter++;
-                    //MonoBehaviour.print("loop = " + loopCounter);
+                    //log?.AppendLine("loop = ", loopCounter);
                     // Calculate how long each draining tank will take to drain and run for the minimum time
                     double resourceDrainTime = double.MaxValue;
                     PartSim partMinDrain = null;
                     foreach (PartSim partSim in drainingParts)
                     {
-                        double time = partSim.TimeToDrainResource();
+                        double time = partSim.TimeToDrainResource(log);
                         if (time < resourceDrainTime)
                         {
                             resourceDrainTime = time;
@@ -484,13 +474,11 @@ namespace KerbalEngineer.VesselSimulator
                         }
                     }
 
-                    if (log != null)
-                    {
-                        MonoBehaviour.print("Drain time = " + resourceDrainTime + " (" + partMinDrain.name + ":" + partMinDrain.partId + ")");
-                    }
+                    log?.Append("Drain time = ", resourceDrainTime, " (", partMinDrain.name)
+                        .AppendLine(":", partMinDrain.partId, ")");
                     foreach (PartSim partSim in drainingParts)
                     {
-                        partSim.DrainResources(resourceDrainTime);
+                        partSim.DrainResources(resourceDrainTime, log);
                     }
 
                     // Get the mass after draining
@@ -498,15 +486,15 @@ namespace KerbalEngineer.VesselSimulator
                     stageTime += resourceDrainTime;
 
                     double stepEndTWR = totalStageThrust / (stepEndMass * gravity);
-                    //MonoBehaviour.print("After drain mass = " + stepEndMass);
-                    //MonoBehaviour.print("currentThrust = " + totalStageThrust);
-                    //MonoBehaviour.print("currentTWR = " + stepEndTWR);
+                    //log?.AppendLine("After drain mass = ", stepEndMass);
+                    //log?.AppendLine("currentThrust = ", totalStageThrust);
+                    //log?.AppendLine("currentTWR = ", stepEndTWR);
                     if (stepEndTWR > stage.maxThrustToWeight)
                     {
                         stage.maxThrustToWeight = stepEndTWR;
                     }
 
-                    //MonoBehaviour.print("newMaxTWR = " + stage.maxThrustToWeight);
+                    //log?.AppendLine("newMaxTWR = ", stage.maxThrustToWeight);
 
                     // If we have drained anything and the masses make sense then add this step's deltaV to the stage total
                     if (resourceDrainTime > 0d && stepStartMass > stepEndMass && stepStartMass > 0d && stepEndMass > 0d)
@@ -531,21 +519,19 @@ namespace KerbalEngineer.VesselSimulator
                     // Check to stop rampant looping
                     if (loopCounter == 1000)
                     {
-                        MonoBehaviour.print("exceeded loop count");
-                        MonoBehaviour.print("stageStartMass = " + stageStartMass);
-                        MonoBehaviour.print("stepStartMass = " + stepStartMass);
-                        MonoBehaviour.print("StepEndMass   = " + stepEndMass);
-                        MyLogger.Log("exceeded loop count");
-                        MyLogger.Log("stageStartMass = " + stageStartMass);
-                        MyLogger.Log("stepStartMass = " + stepStartMass);
-                        MyLogger.Log("StepEndMass   = " + stepEndMass);
+                        if (log != null)
+                        {
+                            log.AppendLine("exceeded loop count");
+                            log.AppendLine("stageStartMass = " + stageStartMass);
+                            log.AppendLine("stepStartMass = " + stepStartMass);
+                            log.AppendLine("StepEndMass   = " + stepEndMass);
+                        }
                         break;
                     }
 
                     // The next step starts at the mass this one ended at
                     stepStartMass = stepEndMass;
                 }
-
 
                 // Store more values in the Stage object and stick it in the array
 
@@ -579,7 +565,7 @@ namespace KerbalEngineer.VesselSimulator
                 {
                     // Log how long the stage took
                     _timer.Stop();
-                    MonoBehaviour.print("Simulating stage took " + _timer.ElapsedMilliseconds + "ms");
+                    log.AppendLine("Simulating stage took ", _timer.ElapsedMilliseconds, "ms");
                     stage.Dump(log);
                     _timer.Reset();
                     _timer.Start();
@@ -592,7 +578,7 @@ namespace KerbalEngineer.VesselSimulator
                 {
                     // Log how long it took to activate
                     _timer.Stop();
-                    MonoBehaviour.print("ActivateStage took " + _timer.ElapsedMilliseconds + "ms");
+                    log.AppendLine("ActivateStage took ", _timer.ElapsedMilliseconds, "ms");
                 }
             }
 
@@ -824,7 +810,7 @@ namespace KerbalEngineer.VesselSimulator
                 EngineSim engine = activeEngines[i];
 
                 // Set the resource drains for this engine
-                if (engine.SetResourceDrains(allParts, allFuelLines, drainingParts))
+                if (engine.SetResourceDrains(log, allParts, allFuelLines, drainingParts))
                 {
                     // If it is active then add the consumed resource types to the set
                     for (int j = 0; j < engine.ResourceConsumptions.Types.Count; ++j)
@@ -968,7 +954,9 @@ namespace KerbalEngineer.VesselSimulator
 
         public void Dump()
         {
-            LogMsg log = SimManager.log;
+            if (log == null)
+                return;
+
             log.AppendLine("Part count = ", allParts.Count);
 
             // Output a nice tree view of the rocket
