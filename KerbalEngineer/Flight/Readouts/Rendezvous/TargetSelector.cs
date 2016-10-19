@@ -203,21 +203,23 @@ namespace KerbalEngineer.Flight.Readouts.Rendezvous
         /// </summary>
         private void DrawTarget(SectionModule section)
         {
+            var target = FlightGlobals.fetch.VesselTarget;
+
             if (GUILayout.Button("Go Back to Target Selection", this.ButtonStyle, GUILayout.Width(this.ContentWidth)))
             {
                 FlightGlobals.fetch.SetVesselTarget(null);
                 this.ResizeRequested = true;
             }
 
-            if (!(FlightGlobals.fetch.VesselTarget is CelestialBody) && GUILayout.Button("Switch to Target", this.ButtonStyle, GUILayout.Width(this.ContentWidth)))
+            if (!(target is CelestialBody) && GUILayout.Button("Switch to Target", this.ButtonStyle, GUILayout.Width(this.ContentWidth)))
             {
-                FlightGlobals.SetActiveVessel(FlightGlobals.fetch.VesselTarget.GetVessel());
+                FlightGlobals.SetActiveVessel(target.GetVessel());
                 this.ResizeRequested = true;
             }
 
             GUILayout.Space(3f);
 
-            this.DrawLine("Selected Target", FlightGlobals.fetch.VesselTarget.GetName(), section.IsHud);
+            this.DrawLine("Selected Target", target.GetName(), section.IsHud);
         }
 
         /// <summary>
