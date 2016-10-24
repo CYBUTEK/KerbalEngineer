@@ -152,7 +152,12 @@ namespace KerbalEngineer.Flight.Readouts.Surface
                     if (e > 0)
                     {
                         //in this step, we are using the calculated impact altitude of the last step, to refine the impact site position
-                        impacttheta = -180 * Math.Acos((FlightGlobals.ActiveVessel.orbit.PeR * (1 + e) / (FlightGlobals.ActiveVessel.mainBody.Radius + this.impactAltitude) - 1) / e) / Math.PI;
+                        double costheta = (FlightGlobals.ActiveVessel.orbit.PeR * (1 + e) / (FlightGlobals.ActiveVessel.mainBody.Radius + this.impactAltitude) - 1) / e;
+                        if (costheta < -1d)
+                            costheta = -1d;
+                        else if (costheta > 1d)
+                            costheta = 1d;
+                        impacttheta = -180 * Math.Acos(costheta) / Math.PI;
                     }
 
                     //calculate time to impact
@@ -189,7 +194,16 @@ namespace KerbalEngineer.Flight.Readouts.Surface
                 Longitude = this.impactLongitude;
                 Latitude = this.impactLatitude;
                 Altitude = this.impactAltitude;
-                Biome = ScienceUtil.GetExperimentBiome(FlightGlobals.ActiveVessel.mainBody, this.impactLatitude, this.impactLongitude);
+                try
+                {
+                    Biome = ScienceUtil.GetExperimentBiome(FlightGlobals.ActiveVessel.mainBody, this.impactLatitude, this.impactLongitude);
+                }
+                catch (Exception ex)
+                {
+                    MyLogger.Log("GetExperimentBiome(" + FlightGlobals.ActiveVessel.mainBody.name + ", " + this.impactLatitude + ", " + this.impactLongitude + ") died");
+                    MyLogger.Exception(ex);
+                    Biome = "<failed>";
+                }
             }
             else
             {

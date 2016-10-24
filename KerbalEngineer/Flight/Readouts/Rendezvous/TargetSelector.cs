@@ -211,15 +211,18 @@ namespace KerbalEngineer.Flight.Readouts.Rendezvous
                 this.ResizeRequested = true;
             }
 
-            if (!(target is CelestialBody) && GUILayout.Button("Switch to Target", this.ButtonStyle, GUILayout.Width(this.ContentWidth)))
+            if (target != null)
             {
-                FlightGlobals.SetActiveVessel(target.GetVessel());
-                this.ResizeRequested = true;
+                if (!(target is CelestialBody) && GUILayout.Button("Switch to Target", this.ButtonStyle, GUILayout.Width(this.ContentWidth)))
+                {
+                    FlightGlobals.SetActiveVessel(target.GetVessel());
+                    this.ResizeRequested = true;
+                }
+
+                GUILayout.Space(3f);
+
+                this.DrawLine("Selected Target", target.GetName(), section.IsHud);
             }
-
-            GUILayout.Space(3f);
-
-            this.DrawLine("Selected Target", target.GetName(), section.IsHud);
         }
 
         /// <summary>
