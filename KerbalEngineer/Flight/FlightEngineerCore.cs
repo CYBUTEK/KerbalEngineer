@@ -57,6 +57,8 @@ namespace KerbalEngineer.Flight
         private static bool isCareerMode = true;
         private static bool isKerbalLimited = true;
         private static bool isTrackingStationLimited = true;
+        private static bool switchVesselOnUpdate = false;
+        private static Vessel switchVesselTarget = null;
 
         #endregion
 
@@ -203,6 +205,16 @@ namespace KerbalEngineer.Flight
         #endregion
 
         #region Methods
+
+        /// <summary>
+        ///     Switches the active vessel.  This is delayed until the next Update call to avoid issues when called from OnGUI in KSP 1.2
+        /// </summary>
+        public static void SwitchToVessel(Vessel vessel)
+        {
+            switchVesselTarget = vessel;
+            switchVesselOnUpdate = true;
+        }
+
 
         /// <summary>
         ///     Creates a section editor, adds it to the FlightEngineerCore and returns a reference to it.
@@ -356,6 +368,20 @@ namespace KerbalEngineer.Flight
         /// </summary>
         private void Update()
         {
+            if (switchVesselOnUpdate)
+            {
+                Vessel tempVessel = switchVesselTarget;
+                switchVesselTarget = null;
+                switchVesselOnUpdate = false;
+
+                //bool doRestore = (tempVessel != null) && tempVessel.loaded;
+                FlightGlobals.SetActiveVessel(tempVessel);
+                //if (doRestore)
+                //    FlightInputHandler.ResumeVesselCtrlState(tempVessel);
+                //else
+                //    FlightInputHandler.SetNeutralControls();
+            }
+
             if (FlightGlobals.ActiveVessel == null)
             {
                 return;
