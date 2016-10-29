@@ -379,6 +379,8 @@ namespace KerbalEngineer.VesselSimulator
                     case ResourceFlowMode.STAGE_PRIORITY_FLOW:
                     case ResourceFlowMode.STAGE_PRIORITY_FLOW_BALANCE:
 
+                        log?.Append("Find ", ResourceContainer.GetResourceName(type), " sources for ", partSim.name)
+                            .AppendLine(":" , partSim.partId);
                         foreach (HashSet<PartSim> stagePartSet in stagePartSets.Values)
                         {
                             stagePartSet.Clear();
@@ -388,6 +390,8 @@ namespace KerbalEngineer.VesselSimulator
                         for (int i = 0; i < allParts.Count; i++)
                         {
                             var aPartSim = allParts[i];
+                            //log?.Append(aPartSim.name, ":" + aPartSim.partId, " contains ", aPartSim.resources[type])
+                            //    .AppendLine((aPartSim.resourceFlowStates[type] == 0) ? " (disabled)" : "");
                             if (aPartSim.resources[type] <= SimManager.RESOURCE_MIN || aPartSim.resourceFlowStates[type] == 0)
                             {
                                 continue;
@@ -408,11 +412,13 @@ namespace KerbalEngineer.VesselSimulator
                             tempPartSet.Add(aPartSim);
                         }
 
-                        for (int j = maxStage; j >= 0; j--)
+                        for (int j = maxStage; j >= -1; j--)
                         {
+                            //log?.AppendLine("Testing stage ", j);
                             HashSet<PartSim> stagePartSet;
                             if (stagePartSets.TryGetValue(j, out stagePartSet) && stagePartSet.Count > 0)
                             {
+                                //log?.AppendLine("Not empty");
                                 // We have to copy the contents of the set here rather than copying the set reference or 
                                 // bad things (tm) happen
                                 foreach (PartSim aPartSim in stagePartSet)
@@ -428,7 +434,7 @@ namespace KerbalEngineer.VesselSimulator
                         visited.Clear();
 
                         log?.Append("Find ", ResourceContainer.GetResourceName(type), " sources for ", partSim.name)
-                            .AppendLine(":" + partSim.partId);
+                            .AppendLine(":", partSim.partId);
 
                         // TODO: check fuel flow as 'PhysicsGlobals.Stack_PriUsesSurf' changed to false to subdue error
                         partSim.GetSourceSet(type, false, allParts, visited, sourcePartSet, log, "");
@@ -439,7 +445,7 @@ namespace KerbalEngineer.VesselSimulator
                         visited.Clear();
 
                         log?.Append("Find ", ResourceContainer.GetResourceName(type), " sources for ", partSim.name)
-                            .AppendLine(":" + partSim.partId);
+                            .AppendLine(":", partSim.partId);
 
                         partSim.GetSourceSet(type, true, allParts, visited, sourcePartSet, log, "");
                         break;
