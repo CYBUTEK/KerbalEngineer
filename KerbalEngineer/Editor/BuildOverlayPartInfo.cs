@@ -117,12 +117,12 @@ namespace KerbalEngineer.Editor
                 Part part = null;
                 if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out rayHit))
                 {
-                    MyLogger.Log("Raycast returned true");
+                    //MyLogger.Log("Raycast returned true");
                     part = rayHit.transform.GetComponent<Part>();
                 }
                 else
                 {
-                    MyLogger.Log("Raycast returned false");
+                    //MyLogger.Log("Raycast returned false");
                     part = EditorLogic.fetch.ship.parts.Find(p => p.HighlightActive) ?? EditorLogic.SelectedPart;
                 }
 
