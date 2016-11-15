@@ -49,6 +49,9 @@ namespace KerbalEngineer.VesselSimulator
         public bool hasVessel;
         public String initialVesselName;
         public int inverseStage;
+        public int resPriorityOffset;
+        public bool resPriorityUseParentInverseStage;
+        public double resRequestRemainingThreshold;
         public bool isEngine;
         public bool isFuelLine;
         public bool isFuelTank;
@@ -120,6 +123,9 @@ namespace KerbalEngineer.VesselSimulator
             partSim.isSepratron = partSim.IsSepratron();
             partSim.inverseStage = p.inverseStage;
             log?.AppendLine("inverseStage = ", partSim.inverseStage);
+            partSim.resPriorityOffset = p.resourcePriorityOffset;
+            partSim.resPriorityUseParentInverseStage = p.resourcePriorityUseParentInverseStage;
+            partSim.resRequestRemainingThreshold = p.resourceRequestRemainingThreshold;
 
             partSim.baseCost = p.GetCostDry();
 
@@ -342,6 +348,17 @@ namespace KerbalEngineer.VesselSimulator
                 log.Append(">");
             }
 
+            if (surfaceMountFuelTargets.Count > 0)
+            {
+                log.Append(", surface = <");
+                log.Append(surfaceMountFuelTargets[0].name, ":", surfaceMountFuelTargets[0].partId);
+                for (int i = 1; i < surfaceMountFuelTargets.Count; i++)
+                {
+                    log.Append(", ", surfaceMountFuelTargets[i].name, ":", surfaceMountFuelTargets[i].partId);
+                }
+                log.Append(">");
+            }
+
             // Add more info here
 
             log.AppendLine("]");
@@ -412,11 +429,163 @@ namespace KerbalEngineer.VesselSimulator
         // All functions below this point must not rely on the part member (it may be null)
         //
 
+        public int GetResourcePriority()
+        {
+            return ((!resPriorityUseParentInverseStage || !(parent != null)) ? inverseStage : parent.inverseStage) * 10 + resPriorityOffset;
+        }
+
+        // This is a new function for STAGE_STACK_FLOW(_BALANCE)
         public void GetSourceSet(int type, bool includeSurfaceMountedParts, List<PartSim> allParts, HashSet<PartSim> visited, HashSet<PartSim> allSources, LogMsg log, String indent)
+        {
+            // Initial version of support for new flow mode
+
+            // Call a modified version of the old GetSourceSet code that adds all potential sources rather than stopping the recursive scan
+            // when certain conditions are met
+            int priMax = -10000000;
+            GetSourceSet_Internal(type, includeSurfaceMountedParts, allParts, visited, allSources, ref priMax, log, indent);
+            log?.AppendLine(allSources.Count, " parts with priority of ", priMax);
+        }
+
+        public void GetSourceSet_Internal(int type, bool includeSurfaceMountedParts, List<PartSim> allParts, HashSet<PartSim> visited, HashSet<PartSim> allSources, ref int priMax, LogMsg log, String indent)
         {
             if (log != null)
             {
-                log.Append(indent, "GetSourceSet(", ResourceContainer.GetResourceName(type), ") for ")
+                log.Append(indent, "GetSourceSet_Internal(", ResourceContainer.GetResourceName(type), ") for ")
+                    .AppendLine(name, ":", partId);
+                indent += "  ";
+            }
+
+            // Rule 1: Each part can be only visited once, If it is visited for second time in particular search it returns as is.
+            if (visited.Contains(this))
+            {
+                log?.Append(indent, "Nothing added, already visited (", name, ":")
+                    .AppendLine(partId + ")");
+                return;
+            }
+
+            log?.AppendLine(indent, "Adding this to visited");
+
+            visited.Add(this);
+
+            // Rule 2: Part performs scan on start of every fuel pipe ending in it. This scan is done in order in which pipes were installed.
+            // Then it makes an union of fuel tank sets each pipe scan returned. If the resulting list is not empty, it is returned as result.
+            //MonoBehaviour.print("for each fuel line");
+
+            int lastCount = allSources.Count;
+
+            for (int i = 0; i < this.fuelTargets.Count; i++)
+            {
+                PartSim partSim = this.fuelTargets[i];
+                if (partSim != null)
+                {
+                    if (visited.Contains(partSim))
+                    {
+                        log?.Append(indent, "Fuel target already visited, skipping (", partSim.name, ":")
+                            .AppendLine(partSim.partId, ")");
+                    }
+                    else
+                    {
+                        log?.Append(indent, "Adding fuel target as source (", partSim.name, ":")
+                            .AppendLine(partSim.partId, ")");
+
+                        partSim.GetSourceSet_Internal(type, includeSurfaceMountedParts, allParts, visited, allSources, ref priMax, log, indent);
+                    }
+                }
+            }
+
+            if (fuelCrossFeed)
+            {
+                if (includeSurfaceMountedParts)
+                {
+                    // check surface mounted fuel targets
+                    for (int i = 0; i < surfaceMountFuelTargets.Count; i++)
+                    {
+                        PartSim partSim = this.surfaceMountFuelTargets[i];
+                        if (partSim != null)
+                        {
+                            if (visited.Contains(partSim))
+                            {
+                                log?.Append(indent, "Surface part already visited, skipping (", partSim.name, ":")
+                                    .AppendLine(partSim.partId, ")");
+                            }
+                            else
+                            {
+                                log?.Append(indent, "Adding surface part as source (", partSim.name, ":")
+                                    .AppendLine(partSim.partId, ")");
+
+                                partSim.GetSourceSet_Internal(type, includeSurfaceMountedParts, allParts, visited, allSources, ref priMax, log, indent);
+                            }
+                        }
+                    }
+                }
+
+                lastCount = allSources.Count;
+                //MonoBehaviour.print("for each attach node");
+                for (int i = 0; i < this.attachNodes.Count; i++)
+                {
+                    AttachNodeSim attachSim = this.attachNodes[i];
+                    if (attachSim.attachedPartSim != null)
+                    {
+                        if (attachSim.nodeType == AttachNode.NodeType.Stack)
+                        {
+                            if ((string.IsNullOrEmpty(noCrossFeedNodeKey) == false && attachSim.id.Contains(noCrossFeedNodeKey)) == false)
+                            {
+                                if (visited.Contains(attachSim.attachedPartSim))
+                                {
+                                    log?.Append(indent, "Attached part already visited, skipping (", attachSim.attachedPartSim.name, ":")
+                                        .AppendLine(attachSim.attachedPartSim.partId, ")");
+                                }
+                                else
+                                {
+                                    log?.Append(indent, "Adding attached part as source  (", attachSim.attachedPartSim.name, ":")
+                                        .AppendLine(attachSim.attachedPartSim.partId, ")");
+
+                                    attachSim.attachedPartSim.GetSourceSet_Internal(type, includeSurfaceMountedParts, allParts, visited, allSources, ref priMax, log, indent);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            // If the part is fuel container for searched type of fuel (i.e. it has capability to contain that type of fuel and the fuel 
+            // type was not disabled) and it contains fuel, it adds itself.
+            if (resources.HasType(type) && resourceFlowStates[type] > 0.0)
+            {
+                if (resources[type] > resRequestRemainingThreshold)
+                {
+                    // Get the priority of this tank
+                    int pri = GetResourcePriority();
+                    if (pri > priMax)
+                    {
+                        // This tank is higher priority than the previously added ones so we clear the sources
+                        // and set the priMax to this priority
+                        allSources.Clear();
+                        priMax = pri;
+                    }
+                    // If this is the correct priority then add this to the sources
+                    if (pri == priMax)
+                    {
+                        log?.Append(indent, "Adding enabled tank as source (", name, ":")
+                            .AppendLine(partId, ")");
+
+                        allSources.Add(this);
+                    }
+                }
+            }
+            else
+            {
+                log?.Append(indent, "Not fuel tank or disabled. HasType = ", resources.HasType(type))
+                    .AppendLine("  FlowState = " + resourceFlowStates[type]);
+            }
+        }
+
+        // This is the old recursive function for STACK_PRIORITY_SEARCH
+        public void GetSourceSet_Old(int type, bool includeSurfaceMountedParts, List<PartSim> allParts, HashSet<PartSim> visited, HashSet<PartSim> allSources, LogMsg log, String indent)
+        {
+            if (log != null)
+            {
+                log.Append(indent, "GetSourceSet_Old(", ResourceContainer.GetResourceName(type), ") for ")
                     .AppendLine(name, ":", partId);
                 indent += "  ";
             }
@@ -454,7 +623,7 @@ namespace KerbalEngineer.VesselSimulator
                         log?.Append(indent, "Adding fuel target as source (", partSim.name, ":")
                             .AppendLine(partSim.partId, ")");
 
-                        partSim.GetSourceSet(type, includeSurfaceMountedParts, allParts, visited, allSources, log, indent);
+                        partSim.GetSourceSet_Old(type, includeSurfaceMountedParts, allParts, visited, allSources, log, indent);
                     }
                 }
             }
@@ -477,7 +646,7 @@ namespace KerbalEngineer.VesselSimulator
                             log?.Append(indent, "Adding fuel target as source (", partSim.name, ":")
                                 .AppendLine(partSim.partId, ")");
 
-                            partSim.GetSourceSet(type, true, allParts, visited, allSources, log, indent);
+                            partSim.GetSourceSet_Old(type, true, allParts, visited, allSources, log, indent);
                         }
                     }
                 }
@@ -521,7 +690,7 @@ namespace KerbalEngineer.VesselSimulator
                                     log?.Append(indent, "Adding attached part as source  (", attachSim.attachedPartSim.name, ":")
                                         .AppendLine(attachSim.attachedPartSim.partId, ")");
 
-                                    attachSim.attachedPartSim.GetSourceSet(type, includeSurfaceMountedParts, allParts, visited, allSources, log, indent);
+                                    attachSim.attachedPartSim.GetSourceSet_Old(type, includeSurfaceMountedParts, allParts, visited, allSources, log, indent);
                                 }
                             }
                         }
@@ -572,7 +741,7 @@ namespace KerbalEngineer.VesselSimulator
                     else
                     {
                         lastCount = allSources.Count;
-                        this.parent.GetSourceSet(type, includeSurfaceMountedParts, allParts, visited, allSources, log, indent);
+                        this.parent.GetSourceSet_Old(type, includeSurfaceMountedParts, allParts, visited, allSources, log, indent);
                         if (allSources.Count > lastCount)
                         {
                             log?.Append(indent, "Returning ", (allSources.Count - lastCount), " parent sources (")
@@ -690,8 +859,10 @@ namespace KerbalEngineer.VesselSimulator
                     log?.AppendLine("Parent part is ", parent.name, ":", parent.partId);
                     if (part.attachMode == AttachModes.SRF_ATTACH && part.attachRules.srfAttach && part.fuelCrossFeed && part.parent.fuelCrossFeed)
                     {
-                        log?.AppendLine("Added ", name, " to ", parent.name, " surface mounted fuel targets.");
+                        log?.Append("Added (", name, ":", partId)
+                            .AppendLine(", ", parent.name, ":", parent.partId, ") to surface mounted fuel targets.");
                         parent.surfaceMountFuelTargets.Add(this);
+                        surfaceMountFuelTargets.Add(parent);
                     }
                 }
                 else
