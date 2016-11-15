@@ -436,8 +436,7 @@ namespace KerbalEngineer.VesselSimulator
                         log?.Append("Find ", ResourceContainer.GetResourceName(type), " sources for ", partSim.name)
                             .AppendLine(":", partSim.partId);
 
-                        // TODO: check fuel flow as 'PhysicsGlobals.Stack_PriUsesSurf' changed to false to subdue error
-                        partSim.GetSourceSet(type, false, allParts, visited, sourcePartSet, log, "");
+                        partSim.GetSourceSet(type, true, allParts, visited, sourcePartSet, log, "");
                         break;
 
                     case ResourceFlowMode.STAGE_STACK_FLOW:
@@ -486,10 +485,26 @@ namespace KerbalEngineer.VesselSimulator
             {
                 int type = this.resourceConsumptions.Types[i];
                 HashSet<PartSim> sourcePartSet = sourcePartSets[type];
+                ResourceFlowMode mode = (ResourceFlowMode)resourceFlowModes[type];
+                double consumption = resourceConsumptions[type];
+                double amount = 0d;
+                double total = 0d;
+                if (mode == ResourceFlowMode.ALL_VESSEL_BALANCE ||
+                    mode == ResourceFlowMode.STAGE_PRIORITY_FLOW_BALANCE ||
+                    mode == ResourceFlowMode.STAGE_STACK_FLOW_BALANCE)
+                {
+                    foreach (PartSim partSim in sourcePartSet)
+                        total += partSim.resources[type];
+                }
+                else
+                    amount = consumption / sourcePartSet.Count;
+
                 // Loop through the members of the set 
-                double amount = resourceConsumptions[type] / sourcePartSet.Count;
                 foreach (PartSim partSim in sourcePartSet)
                 {
+                    if (total != 0d)
+                        amount = consumption * partSim.resources[type] / total;
+
                     log?.Append("Adding drain of ", amount, " ", ResourceContainer.GetResourceName(type))
                         .AppendLine(" to ", partSim.name, ":", partSim.partId);
 
