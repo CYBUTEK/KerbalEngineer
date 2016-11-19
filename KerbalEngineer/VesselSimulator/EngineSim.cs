@@ -431,14 +431,6 @@ namespace KerbalEngineer.VesselSimulator
                         break;
 
                     case ResourceFlowMode.STACK_PRIORITY_SEARCH:
-                        visited.Clear();
-
-                        log?.Append("Find ", ResourceContainer.GetResourceName(type), " sources for ", partSim.name)
-                            .AppendLine(":", partSim.partId);
-
-                        partSim.GetSourceSet(type, true, allParts, visited, sourcePartSet, log, "");
-                        break;
-
                     case ResourceFlowMode.STAGE_STACK_FLOW:
                     case ResourceFlowMode.STAGE_STACK_FLOW_BALANCE:
                         visited.Clear();
