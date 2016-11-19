@@ -441,7 +441,7 @@ namespace KerbalEngineer.VesselSimulator
 
             // Call a modified version of the old GetSourceSet code that adds all potential sources rather than stopping the recursive scan
             // when certain conditions are met
-            int priMax = -10000000;
+            int priMax = int.MinValue;
             GetSourceSet_Internal(type, includeSurfaceMountedParts, allParts, visited, allSources, ref priMax, log, indent);
             log?.AppendLine(allSources.Count, " parts with priority of ", priMax);
         }
