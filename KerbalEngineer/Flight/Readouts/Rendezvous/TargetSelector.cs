@@ -34,7 +34,7 @@ namespace KerbalEngineer.Flight.Readouts.Rendezvous
         private string searchQuery = string.Empty;
         private string searchText = string.Empty;
         private int targetCount;
-        //private ITargetable targetObject;
+        private ITargetable targetObject;
         private float typeButtonWidth;
         private bool typeIsBody;
         private bool usingSearch;
@@ -88,11 +88,11 @@ namespace KerbalEngineer.Flight.Readouts.Rendezvous
                 this.DrawTarget(section);
             }
 
-            //if (this.targetObject != FlightGlobals.fetch.VesselTarget)
-            //{
-            //    this.targetObject = FlightGlobals.fetch.VesselTarget;
-            //    this.ResizeRequested = true;
-            //}
+            if (this.targetObject != FlightGlobals.fetch.VesselTarget)
+            {
+                this.targetObject = FlightGlobals.fetch.VesselTarget;
+                this.ResizeRequested = true;
+            }
         }
 
         #endregion
@@ -215,7 +215,6 @@ namespace KerbalEngineer.Flight.Readouts.Rendezvous
             {
                 if (!(target is CelestialBody) && GUILayout.Button("Switch to Target", this.ButtonStyle, GUILayout.Width(this.ContentWidth)))
                 {
-                    //FlightGlobals.SetActiveVessel(target.GetVessel());
                     FlightEngineerCore.SwitchToVessel(target.GetVessel());
                     this.ResizeRequested = true;
                 }
