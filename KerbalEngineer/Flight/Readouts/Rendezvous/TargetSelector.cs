@@ -286,21 +286,31 @@ namespace KerbalEngineer.Flight.Readouts.Rendezvous
             {
                 this.SetTypeAs(VesselType.Probe);
             }
-
-            if (GUILayout.Button("Rovers", this.ButtonStyle, GUILayout.Width(this.typeButtonWidth)))
+            if (GUILayout.Button("Relays", this.ButtonStyle, GUILayout.Width(this.typeButtonWidth)))
             {
-                this.SetTypeAs(VesselType.Rover);
+                this.SetTypeAs(VesselType.Relay);
             }
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
+            if (GUILayout.Button("Rovers", this.ButtonStyle, GUILayout.Width(this.typeButtonWidth)))
+            {
+                this.SetTypeAs(VesselType.Rover);
+            }
             if (GUILayout.Button("Landers", this.ButtonStyle, GUILayout.Width(this.typeButtonWidth)))
             {
                 this.SetTypeAs(VesselType.Lander);
             }
+            GUILayout.EndHorizontal();
+
+            GUILayout.BeginHorizontal();
             if (GUILayout.Button("Ships", this.ButtonStyle, GUILayout.Width(this.typeButtonWidth)))
             {
                 this.SetTypeAs(VesselType.Ship);
+            }
+            if (GUILayout.Button("Planes", this.ButtonStyle, GUILayout.Width(this.typeButtonWidth)))
+            {
+                this.SetTypeAs(VesselType.Plane);
             }
             GUILayout.EndHorizontal();
 
