@@ -491,7 +491,8 @@ namespace KerbalEngineer.VesselSimulator
                 double total = 0d;
                 if (mode == ResourceFlowMode.ALL_VESSEL_BALANCE ||
                     mode == ResourceFlowMode.STAGE_PRIORITY_FLOW_BALANCE ||
-                    mode == ResourceFlowMode.STAGE_STACK_FLOW_BALANCE)
+                    mode == ResourceFlowMode.STAGE_STACK_FLOW_BALANCE ||
+                    mode == ResourceFlowMode.STACK_PRIORITY_SEARCH)
                 {
                     foreach (PartSim partSim in sourcePartSet)
                         total += partSim.resources[type];
