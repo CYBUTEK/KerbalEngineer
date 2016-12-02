@@ -337,7 +337,8 @@ namespace KerbalEngineer.VesselSimulator
                 timer.Start();
 
                 bRunning = false;
-                OnReady?.Invoke();
+                if (OnReady != null)
+                    OnReady.Invoke();
             }
 
             logOutput = false;
