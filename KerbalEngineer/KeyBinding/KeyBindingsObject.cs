@@ -19,7 +19,6 @@
 
 namespace KerbalEngineer.KeyBinding
 {
-    using System.Xml.Serialization;
     using UnityEngine;
 
     public class KeyBindingsObject
@@ -27,5 +26,7 @@ namespace KerbalEngineer.KeyBinding
         public KeyCode EditorShowHide { get; set; }
 
         public KeyCode FlightShowHide { get; set; }
+
+        public KeyCode PartInfoShowHide { get; set; } = KeyCode.Mouse2;
     }
 }

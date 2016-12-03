@@ -16,6 +16,7 @@
     Added: Planes and Relays to the target selector readout. (Pad)
     Added: Post-burn orbital period and inclination readouts. (Pad)
     Added: Support for balance and priority flow modes. (Pad)
+    Added: Custom keybinding of the part info show/hide functionality.
 
 
 1.1.1.0, 2016-04-29, KSP Build #1250

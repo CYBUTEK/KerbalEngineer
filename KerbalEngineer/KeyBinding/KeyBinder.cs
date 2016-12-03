@@ -98,6 +98,22 @@ namespace KerbalEngineer.KeyBinding
         }
 
         /// <summary>
+        ///     Gets and sets the part info show/hide binding.
+        /// </summary>
+        public static KeyCode PartInfoShowHide
+        {
+            get
+            {
+                return Bindings.PartInfoShowHide;
+            }
+            set
+            {
+                Bindings.PartInfoShowHide = value;
+                Save();
+            }
+        }
+
+        /// <summary>
         ///     Gets and sets the input lock state.
         /// </summary>
         public bool InputLock
@@ -224,6 +240,7 @@ namespace KerbalEngineer.KeyBinding
             GUILayout.BeginVertical(HighLogic.Skin.textArea);
             RenderKeyBind("Editor Show/Hide", EditorShowHide, binding => EditorShowHide = binding);
             RenderKeyBind("Flight Show/Hide", FlightShowHide, binding => FlightShowHide = binding);
+            RenderKeyBind("Part Info Show/Hide", PartInfoShowHide, binding => PartInfoShowHide = binding);
             GUILayout.EndVertical();
 
             if (GUILayout.Button("Close", HighLogic.Skin.button))

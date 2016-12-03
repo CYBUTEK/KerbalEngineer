@@ -22,9 +22,11 @@ namespace KerbalEngineer.Editor
     using System.Collections.Generic;
     using Extensions;
     using Helpers;
+    using KeyBinding;
     using KSP.UI.Screens;
     using Unity;
     using UnityEngine;
+    using KeyBinding = global::KeyBinding;
 
     public class BuildOverlayPartInfo : MonoBehaviour
     {
@@ -146,11 +148,11 @@ namespace KerbalEngineer.Editor
                         return;
                     }
 
-                    if (!showInfo && Input.GetMouseButtonDown(2))
+                    if (!showInfo && Input.GetKeyDown(KeyBinder.PartInfoShowHide))
                     {
                         showInfo = true;
                     }
-                    else if (ClickToOpen && showInfo && Input.GetMouseButtonDown(2))
+                    else if (ClickToOpen && showInfo && Input.GetKeyDown(KeyBinder.PartInfoShowHide))
                     {
                         ResetInfo();
                     }
@@ -484,7 +486,7 @@ namespace KerbalEngineer.Editor
                 else if (clickToOpen && namesOnly == false)
                 {
                     GUILayout.Space(2.0f);
-                    GUILayout.Label("Click middle mouse to show more info...", BuildOverlay.NameStyle);
+                    GUILayout.Label("Click [" + KeyBinder.PartInfoShowHide + "] to show more info...", BuildOverlay.NameStyle);
                 }
             }
             catch (Exception ex)
