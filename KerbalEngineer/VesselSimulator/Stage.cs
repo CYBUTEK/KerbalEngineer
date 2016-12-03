@@ -53,29 +53,28 @@ namespace KerbalEngineer.VesselSimulator
         public double thrustOffsetAngle = 0.0;
         public float maxMach = 0.0f;
 
-        public void Dump()
+        public void Dump(LogMsg log)
         {
-            StringBuilder str = new StringBuilder("", 512);
-            str.AppendFormat("number        : {0:d}\n", this.number);
-            str.AppendFormat("cost          : {0:g6}\n", this.cost);
-            str.AppendFormat("totalCost     : {0:g6}\n", this.totalCost);
-            str.AppendFormat("time          : {0:g6}\n", this.time);
-            str.AppendFormat("totalTime     : {0:g6}\n", this.totalTime);
-            str.AppendFormat("mass          : {0:g6}\n", this.mass);
-            str.AppendFormat("totalMass     : {0:g6}\n", this.totalMass);
-            str.AppendFormat("isp           : {0:g6}\n", this.isp);
-            str.AppendFormat("thrust        : {0:g6}\n", this.thrust);
-            str.AppendFormat("actualThrust  : {0:g6}\n", this.actualThrust);
-            str.AppendFormat("thrustToWeight: {0:g6}\n", this.thrustToWeight);
-            str.AppendFormat("maxTWR        : {0:g6}\n", this.maxThrustToWeight);
-            str.AppendFormat("actualTWR     : {0:g6}\n", this.actualThrustToWeight);
-            str.AppendFormat("ThrustTorque  : {0:g6}\n", this.maxThrustTorque);
-            str.AppendFormat("ThrustOffset  : {0:g6}\n", this.thrustOffsetAngle);
-            str.AppendFormat("deltaV        : {0:g6}\n", this.deltaV);
-            str.AppendFormat("totalDeltaV   : {0:g6}\n", this.totalDeltaV);
-            str.AppendFormat("invTotDeltaV  : {0:g6}\n", this.inverseTotalDeltaV);
+            log.buf.AppendFormat("number        : {0:d}\n", this.number);
+            log.buf.AppendFormat("cost          : {0:g6}\n", this.cost);
+            log.buf.AppendFormat("totalCost     : {0:g6}\n", this.totalCost);
+            log.buf.AppendFormat("time          : {0:g6}\n", this.time);
+            log.buf.AppendFormat("totalTime     : {0:g6}\n", this.totalTime);
+            log.buf.AppendFormat("mass          : {0:g6}\n", this.mass);
+            log.buf.AppendFormat("totalMass     : {0:g6}\n", this.totalMass);
+            log.buf.AppendFormat("isp           : {0:g6}\n", this.isp);
+            log.buf.AppendFormat("thrust        : {0:g6}\n", this.thrust);
+            log.buf.AppendFormat("actualThrust  : {0:g6}\n", this.actualThrust);
+            log.buf.AppendFormat("thrustToWeight: {0:g6}\n", this.thrustToWeight);
+            log.buf.AppendFormat("maxTWR        : {0:g6}\n", this.maxThrustToWeight);
+            log.buf.AppendFormat("actualTWR     : {0:g6}\n", this.actualThrustToWeight);
+            log.buf.AppendFormat("ThrustTorque  : {0:g6}\n", this.maxThrustTorque);
+            log.buf.AppendFormat("ThrustOffset  : {0:g6}\n", this.thrustOffsetAngle);
+            log.buf.AppendFormat("deltaV        : {0:g6}\n", this.deltaV);
+            log.buf.AppendFormat("totalDeltaV   : {0:g6}\n", this.totalDeltaV);
+            log.buf.AppendFormat("invTotDeltaV  : {0:g6}\n", this.inverseTotalDeltaV);
 
-            MonoBehaviour.print(str);
+            log.Flush();
         }
     }
 }

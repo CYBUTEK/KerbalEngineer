@@ -220,7 +220,7 @@ namespace KerbalEngineer.Flight
         /// </summary>
         private void DrawControlBar()
         {
-            GUILayout.Label("FLIGHT ENGINEER " + EngineerGlobals.ASSEMBLY_VERSION, this.titleStyle);
+            GUILayout.Label("FLIGHT ENGINEER " + EngineerGlobals.ASSEMBLY_VERSION + "p", this.titleStyle);
 
             this.DrawControlBarButtons(SectionLibrary.StockSections);
             this.DrawControlBarButtons(SectionLibrary.CustomSections);

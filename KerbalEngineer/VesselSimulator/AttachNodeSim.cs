@@ -62,22 +62,17 @@ namespace KerbalEngineer.VesselSimulator
             pool.Release(this);
         }
 
-        public void DumpToBuffer(StringBuilder buffer)
+        public void DumpToLog(LogMsg log)
         {
             if (attachedPartSim == null)
             {
-                buffer.Append("<staged>:<n>");
+                log.Append("<staged>:<n>");
             }
             else
             {
-                buffer.Append(attachedPartSim.name);
-                buffer.Append(":");
-                buffer.Append(attachedPartSim.partId);
+                log.Append(attachedPartSim.name, ":", attachedPartSim.partId);
             }
-            buffer.Append("#");
-            buffer.Append(nodeType);
-            buffer.Append(":");
-            buffer.Append(id);
+            log.Append("#", nodeType, ":", id);
         }
     }
 }

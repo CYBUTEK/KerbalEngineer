@@ -203,21 +203,26 @@ namespace KerbalEngineer.Flight.Readouts.Rendezvous
         /// </summary>
         private void DrawTarget(SectionModule section)
         {
+            var target = FlightGlobals.fetch.VesselTarget;
+
             if (GUILayout.Button("Go Back to Target Selection", this.ButtonStyle, GUILayout.Width(this.ContentWidth)))
             {
                 FlightGlobals.fetch.SetVesselTarget(null);
                 this.ResizeRequested = true;
             }
 
-            if (!(FlightGlobals.fetch.VesselTarget is CelestialBody) && GUILayout.Button("Switch to Target", this.ButtonStyle, GUILayout.Width(this.ContentWidth)))
+            if (target != null)
             {
-                FlightGlobals.SetActiveVessel(FlightGlobals.fetch.VesselTarget.GetVessel());
-                this.ResizeRequested = true;
+                if (!(target is CelestialBody) && GUILayout.Button("Switch to Target", this.ButtonStyle, GUILayout.Width(this.ContentWidth)))
+                {
+                    FlightEngineerCore.SwitchToVessel(target.GetVessel());
+                    this.ResizeRequested = true;
+                }
+
+                GUILayout.Space(3f);
+
+                this.DrawLine("Selected Target", target.GetName(), section.IsHud);
             }
-
-            GUILayout.Space(3f);
-
-            this.DrawLine("Selected Target", FlightGlobals.fetch.VesselTarget.GetName(), section.IsHud);
         }
 
         /// <summary>
@@ -281,21 +286,31 @@ namespace KerbalEngineer.Flight.Readouts.Rendezvous
             {
                 this.SetTypeAs(VesselType.Probe);
             }
-
-            if (GUILayout.Button("Rovers", this.ButtonStyle, GUILayout.Width(this.typeButtonWidth)))
+            if (GUILayout.Button("Relays", this.ButtonStyle, GUILayout.Width(this.typeButtonWidth)))
             {
-                this.SetTypeAs(VesselType.Rover);
+                this.SetTypeAs(VesselType.Relay);
             }
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
+            if (GUILayout.Button("Rovers", this.ButtonStyle, GUILayout.Width(this.typeButtonWidth)))
+            {
+                this.SetTypeAs(VesselType.Rover);
+            }
             if (GUILayout.Button("Landers", this.ButtonStyle, GUILayout.Width(this.typeButtonWidth)))
             {
                 this.SetTypeAs(VesselType.Lander);
             }
+            GUILayout.EndHorizontal();
+
+            GUILayout.BeginHorizontal();
             if (GUILayout.Button("Ships", this.ButtonStyle, GUILayout.Width(this.typeButtonWidth)))
             {
                 this.SetTypeAs(VesselType.Ship);
+            }
+            if (GUILayout.Button("Planes", this.ButtonStyle, GUILayout.Width(this.typeButtonWidth)))
+            {
+                this.SetTypeAs(VesselType.Plane);
             }
             GUILayout.EndHorizontal();
 
@@ -359,7 +374,7 @@ namespace KerbalEngineer.Flight.Readouts.Rendezvous
         private void SetTargetAs(ITargetable target)
         {
             FlightGlobals.fetch.SetVesselTarget(target);
-            this.targetObject = target;
+            //this.targetObject = target;
             this.ResizeRequested = true;
         }
 

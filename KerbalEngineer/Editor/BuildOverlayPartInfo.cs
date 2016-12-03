@@ -27,24 +27,7 @@ namespace KerbalEngineer.Editor
     public class BuildOverlayPartInfo : MonoBehaviour
     {
         private static bool clickToOpen = true;
-        private static ModuleResource generatorResource;
-        private static ModuleAlternator moduleAlternator;
-        private static ModuleDataTransmitter moduleDataTransmitter;
-        private static ModuleDeployableSolarPanel moduleDeployableSolarPanel;
-        private static ModuleGenerator moduleGenerator;
-        private static ModuleGimbal moduleGimbal;
-        private static ModuleParachute moduleParachute;
-        private static ModuleRCS moduleRcs;
-        private static ModuleReactionWheel moduleReactionWheel;
-        private static ModuleResource moduleResource;
-        private static ModuleScienceExperiment moduleScienceExperiment;
         private static bool namesOnly;
-        private static Part part;
-        private static PartInfoItem partInfoItem;
-        private static PartResource partResource;
-        private static Propellant propellant;
-        private static PartExtensions.ProtoModuleDecoupler protoModuleDecoupler;
-        private static PartExtensions.ProtoModuleEngine protoModuleEngine;
         private static bool visible = true;
 
         private readonly List<PartInfoItem> infoItems = new List<PartInfoItem>();
@@ -131,12 +114,15 @@ namespace KerbalEngineer.Editor
                 }
 
                 RaycastHit rayHit;
+                Part part = null;
                 if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out rayHit))
                 {
+                    //MyLogger.Log("Raycast returned true");
                     part = rayHit.transform.GetComponent<Part>();
                 }
                 else
                 {
+                    //MyLogger.Log("Raycast returned false");
                     part = EditorLogic.fetch.ship.parts.Find(p => p.HighlightActive) ?? EditorLogic.SelectedPart;
                 }
 
@@ -206,13 +192,13 @@ namespace KerbalEngineer.Editor
 
         private void SetAlternatorInfo()
         {
-            moduleAlternator = selectedPart.GetModule<ModuleAlternator>();
+            ModuleAlternator moduleAlternator = selectedPart.GetModule<ModuleAlternator>();
             if (moduleAlternator != null)
             {
                 infoItems.Add(PartInfoItem.Create("Alternator"));
                 for (int i = 0; i < moduleAlternator.resHandler.outputResources.Count; ++i)
                 {
-                    moduleResource = moduleAlternator.resHandler.outputResources[i];
+                    var moduleResource = moduleAlternator.resHandler.outputResources[i];
                     infoItems.Add(PartInfoItem.Create("\t" + moduleResource.name, moduleResource.rate.ToRate()));
                 }
             }
@@ -225,7 +211,7 @@ namespace KerbalEngineer.Editor
 
         private void SetDecouplerInfo()
         {
-            protoModuleDecoupler = selectedPart.GetProtoModuleDecoupler();
+            var protoModuleDecoupler = selectedPart.GetProtoModuleDecoupler();
             if (protoModuleDecoupler != null)
             {
                 infoItems.Add(PartInfoItem.Create("Ejection Force", protoModuleDecoupler.EjectionForce.ToForce()));
@@ -238,7 +224,7 @@ namespace KerbalEngineer.Editor
 
         private void SetEngineInfo()
         {
-            protoModuleEngine = selectedPart.GetProtoModuleEngine();
+            var protoModuleEngine = selectedPart.GetProtoModuleEngine();
             if (protoModuleEngine != null)
             {
                 infoItems.Add(PartInfoItem.Create("Thrust", Units.ToForce(protoModuleEngine.MinimumThrust, protoModuleEngine.MaximumThrust)));
@@ -255,7 +241,7 @@ namespace KerbalEngineer.Editor
 
                     for (int i = 0; i < protoModuleEngine.Propellants.Count; ++i)
                     {
-                        propellant = protoModuleEngine.Propellants[i];
+                        var propellant = protoModuleEngine.Propellants[i];
                         infoItems.Add(PartInfoItem.Create("\t" + propellant.name, (propellant.ratio / totalRatio).ToPercent()));
                     }
                 }
@@ -264,7 +250,7 @@ namespace KerbalEngineer.Editor
 
         private void SetGeneratorInfo()
         {
-            moduleGenerator = selectedPart.GetModule<ModuleGenerator>();
+            var moduleGenerator = selectedPart.GetModule<ModuleGenerator>();
             if (moduleGenerator != null)
             {
                 if (moduleGenerator.resHandler.inputResources.Count > 0)
@@ -272,7 +258,7 @@ namespace KerbalEngineer.Editor
                     infoItems.Add(PartInfoItem.Create("Generator Input"));
                     for (int i = 0; i < moduleGenerator.resHandler.inputResources.Count; ++i)
                     {
-                        generatorResource = moduleGenerator.resHandler.inputResources[i];
+                        var generatorResource = moduleGenerator.resHandler.inputResources[i];
                         infoItems.Add(PartInfoItem.Create("\t" + generatorResource.name, generatorResource.rate.ToRate()));
                     }
                 }
@@ -281,7 +267,7 @@ namespace KerbalEngineer.Editor
                     infoItems.Add(PartInfoItem.Create("Generator Output"));
                     for (int i = 0; i < moduleGenerator.resHandler.outputResources.Count; ++i)
                     {
-                        generatorResource = moduleGenerator.resHandler.outputResources[i];
+                        var generatorResource = moduleGenerator.resHandler.outputResources[i];
                         infoItems.Add(PartInfoItem.Create("\t" + generatorResource.name, generatorResource.rate.ToRate()));
                     }
                 }
@@ -294,7 +280,7 @@ namespace KerbalEngineer.Editor
 
         private void SetGimbalInfo()
         {
-            moduleGimbal = selectedPart.GetModule<ModuleGimbal>();
+            var moduleGimbal = selectedPart.GetModule<ModuleGimbal>();
             if (moduleGimbal != null)
             {
                 infoItems.Add(PartInfoItem.Create("Thrust Vectoring", moduleGimbal.gimbalRange.ToString("F2")));
@@ -311,7 +297,7 @@ namespace KerbalEngineer.Editor
 
         private void SetParachuteInfo()
         {
-            moduleParachute = selectedPart.GetModule<ModuleParachute>();
+            var moduleParachute = selectedPart.GetModule<ModuleParachute>();
             if (moduleParachute != null)
             {
                 infoItems.Add(PartInfoItem.Create("Deployed Drag", Units.ConcatF(moduleParachute.semiDeployedDrag, moduleParachute.fullyDeployedDrag)));
@@ -322,7 +308,7 @@ namespace KerbalEngineer.Editor
 
         private void SetRcsInfo()
         {
-            moduleRcs = selectedPart.GetModule<ModuleRCS>();
+            var moduleRcs = selectedPart.GetModule<ModuleRCS>();
             if (moduleRcs != null)
             {
                 infoItems.Add(PartInfoItem.Create("Thruster Power", moduleRcs.thrusterPower.ToForce()));
@@ -332,7 +318,7 @@ namespace KerbalEngineer.Editor
 
         private void SetReactionWheelInfo()
         {
-            moduleReactionWheel = selectedPart.GetModule<ModuleReactionWheel>();
+            var moduleReactionWheel = selectedPart.GetModule<ModuleReactionWheel>();
             if (moduleReactionWheel != null)
             {
                 infoItems.Add(PartInfoItem.Create("Reaction Wheel Torque"));
@@ -341,7 +327,7 @@ namespace KerbalEngineer.Editor
                 infoItems.Add(PartInfoItem.Create("\tYaw", moduleReactionWheel.YawTorque.ToTorque()));
                 for (int i = 0; i < moduleReactionWheel.resHandler.inputResources.Count; ++i)
                 {
-                    moduleResource = moduleReactionWheel.resHandler.inputResources[i];
+                    var moduleResource = moduleReactionWheel.resHandler.inputResources[i];
                     infoItems.Add(PartInfoItem.Create("\t" + moduleResource.name, moduleResource.rate.ToRate()));
                 }
             }
@@ -363,7 +349,7 @@ namespace KerbalEngineer.Editor
                 infoItems.Add(PartInfoItem.Create("Resources"));
                 for (int i = 0; i < selectedPart.Resources.dict.Count; ++i)
                 {
-                    partResource = selectedPart.Resources.dict.At(i);
+                    var partResource = selectedPart.Resources.dict.At(i);
 
                     if (partResource.hideFlow == false)
                     {
@@ -393,7 +379,7 @@ namespace KerbalEngineer.Editor
 
         private void SetScienceExperimentInfo()
         {
-            moduleScienceExperiment = selectedPart.GetModule<ModuleScienceExperiment>();
+            var moduleScienceExperiment = selectedPart.GetModule<ModuleScienceExperiment>();
             if (moduleScienceExperiment != null)
             {
                 infoItems.Add(PartInfoItem.Create("Science Experiment", moduleScienceExperiment.experimentActionName));
@@ -415,7 +401,7 @@ namespace KerbalEngineer.Editor
 
         private void SetSolarPanelInfo()
         {
-            moduleDeployableSolarPanel = selectedPart.GetModule<ModuleDeployableSolarPanel>();
+            var moduleDeployableSolarPanel = selectedPart.GetModule<ModuleDeployableSolarPanel>();
             if (moduleDeployableSolarPanel != null)
             {
                 infoItems.Add(PartInfoItem.Create("Charge Rate", moduleDeployableSolarPanel.chargeRate.ToRate()));
@@ -432,7 +418,7 @@ namespace KerbalEngineer.Editor
 
         private void SetTransmitterInfo()
         {
-            moduleDataTransmitter = selectedPart.GetModule<ModuleDataTransmitter>();
+            var moduleDataTransmitter = selectedPart.GetModule<ModuleDataTransmitter>();
             if (moduleDataTransmitter != null)
             {
                 infoItems.Add(PartInfoItem.Create("Packet Size", moduleDataTransmitter.packetSize.ToString("F2") + " Mits"));
@@ -452,7 +438,7 @@ namespace KerbalEngineer.Editor
                 {
                     for (int i = 0; i < infoItems.Count; ++i)
                     {
-                        partInfoItem = infoItems[i];
+                        var partInfoItem = infoItems[i];
                         GUILayout.Space(2.0f);
                         GUILayout.BeginHorizontal();
                         if (partInfoItem.Value != null)

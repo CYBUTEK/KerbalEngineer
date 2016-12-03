@@ -75,7 +75,9 @@
     <Compile Include="Flight\Readouts\Orbital\ManoeuvreNode\NodeTotalDeltaV.cs" />
     <Compile Include="Flight\Readouts\Orbital\ManoeuvreNode\NodeProgradeDeltaV.cs" />
     <Compile Include="Flight\Readouts\Orbital\ManoeuvreNode\PostBurnApoapsis.cs" />
+    <Compile Include="Flight\Readouts\Orbital\ManoeuvreNode\PostBurnInclination.cs" />
     <Compile Include="Flight\Readouts\Orbital\ManoeuvreNode\PostBurnPeriapsis.cs" />
+    <Compile Include="Flight\Readouts\Orbital\ManoeuvreNode\PostBurnPeriod.cs" />
     <Compile Include="Flight\Readouts\Orbital\MeanAnomalyAtEpoc.cs" />
     <Compile Include="Flight\Readouts\Orbital\MeanAnomaly.cs" />
     <Compile Include="Flight\Readouts\Orbital\EccentricAnomaly.cs" />
@@ -246,15 +248,15 @@
   </ItemGroup>
   <ItemGroup>
     <Reference Include="Assembly-CSharp">
-      <HintPath>..\..\Game\KSP_x64_Data\Managed\Assembly-CSharp.dll</HintPath>
+      <HintPath>..\..\..\..\..\..\Program Files (x86)\Steam\SteamApps\common\Kerbal Space Program\KSP_x64_Data\Managed\Assembly-CSharp.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Assembly-CSharp-firstpass">
-      <HintPath>..\..\Game\KSP_x64_Data\Managed\Assembly-CSharp-firstpass.dll</HintPath>
+      <HintPath>..\..\..\..\..\..\Program Files (x86)\Steam\SteamApps\common\Kerbal Space Program\KSP_x64_Data\Managed\Assembly-CSharp-firstpass.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="KSPAssets">
-      <HintPath>..\..\Game\KSP_x64_Data\Managed\KSPAssets.dll</HintPath>
+      <HintPath>..\..\..\..\..\..\Program Files (x86)\Steam\SteamApps\common\Kerbal Space Program\KSP_x64_Data\Managed\KSPAssets.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="System">
@@ -266,11 +268,11 @@
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine">
-      <HintPath>..\..\Game\KSP_x64_Data\Managed\UnityEngine.dll</HintPath>
+      <HintPath>..\..\..\..\..\..\Program Files (x86)\Steam\SteamApps\common\Kerbal Space Program\KSP_x64_Data\Managed\UnityEngine.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.UI">
-      <HintPath>..\..\Game\KSP_x64_Data\Managed\UnityEngine.UI.dll</HintPath>
+      <HintPath>..\..\..\..\..\..\Program Files (x86)\Steam\SteamApps\common\Kerbal Space Program\KSP_x64_Data\Managed\UnityEngine.UI.dll</HintPath>
       <Private>False</Private>
     </Reference>
   </ItemGroup>
