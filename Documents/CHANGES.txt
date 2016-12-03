@@ -1,6 +1,7 @@
 1.1.2.7, 2016-09-15, KSP 1.2.1 #1604
     Fixed: Compile errors caused due to game update.
     Fixed: Asset bundle errors due to engine update.
+    Fixed: Part info overlay no longer visible when hovering over part selection panel.
     Fixed: Clamp360 now returns [0, 360]. (Pad)
     Fixed: Possible NRE when "Back to target selection" sets the target to null. (Pad)
     Fixed: Clamp value passed to Acos function within the impact processor to avoid potential NaN. (Pad)

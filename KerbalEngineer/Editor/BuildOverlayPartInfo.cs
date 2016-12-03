@@ -22,6 +22,8 @@ namespace KerbalEngineer.Editor
     using System.Collections.Generic;
     using Extensions;
     using Helpers;
+    using KSP.UI.Screens;
+    using Unity;
     using UnityEngine;
 
     public class BuildOverlayPartInfo : MonoBehaviour
@@ -36,6 +38,7 @@ namespace KerbalEngineer.Editor
         private Part selectedPart;
         private bool showInfo;
         private bool skipFrame;
+        private PointerHoverDetector stageUiPointerHoverDetector;
 
         public static bool ClickToOpen
         {
@@ -43,6 +46,7 @@ namespace KerbalEngineer.Editor
             {
                 return clickToOpen;
             }
+
             set
             {
                 clickToOpen = value;
@@ -57,6 +61,7 @@ namespace KerbalEngineer.Editor
             {
                 return namesOnly;
             }
+
             set
             {
                 namesOnly = value;
@@ -69,6 +74,7 @@ namespace KerbalEngineer.Editor
             {
                 return visible;
             }
+
             set
             {
                 visible = value;
@@ -79,7 +85,7 @@ namespace KerbalEngineer.Editor
         {
             try
             {
-                if (!Visible || Hidden || selectedPart == null)
+                if (!Visible || Hidden || selectedPart == null || (EditorPanels.Instance.IsMouseOver() && IsPointerOverStaging() == false))
                 {
                     return;
                 }
@@ -87,7 +93,6 @@ namespace KerbalEngineer.Editor
                 position = GUILayout.Window(GetInstanceID(), position, Window, string.Empty, BuildOverlay.WindowStyle);
             }
             catch (Exception ex)
-
             {
                 MyLogger.Exception(ex);
             }
@@ -97,7 +102,7 @@ namespace KerbalEngineer.Editor
         {
             try
             {
-                if (!Visible || Hidden || EditorLogic.RootPart == null || EditorLogic.fetch.editorScreen != EditorScreen.Parts)
+                if (!Visible || Hidden || EditorLogic.RootPart == null || EditorLogic.fetch.editorScreen != EditorScreen.Parts || (EditorPanels.Instance.IsMouseOver() && IsPointerOverStaging() == false))
                 {
                     return;
                 }
@@ -108,6 +113,7 @@ namespace KerbalEngineer.Editor
                 {
                     position.y = Mathf.Clamp(position.y + 20.0f, 0.0f, Screen.height - position.height);
                 }
+
                 if (position.x < Input.mousePosition.x + 16.0f && position.y < Screen.height - Input.mousePosition.y)
                 {
                     position.x = Input.mousePosition.x - 3 - position.width;
@@ -117,12 +123,12 @@ namespace KerbalEngineer.Editor
                 Part part = null;
                 if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out rayHit))
                 {
-                    //MyLogger.Log("Raycast returned true");
+                    // MyLogger.Log("Raycast returned true");
                     part = rayHit.transform.GetComponent<Part>();
                 }
                 else
                 {
-                    //MyLogger.Log("Raycast returned false");
+                    // MyLogger.Log("Raycast returned false");
                     part = EditorLogic.fetch.ship.parts.Find(p => p.HighlightActive) ?? EditorLogic.SelectedPart;
                 }
 
@@ -133,6 +139,7 @@ namespace KerbalEngineer.Editor
                         selectedPart = part;
                         ResetInfo();
                     }
+
                     if (NamesOnly || skipFrame)
                     {
                         skipFrame = false;
@@ -180,6 +187,21 @@ namespace KerbalEngineer.Editor
             {
                 MyLogger.Exception(ex);
             }
+        }
+
+        private bool IsPointerOverStaging()
+        {
+            if (stageUiPointerHoverDetector == null)
+            {
+                stageUiPointerHoverDetector = StageManager.Instance.scrollRect.gameObject.AddOrGetComponent<PointerHoverDetector>();
+            }
+
+            if (stageUiPointerHoverDetector != null)
+            {
+                return stageUiPointerHoverDetector.IsPointerHovering;
+            }
+
+            return false;
         }
 
         private void ResetInfo()
@@ -262,6 +284,7 @@ namespace KerbalEngineer.Editor
                         infoItems.Add(PartInfoItem.Create("\t" + generatorResource.name, generatorResource.rate.ToRate()));
                     }
                 }
+
                 if (moduleGenerator.resHandler.outputResources.Count > 0)
                 {
                     infoItems.Add(PartInfoItem.Create("Generator Output"));
@@ -271,6 +294,7 @@ namespace KerbalEngineer.Editor
                         infoItems.Add(PartInfoItem.Create("\t" + generatorResource.name, generatorResource.rate.ToRate()));
                     }
                 }
+
                 if (moduleGenerator.isAlwaysActive)
                 {
                     infoItems.Add(PartInfoItem.Create("Generator is Always Active"));
@@ -344,6 +368,7 @@ namespace KerbalEngineer.Editor
                     break;
                 }
             }
+
             if (visibleResources)
             {
                 infoItems.Add(PartInfoItem.Create("Resources"));
@@ -354,8 +379,8 @@ namespace KerbalEngineer.Editor
                     if (partResource.hideFlow == false)
                     {
                         infoItems.Add(partResource.GetDensity() > 0
-                            ? PartInfoItem.Create("\t" + partResource.info.name, "(" + partResource.GetMass().ToMass() + ") " + partResource.amount.ToString("F1"))
-                            : PartInfoItem.Create("\t" + partResource.info.name, partResource.amount.ToString("F1")));
+                                          ? PartInfoItem.Create("\t" + partResource.info.name, "(" + partResource.GetMass().ToMass() + ") " + partResource.amount.ToString("F1"))
+                                          : PartInfoItem.Create("\t" + partResource.info.name, partResource.amount.ToString("F1")));
                     }
                 }
             }
@@ -409,6 +434,7 @@ namespace KerbalEngineer.Editor
                 {
                     infoItems.Add(PartInfoItem.Create("Breakable"));
                 }
+
                 if (moduleDeployableSolarPanel.trackingBody == Sun.Instance)
                 {
                     infoItems.Add(PartInfoItem.Create("Sun Tracking"));
@@ -451,6 +477,7 @@ namespace KerbalEngineer.Editor
                         {
                             GUILayout.Label(partInfoItem.Name, BuildOverlay.NameStyle);
                         }
+
                         GUILayout.EndHorizontal();
                     }
                 }
