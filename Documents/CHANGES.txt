@@ -1,9 +1,21 @@
-1.1.2.0, 2016-09-15, KSP Build #1480
-    Fixed compile errors caused due to game update.
-    Fixed asset bundle errors due to engine update.
+1.1.2.7, 2016-09-15, KSP 1.2.1 #1604
+    Fixed: Compile errors caused due to game update.
+    Fixed: Asset bundle errors due to engine update.
+    Fixed: Clamp360 now returns [0, 360]. (Pad)
+    Fixed: Possible NRE when "Back to target selection" sets the target to null. (Pad)
+    Fixed: Clamp value passed to Acos function within the impact processor to avoid potential NaN. (Pad)
+    Fixed: Use inverseStage of tank for stage priority flow instead of decoupled stage count. (Pad)
+    Changed: True Anomaly to be displayed in degrees rather than radians. (was changed in stock 1.1.x) (Pad)
+    Changed: Typos in the post-burn apo/peri readout descriptions. (Pad)
+    Changed: Added missing space before the 'W' in the target longitude readout formatting. (Pad)
+    Changed: Simulation and logging to produces less GC. (Pad)
+    Changed: Tweaked impact processor calculations. (Pad)
+    Added: Target Latitude & Longitude readouts to the rendezvous section. (Pad)
+    Added: Extra readout help strings. (rkagerer)
+    Added: Planes and Relays to the target selector readout. (Pad)
+    Added: Post-burn orbital period and inclination readouts. (Pad)
+    Added: Support for balance and priority flow modes. (Pad)
 
-    Fixed: True Anomaly displayed in degrees rather than radians. (Padishar)
-    Added: Target Latitude & Longitude readouts to the rendezvous section. (Padishar)
 
 1.1.1.0, 2016-04-29, KSP Build #1250
     Added: Missing cleanup of some contained references within various pooled classes.
