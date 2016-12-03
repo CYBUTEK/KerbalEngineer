@@ -6,7 +6,7 @@
 		"MAJOR":1,
 		"MINOR":1,
 		"PATCH":2,
-		"BUILD":6
+		"BUILD":7
 	},
 	"KSP_VERSION_MIN":
 	{
@@ -20,5 +20,4 @@
 		"MINOR":2,
 		"PATCH":1
 	}
-
 }
