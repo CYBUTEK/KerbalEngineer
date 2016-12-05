@@ -508,8 +508,7 @@ namespace KerbalEngineer.VesselSimulator
                     // If we have drained anything and the masses make sense then add this step's deltaV to the stage total
                     if (resourceDrainTime > 0d && stepStartMass > stepEndMass && stepStartMass > 0d && stepEndMass > 0d)
                     {
-                        //vecStageDeltaV += vecThrust * (float)((currentisp * Units.GRAVITY * Math.Log(stepStartMass / stepEndMass)) / simpleTotalThrust);
-                        vecStageDeltaV += vecThrust.normalized * (float)(currentisp * Units.GRAVITY * Math.Log(stepStartMass / stepEndMass));
+                        vecStageDeltaV += vecThrust * (float)((currentisp * Units.GRAVITY * Math.Log(stepStartMass / stepEndMass)) / simpleTotalThrust);
                     }
 
                     // Update the active engines and resource drains for the next step
