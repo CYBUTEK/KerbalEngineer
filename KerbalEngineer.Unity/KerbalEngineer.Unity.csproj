@@ -36,6 +36,7 @@
     <Compile Include="Flight\FlightMenuSection.cs" />
     <Compile Include="Flight\IFlightAppLauncher.cs" />
     <Compile Include="Flight\ISectionModule.cs" />
+    <Compile Include="PointerHoverDetector.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Setting.cs" />
     <Compile Include="UI\TextStyle.cs" />

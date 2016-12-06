@@ -21,22 +21,22 @@
 
 using System;
 
-using KerbalEngineer.Extensions;
+using KerbalEngineer.Helpers;
 using KerbalEngineer.Flight.Sections;
 
 #endregion
 
 namespace KerbalEngineer.Flight.Readouts.Orbital.ManoeuvreNode
 {
-    public class PostBurnApoapsis : ReadoutModule
+    public class PostBurnPeriod : ReadoutModule
     {
         #region Constructors
 
-        public PostBurnApoapsis()
+        public PostBurnPeriod()
         {
-            this.Name = "Post-burn Apoapsis";
+            this.Name = "Post-burn Period";
             this.Category = ReadoutCategory.GetCategory("Orbital");
-            this.HelpString = "Farthest point of the vessel's orbit after the burn.";
+            this.HelpString = "The period of the vessel's orbit after the burn.";
             this.IsDefault = false;
         }
 
@@ -51,7 +51,7 @@ namespace KerbalEngineer.Flight.Readouts.Orbital.ManoeuvreNode
                 return;
             }
 
-            this.DrawLine("Post-burn Apoapsis", ManoeuvreProcessor.PostBurnAp.ToDistance(), section.IsHud);
+            this.DrawLine(TimeFormatter.ConvertToString(ManoeuvreProcessor.PostBurnPeriod, "F3"), section.IsHud);
         }
 
         public override void Reset()

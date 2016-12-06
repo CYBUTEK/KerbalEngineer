@@ -54,13 +54,13 @@ namespace KerbalEngineer.Helpers
                 }
                 while (angle < 0.0);
             }
-            else if (angle > 360.0)
+            else if (angle >= 360.0)
             {
                 do
                 {
                     angle -= 360.0;
                 }
-                while (angle > 360.0);
+                while (angle >= 360.0);
             }
             return angle;
         }

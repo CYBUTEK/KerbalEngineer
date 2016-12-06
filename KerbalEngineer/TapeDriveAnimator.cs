@@ -127,19 +127,12 @@ namespace KerbalEngineer
             {
                 isRunning = value;
 
-                if (isRunning)
+                if (UseBakedAnimation)
                 {
-                    if (UseBakedAnimation)
-                    {
+                    if (isRunning)
                         StartBakedAnimation();
-                    }
-                }
-                else
-                {
-                    if (UseBakedAnimation)
-                    {
+                    else
                         StopBakedAnimation();
-                    }
                 }
             }
         }
@@ -168,7 +161,7 @@ namespace KerbalEngineer
                 IsRunning = true;
             }
 
-            if (UseBakedAnimation == false)
+            if (!UseBakedAnimation)
             {
                 InitialiseReels();
                 InitialiseLights();

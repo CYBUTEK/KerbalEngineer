@@ -34,11 +34,12 @@ namespace KerbalEngineer.Flight.Readouts.Surface
 
         public override void Draw(SectionModule section)
         {
-            var target = FlightGlobals.fetch.VesselTarget?.GetVessel();
+            var target = FlightGlobals.fetch.VesselTarget;
             if (target != null)
             {
-                double longitude = AngleHelper.Clamp180(target.longitude);
-                DrawLine(Units.ToAngleDMS(longitude) + (longitude < 0.0 ? "W" : " E"), section.IsHud);
+                var vessel = target.GetVessel();
+                double longitude = AngleHelper.Clamp180(vessel.longitude);
+                DrawLine(Units.ToAngleDMS(longitude) + (longitude < 0.0 ? " W" : " E"), section.IsHud);
             }
         }
     }

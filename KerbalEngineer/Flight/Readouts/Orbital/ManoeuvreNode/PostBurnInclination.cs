@@ -28,15 +28,15 @@ using KerbalEngineer.Flight.Sections;
 
 namespace KerbalEngineer.Flight.Readouts.Orbital.ManoeuvreNode
 {
-    public class PostBurnApoapsis : ReadoutModule
+    public class PostBurnInclination : ReadoutModule
     {
         #region Constructors
 
-        public PostBurnApoapsis()
+        public PostBurnInclination()
         {
-            this.Name = "Post-burn Apoapsis";
+            this.Name = "Post-burn Inclination";
             this.Category = ReadoutCategory.GetCategory("Orbital");
-            this.HelpString = "Farthest point of the vessel's orbit after the burn.";
+            this.HelpString = "The inclination of the vessel's orbit after the burn.";
             this.IsDefault = false;
         }
 
@@ -51,7 +51,7 @@ namespace KerbalEngineer.Flight.Readouts.Orbital.ManoeuvreNode
                 return;
             }
 
-            this.DrawLine("Post-burn Apoapsis", ManoeuvreProcessor.PostBurnAp.ToDistance(), section.IsHud);
+            this.DrawLine(ManoeuvreProcessor.PostBurnInclination.ToAngle(), section.IsHud);
         }
 
         public override void Reset()

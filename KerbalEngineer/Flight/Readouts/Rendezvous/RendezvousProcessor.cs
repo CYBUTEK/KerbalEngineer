@@ -27,9 +27,6 @@ namespace KerbalEngineer.Flight.Readouts.Rendezvous
     {
         private static readonly RendezvousProcessor instance = new RendezvousProcessor();
 
-        private Orbit originOrbit;
-        private Orbit targetOrbit;
-
         /// <summary>
         ///     Gets the target's altitude above its reference body.
         /// </summary>
@@ -178,9 +175,9 @@ namespace KerbalEngineer.Flight.Readouts.Rendezvous
 
             ShowDetails = true;
 
-            targetOrbit = FlightGlobals.fetch.VesselTarget.GetOrbit();
-            originOrbit = (FlightGlobals.ship_orbit.referenceBody == Planetarium.fetch.Sun ||
-                           FlightGlobals.ship_orbit.referenceBody == FlightGlobals.ActiveVessel.targetObject.GetOrbit().referenceBody)
+            var targetOrbit = FlightGlobals.fetch.VesselTarget.GetOrbit();
+            var originOrbit = (FlightGlobals.ship_orbit.referenceBody == Planetarium.fetch.Sun ||
+                                FlightGlobals.ship_orbit.referenceBody == FlightGlobals.ActiveVessel.targetObject.GetOrbit().referenceBody)
                 ? FlightGlobals.ship_orbit
                 : FlightGlobals.ship_orbit.referenceBody.orbit;
 
@@ -188,11 +185,11 @@ namespace KerbalEngineer.Flight.Readouts.Rendezvous
             RelativeVelocity = FlightGlobals.ship_tgtSpeed;
             RelativeSpeed = FlightGlobals.ship_obtSpeed - targetOrbit.orbitalSpeed;
             PhaseAngle = originOrbit.GetPhaseAngle(targetOrbit);
-            InterceptAngle = CalcInterceptAngle();
-            TimeToAscendingNode = originOrbit.GetTimeToVector(GetAscendingNode());
-            TimeToDescendingNode = originOrbit.GetTimeToVector(GetDescendingNode());
-            AngleToAscendingNode = originOrbit.GetAngleToVector(GetAscendingNode());
-            AngleToDescendingNode = originOrbit.GetAngleToVector(GetDescendingNode());
+            InterceptAngle = CalcInterceptAngle(targetOrbit, originOrbit);
+            TimeToAscendingNode = originOrbit.GetTimeToVector(GetAscendingNode(targetOrbit, originOrbit));
+            TimeToDescendingNode = originOrbit.GetTimeToVector(GetDescendingNode(targetOrbit, originOrbit));
+            AngleToAscendingNode = originOrbit.GetAngleToVector(GetAscendingNode(targetOrbit, originOrbit));
+            AngleToDescendingNode = originOrbit.GetAngleToVector(GetDescendingNode(targetOrbit, originOrbit));
             AltitudeSeaLevel = targetOrbit.altitude;
             ApoapsisHeight = targetOrbit.ApA;
             PeriapsisHeight = targetOrbit.PeA;
@@ -213,7 +210,7 @@ namespace KerbalEngineer.Flight.Readouts.Rendezvous
             RelativeRadialVelocity = xv / Vector3d.Magnitude(x);
         }
 
-        private double CalcInterceptAngle()
+        private double CalcInterceptAngle(Orbit targetOrbit, Orbit originOrbit)
         {
             double originRadius = (originOrbit.semiMinorAxis + originOrbit.semiMajorAxis) * 0.5;
             double targetRadius = (targetOrbit.semiMinorAxis + targetOrbit.semiMajorAxis) * 0.5;
@@ -222,12 +219,12 @@ namespace KerbalEngineer.Flight.Readouts.Rendezvous
             return RelativeInclination < 90.0 ? AngleHelper.Clamp360(angle) : AngleHelper.Clamp360(360.0 - (180.0 - angle));
         }
 
-        private Vector3d GetAscendingNode()
+        private Vector3d GetAscendingNode(Orbit targetOrbit, Orbit originOrbit)
         {
             return Vector3d.Cross(targetOrbit.GetOrbitNormal(), originOrbit.GetOrbitNormal());
         }
 
-        private Vector3d GetDescendingNode()
+        private Vector3d GetDescendingNode(Orbit targetOrbit, Orbit originOrbit)
         {
             return Vector3d.Cross(originOrbit.GetOrbitNormal(), targetOrbit.GetOrbitNormal());
         }

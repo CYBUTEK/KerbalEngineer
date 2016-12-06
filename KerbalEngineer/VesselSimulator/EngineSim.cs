@@ -40,6 +40,7 @@ namespace KerbalEngineer.VesselSimulator
         public List<AppliedForce> appliedForces = new List<AppliedForce>();
         public float maxMach;
         public bool isFlamedOut;
+        public bool dontDecoupleActive = true;
 
         public double thrust = 0;
 
@@ -118,7 +119,7 @@ namespace KerbalEngineer.VesselSimulator
             double flowRate = 0.0;
             if (engineSim.partSim.hasVessel)
             {
-                if (log != null) log.buf.AppendLine("hasVessel is true"); 
+                if (log != null) log.AppendLine("hasVessel is true"); 
 
                 float flowModifier = GetFlowModifier(atmChangeFlow, atmCurve, engineSim.partSim.part.atmDensity, velCurve, machNumber, ref engineSim.maxMach);
                 engineSim.isp = atmosphereCurve.Evaluate((float)atmosphere);
@@ -134,7 +135,7 @@ namespace KerbalEngineer.VesselSimulator
 
 				if (throttleLocked)
                 {
-                    if (log != null) log.buf.AppendLine("throttleLocked is true, using thrust for flowRate");
+                    if (log != null) log.AppendLine("throttleLocked is true, using thrust for flowRate");
                     flowRate = GetFlowRate(engineSim.thrust, engineSim.isp);
                 }
                 else
@@ -142,12 +143,12 @@ namespace KerbalEngineer.VesselSimulator
                     if (currentThrottle > 0.0f && engineSim.partSim.isLanded == false)
                     {
 						// TODO: This bit doesn't work for RF engines
-						if (log != null) log.buf.AppendLine("throttled up and not landed, using actualThrust for flowRate");
+						if (log != null) log.AppendLine("throttled up and not landed, using actualThrust for flowRate");
                         flowRate = GetFlowRate(engineSim.actualThrust, engineSim.isp);
                     }
                     else
                     {
-                        if (log != null) log.buf.AppendLine("throttled down or landed, using thrust for flowRate");
+                        if (log != null) log.AppendLine("throttled down or landed, using thrust for flowRate");
                         flowRate = GetFlowRate(engineSim.thrust, engineSim.isp);
                     }
                 }
@@ -165,9 +166,9 @@ namespace KerbalEngineer.VesselSimulator
                     log.buf.AppendFormat("isp     = {0:g6}\n", engineSim.isp);
                     log.buf.AppendFormat("thrust  = {0:g6}\n", engineSim.thrust);
                     log.buf.AppendFormat("actual  = {0:g6}\n", engineSim.actualThrust);
+                    log.AppendLine("no vessel, using thrust for flowRate");
                 }
 
-                if (log != null) log.buf.AppendLine("no vessel, using thrust for flowRate");
                 flowRate = GetFlowRate(engineSim.thrust, engineSim.isp);
             }
 
@@ -298,10 +299,9 @@ namespace KerbalEngineer.VesselSimulator
             return thrustPercentage * 0.01f;
         }
 
-        public void DumpEngineToBuffer(StringBuilder buffer, String prefix)
+        public void DumpEngineToLog(LogMsg log)
         {
-            buffer.Append(prefix);
-            buffer.AppendFormat("[thrust = {0:g6}, actual = {1:g6}, isp = {2:g6}\n", thrust, actualThrust, isp);
+            if (log != null) log.buf.AppendFormat("[thrust = {0:g6}, actual = {1:g6}, isp = {2:g6}\n", thrust, actualThrust, isp);
         }
 
         // A dictionary to hold a set of parts for each resource
@@ -311,36 +311,38 @@ namespace KerbalEngineer.VesselSimulator
 
         HashSet<PartSim> visited = new HashSet<PartSim>();
 
-        public void DumpSourcePartSets(String msg)
+        public void DumpSourcePartSets(LogMsg log, String msg)
         {
-            MonoBehaviour.print("DumpSourcePartSets " + msg);
+            if (log == null)
+                return;
+
+            log.AppendLine("DumpSourcePartSets ", msg);
             foreach (int type in sourcePartSets.Keys)
             {
-                MonoBehaviour.print("SourcePartSet for " + ResourceContainer.GetResourceName(type));
+                log.AppendLine("SourcePartSet for ", ResourceContainer.GetResourceName(type));
                 HashSet<PartSim> sourcePartSet = sourcePartSets[type];
                 if (sourcePartSet.Count > 0)
                 {
                     foreach (PartSim partSim in sourcePartSet)
                     {
-                        MonoBehaviour.print("Part " + partSim.name + ":" + partSim.partId);
+                        log.AppendLine("Part ", partSim.name, ":", partSim.partId);
                     }
                 }
                 else
                 {
-                    MonoBehaviour.print("No parts");
+                    log.AppendLine("No parts");
                 }
             }
         }
 
-        public bool SetResourceDrains(List<PartSim> allParts, List<PartSim> allFuelLines, HashSet<PartSim> drainingParts)
+        public bool SetResourceDrains(LogMsg log, List<PartSim> allParts, List<PartSim> allFuelLines, HashSet<PartSim> drainingParts)
         {
-            LogMsg log = null;
-            //DumpSourcePartSets("before clear");
+            //DumpSourcePartSets(log, "before clear");
             foreach (HashSet<PartSim> sourcePartSet in sourcePartSets.Values)
             {
                 sourcePartSet.Clear();
             }
-            //DumpSourcePartSets("after clear");
+            //DumpSourcePartSets(log, "after clear");
 
             for (int index = 0; index < this.resourceConsumptions.Types.Count; index++)
             {
@@ -358,8 +360,6 @@ namespace KerbalEngineer.VesselSimulator
                     case ResourceFlowMode.NO_FLOW:
                         if (partSim.resources[type] > SimManager.RESOURCE_MIN && partSim.resourceFlowStates[type] != 0)
                         {
-                            //sourcePartSet = new HashSet<PartSim>();
-                            //MonoBehaviour.print("SetResourceDrains(" + name + ":" + partId + ") setting sources to just this");
                             sourcePartSet.Add(partSim);
                         }
                         break;
@@ -379,22 +379,25 @@ namespace KerbalEngineer.VesselSimulator
                     case ResourceFlowMode.STAGE_PRIORITY_FLOW:
                     case ResourceFlowMode.STAGE_PRIORITY_FLOW_BALANCE:
 
+                        if (log != null) log.Append("Find ", ResourceContainer.GetResourceName(type), " sources for ", partSim.name)
+                                            .AppendLine(":" , partSim.partId);
                         foreach (HashSet<PartSim> stagePartSet in stagePartSets.Values)
                         {
                             stagePartSet.Clear();
                         }
                         var maxStage = -1;
 
-                        //Logger.Log(type);
                         for (int i = 0; i < allParts.Count; i++)
                         {
                             var aPartSim = allParts[i];
+                            //if (log != null) log.Append(aPartSim.name, ":" + aPartSim.partId, " contains ", aPartSim.resources[type])
+                            //                  .AppendLine((aPartSim.resourceFlowStates[type] == 0) ? " (disabled)" : "");
                             if (aPartSim.resources[type] <= SimManager.RESOURCE_MIN || aPartSim.resourceFlowStates[type] == 0)
                             {
                                 continue;
                             }
 
-                            int stage = aPartSim.DecouplerCount();
+                            int stage = aPartSim.inverseStage;
                             if (stage > maxStage)
                             {
                                 maxStage = stage;
@@ -409,11 +412,13 @@ namespace KerbalEngineer.VesselSimulator
                             tempPartSet.Add(aPartSim);
                         }
 
-                        for (int j = maxStage; j >= 0; j--)
+                        for (int j = maxStage; j >= -1; j--)
                         {
+                            //if (log != null) log.AppendLine("Testing stage ", j);
                             HashSet<PartSim> stagePartSet;
                             if (stagePartSets.TryGetValue(j, out stagePartSet) && stagePartSet.Count > 0)
                             {
+                                //if (log != null) log.AppendLine("Not empty");
                                 // We have to copy the contents of the set here rather than copying the set reference or 
                                 // bad things (tm) happen
                                 foreach (PartSim aPartSim in stagePartSet)
@@ -426,58 +431,32 @@ namespace KerbalEngineer.VesselSimulator
                         break;
 
                     case ResourceFlowMode.STACK_PRIORITY_SEARCH:
-                        visited.Clear();
-
-                        if (SimManager.logOutput)
-                        {
-                            log = new LogMsg();
-                            log.buf.AppendLine("Find " + ResourceContainer.GetResourceName(type) + " sources for " + partSim.name + ":" + partSim.partId);
-                        }
-
-                        // TODO: check fuel flow as 'PhysicsGlobals.Stack_PriUsesSurf' changed to false to subdue error
-                        partSim.GetSourceSet(type, false, allParts, visited, sourcePartSet, log, "");
-                        if (SimManager.logOutput && log != null)
-                        {
-                            MonoBehaviour.print(log.buf);
-                        }
-                        break;
-
                     case ResourceFlowMode.STAGE_STACK_FLOW:
                     case ResourceFlowMode.STAGE_STACK_FLOW_BALANCE:
                         visited.Clear();
 
-                        if (SimManager.logOutput)
-                        {
-                            log = new LogMsg();
-                            log.buf.AppendLine("Find " + ResourceContainer.GetResourceName(type) + " sources for " + partSim.name + ":" + partSim.partId);
-                        }
+                        if (log != null) log.Append("Find ", ResourceContainer.GetResourceName(type), " sources for ", partSim.name)
+                                            .AppendLine(":", partSim.partId);
+
                         partSim.GetSourceSet(type, true, allParts, visited, sourcePartSet, log, "");
-                        if (SimManager.logOutput && log != null)
-                        {
-                            MonoBehaviour.print(log.buf);
-                        }
                         break;
 
                     default:
-                        MonoBehaviour.print("SetResourceDrains(" + partSim.name + ":" + partSim.partId + ") Unexpected flow type for " + ResourceContainer.GetResourceName(type) + ")");
+                        if (log != null) log.Append("SetResourceDrains(", partSim.name, ":", partSim.partId)
+                                            .AppendLine(") Unexpected flow type for ", ResourceContainer.GetResourceName(type), ")");
                         break;
                 }
 
-                if (SimManager.logOutput)
+                if (log != null && sourcePartSet.Count > 0)
                 {
-                    if (sourcePartSet.Count > 0)
+                    log.AppendLine("Source parts for ", ResourceContainer.GetResourceName(type), ":");
+                    foreach (PartSim partSim in sourcePartSet)
                     {
-                        log = new LogMsg();
-                        log.buf.AppendLine("Source parts for " + ResourceContainer.GetResourceName(type) + ":");
-                        foreach (PartSim partSim in sourcePartSet)
-                        {
-                            log.buf.AppendLine(partSim.name + ":" + partSim.partId);
-                        }
-                        MonoBehaviour.print(log.buf);
+                        log.AppendLine(partSim.name, ":", partSim.partId);
                     }
                 }
 
-                //DumpSourcePartSets("after " + ResourceContainer.GetResourceName(type));
+                //DumpSourcePartSets(log, "after " + ResourceContainer.GetResourceName(type));
             }
             
             // If we don't have sources for all the needed resources then return false without setting up any drains
@@ -487,11 +466,7 @@ namespace KerbalEngineer.VesselSimulator
                 HashSet<PartSim> sourcePartSet; 
                 if (!sourcePartSets.TryGetValue(type, out sourcePartSet) || sourcePartSet.Count == 0)
                 {
-                    if (SimManager.logOutput)
-                    {
-                        MonoBehaviour.print("No source of " + ResourceContainer.GetResourceName(type));
-                    }
-
+                    if (log != null) log.AppendLine("No source of ", ResourceContainer.GetResourceName(type));
                     isActive = false;
                     return false;
                 }
@@ -502,16 +477,29 @@ namespace KerbalEngineer.VesselSimulator
             {
                 int type = this.resourceConsumptions.Types[i];
                 HashSet<PartSim> sourcePartSet = sourcePartSets[type];
+                ResourceFlowMode mode = (ResourceFlowMode)resourceFlowModes[type];
+                double consumption = resourceConsumptions[type];
+                double amount = 0d;
+                double total = 0d;
+                if (mode == ResourceFlowMode.ALL_VESSEL_BALANCE ||
+                    mode == ResourceFlowMode.STAGE_PRIORITY_FLOW_BALANCE ||
+                    mode == ResourceFlowMode.STAGE_STACK_FLOW_BALANCE ||
+                    mode == ResourceFlowMode.STACK_PRIORITY_SEARCH)
+                {
+                    foreach (PartSim partSim in sourcePartSet)
+                        total += partSim.resources[type];
+                }
+                else
+                    amount = consumption / sourcePartSet.Count;
+
                 // Loop through the members of the set 
-                double amount = resourceConsumptions[type] / sourcePartSet.Count;
                 foreach (PartSim partSim in sourcePartSet)
                 {
-                    if (SimManager.logOutput)
-                    {
-                        MonoBehaviour.print(
-                            "Adding drain of " + amount + " " + ResourceContainer.GetResourceName(type) + " to " + partSim.name + ":" +
-                            partSim.partId);
-                    }
+                    if (total != 0d)
+                        amount = consumption * partSim.resources[type] / total;
+
+                    if (log != null) log.Append("Adding drain of ", amount, " ", ResourceContainer.GetResourceName(type))
+                                        .AppendLine(" to ", partSim.name, ":", partSim.partId);
 
                     partSim.resourceDrains.Add(type, amount);
                     drainingParts.Add(partSim);
