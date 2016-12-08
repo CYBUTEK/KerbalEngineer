@@ -940,7 +940,14 @@ namespace KerbalEngineer.VesselSimulator
         private bool IsDecoupler(Part thePart)
         {
             PartExtensions.ProtoModuleDecoupler protoDecoupler = thePart.GetProtoModuleDecoupler();
-            return protoDecoupler != null && protoDecoupler.IsStageEnabled;
+            if (protoDecoupler != null && protoDecoupler.IsStageEnabled)
+                return true;
+
+            ModuleDockingNode modDock = thePart.GetModule<ModuleDockingNode>();
+            if (modDock != null && modDock.IsStageable())
+                return true;
+
+            return false;
         }
 
         private bool IsSepratron()
