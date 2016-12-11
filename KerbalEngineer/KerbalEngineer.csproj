@@ -102,6 +102,7 @@
     <Compile Include="Flight\Readouts\Rendezvous\TargetLongitude.cs" />
     <Compile Include="Flight\Readouts\Rendezvous\TimeToRelativeDescendingNode.cs" />
     <Compile Include="Flight\Readouts\Rendezvous\TimeToRelativeAscendingNode.cs" />
+    <Compile Include="Flight\Readouts\Surface\AtmosphericPressure.cs" />
     <Compile Include="Flight\Readouts\Surface\ImpactBiome.cs" />
     <Compile Include="Flight\Readouts\Surface\Slope.cs" />
     <Compile Include="Flight\Readouts\Surface\Biome.cs" />
