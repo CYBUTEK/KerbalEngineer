@@ -161,6 +161,7 @@
     <Compile Include="KeyBinding\KeyBinder.cs" />
     <Compile Include="Control\ControlCentre.cs" />
     <Compile Include="KeyBinding\KeyBindingsObject.cs" />
+    <Compile Include="Settings\GeneralSettings.cs" />
     <Compile Include="Settings\SettingsWindow.cs" />
     <Compile Include="StyleManager.cs" />
     <Compile Include="UIControls\DropDown.cs" />
