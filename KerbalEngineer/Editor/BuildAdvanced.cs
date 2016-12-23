@@ -548,6 +548,11 @@ namespace KerbalEngineer.Editor
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
+            GUILayout.Label("Flight Engineer Toolbar Icon:", settingStyle);
+            FlightAppLauncher.IsHoverActivated = GUILayout.Toggle(FlightAppLauncher.IsHoverActivated, "MOUSE HOVER", buttonStyle, GUILayout.Width(125.0f * GuiDisplaySize.Offset));
+            GUILayout.EndHorizontal();
+
+            GUILayout.BeginHorizontal();
             GUILayout.Label("Key Bindings:", settingStyle);
             if (GUILayout.Button("EDIT KEY BINDINGS", buttonStyle, GUILayout.Width(200.0f * GuiDisplaySize.Offset)))
             {
