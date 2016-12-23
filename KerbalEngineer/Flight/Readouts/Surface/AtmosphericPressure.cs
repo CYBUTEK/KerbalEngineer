@@ -1,7 +1,7 @@
 ﻿// 
 //     Kerbal Engineer Redux
 // 
-//     Copyright (C) 2014 CYBUTEK
+//     Copyright (C) 2015 CYBUTEK
 // 
 //     This program is free software: you can redistribute it and/or modify
 //     it under the terms of the GNU General Public License as published by
@@ -19,23 +19,35 @@
 
 namespace KerbalEngineer.Flight.Readouts.Surface
 {
-    using Helpers;
+    using Extensions;
     using Sections;
 
-    public class Longitude : ReadoutModule
+    public class AtmosphericPressure : ReadoutModule
     {
-        public Longitude()
+        public AtmosphericPressure()
         {
-            Name = "Longitude";
+            Name = "Atmos. Pressure";
             Category = ReadoutCategory.GetCategory("Surface");
-            HelpString = "Shows the vessel's longitude around a celestial body. Longitude is the angle from the bodies prime meridian.";
-            IsDefault = true;
+            HelpString = "Displays the current atmospheric pressure.";
+            IsDefault = false;
         }
 
         public override void Draw(SectionModule section)
         {
-            double angle = AngleHelper.Clamp180(FlightGlobals.ship_longitude);
-            DrawLine(Units.ToAngleDMS(angle) + (angle < 0.0 ? " W" : " E"), section.IsHud);
+            if (AtmosphericProcessor.ShowDetails)
+            {
+                DrawLine(AtmosphericProcessor.StaticPressure.ToPressure(), section.IsHud);
+            }
+        }
+
+        public override void Reset()
+        {
+            FlightEngineerCore.Instance.AddUpdatable(AtmosphericProcessor.Instance);
+        }
+
+        public override void Update()
+        {
+            AtmosphericProcessor.RequestUpdate();
         }
     }
 }

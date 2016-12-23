@@ -68,6 +68,11 @@ namespace KerbalEngineer.Extensions
             return Units.ToPercent(value);
         }
 
+        public static string ToPressure(this double value)
+        {
+            return Units.ToPressure(value);
+        }
+
         public static string ToRate(this double value)
         {
             return Units.ToRate(value);
