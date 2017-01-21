@@ -29,7 +29,7 @@ namespace KerbalEngineer.Flight.Readouts.Orbital
         {
             Name = "Mean Anomaly";
             Category = ReadoutCategory.GetCategory("Orbital");
-            HelpString = string.Empty;
+            HelpString = "Shows the vessel's Mean Anomaly.";
             IsDefault = false;
         }
 

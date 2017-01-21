@@ -28,7 +28,7 @@ namespace KerbalEngineer.Flight.Readouts.Thermal
         {
             Name = "Radiation Flux";
             Category = ReadoutCategory.GetCategory("Thermal");
-            HelpString = string.Empty;
+            HelpString = "Heat radiation capacity of your vessel.";
             IsDefault = true;
         }
 

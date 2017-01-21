@@ -35,7 +35,7 @@ namespace KerbalEngineer.Flight.Readouts.Orbital
         {
             this.Name = "Time to Equ. AN";
             this.Category = ReadoutCategory.GetCategory("Orbital");
-            this.HelpString = "Shows the time until the vessel corsses the Equator, going north of it.";
+            this.HelpString = "Shows the time until the vessel crosses northward over the equator.";
             this.IsDefault = false;
         }
 

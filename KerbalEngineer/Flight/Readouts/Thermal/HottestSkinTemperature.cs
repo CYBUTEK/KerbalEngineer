@@ -28,7 +28,7 @@ namespace KerbalEngineer.Flight.Readouts.Thermal
         {
             Name = "Hottest Skin Temperature";
             Category = ReadoutCategory.GetCategory("Thermal");
-            HelpString = "Highest external Temperature on the Vessel.";
+            HelpString = "Highest external temperature on the vessel.";
             IsDefault = true;
         }
 

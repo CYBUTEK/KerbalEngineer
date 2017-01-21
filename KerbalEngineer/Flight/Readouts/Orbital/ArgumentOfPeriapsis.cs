@@ -34,9 +34,9 @@ namespace KerbalEngineer.Flight.Readouts.Orbital
 
         public ArgumentOfPeriapsis()
         {
-            this.Name = "Arg. Of Periapsis";
+            this.Name = "Argument Of Periapsis";
             this.Category = ReadoutCategory.GetCategory("Orbital");
-            this.HelpString = String.Empty;
+            HelpString = "Shows the vessel's Argument Of Periapsis";
             this.IsDefault = false;
         }
 

@@ -34,7 +34,7 @@ namespace KerbalEngineer.Flight.Readouts.Vessel
         {
             this.Name = "Pitch Rate";
             this.Category = ReadoutCategory.GetCategory("Vessel");
-            this.HelpString = "Shows the current Pitch speed.";
+            this.HelpString = "Shows the current pitch speed.";
             this.IsDefault = false;
         }
 

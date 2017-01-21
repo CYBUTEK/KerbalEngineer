@@ -29,7 +29,7 @@ namespace KerbalEngineer.Flight.Readouts.Orbital
         {
             Name = "Eccentric Anomaly";
             Category = ReadoutCategory.GetCategory("Orbital");
-            HelpString = string.Empty;
+            HelpString = "Shows the vessel's Eccentric Anomaly.";
             IsDefault = false;
         }
 

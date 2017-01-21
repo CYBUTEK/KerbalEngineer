@@ -34,7 +34,7 @@ namespace KerbalEngineer.Flight.Readouts.Rendezvous
         {
             this.Name = "Phase Angle";
             this.Category = ReadoutCategory.GetCategory("Rendezvous");
-            this.HelpString = "Angular distance of the vessel relative to the target object.";
+            this.HelpString = "Angular distance between the vessel and the target object with respect to their orbital parameters.";
             this.IsDefault = true;
         }
 

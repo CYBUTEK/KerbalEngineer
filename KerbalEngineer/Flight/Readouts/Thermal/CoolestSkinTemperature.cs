@@ -28,7 +28,7 @@ namespace KerbalEngineer.Flight.Readouts.Thermal
         {
             Name = "Coolest Skin Temperature";
             Category = ReadoutCategory.GetCategory("Thermal");
-            HelpString = "Lowest external Temperature on the Vessel.";
+            HelpString = "Lowest external temperature on the vessel.";
             IsDefault = true;
         }
 

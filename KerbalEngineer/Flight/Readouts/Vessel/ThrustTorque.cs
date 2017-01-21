@@ -34,7 +34,7 @@ namespace KerbalEngineer.Flight.Readouts.Vessel
         {
             this.Name = "Thrust torque";
             this.Category = ReadoutCategory.GetCategory("Vessel");
-            this.HelpString = "Thrust torque due to vessel asymmetries and gimballing";
+            this.HelpString = "Thrust torque due to vessel asymmetries and gimballing.";
             this.IsDefault = true;
         }
 

@@ -28,7 +28,7 @@ namespace KerbalEngineer.Flight.Readouts.Thermal
         {
             Name = "Internal Flux";
             Category = ReadoutCategory.GetCategory("Thermal");
-            HelpString = string.Empty;
+            HelpString = "Heat transfered as a unit of power between parts of your vessel.";
             IsDefault = true;
         }
 

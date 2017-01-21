@@ -34,7 +34,7 @@ namespace KerbalEngineer.Flight.Readouts.Surface
         {
             this.Name = "Impact Altitude";
             this.Category = ReadoutCategory.GetCategory("Surface");
-            this.HelpString = "Altitude at which the Vessel will impact.";
+            this.HelpString = "Altitude at which the vessel will impact the surface.";
             this.IsDefault = false;
         }
 

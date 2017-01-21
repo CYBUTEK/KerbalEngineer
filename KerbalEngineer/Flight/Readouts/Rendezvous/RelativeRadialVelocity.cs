@@ -34,7 +34,7 @@ namespace KerbalEngineer.Flight.Readouts.Rendezvous
         {
             this.Name = "Relative Radial Velocity";
             this.Category = ReadoutCategory.GetCategory("Rendezvous");
-            this.HelpString = "Relative radial velocity between your vessel and the target object";
+            this.HelpString = "Relative radial velocity between your vessel and the target object.";
             this.IsDefault = false;
         }
 

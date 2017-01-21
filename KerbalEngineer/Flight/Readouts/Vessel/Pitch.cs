@@ -34,7 +34,7 @@ namespace KerbalEngineer.Flight.Readouts.Vessel
         {
             this.Name = "Pitch";
             this.Category = ReadoutCategory.GetCategory("Vessel");
-            this.HelpString = "Shows the current Pitch angle.";
+            this.HelpString = "Shows the current pitch angle.";
             this.IsDefault = false;
         }
 

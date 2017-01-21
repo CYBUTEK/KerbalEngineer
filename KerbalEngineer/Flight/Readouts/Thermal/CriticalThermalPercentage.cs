@@ -28,7 +28,7 @@ namespace KerbalEngineer.Flight.Readouts.Thermal
         {
             Name = "Critical Thermal Percentage";
             Category = ReadoutCategory.GetCategory("Thermal");
-            HelpString = "Shows how high a temperature the critical Part is enduring relative to it's maximal temperature.";
+            HelpString = "Shows how high a temperature the critical part is enduring relative to it's maximal temperature.";
             IsDefault = true;
         }
 

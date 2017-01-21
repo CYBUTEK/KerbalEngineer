@@ -28,7 +28,7 @@ namespace KerbalEngineer.Flight.Readouts.Thermal
         {
             Name = "Critical Temperature";
             Category = ReadoutCategory.GetCategory("Thermal");
-            HelpString = "Internal Temperature on the part of the Vessel that is structually most critical.";
+            HelpString = "Internal temperature on the part of the vessel that is closest to its maximal temperature.";
             IsDefault = true;
         }
 

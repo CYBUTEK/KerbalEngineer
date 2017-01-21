@@ -34,7 +34,7 @@ namespace KerbalEngineer.Flight.Readouts.Orbital
         {
             this.Name = "Angle to Equ. AN";
             this.Category = ReadoutCategory.GetCategory("Orbital");
-            this.HelpString = "Angular Distance from the vessel to crossing the Equator of the central body, going north of it.";
+            this.HelpString = "Angular distance from the vessel to the northward equator crossing of the central body.";
             this.IsDefault = false;
         }
 

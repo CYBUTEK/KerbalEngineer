@@ -34,7 +34,7 @@ namespace KerbalEngineer.Flight.Readouts.Vessel
         {
             this.Name = "DeltaV (C/T)";
             this.Category = ReadoutCategory.GetCategory("Vessel");
-            this.HelpString = "Shows the vessel's current stage delta velocity and total.";
+            this.HelpString = "Shows the vessel's change in velocity for the current stage and the entire vessel.";
             this.IsDefault = false;
         }
 

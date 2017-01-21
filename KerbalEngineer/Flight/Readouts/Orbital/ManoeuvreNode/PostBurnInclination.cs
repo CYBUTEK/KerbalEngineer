@@ -36,7 +36,7 @@ namespace KerbalEngineer.Flight.Readouts.Orbital.ManoeuvreNode
         {
             this.Name = "Post-burn Inclination";
             this.Category = ReadoutCategory.GetCategory("Orbital");
-            this.HelpString = "The inclination of the vessel's orbit after the burn.";
+            this.HelpString = "The inclination of maneuver's calculated orbit.";
             this.IsDefault = false;
         }
 

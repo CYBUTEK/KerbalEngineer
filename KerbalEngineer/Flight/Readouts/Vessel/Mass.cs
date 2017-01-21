@@ -34,7 +34,7 @@ namespace KerbalEngineer.Flight.Readouts.Vessel
         {
             this.Name = "Mass";
             this.Category = ReadoutCategory.GetCategory("Vessel");
-            this.HelpString = "Displays the total Mass of the Vessel.";
+            this.HelpString = "Displays the current fuel mass and wet mass of your craft. Note, that fuel mass is included in the first number even if the tank is in anoter stage or not connected to an engine.";
             this.IsDefault = true;
         }
 

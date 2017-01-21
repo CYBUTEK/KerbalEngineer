@@ -34,7 +34,7 @@ namespace KerbalEngineer.Flight.Readouts.Rendezvous
         {
             this.Name = "Intercept Angle";
             this.Category = ReadoutCategory.GetCategory("Rendezvous");
-            this.HelpString = string.Empty;
+            this.HelpString = "Linear angular distance between the vessel and the target object.";
             this.IsDefault = true;
         }
 
