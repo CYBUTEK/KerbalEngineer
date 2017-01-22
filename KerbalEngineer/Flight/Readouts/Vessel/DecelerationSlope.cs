@@ -36,9 +36,9 @@ namespace KerbalEngineer.Flight.Readouts.Vessel
 
         public DecelerationSlope()
         {
-            this.Name = "Deceleration Slope";
+            this.Name = "Decel. Point: Slope";
             this.Category = ReadoutCategory.GetCategory("Vessel");
-            this.HelpString = "Shows the slope at the Point your Deceleration Burn will end.";
+            this.HelpString = "Shows the slope at the point your Deceleration Burn will end.";
             this.IsDefault = false;
         }
 

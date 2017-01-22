@@ -34,9 +34,9 @@ namespace KerbalEngineer.Flight.Readouts.Vessel
 
         public DecelerationAltitude()
         {
-            this.Name =  "Deceleration Terrain Altitude";
+            this.Name =  "Decel. Point: Alt. Terrain";
             this.Category = ReadoutCategory.GetCategory("Vessel");
-            this.HelpString = "Shows the altitude of the Terrain at the predicted Landing Point";
+            this.HelpString = "Shows the terrain altitude/elevation at the point your Deceleration Burn will end.";
             this.IsDefault = false;
         }
 

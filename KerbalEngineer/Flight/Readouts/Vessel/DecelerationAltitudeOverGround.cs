@@ -34,9 +34,9 @@ namespace KerbalEngineer.Flight.Readouts.Vessel
 
         public DecelerationAltitudeOverGround()
         {
-            this.Name = "Deceleration Remaining Altitude";
+            this.Name = "Decel. Point: Alt. Remaining";
             this.Category = ReadoutCategory.GetCategory("Vessel");
-            this.HelpString = "Shows the altitude remaining after the Deceleration Burn";
+            this.HelpString = "Shows the remaining altitude over the point your Deceleration Burn will end.";
             this.IsDefault = false;
         }
 

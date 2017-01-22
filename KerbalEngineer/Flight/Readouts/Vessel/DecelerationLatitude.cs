@@ -33,9 +33,9 @@ namespace KerbalEngineer.Flight.Readouts.Vessel
 
         public DecelerationLatitude()
         {
-            this.Name = "Deceleration Latitude";
+            this.Name = "Decel. Point: Latitude";
             this.Category = ReadoutCategory.GetCategory("Vessel");
-            this.HelpString = "Latitude of the impact position.";
+            this.HelpString = "Shows the latitude at the point your Deceleration Burn will end.";
             this.IsDefault = false;
         }
 

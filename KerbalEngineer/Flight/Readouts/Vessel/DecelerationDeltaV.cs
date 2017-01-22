@@ -34,9 +34,9 @@ namespace KerbalEngineer.Flight.Readouts.Vessel
 
 		public DecelerationDeltaV()
 		{
-			this.Name = "Deceleration DeltaV";
+			this.Name = "Decel. Burn: deltaV";
 			this.Category = ReadoutCategory.GetCategory("Vessel");
-			this.HelpString = "Total change in velocity to kill all surface velocity.";
+			this.HelpString = "Total change in velocity to kill all surface velocity including potential velocity gained trough freefall.";
 			this.IsDefault = false;
 		}
 
@@ -51,7 +51,7 @@ namespace KerbalEngineer.Flight.Readouts.Vessel
 				return;
 			}
 
-			this.DrawLine("Deceleration DeltaV", DecelerationProcessor.DecelerationDeltaV.ToSpeed() + " (" + (DecelerationProcessor.HasDeltaV ? "S" + DecelerationProcessor.FinalStage : "X") + ")", section.IsHud);
+			this.DrawLine("Decel. Burn: deltaV", DecelerationProcessor.DecelerationDeltaV.ToSpeed() + " (" + (DecelerationProcessor.HasDeltaV ? "S" + DecelerationProcessor.FinalStage : "X") + ")", section.IsHud);
 		}
 
 		public override void Reset()

@@ -31,9 +31,9 @@ namespace KerbalEngineer.Flight.Readouts.Vessel
 
         public DecelerationBiome()
         {
-            this.Name = "Deceleration Biome";
+            this.Name = "Decel. Point: Biome";
             this.Category = ReadoutCategory.GetCategory("Vessel");
-            this.HelpString = "Biome at the Predicted Landing Point.";
+            this.HelpString = "Shows the biome at the point your Deceleration Burn will end.";
             this.IsDefault = false;
         }
 

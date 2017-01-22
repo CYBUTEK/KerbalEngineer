@@ -33,9 +33,9 @@ namespace KerbalEngineer.Flight.Readouts.Vessel
 
         public DecelerationLongitude()
         {
-            this.Name = "Deceleration Longitude";
+            this.Name = "Decel. Point: Longditude";
             this.Category = ReadoutCategory.GetCategory("Vessel");
-            this.HelpString = "Longditude of the impact position.";
+            this.HelpString = "Shows the longditude at the point your Deceleration Burn will end.";
             this.IsDefault = false;
         }
 

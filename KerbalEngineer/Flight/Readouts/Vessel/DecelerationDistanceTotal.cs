@@ -32,7 +32,7 @@ namespace KerbalEngineer.Flight.Readouts.Vessel
 
         public DecelerationDistanceTotal()
         {
-            this.Name = "Total Deceleration Distance";
+            this.Name = "Decel. Burn: Total Dist.";
             this.Category = ReadoutCategory.GetCategory("Vessel");
             this.HelpString = "Total distance covered during Deceleration Burn.";
             this.IsDefault = false;

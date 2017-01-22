@@ -32,7 +32,7 @@ namespace KerbalEngineer.Flight.Readouts.Vessel
 
         public DecelerationDistanceHorizontal()
         {
-            this.Name = "Horizontal Deceleration Distance";
+            this.Name = "Decel. Burn: Horiz. Dist.";
             this.Category = ReadoutCategory.GetCategory("Vessel");
             this.HelpString = "Horizontal distance covered during Deceleration Burn.";
             this.IsDefault = false;
