@@ -28,6 +28,7 @@ namespace KerbalEngineer.Flight.Readouts
     using Surface;
     using Thermal;
     using Vessel;
+    using Body;
     using AltitudeSeaLevel = Surface.AltitudeSeaLevel;
     using ApoapsisHeight = Orbital.ApoapsisHeight;
     using OrbitalPeriod = Orbital.OrbitalPeriod;
@@ -53,6 +54,7 @@ namespace KerbalEngineer.Flight.Readouts
                 ReadoutCategory.SetCategory("Vessel", "Vessel performance statistics.");
                 ReadoutCategory.SetCategory("Rendezvous", "Readouts for rendezvous manovoeures.");
                 ReadoutCategory.SetCategory("Thermal", "Thermal characteristics readouts.");
+                ReadoutCategory.SetCategory("Body", "Characteristics of the current SOI.");
                 ReadoutCategory.SetCategory("Miscellaneous", "Miscellaneous readouts.");
                 ReadoutCategory.Selected = ReadoutCategory.GetCategory("Orbital");
 
@@ -190,6 +192,13 @@ namespace KerbalEngineer.Flight.Readouts
                 readouts.Add(new CoolestPart());
                 readouts.Add(new CoolestTemperature());
                 readouts.Add(new CoolestSkinTemperature());
+
+                // Body
+                readouts.Add(new BodyName());
+                readouts.Add(new HasAtmosphere());
+                readouts.Add(new HighAtmosphereHeight());
+                readouts.Add(new LowSpaceHeight());
+                readouts.Add(new HighSpaceHeight());
 
                 // Misc
                 readouts.Add(new Separator());
