@@ -1,80 +1,88 @@
-﻿// 
-//     Kerbal Engineer Redux
-// 
-//     Copyright (C) 2014 CYBUTEK
-// 
-//     This program is free software: you can redistribute it and/or modify
-//     it under the terms of the GNU General Public License as published by
-//     the Free Software Foundation, either version 3 of the License, or
-//     (at your option) any later version.
-// 
-//     This program is distributed in the hope that it will be useful,
-//     but WITHOUT ANY WARRANTY; without even the implied warranty of
-//     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-//     GNU General Public License for more details.
-// 
-//     You should have received a copy of the GNU General Public License
-//     along with this program.  If not, see <http://www.gnu.org/licenses/>.
-// 
+﻿// Kerbal Engineer Redux
+//
+// Copyright (C) 2014 CYBUTEK
+//
+// This program is free software: you can redistribute it and/or modify it under the terms of the GNU
+// General Public License as published by the Free Software Foundation, either version 3 of the
+// License, or (at your option) any later version.
+//
+// This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without
+// even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+// General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License along with this program. If not,
+// see <http://www.gnu.org/licenses/>.
 
 namespace KerbalEngineer.Helpers
 {
     using UnityEngine;
+    using Extensions;
 
     public static class AngleHelper
     {
         public static double Clamp180(double angle)
         {
-            if (angle < -180.0)
+            if (angle.IsValid())
             {
-                do
+                if (angle < -180.0)
                 {
-                    angle += 360.0;
+                    do
+                    {
+                        angle += 360.0;
+                    }
+                    while (angle < -180.0);
                 }
-                while (angle < -180.0);
-            }
-            else if (angle > 180.0)
-            {
-                do
+                else if (angle > 180.0)
                 {
-                    angle -= 360.0;
+                    do
+                    {
+                        angle -= 360.0;
+                    }
+                    while (angle > 180.0);
                 }
-                while (angle > 180.0);
             }
+
             return angle;
         }
 
         public static double Clamp360(double angle)
         {
-            if (angle < 0.0)
+            if (angle.IsValid())
             {
-                do
+                if (angle < 0.0)
                 {
-                    angle += 360.0;
+                    do
+                    {
+                        angle += 360.0;
+                    }
+                    while (angle < 0.0);
                 }
-                while (angle < 0.0);
-            }
-            else if (angle >= 360.0)
-            {
-                do
+                else if (angle >= 360.0)
                 {
-                    angle -= 360.0;
+                    do
+                    {
+                        angle -= 360.0;
+                    }
+                    while (angle >= 360.0);
                 }
-                while (angle >= 360.0);
             }
+
             return angle;
         }
 
         public static double ClampBetween(double value, double minimum, double maximum)
         {
-            while (value < minimum)
+            if (value.IsValid() && minimum.IsValid() && maximum.IsValid())
             {
-                value += maximum;
-            }
+                while (value < minimum)
+                {
+                    value += maximum;
+                }
 
-            while (value > maximum)
-            {
-                value -= maximum;
+                while (value > maximum)
+                {
+                    value -= maximum;
+                }
             }
 
             return value;
