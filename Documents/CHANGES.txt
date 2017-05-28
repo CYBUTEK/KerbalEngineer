@@ -1,3 +1,13 @@
+1.1.3.0, 2017-05-28, KSP 1.3.0 #1804
+    Added: Setting for enabling/disabling whether the toolbar icon in-flight activates on mouse hover.
+    Added: Body category with the following readouts:
+        Body Name
+        Has Atmosphere
+        Has Oxygen
+        High Atmophere Height
+        Low Space Height
+        High Space Height
+
 1.1.2.8, 2016-12-03, KSP 1.2.1 #1604
     Fixed: Compile errors caused due to game update.
     Fixed: Asset bundle errors due to engine update.
@@ -17,7 +27,6 @@
     Added: Post-burn orbital period and inclination readouts. (Pad)
     Added: Support for balance and priority flow modes. (Pad)
     Added: Custom keybinding of the part info show/hide functionality.
-
 
 1.1.1.0, 2016-04-29, KSP Build #1250
     Added: Missing cleanup of some contained references within various pooled classes.
