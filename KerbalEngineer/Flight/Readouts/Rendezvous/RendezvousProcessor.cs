@@ -182,7 +182,16 @@ namespace KerbalEngineer.Flight.Readouts.Rendezvous
                 : FlightGlobals.ship_orbit.referenceBody.orbit;
 
             RelativeInclination = originOrbit.GetRelativeInclination(targetOrbit);
-            RelativeVelocity = FlightGlobals.ship_tgtSpeed;
+
+            if (targetOrbit.referenceBody == FlightGlobals.ship_orbit.referenceBody)
+            {
+                RelativeVelocity = FlightGlobals.ship_tgtSpeed;
+            }
+            else
+            {
+                RelativeVelocity = (FlightGlobals.ship_orbit.GetFrameVel() - targetOrbit.GetFrameVel()).magnitude;
+            }
+
             RelativeSpeed = FlightGlobals.ship_obtSpeed - targetOrbit.orbitalSpeed;
             PhaseAngle = originOrbit.GetPhaseAngle(targetOrbit);
             InterceptAngle = CalcInterceptAngle(targetOrbit, originOrbit);
