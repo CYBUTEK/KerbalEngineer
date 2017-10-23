@@ -30,17 +30,17 @@ using UnityEngine;
 
 namespace KerbalEngineer.Flight.Readouts.Miscellaneous
 {
-    public class SystemTime : ReadoutModule
+    public class SystemDateTime : ReadoutModule
     {
 
 
         #region Constructors
 
-        public SystemTime()
+        public SystemDateTime()
         {
             this.Name = "System Time";
             this.Category = ReadoutCategory.GetCategory("Miscellaneous");
-            this.HelpString = "Shows the System Time in 12 hour format (AM/PM)";
+            this.HelpString = "Shows the System Date/Time in ISO 8601 format";
             this.IsDefault = false;
         }
 
@@ -50,8 +50,8 @@ namespace KerbalEngineer.Flight.Readouts.Miscellaneous
 
         public override void Draw(SectionModule section)
         {
-            this.DrawLine(DateTime.Now.ToString("h:mm:ss tt"), section.IsHud);
-        } 
+            this.DrawLine(DateTime.Now.ToString("yyyy-MM-dd, HH:mm:ss"), section.IsHud);
+        }
 
         #endregion
 
