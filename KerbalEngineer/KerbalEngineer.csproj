@@ -62,6 +62,7 @@
     <Compile Include="Flight\Readouts\Body\LowSpaceHeight.cs" />
     <Compile Include="Flight\Readouts\Miscellaneous\LogSimToggle.cs" />
     <Compile Include="Flight\Readouts\Miscellaneous\SystemDateTime.cs" />
+    <Compile Include="Flight\Readouts\Miscellaneous\SimulationTime.cs" />
     <Compile Include="Flight\Readouts\Miscellaneous\SystemTime24.cs" />
     <Compile Include="Flight\Readouts\Miscellaneous\SystemTime.cs" />
     <Compile Include="Flight\Readouts\Miscellaneous\VectoredThrustToggle.cs" />
