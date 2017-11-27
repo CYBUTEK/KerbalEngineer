@@ -100,7 +100,7 @@ namespace KerbalEngineer.VesselSimulator
             bool throttleLocked = engineMod.throttleLocked || fullThrust;
             List<Propellant> propellants = engineMod.propellants;
             bool active = engineMod.isOperational;
-            float resultingThrust = engineMod.resultingThrust;
+            float finalThrust = engineMod.finalThrust;
             bool isFlamedOut = engineMod.flameout;
 			
 			EngineSim engineSim = pool.Borrow();
@@ -124,7 +124,7 @@ namespace KerbalEngineer.VesselSimulator
                 float flowModifier = GetFlowModifier(atmChangeFlow, atmCurve, engineSim.partSim.part.atmDensity, velCurve, machNumber, ref engineSim.maxMach);
                 engineSim.isp = atmosphereCurve.Evaluate((float)atmosphere);
                 engineSim.thrust = GetThrust(Mathf.Lerp(minFuelFlow, maxFuelFlow, GetThrustPercent(thrustPercentage)) * flowModifier, engineSim.isp);
-                engineSim.actualThrust = engineSim.isActive ? resultingThrust : 0.0;
+                engineSim.actualThrust = engineSim.isActive ? finalThrust : 0.0;
                 if (log != null)
                 {
                     log.buf.AppendFormat("flowMod = {0:g6}\n", flowModifier);
