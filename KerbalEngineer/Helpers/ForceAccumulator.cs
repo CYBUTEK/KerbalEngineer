@@ -26,17 +26,10 @@ namespace KerbalEngineer
     // a (force, application point) tuple
     public class AppliedForce
     {
-        private static readonly Pool<AppliedForce> pool = new Pool<AppliedForce>(Create, Reset);
+        private static readonly Pool<AppliedForce> pool = new Pool<AppliedForce>(() => new AppliedForce(), null);
 
         public Vector3d vector;
         public Vector3d applicationPoint;
-
-        static private AppliedForce Create()
-        {
-            return new AppliedForce();
-        }
-
-        static private void Reset(AppliedForce appliedForce) { }
 
         static public AppliedForce New(Vector3d vector, Vector3d applicationPoint)
         {
@@ -50,7 +43,6 @@ namespace KerbalEngineer
         {
             pool.Release(this);
         }
-
 
     }
 
@@ -71,7 +63,6 @@ namespace KerbalEngineer
 		private Vector3d totalForce = Vector3d.zero;
 		// Torque needed to compensate if force were applied at origin.
 		private Vector3d totalZeroOriginTorque = Vector3d.zero;
-
 		// Weighted average of force application points.
 		private WeightedVectorAverager avgApplicationPoint = new WeightedVectorAverager();
 
@@ -88,7 +79,8 @@ namespace KerbalEngineer
             return avgApplicationPoint.GetAverage;
         }
 
-        public void AddForce(AppliedForce force) {
+        public void AddForce(AppliedForce force)
+        {
             AddForce(force.applicationPoint, force.vector);
         }
 
@@ -127,5 +119,6 @@ namespace KerbalEngineer
 	        totalZeroOriginTorque = Vector3d.zero;
             avgApplicationPoint.Reset();
 	    }
+        
 	}
 }
