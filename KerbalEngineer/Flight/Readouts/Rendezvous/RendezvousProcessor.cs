@@ -216,7 +216,7 @@ namespace KerbalEngineer.Flight.Readouts.Rendezvous
             double targetRadius = (targetOrbit.semiMinorAxis + targetOrbit.semiMajorAxis) * 0.5;
             double angle = 180.0 * (1.0 - Math.Pow((originRadius + targetRadius) / (2.0 * targetRadius), 1.5));
             angle = PhaseAngle - angle;
-            return RelativeInclination < 90.0 ? AngleHelper.Clamp360(angle) : AngleHelper.Clamp360(360.0 - (180.0 - angle));
+            return RelativeInclination < 90.0 ? AngleHelper.Modulo360(angle) : AngleHelper.Modulo360(360.0 - (180.0 - angle));
         }
 
         private Vector3d GetAscendingNode(Orbit targetOrbit, Orbit originOrbit)

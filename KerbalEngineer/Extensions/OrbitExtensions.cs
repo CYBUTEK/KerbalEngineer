@@ -62,7 +62,7 @@ namespace KerbalEngineer.Extensions
 
             double angle = AngleHelper.GetAngleBetweenVectors(bodyVector, orbitVector);
 
-            return AngleHelper.Clamp360(orbit.inclination < 90 ? angle : 360 - angle);
+            return AngleHelper.Modulo360(orbit.inclination < 90 ? angle : 360 - angle);
         }
 
         public static double GetAngleToRetrograde(this Orbit orbit)
@@ -83,12 +83,12 @@ namespace KerbalEngineer.Extensions
 
             double angle = AngleHelper.GetAngleBetweenVectors(-bodyVector, orbitVector);
 
-            return AngleHelper.Clamp360(orbit.inclination < 90 ? angle : 360 - angle);
+            return AngleHelper.Modulo360(orbit.inclination < 90 ? angle : 360 - angle);
         }
 
         public static double GetAngleToTrueAnomaly(this Orbit orbit, double trueAnomaly)
         {
-            return AngleHelper.Clamp360(trueAnomaly - (orbit.trueAnomaly * Mathf.Rad2Deg));
+            return AngleHelper.Modulo360(trueAnomaly - (orbit.trueAnomaly * Mathf.Rad2Deg));
         }
 
         public static double GetAngleToVector(this Orbit orbit, Vector3d vector)
