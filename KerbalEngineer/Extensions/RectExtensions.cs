@@ -41,7 +41,7 @@ namespace KerbalEngineer.Extensions
         /// <summary>
         ///     Clamps the rectangle into the screen region by the specified margin.
         /// </summary>
-        public static Rect ClampToScreen(this Rect value, float margin = 25.0f)
+        public static Rect ClampToScreen(this Rect value, float margin = 25)
         {
             value.x = Mathf.Clamp(value.x, -(value.width - margin), Screen.width - margin);
             value.y = Mathf.Clamp(value.y, -(value.height - margin), Screen.height - margin);

@@ -20,69 +20,33 @@ namespace KerbalEngineer.Helpers
 
     public static class AngleHelper
     {
-        public static double Clamp180(double angle)
+        /// <summary>
+        ///     Same as ModuloBetween(angle, -180, 180).
+        /// </summary>
+        public static double Modulo180(double angle)
         {
-            if (angle.IsValid())
-            {
-                if (angle < -180.0)
-                {
-                    do
-                    {
-                        angle += 360.0;
-                    }
-                    while (angle < -180.0);
-                }
-                else if (angle > 180.0)
-                {
-                    do
-                    {
-                        angle -= 360.0;
-                    }
-                    while (angle > 180.0);
-                }
-            }
-
-            return angle;
+            return ModuloBetween(angle, -180, 180);
         }
 
-        public static double Clamp360(double angle)
+        /// <summary>
+        ///     Same as ModuloBetween(angle, 0, 360).
+        /// </summary>
+        public static double Modulo360(double angle)
         {
-            if (angle.IsValid())
-            {
-                if (angle < 0.0)
-                {
-                    do
-                    {
-                        angle += 360.0;
-                    }
-                    while (angle < 0.0);
-                }
-                else if (angle >= 360.0)
-                {
-                    do
-                    {
-                        angle -= 360.0;
-                    }
-                    while (angle >= 360.0);
-                }
-            }
-
-            return angle;
+            return ModuloBetween(angle, 0, 360);
         }
 
-        public static double ClampBetween(double value, double minimum, double maximum)
+        public static double ModuloBetween(double value, double minimum, double maximum)
         {
             if (value.IsValid() && minimum.IsValid() && maximum.IsValid())
             {
+                double mod = maximum - minimum;
+
                 while (value < minimum)
-                {
-                    value += maximum;
-                }
+                    value += mod;
 
                 while (value > maximum)
-                {
-                    value -= maximum;
-                }
+                    value -= mod;
             }
 
             return value;
@@ -91,13 +55,13 @@ namespace KerbalEngineer.Helpers
         public static double GetAngleBetweenVectors(Vector3d left, Vector3d right)
         {
             double angle = Vector3d.Angle(left, right);
-            Vector3d rotated = QuaternionD.AngleAxis(90.0, Vector3d.forward) * right;
+            Vector3d rotated = QuaternionD.AngleAxis(90, Vector3d.forward) * right;
 
-            if (Vector3d.Angle(rotated, left) > 90.0)
-            {
-                return 360.0 - angle;
-            }
+            if (Vector3d.Angle(rotated, left) > 90)
+                return 360 - angle;
+
             return angle;
         }
+
     }
 }

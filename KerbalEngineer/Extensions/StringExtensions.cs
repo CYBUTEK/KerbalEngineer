@@ -25,7 +25,7 @@ namespace KerbalEngineer.Extensions
         {
             if (value != null && value.Length > length)
             {
-                value = value.Substring(0, length) + "...";
+                return value.Substring(0, length) + "...";
             }
             return value;
         }
