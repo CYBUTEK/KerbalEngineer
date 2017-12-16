@@ -83,8 +83,9 @@ namespace KerbalEngineer
 			avgApplicationPoint.Add(applicationPoint, force.magnitude);
 		}
 
-        public Vector3d GetAverageForceApplicationPoint() {
-            return avgApplicationPoint.Get();
+        public Vector3d GetAverageForceApplicationPoint()
+        {
+            return avgApplicationPoint.GetAverage;
         }
 
         public void AddForce(AppliedForce force) {
@@ -108,16 +109,16 @@ namespace KerbalEngineer
         public Vector3d GetMinTorqueForceApplicationPoint(Vector3d origin)
         {
             double fmag = totalForce.sqrMagnitude;
-            if (fmag <= 0) {
+
+            if (fmag <= 0)
                 return origin;
-            }
 
             return origin + Vector3d.Cross(totalForce, TorqueAt(origin)) / fmag;
         }
 
         public Vector3d GetMinTorqueForceApplicationPoint()
         {
-            return GetMinTorqueForceApplicationPoint(avgApplicationPoint.Get());
+            return GetMinTorqueForceApplicationPoint(avgApplicationPoint.GetAverage);
         }
 
 	    public void Reset()

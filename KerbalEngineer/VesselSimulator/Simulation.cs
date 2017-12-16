@@ -122,7 +122,7 @@ namespace KerbalEngineer.VesselSimulator
                     vectorAverager.Add(partSim.centerOfMass, partSim.GetMass(currentStage, true));
                 }
 
-                return vectorAverager.Get();
+                return vectorAverager.GetAverage;
             }
         }
 

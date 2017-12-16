@@ -26,17 +26,15 @@ namespace KerbalEngineer
         private Vector3d sum = Vector3d.zero;
         private uint count = 0;
 
-        public void Add(Vector3d v) {
+        public void Add(Vector3d v)
+        {
             sum += v;
             count += 1;
         }
 
-        public Vector3d Get() {
-            if (count > 0) {
-                return sum / count;
-            } else {
-                return Vector3d.zero;
-            }
+        public Vector3d GetAverage
+        {
+            get => count > 0 ? sum / count : Vector3d.zero;
         }
 
         public void Reset()
@@ -51,28 +49,27 @@ namespace KerbalEngineer
         private Vector3d sum = Vector3d.zero;
         private double totalweight = 0;
 
-        public void Add(Vector3d v, double weight) {
+        public void Add(Vector3d v, double weight)
+        {
             sum += v * weight;
             totalweight += weight;
         }
 
-        public Vector3d Get() {
-            if (totalweight > 0) {
-                return sum / totalweight;
-            } else {
-                return Vector3d.zero;
-            }
+        public Vector3d GetAverage
+        {
+            get => totalweight > 0 ? sum / totalweight : Vector3d.zero;
         }
 
-        public double GetTotalWeight() {
-            return totalweight;
+        public double GetTotalWeight
+        {
+            get => totalweight;
         }
 
         public void Reset()
         {
             sum = Vector3d.zero;
-            totalweight = 0.0;
+            totalweight = 0;
         }
+
     }
 }
-
