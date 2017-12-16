@@ -12,15 +12,13 @@
         /// </summary>
         public static T LoadObject<T>(string path)
         {
-            T obj = default(T);
-
             if (File.Exists(path))
             {
                 try
                 {
                     using (StreamReader stream = new StreamReader(path, Encoding.UTF8))
                     {
-                        obj = (T)new XmlSerializer(typeof(T)).Deserialize(stream);
+                        return (T)new XmlSerializer(typeof(T)).Deserialize(stream);
                     }
                 }
                 catch (Exception ex)
@@ -29,7 +27,7 @@
                 }
             }
 
-            return obj;
+            return default(T);
         }
 
         /// <summary>
@@ -47,9 +45,7 @@
         public static void SaveObject<T>(string path, T obj)
         {
             if (obj == null || string.IsNullOrEmpty(path))
-            {
                 return;
-            }
 
             try
             {
@@ -63,5 +59,6 @@
                 MyLogger.Exception(ex);
             }
         }
+        
     }
 }
