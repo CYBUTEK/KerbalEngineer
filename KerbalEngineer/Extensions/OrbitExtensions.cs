@@ -20,9 +20,7 @@
 #region Using Directives
 
 using System;
-
 using KerbalEngineer.Helpers;
-
 using UnityEngine;
 
 #endregion
@@ -32,9 +30,6 @@ namespace KerbalEngineer.Extensions
     public static class OrbitExtensions
     {
         #region Constants
-
-        public const double Tau = Math.PI * 2.0;
-
         #endregion
 
         #region Methods: public
@@ -57,19 +52,17 @@ namespace KerbalEngineer.Extensions
         public static double GetAngleToPrograde(this Orbit orbit, double universalTime)
         {
             if (orbit.referenceBody == CelestialBodies.SystemBody.CelestialBody)
-            {
-                return 0.0;
-            }
+                return 0;
 
             Vector3d orbitVector = orbit.getRelativePositionAtUT(universalTime);
-            orbitVector.z = 0.0;
+            orbitVector.z = 0;
 
             Vector3d bodyVector = orbit.referenceBody.orbit.getOrbitalVelocityAtUT(universalTime);
-            bodyVector.z = 0.0;
+            bodyVector.z = 0;
 
             double angle = AngleHelper.GetAngleBetweenVectors(bodyVector, orbitVector);
 
-            return AngleHelper.Clamp360(orbit.inclination < 90.0 ? angle : 360.0 - angle);
+            return AngleHelper.Clamp360(orbit.inclination < 90 ? angle : 360 - angle);
         }
 
         public static double GetAngleToRetrograde(this Orbit orbit)
@@ -80,24 +73,22 @@ namespace KerbalEngineer.Extensions
         public static double GetAngleToRetrograde(this Orbit orbit, double universalTime)
         {
             if (orbit.referenceBody == CelestialBodies.SystemBody.CelestialBody)
-            {
-                return 0.0;
-            }
+                return 0;
 
             Vector3d orbitVector = orbit.getRelativePositionAtUT(universalTime);
-            orbitVector.z = 0.0;
+            orbitVector.z = 0;
 
             Vector3d bodyVector = orbit.referenceBody.orbit.getOrbitalVelocityAtUT(universalTime);
-            bodyVector.z = 0.0;
+            bodyVector.z = 0;
 
             double angle = AngleHelper.GetAngleBetweenVectors(-bodyVector, orbitVector);
 
-            return AngleHelper.Clamp360(orbit.inclination < 90.0 ? angle : 360.0 - angle);
+            return AngleHelper.Clamp360(orbit.inclination < 90 ? angle : 360 - angle);
         }
 
         public static double GetAngleToTrueAnomaly(this Orbit orbit, double trueAnomaly)
         {
-            return AngleHelper.Clamp360(trueAnomaly - (orbit.trueAnomaly * Units.RAD_TO_DEG));
+            return AngleHelper.Clamp360(trueAnomaly - (orbit.trueAnomaly * Mathf.Rad2Deg));
         }
 
         public static double GetAngleToVector(this Orbit orbit, Vector3d vector)
@@ -107,8 +98,8 @@ namespace KerbalEngineer.Extensions
 
         public static double GetPhaseAngle(this Orbit orbit, Orbit target)
         {
-            var angle = AngleHelper.GetAngleBetweenVectors(Vector3d.Exclude(orbit.GetOrbitNormal(), target.pos), orbit.pos);
-            return (orbit.semiMajorAxis < target.semiMajorAxis) ? angle : angle - 360.0;
+            double angle = AngleHelper.GetAngleBetweenVectors(Vector3d.Exclude(orbit.GetOrbitNormal(), target.pos), orbit.pos);
+            return (orbit.semiMajorAxis < target.semiMajorAxis) ? angle : angle - 360;
         }
 
         public static double GetRelativeInclination(this Orbit orbit, Orbit target)
@@ -128,8 +119,8 @@ namespace KerbalEngineer.Extensions
 
         public static double GetTimeToTrueAnomaly(this Orbit orbit, double trueAnomaly)
         {
-            var time = orbit.GetDTforTrueAnomaly(trueAnomaly * Mathf.Deg2Rad, orbit.period);
-            return time < 0.0 ? time + orbit.period : time;
+            double time = orbit.GetDTforTrueAnomaly(trueAnomaly * Mathf.Deg2Rad, orbit.period);
+            return time < 0 ? time + orbit.period : time;
         }
 
         public static double GetTimeToVector(this Orbit orbit, Vector3d vector)
@@ -144,12 +135,12 @@ namespace KerbalEngineer.Extensions
 
         public static double GetTrueAnomalyOfAscendingNode(this Orbit orbit)
         {
-            return 360.0 - orbit.argumentOfPeriapsis;
+            return 360 - orbit.argumentOfPeriapsis;
         }
 
         public static double GetTrueAnomalyOfDescendingNode(this Orbit orbit)
         {
-            return 180.0 - orbit.argumentOfPeriapsis;
+            return 180 - orbit.argumentOfPeriapsis;
         }
 
         #endregion
