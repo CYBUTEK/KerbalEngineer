@@ -20,6 +20,7 @@
 #region Using Directives
 
 using System;
+using System.Linq;
 
 using KerbalEngineer.Extensions;
 using KerbalEngineer.Flight.Readouts.Vessel;
@@ -74,6 +75,8 @@ namespace KerbalEngineer.Flight.Readouts.Orbital.ManoeuvreNode
         public static double ProgradeDeltaV { get; private set; }
 
         public static double RadialDeltaV { get; private set; }
+
+        public static double TripDeltaV { get; private set; }
 
         public static bool ShowDetails { get; set; }
 
@@ -134,6 +137,12 @@ namespace KerbalEngineer.Flight.Readouts.Orbital.ManoeuvreNode
 
             BurnTime = burnTime;
             HalfBurnTime = midPointTime;
+
+            var tripDeltaV = TotalDeltaV;
+            foreach (var n in FlightGlobals.ActiveVessel.patchedConicSolver.maneuverNodes.Skip(1) ) {
+                tripDeltaV += n.DeltaV.magnitude;
+            }
+            TripDeltaV = tripDeltaV;
 
             ShowDetails = true;
         }
