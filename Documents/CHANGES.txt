@@ -1,7 +1,3 @@
-1.4.1.0, 2018-03-20, KSP 1.4.1 #2089
-    Fixed: VAB calculations not accounting for which side the decoupler stays with after staging
-    Fixed: VAB calculations not handling engine plates
-
 1.1.3.0, 2017-05-28, KSP 1.3.0 #1804
     Fixed: Check for NaN and Infinities before clamping angles, resolving a hang state caused by the Intercept Angle readout.
     Added: Setting for enabling/disabling whether the toolbar icon in-flight activates on mouse hover.
