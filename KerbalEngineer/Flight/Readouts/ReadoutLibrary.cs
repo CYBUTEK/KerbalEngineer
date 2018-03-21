@@ -206,6 +206,7 @@ namespace KerbalEngineer.Flight.Readouts
                 readouts.Add(new SystemTime());
                 readouts.Add(new SystemTime24());
                 readouts.Add(new SystemDateTime());
+                readouts.Add(new SimulationTime());
                 readouts.Add(new LogSimToggle());
 
                 LoadHelpStrings();
