@@ -96,6 +96,7 @@ namespace KerbalEngineer.Flight.Readouts
                 readouts.Add(new SpeedAtApoapsis());
                 readouts.Add(new SpeedAtPeriapsis());
                 readouts.Add(new TimeToAtmosphere());
+                readouts.Add(new TripTotalDeltaV());
 
                 // Surface
                 readouts.Add(new AltitudeSeaLevel());
