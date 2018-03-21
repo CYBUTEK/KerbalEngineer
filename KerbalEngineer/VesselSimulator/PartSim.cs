@@ -72,7 +72,8 @@ namespace KerbalEngineer.VesselSimulator
         public double startMass = 0d;
         public String vesselName;
         public VesselType vesselType;
-        
+        public bool isEnginePlate;
+
 
         private static PartSim Create()
         {
@@ -118,6 +119,9 @@ namespace KerbalEngineer.VesselSimulator
             partSim.parentAttach = p.attachMode;
             partSim.fuelCrossFeed = p.fuelCrossFeed;
             partSim.noCrossFeedNodeKey = p.NoCrossFeedNodeKey;
+            partSim.isEnginePlate = IsEnginePlate(p);
+            if (partSim.isEnginePlate)
+                partSim.noCrossFeedNodeKey = "bottom"; //sadly this only works in one direction.
             partSim.decoupledInStage = partSim.DecoupledInStage(p);
             partSim.isFuelLine = p.HasModule<CModuleFuelLine>();
             partSim.isSepratron = partSim.IsSepratron();
@@ -537,10 +541,24 @@ namespace KerbalEngineer.VesselSimulator
                                 }
                                 else
                                 {
-                                    if (log != null) log.Append(indent, "Adding attached part as source  (", attachSim.attachedPartSim.name, ":")
-                                                        .AppendLine(attachSim.attachedPartSim.partId, ")");
+                                    bool flg = true;
 
-                                    attachSim.attachedPartSim.GetSourceSet_Internal(type, includeSurfaceMountedParts, allParts, visited, allSources, ref priMax, log, indent);
+                                    if (attachSim.attachedPartSim.isEnginePlate) //y u make me do dis.
+                                    {
+                                        foreach (AttachNodeSim att in attachSim.attachedPartSim.attachNodes)
+                                        {
+                                            if (att.attachedPartSim == this && att.id == "bottom")
+                                                flg = false;
+                                        }
+                                    }
+
+                                    if (flg)
+                                    {
+                                        if (log != null) log.Append(indent, "Adding attached part as source  (", attachSim.attachedPartSim.name, ":")
+                                                            .AppendLine(attachSim.attachedPartSim.partId, ")");
+
+                                        attachSim.attachedPartSim.GetSourceSet_Internal(type, includeSurfaceMountedParts, allParts, visited, allSources, ref priMax, log, indent);
+                                    }
                                 }
                             }
                         }
@@ -572,192 +590,197 @@ namespace KerbalEngineer.VesselSimulator
                         allSources.Add(this);
                     }
                 }
+                else
+                {
+                    if (log != null) log.Append(indent, name + " not enough " + ResourceContainer.GetResourceName(type))
+                                        .AppendLine("  Requested = " + resRequestRemainingThreshold + " actual " + resources[type]);
+                }
             }
             else
             {
-                if (log != null) log.Append(indent, "Not fuel tank or disabled. HasType = ", resources.HasType(type))
+                if (log != null) log.Append(indent, name + " not fuel tank or disabled. HasType = ", resources.HasType(type))
                                     .AppendLine("  FlowState = " + resourceFlowStates[type]);
             }
         }
 
         // This is the old recursive function for STACK_PRIORITY_SEARCH
-        public void GetSourceSet_Old(int type, bool includeSurfaceMountedParts, List<PartSim> allParts, HashSet<PartSim> visited, HashSet<PartSim> allSources, LogMsg log, String indent)
-        {
-            if (log != null)
-            {
-                log.Append(indent, "GetSourceSet_Old(", ResourceContainer.GetResourceName(type), ") for ")
-                    .AppendLine(name, ":", partId);
-                indent += "  ";
-            }
+        //public void GetSourceSet_Old(int type, bool includeSurfaceMountedParts, List<PartSim> allParts, HashSet<PartSim> visited, HashSet<PartSim> allSources, LogMsg log, String indent)
+        //{
+        //    if (log != null)
+        //    {
+        //        log.Append(indent, "GetSourceSet_Old(", ResourceContainer.GetResourceName(type), ") for ")
+        //            .AppendLine(name, ":", partId);
+        //        indent += "  ";
+        //    }
 
-            // Rule 1: Each part can be only visited once, If it is visited for second time in particular search it returns as is.
-            if (visited.Contains(this))
-            {
-                if (log != null) log.Append(indent, "Returning empty set, already visited (", name, ":")
-                                    .AppendLine(partId + ")");
-                return;
-            }
+        //    // Rule 1: Each part can be only visited once, If it is visited for second time in particular search it returns as is.
+        //    if (visited.Contains(this))
+        //    {
+        //        if (log != null) log.Append(indent, "Returning empty set, already visited (", name, ":")
+        //                            .AppendLine(partId + ")");
+        //        return;
+        //    }
 
-            if (log != null) log.AppendLine(indent, "Adding this to visited");
+        //    if (log != null) log.AppendLine(indent, "Adding this to visited");
 
-            visited.Add(this);
+        //    visited.Add(this);
 
-            // Rule 2: Part performs scan on start of every fuel pipe ending in it. This scan is done in order in which pipes were installed.
-            // Then it makes an union of fuel tank sets each pipe scan returned. If the resulting list is not empty, it is returned as result.
-            //MonoBehaviour.print("for each fuel line");
+        //    // Rule 2: Part performs scan on start of every fuel pipe ending in it. This scan is done in order in which pipes were installed.
+        //    // Then it makes an union of fuel tank sets each pipe scan returned. If the resulting list is not empty, it is returned as result.
+        //    //MonoBehaviour.print("for each fuel line");
 
-            int lastCount = allSources.Count;
+        //    int lastCount = allSources.Count;
 
-            for (int i = 0; i < this.fuelTargets.Count; i++)
-            {
-                PartSim partSim = this.fuelTargets[i];
-                if (partSim != null)
-                {
-                    if (visited.Contains(partSim))
-                    {
-                        if (log != null) log.Append(indent, "Fuel target already visited, skipping (", partSim.name, ":")
-                                            .AppendLine(partSim.partId, ")");
-                    }
-                    else
-                    {
-                        if (log != null) log.Append(indent, "Adding fuel target as source (", partSim.name, ":")
-                                            .AppendLine(partSim.partId, ")");
+        //    for (int i = 0; i < this.fuelTargets.Count; i++)
+        //    {
+        //        PartSim partSim = this.fuelTargets[i];
+        //        if (partSim != null)
+        //        {
+        //            if (visited.Contains(partSim))
+        //            {
+        //                if (log != null) log.Append(indent, "Fuel target already visited, skipping (", partSim.name, ":")
+        //                                    .AppendLine(partSim.partId, ")");
+        //            }
+        //            else
+        //            {
+        //                if (log != null) log.Append(indent, "Adding fuel target as source (", partSim.name, ":")
+        //                                    .AppendLine(partSim.partId, ")");
 
-                        partSim.GetSourceSet_Old(type, includeSurfaceMountedParts, allParts, visited, allSources, log, indent);
-                    }
-                }
-            }
+        //                partSim.GetSourceSet_Old(type, includeSurfaceMountedParts, allParts, visited, allSources, log, indent);
+        //            }
+        //        }
+        //    }
 
-            // check surface mounted fuel targets
-            if (includeSurfaceMountedParts)
-            {
-                for (int i = 0; i < surfaceMountFuelTargets.Count; i++)
-                {
-                    PartSim partSim = this.surfaceMountFuelTargets[i];
-                    if (partSim != null)
-                    {
-                        if (visited.Contains(partSim))
-                        {
-                            if (log != null) log.Append(indent, "Fuel target already visited, skipping (", partSim.name, ":")
-                                                .AppendLine(partSim.partId, ")");
-                        }
-                        else
-                        {
-                            if (log != null) log.Append(indent, "Adding fuel target as source (", partSim.name, ":")
-                                                .AppendLine(partSim.partId, ")");
+        //    // check surface mounted fuel targets
+        //    if (includeSurfaceMountedParts)
+        //    {
+        //        for (int i = 0; i < surfaceMountFuelTargets.Count; i++)
+        //        {
+        //            PartSim partSim = this.surfaceMountFuelTargets[i];
+        //            if (partSim != null)
+        //            {
+        //                if (visited.Contains(partSim))
+        //                {
+        //                    if (log != null) log.Append(indent, "Fuel target already visited, skipping (", partSim.name, ":")
+        //                                        .AppendLine(partSim.partId, ")");
+        //                }
+        //                else
+        //                {
+        //                    if (log != null) log.Append(indent, "Adding fuel target as source (", partSim.name, ":")
+        //                                        .AppendLine(partSim.partId, ")");
 
-                            partSim.GetSourceSet_Old(type, true, allParts, visited, allSources, log, indent);
-                        }
-                    }
-                }
-            }
+        //                    partSim.GetSourceSet_Old(type, true, allParts, visited, allSources, log, indent);
+        //                }
+        //            }
+        //        }
+        //    }
 
-            if (allSources.Count > lastCount)
-            {
-                if (log != null) log.Append(indent, "Returning ", (allSources.Count - lastCount), " fuel target sources (")
-                                    .AppendLine(this.name, ":", this.partId, ")");
-                return;
-            }
+        //    if (allSources.Count > lastCount)
+        //    {
+        //        if (log != null) log.Append(indent, "Returning ", (allSources.Count - lastCount), " fuel target sources (")
+        //                            .AppendLine(this.name, ":", this.partId, ")");
+        //        return;
+        //    }
 
 
-            // Rule 3: This rule has been removed and merged with rules 4 and 7 to fix issue with fuel tanks with disabled crossfeed
+        //    // Rule 3: This rule has been removed and merged with rules 4 and 7 to fix issue with fuel tanks with disabled crossfeed
 
-            // Rule 4: Part performs scan on each of its axially mounted neighbors. 
-            //  Couplers (bicoupler, tricoupler, ...) are an exception, they only scan one attach point on the single attachment side,
-            //  skip the points on the side where multiple points are. [Experiment]
-            //  Again, the part creates union of scan lists from each of its neighbor and if it is not empty, returns this list. 
-            //  The order in which mount points of a part are scanned appears to be fixed and defined by the part specification file. [Experiment]
-            if (fuelCrossFeed)
-            {
-                lastCount = allSources.Count;
-                //MonoBehaviour.print("for each attach node");
-                for (int i = 0; i < this.attachNodes.Count; i++)
-                {
-                    AttachNodeSim attachSim = this.attachNodes[i];
-                    if (attachSim.attachedPartSim != null)
-                    {
-                        if (attachSim.nodeType == AttachNode.NodeType.Stack)
-                        {
-                            if ((string.IsNullOrEmpty(noCrossFeedNodeKey) == false && attachSim.id.Contains(noCrossFeedNodeKey)) == false)
-                            {
-                                if (visited.Contains(attachSim.attachedPartSim))
-                                {
-                                    if (log != null) log.Append(indent, "Attached part already visited, skipping (", attachSim.attachedPartSim.name, ":")
-                                                        .AppendLine(attachSim.attachedPartSim.partId, ")");
-                                }
-                                else
-                                {
-                                    if (log != null) log.Append(indent, "Adding attached part as source  (", attachSim.attachedPartSim.name, ":")
-                                                        .AppendLine(attachSim.attachedPartSim.partId, ")");
+        //    // Rule 4: Part performs scan on each of its axially mounted neighbors. 
+        //    //  Couplers (bicoupler, tricoupler, ...) are an exception, they only scan one attach point on the single attachment side,
+        //    //  skip the points on the side where multiple points are. [Experiment]
+        //    //  Again, the part creates union of scan lists from each of its neighbor and if it is not empty, returns this list. 
+        //    //  The order in which mount points of a part are scanned appears to be fixed and defined by the part specification file. [Experiment]
+        //    if (fuelCrossFeed)
+        //    {
+        //        lastCount = allSources.Count;
+        //        //MonoBehaviour.print("for each attach node");
+        //        for (int i = 0; i < this.attachNodes.Count; i++)
+        //        {
+        //            AttachNodeSim attachSim = this.attachNodes[i];
+        //            if (attachSim.attachedPartSim != null)
+        //            {
+        //                if (attachSim.nodeType == AttachNode.NodeType.Stack)
+        //                {
+        //                    if ((string.IsNullOrEmpty(noCrossFeedNodeKey) == false && attachSim.id.Contains(noCrossFeedNodeKey)) == false)
+        //                    {
+        //                        if (visited.Contains(attachSim.attachedPartSim))
+        //                        {
+        //                            if (log != null) log.Append(indent, "Attached part already visited, skipping (", attachSim.attachedPartSim.name, ":")
+        //                                                .AppendLine(attachSim.attachedPartSim.partId, ")");
+        //                        }
+        //                        else
+        //                        {
+        //                            if (log != null) log.Append(indent, "Adding attached part as source  (", attachSim.attachedPartSim.name, ":")
+        //                                                .AppendLine(attachSim.attachedPartSim.partId, ")");
 
-                                    attachSim.attachedPartSim.GetSourceSet_Old(type, includeSurfaceMountedParts, allParts, visited, allSources, log, indent);
-                                }
-                            }
-                        }
-                    }
-                }
+        //                            attachSim.attachedPartSim.GetSourceSet_Old(type, includeSurfaceMountedParts, allParts, visited, allSources, log, indent);
+        //                        }
+        //                    }
+        //                }
+        //            }
+        //        }
 
-                if (allSources.Count > lastCount)
-                {
-                    if (log != null) log.Append(indent, "Returning " + (allSources.Count - lastCount) + " attached sources (")
-                                        .AppendLine(this.name, ":", this.partId, ")");
-                    return;
-                }
-            }
+        //        if (allSources.Count > lastCount)
+        //        {
+        //            if (log != null) log.Append(indent, "Returning " + (allSources.Count - lastCount) + " attached sources (")
+        //                                .AppendLine(this.name, ":", this.partId, ")");
+        //            return;
+        //        }
+        //    }
 
-            // Rule 5: If the part is fuel container for searched type of fuel (i.e. it has capability to contain that type of fuel and the fuel 
-            // type was not disabled [Experiment]) and it contains fuel, it returns itself.
-            // Rule 6: If the part is fuel container for searched type of fuel (i.e. it has capability to contain that type of fuel and the fuel 
-            // type was not disabled) but it does not contain the requested fuel, it returns empty list. [Experiment]
-            if (resources.HasType(type) && resourceFlowStates[type] > 0.0)
-            {
-                if (resources[type] > SimManager.RESOURCE_MIN)
-                {
-                    allSources.Add(this);
+        //    // Rule 5: If the part is fuel container for searched type of fuel (i.e. it has capability to contain that type of fuel and the fuel 
+        //    // type was not disabled [Experiment]) and it contains fuel, it returns itself.
+        //    // Rule 6: If the part is fuel container for searched type of fuel (i.e. it has capability to contain that type of fuel and the fuel 
+        //    // type was not disabled) but it does not contain the requested fuel, it returns empty list. [Experiment]
+        //    if (resources.HasType(type) && resourceFlowStates[type] > 0.0)
+        //    {
+        //        if (resources[type] > SimManager.RESOURCE_MIN)
+        //        {
+        //            allSources.Add(this);
 
-                    if (log != null) log.Append(indent, "Returning enabled tank as only source (", name, ":")
-                                        .AppendLine(partId, ")");
+        //            if (log != null) log.Append(indent, "Returning enabled tank as only source (", name, ":")
+        //                                .AppendLine(partId, ")");
 
-                    return;
-                }
-            }
-            else
-            {
-                if (log != null) log.Append(indent, "Not fuel tank or disabled. HasType = ", resources.HasType(type))
-                                    .AppendLine("  FlowState = " + resourceFlowStates[type]);
-            }
+        //            return;
+        //        }
+        //    }
+        //    else
+        //    {
+        //        if (log != null) log.Append(indent, "Not fuel tank or disabled. HasType = ", resources.HasType(type))
+        //                            .AppendLine("  FlowState = " + resourceFlowStates[type]);
+        //    }
 
-            // Rule 7: If the part is radially attached to another part and it is child of that part in the ship's tree structure, it scans its 
-            // parent and returns whatever the parent scan returned. [Experiment] [Experiment]
-            if (parent != null && parentAttach == AttachModes.SRF_ATTACH)
-            {
-                if (fuelCrossFeed)
-                {
-                    if (visited.Contains(parent))
-                    {
-                        if (log != null) log.Append(indent, "Parent part already visited, skipping (", parent.name, ":")
-                                            .AppendLine(parent.partId, ")");
-                    }
-                    else
-                    {
-                        lastCount = allSources.Count;
-                        this.parent.GetSourceSet_Old(type, includeSurfaceMountedParts, allParts, visited, allSources, log, indent);
-                        if (allSources.Count > lastCount)
-                        {
-                            if (log != null) log.Append(indent, "Returning ", (allSources.Count - lastCount), " parent sources (")
-                                                .AppendLine(this.name, ":", this.partId, ")");
-                            return;
-                        }
-                    }
-                }
-            }
+        //    // Rule 7: If the part is radially attached to another part and it is child of that part in the ship's tree structure, it scans its 
+        //    // parent and returns whatever the parent scan returned. [Experiment] [Experiment]
+        //    if (parent != null && parentAttach == AttachModes.SRF_ATTACH)
+        //    {
+        //        if (fuelCrossFeed)
+        //        {
+        //            if (visited.Contains(parent))
+        //            {
+        //                if (log != null) log.Append(indent, "Parent part already visited, skipping (", parent.name, ":")
+        //                                    .AppendLine(parent.partId, ")");
+        //            }
+        //            else
+        //            {
+        //                lastCount = allSources.Count;
+        //                this.parent.GetSourceSet_Old(type, includeSurfaceMountedParts, allParts, visited, allSources, log, indent);
+        //                if (allSources.Count > lastCount)
+        //                {
+        //                    if (log != null) log.Append(indent, "Returning ", (allSources.Count - lastCount), " parent sources (")
+        //                                        .AppendLine(this.name, ":", this.partId, ")");
+        //                    return;
+        //                }
+        //            }
+        //        }
+        //    }
 
-            // Rule 8: If all preceding rules failed, part returns empty list.
-            if (log != null) log.Append(indent, "Returning empty set, no sources found (", name, ":")
-                                .AppendLine(partId, ")");
+        //    // Rule 8: If all preceding rules failed, part returns empty list.
+        //    if (log != null) log.Append(indent, "Returning empty set, no sources found (", name, ":")
+        //                        .AppendLine(partId, ")");
 
-            return;
-        }
+        //    return;
+        //}
 
         public double GetStartMass()
         {
@@ -920,13 +943,72 @@ namespace KerbalEngineer.VesselSimulator
             return thrustvec;
         }
 
-        private int DecoupledInStage(Part thePart, int stage = -1)
+        private int DecoupledInStage(Part thePart)
         {
-            if (IsDecoupler(thePart) && thePart.inverseStage > stage)
-                stage = thePart.inverseStage;
+            int stage = -1;
+            Part original = thePart;
 
-            if (thePart.parent != null)
-                stage = DecoupledInStage(thePart.parent, stage);
+            while (thePart != null)
+            {
+
+                if (thePart.inverseStage > stage)
+                {
+
+                    ModuleDecouple mdec = thePart.GetModule<ModuleDecouple>();
+                    ModuleDockingNode mdock = thePart.GetModule<ModuleDockingNode>();
+                    ModuleAnchoredDecoupler manch = thePart.GetModule<ModuleAnchoredDecoupler>();
+
+                    if (mdec != null)
+                    {
+                        ModuleDynamicNodes mdyn = thePart.GetModule<ModuleDynamicNodes>();
+                        if (mdyn != null)
+                        { //engine plate
+
+                            if (original == thePart)
+                            { //checking self, make sure not upside down
+                                if (thePart.FindAttachNodeByPart(thePart.parent).id == "bottom") //leaves with stage
+                                    stage = thePart.inverseStage;
+                            }
+                            else if (original.parent != null && original.parent == thePart)
+                            { //plate direct child.
+                                if (thePart.FindAttachNodeByPart(original).id == "bottom")
+                                    stage = thePart.inverseStage; //goodbye!
+                            }
+                            else stage = thePart.inverseStage;  //decouple.           
+                        }
+                        else
+                        {//regular decoupler
+                            if (original == thePart)
+                            {    //checking self
+                                if (mdec.isOmniDecoupler || thePart.FindAttachNodeByPart(thePart.parent).id == "top") //leaves with stage
+                                    stage = thePart.inverseStage;
+                            }
+                            else stage = thePart.inverseStage;
+                        }
+                    }
+
+                    if (manch != null) //radial decouple
+                    {
+                        if (original == thePart)
+                        {    //checking self
+                            if (thePart.FindAttachNodeByPart(thePart.parent).id == "top") //leaves with stage
+                                stage = thePart.inverseStage;
+                        }
+                        else stage = thePart.inverseStage;
+                    }
+
+                    if (mdock != null) //docking port
+                    {
+                        if (original == thePart)
+                        {    //checking self, never leaves.
+
+                        }
+                        else stage = thePart.inverseStage;
+                    }
+                }
+
+                thePart = thePart.parent;
+            }
 
             return stage;
         }
@@ -946,6 +1028,19 @@ namespace KerbalEngineer.VesselSimulator
             ModuleDockingNode modDock = thePart.GetModule<ModuleDockingNode>();
             if (modDock != null && modDock.IsStageable())
                 return true;
+
+            return false;
+        }
+
+        private static bool IsEnginePlate(Part thePart)
+        {
+            ModuleDecouple mdec = thePart.GetModule<ModuleDecouple>();
+            if (mdec != null && mdec.IsStageable())
+            {
+                ModuleDynamicNodes mdyn = thePart.GetModule<ModuleDynamicNodes>();
+                if (mdyn != null)
+                    return true;
+            }
 
             return false;
         }
