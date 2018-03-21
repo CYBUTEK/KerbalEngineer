@@ -21,40 +21,32 @@ namespace KerbalEngineer.Helpers
     {
         public static string ConvertToString(double seconds, string format = "F1")
         {
-            int years = 0;
-            int days = 0;
-            int hours = 0;
-            int minutes = 0;
+            if (seconds == 0)
+                return string.Format("{0}s", seconds.ToString(format));
 
-            if (seconds > 0.0)
-            {
-                years = (int)(seconds / KSPUtil.dateTimeFormatter.Year);
-                seconds -= years * KSPUtil.dateTimeFormatter.Year;
-
-                days = (int)(seconds / KSPUtil.dateTimeFormatter.Day);
-                seconds -= days * KSPUtil.dateTimeFormatter.Day;
-
-                hours = (int)(seconds / 3600.0);
-                seconds -= hours * 3600.0;
-
-                minutes = (int)(seconds / 60.0);
-                seconds -= minutes * 60.0;
-            }
+            int years = (int)(seconds / KSPUtil.dateTimeFormatter.Year);
+            seconds -= years * KSPUtil.dateTimeFormatter.Year;
+            int days = (int)(seconds / KSPUtil.dateTimeFormatter.Day);
+            seconds -= days * KSPUtil.dateTimeFormatter.Day;
+            int hours = (int)(seconds / 3600d);
+            seconds -= hours * 3600;
+            int minutes = (int)(seconds / 60d);
+            seconds -= minutes * 60;
 
             if (years > 0)
-            {
                 return string.Format("{0}y {1}d {2}h {3}m {4}s", years, days, hours, minutes, seconds.ToString(format));
-            }
-            if (days > 0)
-            {
-                return string.Format("{0}d {1}h {2}m {3}s", days, hours, minutes, seconds.ToString(format));
-            }
-            if (hours > 0)
-            {
-                return string.Format("{0}h {1}m {2}s", hours, minutes, seconds.ToString(format));
-            }
 
-            return minutes > 0 ? string.Format("{0}m {1}s", minutes, seconds.ToString(format)) : string.Format("{0}s", seconds.ToString(format));
+            if (days > 0)
+                return string.Format("{0}d {1}h {2}m {3}s", days, hours, minutes, seconds.ToString(format));
+
+            if (hours > 0)
+                return string.Format("{0}h {1}m {2}s", hours, minutes, seconds.ToString(format));
+
+            if (minutes > 0)
+                return string.Format("{0}m {1}s", minutes, seconds.ToString(format));
+
+            return string.Format("{0}s", seconds.ToString(format));
         }
+        
     }
 }
