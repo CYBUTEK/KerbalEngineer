@@ -86,6 +86,7 @@
     <Compile Include="Flight\Readouts\Orbital\ManoeuvreNode\PostBurnInclination.cs" />
     <Compile Include="Flight\Readouts\Orbital\ManoeuvreNode\PostBurnPeriapsis.cs" />
     <Compile Include="Flight\Readouts\Orbital\ManoeuvreNode\PostBurnPeriod.cs" />
+    <Compile Include="Flight\Readouts\Orbital\ManoeuvreNode\TripTotalDeltaV.cs" />
     <Compile Include="Flight\Readouts\Orbital\MeanAnomalyAtEpoc.cs" />
     <Compile Include="Flight\Readouts\Orbital\MeanAnomaly.cs" />
     <Compile Include="Flight\Readouts\Orbital\EccentricAnomaly.cs" />
