@@ -29,6 +29,7 @@ namespace KerbalEngineer.Flight.Readouts.Rendezvous
 {
     public class TargetSelector : ReadoutModule
     {
+        
         #region Fields
 
         private string searchQuery = string.Empty;
@@ -38,6 +39,7 @@ namespace KerbalEngineer.Flight.Readouts.Rendezvous
         private float typeButtonWidth;
         private bool typeIsBody;
         private bool usingSearch;
+        private bool displayDebrisAndFlags = false;
         private VesselType vesselType = VesselType.Unknown;
 
         #endregion
@@ -194,6 +196,8 @@ namespace KerbalEngineer.Flight.Readouts.Rendezvous
                 this.usingSearch = false;
                 this.ResizeRequested = true;
             }
+            
+            this.displayDebrisAndFlags = GUILayout.Toggle(this.displayDebrisAndFlags,"Show All", this.ButtonStyle,GUILayout.Width(60.0f * GuiDisplaySize.Offset));
 
             GUILayout.EndHorizontal();
         }
@@ -346,6 +350,12 @@ namespace KerbalEngineer.Flight.Readouts.Rendezvous
             foreach (var vessel in FlightGlobals.Vessels)
             {
                 if (vessel == FlightGlobals.ActiveVessel || (this.searchQuery.Length == 0 && vessel.vesselType != this.vesselType))
+                {
+                    continue;
+                }
+
+                //Ignores Debris and Flags on search bar
+                if (this.searchQuery.Length != 0 && !displayDebrisAndFlags && (vessel.vesselType == VesselType.Debris || vessel.vesselType == VesselType.Flag))
                 {
                     continue;
                 }
