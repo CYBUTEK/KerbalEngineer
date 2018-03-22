@@ -151,46 +151,8 @@ namespace KerbalEngineer.VesselSimulator
             }
             else
             {
-                partSim.realMass = p.mass;
-
-                if (HighLogic.LoadedSceneIsEditor && PhysicsGlobals.KerbalCrewMass != 0 && ShipConstruction.ShipManifest != null)
-                { //fix weird stock behavior with this physics setting.
-
-                    var crewlist = ShipConstruction.ShipManifest.GetAllCrew(false);
-
-                    int crew = 0;
-
-                    foreach(var crewmem in crewlist)
-                    {
-                         if(crewmem !=null) crew++;
-                    }
-
-                    if (log != null) log.AppendLine("crew count " + crew);
-
-                    if (crew > 0)
-                    {
-                        var pcm = ShipConstruction.ShipManifest.GetPartCrewManifest(p.craftID);
-
-                        if (log != null && pcm == null) log.AppendLine("pcm is null!");
-
-                        if (log != null && pcm != null) log.AppendLine("pcm: " + pcm.GetPartCrew().Length);
-
-                        int actualCrew = 0;
-
-                        foreach (var crewmem in pcm.GetPartCrew())
-                        {
-                            if (crewmem != null)
-                                actualCrew++;
-                        }
-
-                        if (actualCrew < crew)
-                        {
-                            partSim.crewMassOffset = -PhysicsGlobals.KerbalCrewMass * (crew-actualCrew);
-                            partSim.realMass += partSim.crewMassOffset;
-                            if (log != null) log.AppendLine("Adjusting Weight of Crew");
-                        }
-                    }
-                }
+                partSim.crewMassOffset = p.getCrewAdjustment();
+                partSim.realMass = p.mass + partSim.crewMassOffset;
 
                 if (log != null) log.AppendLine("Using part.mass of " + partSim.realMass);
             }
