@@ -1,3 +1,12 @@
+1.1.4.1, 2018-03-22, KSP 1.4.1 #2089
+    Fix VAB mass calculation with non-zero kerbal crew weight
+    Fix NPE when surface attaching a part to an engine plate
+    Add Total Trip DeltaV to orbital readouts
+
+1.1.4.0, 2017-03-21, KSP 1.4.1 #2089
+    Fixed new Engine Plates not calculating correctly in the VAB
+    Fix VAB mass calculation with decouplers not accounting for direction or type of decoupler
+
 1.1.3.0, 2017-05-28, KSP 1.3.0 #1804
     Fixed: Check for NaN and Infinities before clamping angles, resolving a hang state caused by the Intercept Angle readout.
     Added: Setting for enabling/disabling whether the toolbar icon in-flight activates on mouse hover.
