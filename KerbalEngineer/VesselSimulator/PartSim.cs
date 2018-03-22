@@ -70,6 +70,7 @@ namespace KerbalEngineer.VesselSimulator
         public ResourceContainer resourceFlowStates = new ResourceContainer();
         public ResourceContainer resources = new ResourceContainer();
         public double startMass = 0d;
+        public double crewMassOffset = 0d;
         public String vesselName;
         public VesselType vesselType;
         public bool isEnginePlate;
@@ -97,6 +98,7 @@ namespace KerbalEngineer.VesselSimulator
             partSim.baseMass = 0d;
             partSim.baseMassForCoM = 0d;
             partSim.startMass = 0d;
+            partSim.crewMassOffset = 0d;
         }
 
         public void Release()
@@ -150,7 +152,47 @@ namespace KerbalEngineer.VesselSimulator
             else
             {
                 partSim.realMass = p.mass;
-                if (log != null) log.AppendLine("Using part.mass of ", p.mass);
+
+                if (HighLogic.LoadedSceneIsEditor && PhysicsGlobals.KerbalCrewMass != 0 && ShipConstruction.ShipManifest != null)
+                { //fix weird stock behavior with this physics setting.
+
+                    var crewlist = ShipConstruction.ShipManifest.GetAllCrew(false);
+
+                    int crew = 0;
+
+                    foreach(var crewmem in crewlist)
+                    {
+                         if(crewmem !=null) crew++;
+                    }
+
+                    if (log != null) log.AppendLine("crew count " + crew);
+
+                    if (crew > 0)
+                    {
+                        var pcm = ShipConstruction.ShipManifest.GetPartCrewManifest(p.craftID);
+
+                        if (log != null && pcm == null) log.AppendLine("pcm is null!");
+
+                        if (log != null && pcm != null) log.AppendLine("pcm: " + pcm.GetPartCrew().Length);
+
+                        int actualCrew = 0;
+
+                        foreach (var crewmem in pcm.GetPartCrew())
+                        {
+                            if (crewmem != null)
+                                actualCrew++;
+                        }
+
+                        if (actualCrew < crew)
+                        {
+                            partSim.crewMassOffset = -PhysicsGlobals.KerbalCrewMass * (crew-actualCrew);
+                            partSim.realMass += partSim.crewMassOffset;
+                            if (log != null) log.AppendLine("Adjusting Weight of Crew");
+                        }
+                    }
+                }
+
+                if (log != null) log.AppendLine("Using part.mass of " + partSim.realMass);
             }
 
             partSim.postStageMassAdjust = 0f;
@@ -172,7 +214,9 @@ namespace KerbalEngineer.VesselSimulator
                     }
                 }
             }
+
             if (log != null) log.AppendLine("postStageMassAdjust = ", partSim.postStageMassAdjust);
+            if (log != null) log.AppendLine("crewMassOffset = ", partSim.crewMassOffset);
 
             for (int i = 0; i < p.Resources.Count; i++)
             {
@@ -971,7 +1015,8 @@ namespace KerbalEngineer.VesselSimulator
                             }
                             else if (original.parent != null && original.parent == thePart)
                             { //plate direct child.
-                                if (thePart.FindAttachNodeByPart(original).id == "bottom")
+                                AttachNode att = thePart.FindAttachNodeByPart(original);
+                                if (att != null && att.id == "bottom")
                                     stage = thePart.inverseStage; //goodbye!
                             }
                             else stage = thePart.inverseStage;  //decouple.           
