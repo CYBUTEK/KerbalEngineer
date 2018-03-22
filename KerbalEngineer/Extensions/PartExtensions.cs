@@ -149,7 +149,7 @@ namespace KerbalEngineer.Extensions
 
                     if (actualCrew < crew)
                     {
-                        return PhysicsGlobals.KerbalCrewMass * (crew - actualCrew);
+                        return -PhysicsGlobals.KerbalCrewMass * (crew - actualCrew);
                     }
 
                 }
