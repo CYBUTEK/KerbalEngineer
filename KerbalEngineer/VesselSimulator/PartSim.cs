@@ -947,25 +947,23 @@ namespace KerbalEngineer.VesselSimulator
                         ModuleDynamicNodes mdyn = thePart.GetModule<ModuleDynamicNodes>();
                         if (mdyn != null)
                         { //engine plate
-
-                            if (original == thePart)
+                            if (thePart.parent != null && original == thePart)
                             { //checking self, make sure not upside down
-                                if (thePart.FindAttachNodeByPart(thePart.parent).id == "bottom") //leaves with stage
+                                if(mdec.ExplosiveNode != null && mdec.ExplosiveNode.attachedPart == thePart.parent) //leaves with stage
                                     stage = thePart.inverseStage;
                             }
                             else if (original.parent != null && original.parent == thePart)
                             { //plate direct child.
-                                AttachNode att = thePart.FindAttachNodeByPart(original);
-                                if (att != null && att.id == "bottom")
+                                if (mdec.ExplosiveNode != null && mdec.ExplosiveNode.attachedPart == original)
                                     stage = thePart.inverseStage; //goodbye!
                             }
                             else stage = thePart.inverseStage;  //decouple.           
                         }
                         else
                         {//regular decoupler
-                            if (original == thePart)
+                            if (thePart.parent != null && original == thePart)
                             {    //checking self
-                                if (mdec.isOmniDecoupler || thePart.FindAttachNodeByPart(thePart.parent).id == "top") //leaves with stage
+                                if (mdec.isOmniDecoupler || (mdec.ExplosiveNode != null && mdec.ExplosiveNode.attachedPart == thePart.parent)) //leaves with stage
                                     stage = thePart.inverseStage;
                             }
                             else stage = thePart.inverseStage;
@@ -974,10 +972,11 @@ namespace KerbalEngineer.VesselSimulator
 
                     if (manch != null) //radial decouple
                     {
-                        if (original == thePart)
-                        {    //checking self
-                            if (thePart.FindAttachNodeByPart(thePart.parent).id == "top") //leaves with stage
-                                stage = thePart.inverseStage;
+                        if (thePart.parent != null && original == thePart )
+                        {   //checking self
+                            //Assume always leaves, theres some issue checking the ExplosiveNode (always null?) in the Editor. It's hard to put these on backwards, anyway.
+                            //if (manch.ExplosiveNode !=null && manch.ExplosiveNode.attachedPart == thePart.parent) 
+                            stage = thePart.inverseStage; //leaves with stage
                         }
                         else stage = thePart.inverseStage;
                     }
