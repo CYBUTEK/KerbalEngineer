@@ -49,11 +49,11 @@
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine">
-      <HintPath>..\..\..\KSP-Environment\KSP_x64_Data\Managed\UnityEngine.dll</HintPath>
+      <HintPath>E:\Steam\steamapps\common\Kerbal Space Program\KSP_x64_Data\Managed\UnityEngine.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.UI">
-      <HintPath>..\..\..\KSP-Environment\KSP_x64_Data\Managed\UnityEngine.UI.dll</HintPath>
+      <HintPath>E:\Steam\steamapps\common\Kerbal Space Program\KSP_x64_Data\Managed\UnityEngine.UI.dll</HintPath>
       <Private>False</Private>
     </Reference>
   </ItemGroup>
