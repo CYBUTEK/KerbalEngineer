@@ -1,3 +1,7 @@
+1.1.4.3, 2018-03-23, KSP 1.4.1 #2089
+    Fix phantom stage when root part is stageable.
+    Handle decoupler stage detection in a more mod-friendly way.
+
 1.1.4.2, 2018-03-23, KSP 1.4.1 #2089
     Changed active engine detection code for multimode engines. Fixes GTI Multi Mode Engines mod.
     When landed and targeting something in the same SOI, the 'rel time to AN/DN' rendevous readouts now show the time until the landed ship comes under the target body's orbit.
