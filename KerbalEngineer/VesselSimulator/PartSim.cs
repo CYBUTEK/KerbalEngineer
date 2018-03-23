@@ -932,6 +932,9 @@ namespace KerbalEngineer.VesselSimulator
             int stage = -1;
             Part original = thePart;
 
+            if (thePart.parent == null)
+                return -1; //if a stageable part is the root (looking at you, new pods!), ignore inverseStage.
+
             while (thePart != null)
             {
 
