@@ -932,6 +932,9 @@ namespace KerbalEngineer.VesselSimulator
             int stage = -1;
             Part original = thePart;
 
+            if (thePart.parent == null)
+                return stage; //root part is always present. Fixes phantom stage if root is stageable.
+
             while (thePart != null)
             {
 
