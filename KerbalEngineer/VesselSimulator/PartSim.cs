@@ -237,56 +237,34 @@ namespace KerbalEngineer.VesselSimulator
         public void CreateEngineSims(List<EngineSim> allEngines, double atmosphere, double mach, bool vectoredThrust, bool fullThrust, LogMsg log)
         {
             if (log != null) log.AppendLine("CreateEngineSims for ", this.name);
-            var partMods = this.part.Modules;
-            var numMods = partMods.Count;
+            List<ModuleEngines> cacheModuleEngines = part.FindModulesImplementing<ModuleEngines>();
 
-            if (hasMultiModeEngine)
+            try
             {
-                // A multi-mode engine has multiple ModuleEngines but only one is active at any point
-                // The mode of the engine is the engineID of the ModuleEngines that is (are?) active
-                string mode = part.GetModule<MultiModeEngine>().mode;
-
-                for (int i = 0; i < numMods; i++)
+                if (cacheModuleEngines.Count > 0)
                 {
-                    //log.AppendLine("Module: ", partMods[i].moduleName);
-                    var engine = partMods[i] as ModuleEngines;
-                    if (engine != null && engine.engineID == mode)
+                    //find first active engine, assuming that two are never active at the same time
+                    foreach (ModuleEngines engine in cacheModuleEngines)
                     {
-                        if (log != null) log.AppendLine("Module: ", engine.moduleName);
-
-                        EngineSim engineSim = EngineSim.New(
-                            this,
-                            engine,
-                            atmosphere,
-                            (float)mach,
-                            vectoredThrust,
-                            fullThrust,
-                            log);
-                        allEngines.Add(engineSim);
+                        if (engine.isEnabled)
+                        {
+                            if (log != null) log.AppendLine("Module: ", engine.moduleName);
+                            EngineSim engineSim = EngineSim.New(
+                                this,
+                                engine,
+                                atmosphere,
+                                (float)mach,
+                                vectoredThrust,
+                                fullThrust,
+                                log);
+                            allEngines.Add(engineSim);
+                        }
                     }
                 }
             }
-            else if (hasModuleEngines)
+            catch
             {
-                for (int i = 0; i < numMods; i++)
-                {
-                    //log.AppendLine("Module: ", partMods[i].moduleName);
-                    var engine = partMods[i] as ModuleEngines;
-                    if (engine != null)
-                    {
-                        if (log != null) log.AppendLine("Module: ", engine.moduleName);
-
-                        EngineSim engineSim = EngineSim.New(
-                            this,
-                            engine,
-                            atmosphere,
-                            (float)mach,
-                            vectoredThrust,
-                            fullThrust,
-                            log);
-                        allEngines.Add(engineSim);
-                    }
-                }
+                Debug.Log("[KER] Error Catch in CreateEngineSims");
             }
         }
 

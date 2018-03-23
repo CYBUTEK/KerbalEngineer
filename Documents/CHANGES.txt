@@ -1,3 +1,8 @@
+1.1.4.2, 2018-03-23, KSP 1.4.1 #2089
+    Changed active engine detection code for multimode engines. Fixes GTI Multi Mode Engines mod.
+    When landed and targeting something in the same SOI, the 'rel time to AN/DN' rendevous readouts now show the time until the landed ship comes under the target body's orbit.
+    Negative times now display in year/day/hr/min/s format instead of just seconds.
+
 1.1.4.1, 2018-03-22, KSP 1.4.1 #2089
     Fix VAB mass calculation with non-zero kerbal crew weight
     Fix NPE when surface attaching a part to an engine plate

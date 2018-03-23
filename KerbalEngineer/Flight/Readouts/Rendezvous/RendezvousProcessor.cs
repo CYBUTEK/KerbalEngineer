@@ -144,6 +144,32 @@ namespace KerbalEngineer.Flight.Readouts.Rendezvous
         public static double TimeToRendezvous { get; private set; }
 
         /// <summary>
+        ///     Gets time for landed ship to intersect target orbital plane in system.
+        /// </summary>
+        public static double TimeToPlane { get; private set; }
+        
+        /// <summary>
+        ///     If the target body is ascending at the point of planar intersect.
+        /// </summary>
+        public static bool TimeToPlaneisAsc { get; private set; }
+
+        /// <summary>
+        ///     Is the Ship landed.
+        /// </summary>
+        public static bool isLanded { get; private set; }
+
+        /// <summary>
+        ///     If the current target is in the same SOI as the ship.
+        /// </summary>
+        public static bool inSystem { get; private set; }
+
+        /// <summary>
+        ///    The current ship's reference body rotation period.
+        /// </summary>
+        public static double bodyRotationPeriod { get; private set; }
+
+
+        /// <summary>
         ///     Gets and sets whether the updatable object should be updated.
         /// </summary>
         public bool UpdateRequested { get; set; }
@@ -175,11 +201,11 @@ namespace KerbalEngineer.Flight.Readouts.Rendezvous
 
             ShowDetails = true;
 
+            inSystem = FlightGlobals.ship_orbit.referenceBody == FlightGlobals.ActiveVessel.targetObject.GetOrbit().referenceBody;
+
             var targetOrbit = FlightGlobals.fetch.VesselTarget.GetOrbit();
-            var originOrbit = (FlightGlobals.ship_orbit.referenceBody == Planetarium.fetch.Sun ||
-                                FlightGlobals.ship_orbit.referenceBody == FlightGlobals.ActiveVessel.targetObject.GetOrbit().referenceBody)
-                ? FlightGlobals.ship_orbit
-                : FlightGlobals.ship_orbit.referenceBody.orbit;
+            var originOrbit = (FlightGlobals.ship_orbit.referenceBody == Planetarium.fetch.Sun || inSystem) ? 
+                FlightGlobals.ship_orbit : FlightGlobals.ship_orbit.referenceBody.orbit;
 
             RelativeInclination = originOrbit.GetRelativeInclination(targetOrbit);
             RelativeVelocity = FlightGlobals.ship_tgtSpeed;
@@ -198,6 +224,11 @@ namespace KerbalEngineer.Flight.Readouts.Rendezvous
             SemiMajorAxis = targetOrbit.semiMajorAxis;
             SemiMinorAxis = targetOrbit.semiMinorAxis;
 
+            TimeToPlane = CalcTimeToPlane(FlightGlobals.ship_orbit.referenceBody, FlightGlobals.ship_latitude, FlightGlobals.ship_longitude, targetOrbit);
+            // TimeToPlaneisAsc = ?? No idea how to detemine this.
+            bodyRotationPeriod = FlightGlobals.ship_orbit.referenceBody.rotationPeriod;
+
+            isLanded = FlightGlobals.ActiveVessel.LandedOrSplashed;
             Distance = Vector3d.Distance(targetOrbit.pos, originOrbit.pos);
             OrbitalPeriod = targetOrbit.period;
 
@@ -206,7 +237,7 @@ namespace KerbalEngineer.Flight.Readouts.Rendezvous
             Vector3d x = targetOrbit.pos - originOrbit.pos;
             Vector3d v = targetOrbit.vel - originOrbit.vel;
             double xv = Vector3d.Dot(x, v);
-            TimeToRendezvous = - xv / Vector3d.SqrMagnitude(v);
+            TimeToRendezvous = -xv / Vector3d.SqrMagnitude(v);
             RelativeRadialVelocity = xv / Vector3d.Magnitude(x);
         }
 
@@ -227,6 +258,48 @@ namespace KerbalEngineer.Flight.Readouts.Rendezvous
         private Vector3d GetDescendingNode(Orbit targetOrbit, Orbit originOrbit)
         {
             return Vector3d.Cross(originOrbit.GetOrbitNormal(), targetOrbit.GetOrbitNormal());
+        }
+
+        //From MechJeb2
+        //Computes the time required for the given launch location to rotate under the target orbital plane. 
+        //If the latitude is too high for the launch location to ever actually rotate under the target plane,
+        //returns the time of closest approach to the target plane.
+        //I have a wonderful proof of this formula which this comment is too short to contain.
+        private double CalcTimeToPlane(CelestialBody launchBody, double launchLatitude, double launchLongitude, Orbit target)
+        {
+            double inc = Math.Abs(Vector3d.Angle(SwappedOrbitNormal(target), launchBody.angularVelocity));
+            Vector3d b = Vector3d.Exclude(launchBody.angularVelocity, SwappedOrbitNormal(target)).normalized; // I don't understand the sign here, but this seems to work
+            b *= launchBody.Radius * Math.Sin(Math.PI / 180 * launchLatitude) / Math.Tan(Math.PI / 180 * inc);
+            Vector3d c = Vector3d.Cross(SwappedOrbitNormal(target), launchBody.angularVelocity).normalized;
+            double cMagnitudeSquared = Math.Pow(launchBody.Radius * Math.Cos(Math.PI / 180 * launchLatitude), 2) - b.sqrMagnitude;
+            if (cMagnitudeSquared < 0) cMagnitudeSquared = 0;
+            c *= Math.Sqrt(cMagnitudeSquared);
+            Vector3d a1 = b + c;
+            Vector3d a2 = b - c;
+
+            Vector3d longitudeVector = launchBody.GetSurfaceNVector(0, launchLongitude);
+
+            double angle1 = Math.Abs(Vector3d.Angle(longitudeVector, a1));
+            if (Vector3d.Dot(Vector3d.Cross(longitudeVector, a1), launchBody.angularVelocity) < 0) angle1 = 360 - angle1;
+
+            double angle2 = Math.Abs(Vector3d.Angle(longitudeVector, a2));
+            if (Vector3d.Dot(Vector3d.Cross(longitudeVector, a2), launchBody.angularVelocity) < 0) angle2 = 360 - angle2;
+
+            double angle = Math.Min(angle1, angle2);
+            return (angle / 360) * launchBody.rotationPeriod;
+        }
+
+        //normalized vector perpendicular to the orbital plane
+        //convention: as you look down along the orbit normal, the satellite revolves counterclockwise
+        public static Vector3d SwappedOrbitNormal(Orbit o)
+        {
+            return -SwapYZ(o.GetOrbitNormal()).normalized;
+        }
+
+        //can probably be replaced with Vector3d.xzy?
+        public static Vector3d SwapYZ(Vector3d v)
+        {
+            return v.xzy;
         }
     }
 }
