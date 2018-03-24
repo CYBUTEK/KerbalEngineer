@@ -28,7 +28,7 @@ namespace KerbalEngineer.Flight.Readouts.Surface
         {
             Name = "Mach Number";
             Category = ReadoutCategory.GetCategory("Surface");
-            HelpString = "Shows the vessel's mach number.";
+            HelpString = "Shows the vessel's mach number, which is it's speed relative to the speed of sound.";
             IsDefault = true;
         }
 

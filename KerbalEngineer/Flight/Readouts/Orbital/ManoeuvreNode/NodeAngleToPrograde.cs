@@ -36,7 +36,7 @@ namespace KerbalEngineer.Flight.Readouts.Orbital.ManoeuvreNode
         {
             this.Name = "Manoeuvre Node Angle to Prograde";
             this.Category = ReadoutCategory.GetCategory("Orbital");
-            this.HelpString = "Angular Distance from the Node to crossing the Orbit of the central body on it's prograde side.";
+            this.HelpString = "Angular distance from the node, to crossing the orbit of the central body on it's prograde side.";
             this.IsDefault = true;
         }
 

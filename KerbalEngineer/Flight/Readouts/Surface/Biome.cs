@@ -33,7 +33,7 @@ namespace KerbalEngineer.Flight.Readouts.Surface
         {
             this.Name = "Biome";
             this.Category = ReadoutCategory.GetCategory("Surface");
-            this.HelpString = "Shows the biome which the vessel is currently flying over.";
+            this.HelpString = "Shows the biome currently below the vessel.";
             this.IsDefault = true;
         }
 

@@ -34,7 +34,7 @@ namespace KerbalEngineer.Flight.Readouts.Vessel
         {
             this.Name = "Roll";
             this.Category = ReadoutCategory.GetCategory("Vessel");
-            this.HelpString = "Shows the current Roll angle.";
+            this.HelpString = "Shows the current roll angle.";
             this.IsDefault = false;
         }
 

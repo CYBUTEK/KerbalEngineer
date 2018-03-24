@@ -34,7 +34,7 @@ namespace KerbalEngineer.Flight.Readouts.Vessel
         {
             Name = "Name";
             Category = ReadoutCategory.GetCategory("Vessel");
-            HelpString = "Displays the name of the current vessel.";
+            HelpString = "Name of the current vessel.";
             IsDefault = true;
         }
 

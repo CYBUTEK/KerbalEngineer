@@ -34,7 +34,7 @@ namespace KerbalEngineer.Flight.Readouts.Vessel
         {
             this.Name = "Heading Rate";
             this.Category = ReadoutCategory.GetCategory("Vessel");
-            this.HelpString = "Shows the current change in Heading.";
+            this.HelpString = "Shows the current change in heading (yaw).";
             this.IsDefault = false;
         }
 

@@ -42,7 +42,7 @@ namespace KerbalEngineer.Flight.Readouts.Vessel
         {
             this.Name = "Intake Air (D/S)";
             this.Category = ReadoutCategory.GetCategory("Vessel");
-            this.HelpString = "Displays the Ratio between required and available Intake Air.";
+            this.HelpString = "Displays the ratio between required and available intake air.";
             this.IsDefault = false;
         }
 

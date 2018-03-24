@@ -34,7 +34,7 @@ namespace KerbalEngineer.Flight.Readouts.Vessel
         {
             this.Name = "Suicide Burn (Dist.)";
             this.Category = ReadoutCategory.GetCategory("Vessel");
-            this.HelpString = "Shows the distance to the point at which to start a suicide burn.";
+            this.HelpString = "Shows the distance to the altitude at which to start the suicide burn. Be aware, that suicide burn does not account for horizontal velocity.";
             this.IsDefault = true;
         }
 

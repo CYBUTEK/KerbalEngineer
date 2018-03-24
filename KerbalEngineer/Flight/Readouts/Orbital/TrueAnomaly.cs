@@ -37,7 +37,7 @@ namespace KerbalEngineer.Flight.Readouts.Orbital
         {
             this.Name = "True Anomaly";
             this.Category = ReadoutCategory.GetCategory("Orbital");
-            this.HelpString = String.Empty;
+            HelpString = "Shows the vessel's True Anomaly";
             this.IsDefault = false;
         }
 

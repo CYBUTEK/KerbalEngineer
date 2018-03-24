@@ -34,7 +34,7 @@ namespace KerbalEngineer.Flight.Readouts.Orbital
         {
             this.Name = "Inclination";
             this.Category = ReadoutCategory.GetCategory("Orbital");
-            this.HelpString = "Shows the vessel's orbital inclination relative to the Equator.";
+            this.HelpString = "Shows the vessel's orbital inclination relative to the equator.";
             this.IsDefault = true;
         }
 

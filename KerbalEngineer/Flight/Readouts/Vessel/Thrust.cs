@@ -34,7 +34,7 @@ namespace KerbalEngineer.Flight.Readouts.Vessel
         {
             this.Name = "Thrust";
             this.Category = ReadoutCategory.GetCategory("Vessel");
-            this.HelpString = "Shows the current and maximum thrust the vessel can put out.";
+            this.HelpString = "Shows the current and maximum thrust the vessel can produce.";
             this.IsDefault = true;
         }
 

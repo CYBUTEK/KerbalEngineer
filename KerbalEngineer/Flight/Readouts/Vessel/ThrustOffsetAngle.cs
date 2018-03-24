@@ -34,7 +34,7 @@ namespace KerbalEngineer.Flight.Readouts.Vessel
         {
             this.Name = "Thrust offset angle";
             this.Category = ReadoutCategory.GetCategory("Vessel");
-            this.HelpString = "Thrust angle offset due to vessel asymmetries and gimballing";
+            this.HelpString = "Thrust angle offset due to vessel asymmetries and gimballing.";
             this.IsDefault = true;
         }
 

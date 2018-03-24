@@ -36,7 +36,7 @@ namespace KerbalEngineer.Flight.Readouts.Vessel
         {
             this.Name = "Suicide Burn (dV)";
             this.Category = ReadoutCategory.GetCategory("Vessel");
-            this.HelpString = "Shows the DeltaV of a suicide burn.";
+            this.HelpString = "Shows the DeltaV required for the suicide burn. Be aware, that suicide burn does not account for horizontal velocity.";
             this.IsDefault = true;
         }
 
