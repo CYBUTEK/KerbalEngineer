@@ -1,3 +1,8 @@
+1.1.4.4, 2018-03-28, KSP 1.4.1 #2089
+    When using the 'Switch To Target' button on the Rendezvous readout, the target ship's target will be set to the original ship (so you can switch back without digging through a menu or the map).
+    Added 'Focus Target' / 'Focus Vessel' buttons on the Rendezvous readout. Switches to the map and focuses your target if it's a vessel or celestial body. 'Focus Vessel' switches back to your ship ideally remembering if you were in the map or not.
+    Added 'Look At Target' button to the Rendezvous readout. Rotates the camera to look at the target. Flight mode only. No more searching the stars for that little green box.
+
 1.1.4.3, 2018-03-23, KSP 1.4.1 #2089
     Fix phantom stage when root part is stageable.
     Handle decoupler stage detection in a more mod-friendly way.

@@ -357,6 +357,9 @@ namespace KerbalEngineer.Flight.Sections
         /// </summary>
         private void DrawReadoutModules()
         {
+            if (!HighLogic.LoadedSceneIsFlight)
+                return; //prevent null references and bad calculations during scene transition.
+
             if (!this.IsHud)
             {
                 GUILayout.BeginVertical(this.boxStyle);

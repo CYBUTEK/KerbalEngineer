@@ -59,6 +59,7 @@ namespace KerbalEngineer.Flight
         private static bool isTrackingStationLimited = true;
         private static bool switchVesselOnUpdate = false;
         private static Vessel switchVesselTarget = null;
+        private static ITargetable switchVesselTargetTarget = null;
 
         #endregion
 
@@ -209,10 +210,11 @@ namespace KerbalEngineer.Flight
         /// <summary>
         ///     Switches the active vessel.  This is delayed until the next Update call to avoid issues when called from OnGUI in KSP 1.2
         /// </summary>
-        public static void SwitchToVessel(Vessel vessel)
+        public static void SwitchToVessel(Vessel vessel, ITargetable target = null)
         {
             switchVesselTarget = vessel;
             switchVesselOnUpdate = true;
+            switchVesselTargetTarget = target;
         }
 
 
@@ -375,11 +377,22 @@ namespace KerbalEngineer.Flight
                 switchVesselOnUpdate = false;
 
                 //bool doRestore = (tempVessel != null) && tempVessel.loaded;
+
+                if (switchVesselTargetTarget != null)
+                { // you will switch or I will beat you.
+                    tempVessel.protoVessel.targetInfo = new ProtoTargetInfo(switchVesselTargetTarget);
+                    tempVessel.pTI = tempVessel.protoVessel.targetInfo;
+                    tempVessel.targetObject = switchVesselTargetTarget;
+                }
+
                 FlightGlobals.SetActiveVessel(tempVessel);
+
                 //if (doRestore)
                 //    FlightInputHandler.ResumeVesselCtrlState(tempVessel);
                 //else
                 //    FlightInputHandler.SetNeutralControls();
+
+
             }
 
             if (FlightGlobals.ActiveVessel == null)

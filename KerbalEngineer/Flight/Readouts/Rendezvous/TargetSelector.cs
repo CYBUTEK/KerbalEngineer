@@ -198,25 +198,78 @@ namespace KerbalEngineer.Flight.Readouts.Rendezvous
             GUILayout.EndHorizontal();
         }
 
+        private bool wasMapview;
+
         /// <summary>
         ///     Draws the target information when selected.
         /// </summary>
         private void DrawTarget(SectionModule section)
         {
-            var target = FlightGlobals.fetch.VesselTarget;
+            ITargetable target = FlightGlobals.fetch.VesselTarget;
+
+            this.ResizeRequested = true;
 
             if (GUILayout.Button("Go Back to Target Selection", this.ButtonStyle, GUILayout.Width(this.ContentWidth)))
             {
                 FlightGlobals.fetch.SetVesselTarget(null);
-                this.ResizeRequested = true;
             }
 
             if (target != null)
             {
+                var act = FlightGlobals.ActiveVessel;
+
                 if (!(target is CelestialBody) && GUILayout.Button("Switch to Target", this.ButtonStyle, GUILayout.Width(this.ContentWidth)))
                 {
-                    FlightEngineerCore.SwitchToVessel(target.GetVessel());
-                    this.ResizeRequested = true;
+                    FlightEngineerCore.SwitchToVessel(target.GetVessel(), act);
+                }
+
+                bool focusable = (target is CelestialBody || target is global::Vessel);
+
+                if (focusable)
+                {
+                    MapObject targMo = null;
+
+                    if (target is global::Vessel)
+                        targMo = ((global::Vessel)(target)).mapObject;
+                    else
+                        targMo = ((CelestialBody)(target)).MapObject;
+
+                    bool shouldFocus = targMo != null && (targMo != PlanetariumCamera.fetch.target || !MapView.MapIsEnabled);
+
+                    if (shouldFocus && GUILayout.Button("Focus Target", this.ButtonStyle, GUILayout.Width(this.ContentWidth)))
+                    {
+                            wasMapview = MapView.MapIsEnabled;
+                            MapView.EnterMapView();
+                            PlanetariumCamera.fetch.SetTarget(targMo);
+                    }
+                }
+
+                bool switchBack = PlanetariumCamera.fetch.target != act.mapObject;
+
+                if (switchBack && MapView.MapIsEnabled && GUILayout.Button("Focus Vessel", this.ButtonStyle, GUILayout.Width(this.ContentWidth)))
+                {
+                    if (!wasMapview) MapView.ExitMapView();
+                    PlanetariumCamera.fetch.SetTarget(act.mapObject);
+                }
+
+                if (FlightCamera.fetch.mode != FlightCamera.Modes.LOCKED && !MapView.MapIsEnabled && GUILayout.Button("Look at Target", this.ButtonStyle, GUILayout.Width(this.ContentWidth)))
+                {
+                    var pcam = PlanetariumCamera.fetch;
+                    var fcam = FlightCamera.fetch;
+
+                    Vector3 from = target.GetOrbit().getTruePositionAtUT(Planetarium.GetUniversalTime());
+                    Vector3 to = FlightGlobals.fetch.activeVessel.GetWorldPos3D();
+                  //  float pdist = pcam.Distance; 
+                    float fdist = fcam.Distance;
+
+                    Vector3 n = (from - to).normalized;
+
+                    //   pcam.SetCamCoordsFromPosition(n * -pdist); //this does weird stuff
+                    fcam.SetCamCoordsFromPosition(n * -fdist);
+
+                    Debug.Log(" target " + target.GetOrbit().getTruePositionAtUT(Planetarium.GetUniversalTime()));
+                    Debug.Log(" vessel " + FlightGlobals.fetch.activeVessel.GetWorldPos3D());
+                    Debug.Log(" distance " + fdist + " " + fcam.Distance);
                 }
 
                 GUILayout.Space(3f);
