@@ -46,7 +46,16 @@ namespace KerbalEngineer.Flight.Readouts.Rendezvous
         {
             if (RendezvousProcessor.ShowDetails)
             {
-                this.DrawLine(RendezvousProcessor.AngleToAscendingNode.ToAngle(), section.IsHud);
+                if (RendezvousProcessor.overrideANDN || RendezvousProcessor.overrideANDNRev)
+                {
+                    double angle = RendezvousProcessor.AngleToPlane[0];
+
+                    this.DrawLine("(L) " + angle.ToAngle(), section.IsHud);
+                }
+                else
+                {
+                    this.DrawLine(RendezvousProcessor.AngleToAscendingNode.ToAngle(), section.IsHud);
+                }
             }
         }
 

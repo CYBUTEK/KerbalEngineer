@@ -1,3 +1,41 @@
+1.1.4.5, 2018-03-30, KSP 1.4.2 #2110
+	Fixed a NPE spam bug if target lat/long was enabled and target was not a ship
+    Rendezvous Readout Overhaul:
+        The goal here is to clean up the Rendezvous readouts to present only good information depending on the situation of your ship and the target. 
+		Most of the calculations being done are between 2 orbits and are either not useful or mathmatically meaningless unless the 2 orbits are concentric and neither endppoint is landed.
+		This update tries to be 'smart' about which data to present:
+		   If you are landed and your target is in direct orbit (i.e. Kerbin to Minimus):
+		      - The time and angles to AN/DN will show a (L) and represent the time and angles til you intersect the plane of the target.
+			  - The relative inclination is the raw inclination of the target, not realitve to the landed planet's inclination as before (hard to notice on Kerbin because it's 0)
+			  - Most other orbit compatison readouts will be 0
+			  - Target orbit data will be as normal.
+			  - Distance is cartesian distance between you and the target.
+		   Conversely if you are in orbit and targeting a landed thing (i.e. Mun oribit to landed ship):
+		      - The time and angles to AN/DN will show a (L) and represent the time and angles til your target intersects your orbital plane.
+			  - The relative inclination is your raw inclination.
+			  - Most other orbit compatison readouts will be 0
+			  - Target orbit data will all be 0.
+			  - Distance is cartesian distance between you and the target.
+		   If you and your target are both orbiting the same body:
+		      - Readouts are unchanged as this is how they were designed.
+		   If your target is in a different SOI, regardless if you or your target is landed:
+		      - KER will search upward towards the sun from both ends to find the 2 orbits that share the same body and use those for calculation.
+			  - The actual orbit used as a source will be shown as 'Ref Orbit'
+			  - The actual orbit used as a target will be shown as 'Target Orbit'
+			  - Everything else will display as normal for those 2 concentric orbits.
+			     For Example(s): 
+				  - If you are targeting Eve and sitting on the launchpad, the calculation will show Kerbin as the Ref Orbit and all calculations will be between those 2 planets (this is actually how KER worked before it just wasn't clear about it)
+				  - If you are targeting Eve and orbiting kerbin it will be same as above, using Kerbin's and Eve's orbits (this is not how it was before)
+				  - If you are orbiting the Mun and targeting a probe landed on Laythe (y tho?), it will use Kerbin and Jool's orbits. 
+					- Once you escape the Mun it will use Kerbin and Jool. 
+					- Once you escape Kerbin it will use your ship and Jool. 
+					- Once in Jool's SOI it will use your ship and Laythe
+					- Once in Laythe's SOI it will use the landed target calculations previously descibed.
+					- Once on the ground it will use the ground-ground calulation in the next section.
+			If you and your target are both landed on the same body:
+					- Pretty much everything will be 0 except distance and target lat/long/alt.
+					
+				  
 1.1.4.4, 2018-03-28, KSP 1.4.1 #2089
     When using the 'Switch To Target' button on the Rendezvous readout, the target ship's target will be set to the original ship (so you can switch back without digging through a menu or the map).
     Added 'Focus Target' / 'Focus Vessel' buttons on the Rendezvous readout. Switches to the map and focuses your target if it's a vessel or celestial body. 'Focus Vessel' switches back to your ship ideally remembering if you were in the map or not.

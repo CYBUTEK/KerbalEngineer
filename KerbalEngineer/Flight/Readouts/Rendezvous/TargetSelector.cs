@@ -238,9 +238,9 @@ namespace KerbalEngineer.Flight.Readouts.Rendezvous
 
                     if (shouldFocus && GUILayout.Button("Focus Target", this.ButtonStyle, GUILayout.Width(this.ContentWidth)))
                     {
-                            wasMapview = MapView.MapIsEnabled;
-                            MapView.EnterMapView();
-                            PlanetariumCamera.fetch.SetTarget(targMo);
+                        wasMapview = MapView.MapIsEnabled;
+                        MapView.EnterMapView();
+                        PlanetariumCamera.fetch.SetTarget(targMo);
                     }
                 }
 
@@ -257,24 +257,58 @@ namespace KerbalEngineer.Flight.Readouts.Rendezvous
                     var pcam = PlanetariumCamera.fetch;
                     var fcam = FlightCamera.fetch;
 
-                    Vector3 from = target.GetOrbit().getTruePositionAtUT(Planetarium.GetUniversalTime());
+                    Vector3 from = new Vector3();
+
+                    if (target is global::Vessel && ((global::Vessel)target).LandedOrSplashed)
+                    {
+                        from = ((global::Vessel)target).GetWorldPos3D();
+                    }
+                    else
+                    {
+                        //I don't think it's possible to target the sun so this should always work but who knows.
+                        if (target.GetOrbit() != null)
+                            from = target.GetOrbit().getTruePositionAtUT(Planetarium.GetUniversalTime());
+                    }
+
+
                     Vector3 to = FlightGlobals.fetch.activeVessel.GetWorldPos3D();
-                  //  float pdist = pcam.Distance; 
+
+                    //  float pdist = pcam.Distance; 
                     float fdist = fcam.Distance;
 
                     Vector3 n = (from - to).normalized;
 
-                    //   pcam.SetCamCoordsFromPosition(n * -pdist); //this does weird stuff
-                    fcam.SetCamCoordsFromPosition(n * -fdist);
+                    if (!n.IsInvalid())
+                    {
+                        //   pcam.SetCamCoordsFromPosition(n * -pdist); //this does weird stuff
+                        fcam.SetCamCoordsFromPosition(n * -fdist);
+                    }
 
-                    Debug.Log(" target " + target.GetOrbit().getTruePositionAtUT(Planetarium.GetUniversalTime()));
-                    Debug.Log(" vessel " + FlightGlobals.fetch.activeVessel.GetWorldPos3D());
+                    Debug.Log(" target " + from);
+                    Debug.Log(" vessel " + to);
                     Debug.Log(" distance " + fdist + " " + fcam.Distance);
                 }
 
                 GUILayout.Space(3f);
 
                 this.DrawLine("Selected Target", target.GetName(), section.IsHud);
+
+                if (RendezvousProcessor.sourceDisplay != null)
+                {
+                    if (RendezvousProcessor.landedSamePlanet || RendezvousProcessor.overrideANDN)
+                        this.DrawLine("Ref Orbit", "Landed on " + FlightGlobals.fetch.activeVessel.GetOrbit().referenceBody.GetName(), section.IsHud);
+                    else
+                        this.DrawLine("Ref Orbit", RendezvousProcessor.sourceDisplay, section.IsHud);
+                }
+
+                if (RendezvousProcessor.targetDisplay != null)
+                {
+                    if (RendezvousProcessor.landedSamePlanet || RendezvousProcessor.overrideANDNRev)
+                        this.DrawLine("Target Orbit", "Landed on " + target.GetOrbit().referenceBody.GetName(), section.IsHud);
+                    else
+                        this.DrawLine("Target Orbit", RendezvousProcessor.targetDisplay, section.IsHud);
+                }
+
             }
         }
 

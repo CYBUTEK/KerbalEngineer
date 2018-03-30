@@ -46,17 +46,16 @@ namespace KerbalEngineer.Flight.Readouts.Rendezvous
         {
             if (RendezvousProcessor.ShowDetails)
             {
-                if (RendezvousProcessor.isLanded && RendezvousProcessor.inSystem)
+                if (RendezvousProcessor.overrideANDN || RendezvousProcessor.overrideANDNRev)
                 {
-                    double time = RendezvousProcessor.TimeToPlane;
-
-                    if (time > RendezvousProcessor.bodyRotationPeriod / 4)
-                        time = time - RendezvousProcessor.bodyRotationPeriod / 2 ; //let it go negative
+                    double time = RendezvousProcessor.TimeToPlane[0];
 
                     this.DrawLine("(L) " + TimeFormatter.ConvertToString(time), section.IsHud);
                 }
                 else
+                {
                     this.DrawLine(TimeFormatter.ConvertToString(RendezvousProcessor.TimeToAscendingNode), section.IsHud);
+                }
             }
         }
 

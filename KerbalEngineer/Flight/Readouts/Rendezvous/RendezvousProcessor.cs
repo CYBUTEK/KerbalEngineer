@@ -22,6 +22,7 @@ namespace KerbalEngineer.Flight.Readouts.Rendezvous
     using System;
     using Extensions;
     using Helpers;
+    using UnityEngine;
 
     public class RendezvousProcessor : IUpdatable, IUpdateRequest
     {
@@ -146,8 +147,14 @@ namespace KerbalEngineer.Flight.Readouts.Rendezvous
         /// <summary>
         ///     Gets time for landed ship to intersect target orbital plane in system.
         /// </summary>
-        public static double TimeToPlane { get; private set; }
-        
+        public static double[] TimeToPlane { get; private set; } = new double[2];
+
+        /// <summary>
+        ///     Gets angle for landed ship to intersect target orbital plane in system.
+        /// </summary>
+        public static double[] AngleToPlane { get; private set; }
+
+
         /// <summary>
         ///     If the target body is ascending at the point of planar intersect.
         /// </summary>
@@ -159,15 +166,24 @@ namespace KerbalEngineer.Flight.Readouts.Rendezvous
         public static bool isLanded { get; private set; }
 
         /// <summary>
-        ///     If the current target is in the same SOI as the ship.
+        ///     Is the Ship and target landed on same body.
         /// </summary>
-        public static bool inSystem { get; private set; }
+        public static bool landedSamePlanet { get; private set; }
 
         /// <summary>
         ///    The current ship's reference body rotation period.
         /// </summary>
         public static double bodyRotationPeriod { get; private set; }
 
+        /// <summary>
+        ///    The display string of what's actually being calculated.
+        /// </summary>
+        public static string targetDisplay { get; private set; }
+
+        /// <summary>
+        ///    The display string of what's actually being calculated.
+        /// </summary>
+        public static string sourceDisplay { get; private set; }
 
         /// <summary>
         ///     Gets and sets whether the updatable object should be updated.
@@ -181,6 +197,10 @@ namespace KerbalEngineer.Flight.Readouts.Rendezvous
         {
             instance.UpdateRequested = true;
         }
+
+        public static bool overrideANDN = false;
+
+        public static bool overrideANDNRev = false;
 
         /// <summary>
         ///     Updates the details by recalculating if requested.
@@ -201,44 +221,181 @@ namespace KerbalEngineer.Flight.Readouts.Rendezvous
 
             ShowDetails = true;
 
-            inSystem = FlightGlobals.ship_orbit.referenceBody == FlightGlobals.ActiveVessel.targetObject.GetOrbit().referenceBody;
-
-            var targetOrbit = FlightGlobals.fetch.VesselTarget.GetOrbit();
-            var originOrbit = (FlightGlobals.ship_orbit.referenceBody == Planetarium.fetch.Sun || inSystem) ? 
-                FlightGlobals.ship_orbit : FlightGlobals.ship_orbit.referenceBody.orbit;
-
-            RelativeInclination = originOrbit.GetRelativeInclination(targetOrbit);
-            RelativeVelocity = FlightGlobals.ship_tgtSpeed;
-            RelativeSpeed = FlightGlobals.ship_obtSpeed - targetOrbit.orbitalSpeed;
-            PhaseAngle = originOrbit.GetPhaseAngle(targetOrbit);
-            InterceptAngle = CalcInterceptAngle(targetOrbit, originOrbit);
-            TimeToAscendingNode = originOrbit.GetTimeToVector(GetAscendingNode(targetOrbit, originOrbit));
-            TimeToDescendingNode = originOrbit.GetTimeToVector(GetDescendingNode(targetOrbit, originOrbit));
-            AngleToAscendingNode = originOrbit.GetAngleToVector(GetAscendingNode(targetOrbit, originOrbit));
-            AngleToDescendingNode = originOrbit.GetAngleToVector(GetDescendingNode(targetOrbit, originOrbit));
-            AltitudeSeaLevel = targetOrbit.altitude;
-            ApoapsisHeight = targetOrbit.ApA;
-            PeriapsisHeight = targetOrbit.PeA;
-            TimeToApoapsis = targetOrbit.timeToAp;
-            TimeToPeriapsis = targetOrbit.timeToPe;
-            SemiMajorAxis = targetOrbit.semiMajorAxis;
-            SemiMinorAxis = targetOrbit.semiMinorAxis;
-
-            TimeToPlane = CalcTimeToPlane(FlightGlobals.ship_orbit.referenceBody, FlightGlobals.ship_latitude, FlightGlobals.ship_longitude, targetOrbit);
-            // TimeToPlaneisAsc = ?? No idea how to detemine this.
-            bodyRotationPeriod = FlightGlobals.ship_orbit.referenceBody.rotationPeriod;
+            var actualSourceOrbit = FlightGlobals.ship_orbit;
+            var actualTargetOrbit = FlightGlobals.fetch.VesselTarget.GetOrbit();
 
             isLanded = FlightGlobals.ActiveVessel.LandedOrSplashed;
-            Distance = Vector3d.Distance(targetOrbit.pos, originOrbit.pos);
-            OrbitalPeriod = targetOrbit.period;
+            bool targetLanded = (FlightGlobals.fetch.VesselTarget is global::Vessel && ((global::Vessel)FlightGlobals.fetch.VesselTarget).LandedOrSplashed);
+            landedSamePlanet = isLanded && targetLanded && actualSourceOrbit.referenceBody == actualTargetOrbit.referenceBody;
 
-            // beware that the order/sign of coordinates is inconsistent across different exposed variables
-            // in particular, v below does not equal to FlightGlobals.ship_tgtVelocity
-            Vector3d x = targetOrbit.pos - originOrbit.pos;
-            Vector3d v = targetOrbit.vel - originOrbit.vel;
-            double xv = Vector3d.Dot(x, v);
-            TimeToRendezvous = -xv / Vector3d.SqrMagnitude(v);
-            RelativeRadialVelocity = xv / Vector3d.Magnitude(x);
+            var originOrbit = isLanded ? actualSourceOrbit.referenceBody.orbit : actualSourceOrbit;
+            var targetOrbit = targetLanded ? actualTargetOrbit.referenceBody.orbit : actualTargetOrbit;
+
+            if((!isLanded && !targetLanded) || (actualSourceOrbit.referenceBody != actualTargetOrbit.referenceBody))
+                findConcentricParents(ref originOrbit, ref targetOrbit);
+
+            overrideANDN = isLanded && actualSourceOrbit.referenceBody == targetOrbit.referenceBody;
+            overrideANDNRev = targetLanded && !isLanded && actualTargetOrbit.referenceBody == actualSourceOrbit.referenceBody && FlightGlobals.ActiveVessel.targetObject.GetVessel() != null;
+
+            if (landedSamePlanet)
+            { //this should only occur when landed targeting something else landed on same body.
+                RelativeInclination = 0;
+                RelativeVelocity = FlightGlobals.ship_tgtSpeed;
+                RelativeSpeed = 0;
+                PhaseAngle = 0;
+                InterceptAngle = 0;
+
+                TimeToAscendingNode = 0;
+                TimeToDescendingNode = 0;
+                AngleToAscendingNode = 0;
+                AngleToDescendingNode = 0;
+
+                AltitudeSeaLevel = FlightGlobals.fetch.VesselTarget.GetVessel().altitude;
+                ApoapsisHeight = 0;
+                PeriapsisHeight = 0;
+                TimeToApoapsis = 0;
+                TimeToPeriapsis = 0;
+                SemiMajorAxis = 0;
+                SemiMinorAxis = 0;
+
+                AngleToPlane[0] = 0;
+                TimeToPlane[0] = 0;
+                AngleToPlane[1] = 0;
+                TimeToPlane[1] = 0;
+
+                bodyRotationPeriod = FlightGlobals.ship_orbit.referenceBody.rotationPeriod;
+
+                Distance = Vector3d.Distance(FlightGlobals.fetch.VesselTarget.GetVessel().GetWorldPos3D(), FlightGlobals.ActiveVessel.GetWorldPos3D());
+
+                OrbitalPeriod = bodyRotationPeriod;
+
+                TimeToRendezvous = 0;
+                RelativeRadialVelocity = 0;
+            }
+            else
+            {
+                RelativeInclination = originOrbit.GetRelativeInclination(targetOrbit);
+                RelativeVelocity = FlightGlobals.ship_tgtSpeed;
+                RelativeSpeed = FlightGlobals.ship_obtSpeed - targetOrbit.orbitalSpeed;
+                PhaseAngle = originOrbit.GetPhaseAngle(targetOrbit);
+                InterceptAngle = CalcInterceptAngle(targetOrbit, originOrbit);
+
+                TimeToAscendingNode = originOrbit.GetTimeToVector(GetAscendingNode(targetOrbit, originOrbit));
+                TimeToDescendingNode = originOrbit.GetTimeToVector(GetDescendingNode(targetOrbit, originOrbit));
+                AngleToAscendingNode = originOrbit.GetAngleToVector(GetAscendingNode(targetOrbit, originOrbit));
+                AngleToDescendingNode = originOrbit.GetAngleToVector(GetDescendingNode(targetOrbit, originOrbit));
+
+                AltitudeSeaLevel = targetOrbit.altitude;
+                ApoapsisHeight = targetOrbit.ApA;
+                PeriapsisHeight = targetOrbit.PeA;
+                TimeToApoapsis = targetOrbit.timeToAp;
+                TimeToPeriapsis = targetOrbit.timeToPe;
+                SemiMajorAxis = targetOrbit.semiMajorAxis;
+                SemiMinorAxis = targetOrbit.semiMinorAxis;
+                OrbitalPeriod = targetOrbit.period;
+
+                Distance = Vector3d.Distance(targetOrbit.pos, originOrbit.pos);
+
+                bodyRotationPeriod = FlightGlobals.ship_orbit.referenceBody.rotationPeriod;
+
+                // beware that the order/sign of coordinates is inconsistent across different exposed variables
+                // in particular, v below does not equal to FlightGlobals.ship_tgtVelocity
+                Vector3d x = targetOrbit.pos - originOrbit.pos;
+                Vector3d v = targetOrbit.vel - originOrbit.vel;
+                double xv = Vector3d.Dot(x, v);
+                TimeToRendezvous = -xv / Vector3d.SqrMagnitude(v);
+                RelativeRadialVelocity = xv / Vector3d.Magnitude(x);
+
+                if (overrideANDN) //calc launch time
+                {
+                    AngleToPlane = CalcAngleToPlane(FlightGlobals.ship_orbit.referenceBody, FlightGlobals.ship_latitude, FlightGlobals.ship_longitude, targetOrbit);
+                    TimeToPlane[0] = (AngleToPlane[0] / 360) * FlightGlobals.ship_orbit.referenceBody.rotationPeriod;
+                    TimeToPlane[1] = (AngleToPlane[1] / 360) * FlightGlobals.ship_orbit.referenceBody.rotationPeriod;
+                    RelativeInclination = targetOrbit.inclination;
+                    RelativeRadialVelocity = 0;
+                    TimeToRendezvous = 0;
+                    PhaseAngle = 0;
+                    InterceptAngle = 0;
+                }
+                else if(overrideANDNRev)
+                { //calc land time.
+                    global::Vessel tgt = FlightGlobals.ActiveVessel.targetObject.GetVessel();
+
+                    AngleToPlane = CalcAngleToPlane(FlightGlobals.ship_orbit.referenceBody, tgt.latitude, tgt.longitude, originOrbit);
+
+                    TimeToPlane[0] = (AngleToPlane[0] / 360) * FlightGlobals.ship_orbit.referenceBody.rotationPeriod;
+                    TimeToPlane[1] = (AngleToPlane[1] / 360) * FlightGlobals.ship_orbit.referenceBody.rotationPeriod;
+
+                    RelativeInclination = originOrbit.inclination;
+                    Distance = Vector3d.Distance(FlightGlobals.fetch.VesselTarget.GetVessel().GetWorldPos3D(), FlightGlobals.ActiveVessel.GetWorldPos3D());
+                    AltitudeSeaLevel = tgt.altitude;
+                    PhaseAngle = 0;
+                    InterceptAngle = 0;
+                    ApoapsisHeight = 0;
+                    PeriapsisHeight = 0;
+                    TimeToApoapsis = 0;
+                    TimeToPeriapsis = 0;
+                    SemiMajorAxis = 0;
+                    SemiMinorAxis = 0;
+                    OrbitalPeriod = 0;
+                    RelativeRadialVelocity = 0;
+                    TimeToRendezvous = 0;
+                }
+
+
+            }
+
+            if (actualTargetOrbit != targetOrbit)
+            {
+                targetDisplay = findNameForOrbit(targetOrbit, FlightGlobals.ActiveVessel.targetObject);
+            }
+            else
+            {
+                targetDisplay = null;
+            }
+
+            if (actualSourceOrbit != originOrbit)
+            {
+                sourceDisplay = findNameForOrbit(originOrbit, FlightGlobals.ActiveVessel);
+            }
+            else
+            {
+                sourceDisplay = null;
+            }
+
+        }
+
+        public string findNameForOrbit(Orbit orbit, ITargetable start)
+        {
+            if (start.GetOrbit() == orbit || start.GetOrbit() == null)
+                return start.GetName();
+            else
+                return (findNameForOrbit(orbit, start.GetOrbit().referenceBody));
+        }
+
+
+        public void findConcentricParents(ref Orbit source, ref Orbit target)
+        {
+            Orbit o = target;
+            while (true)
+            {
+                while (true)
+                {
+                    //Debug.Log("Compare " + source.referenceBody.GetName() + " to " + target.referenceBody.GetName());
+
+                    if (source.referenceBody == target.referenceBody)
+                        return;
+                    if (target.referenceBody.orbit == null) //the sun!
+                        break;
+                    target = target.referenceBody.orbit;
+                }
+
+                if (source.referenceBody.orbit == null) //the sun!
+                    return;
+
+                source = source.referenceBody.orbit;
+                target = o;
+            }
         }
 
         private double CalcInterceptAngle(Orbit targetOrbit, Orbit originOrbit)
@@ -265,8 +422,10 @@ namespace KerbalEngineer.Flight.Readouts.Rendezvous
         //If the latitude is too high for the launch location to ever actually rotate under the target plane,
         //returns the time of closest approach to the target plane.
         //I have a wonderful proof of this formula which this comment is too short to contain.
-        private double CalcTimeToPlane(CelestialBody launchBody, double launchLatitude, double launchLongitude, Orbit target)
+        private double[] CalcAngleToPlane(CelestialBody launchBody, double launchLatitude, double launchLongitude, Orbit target)
         {
+            double[] o = new double[2];
+
             double inc = Math.Abs(Vector3d.Angle(SwappedOrbitNormal(target), launchBody.angularVelocity));
             Vector3d b = Vector3d.Exclude(launchBody.angularVelocity, SwappedOrbitNormal(target)).normalized; // I don't understand the sign here, but this seems to work
             b *= launchBody.Radius * Math.Sin(Math.PI / 180 * launchLatitude) / Math.Tan(Math.PI / 180 * inc);
@@ -285,8 +444,10 @@ namespace KerbalEngineer.Flight.Readouts.Rendezvous
             double angle2 = Math.Abs(Vector3d.Angle(longitudeVector, a2));
             if (Vector3d.Dot(Vector3d.Cross(longitudeVector, a2), launchBody.angularVelocity) < 0) angle2 = 360 - angle2;
 
-            double angle = Math.Min(angle1, angle2);
-            return (angle / 360) * launchBody.rotationPeriod;
+            o[0] = Math.Min(angle1, angle2);
+            o[1] = Math.Max(angle1, angle2) - 360;
+
+           return o;
         }
 
         //normalized vector perpendicular to the orbital plane
