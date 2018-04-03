@@ -836,7 +836,11 @@ namespace KerbalEngineer.VesselSimulator {
             if (original.parent == null)
                 return stage; //root part is always present. Fixes phantom stage if root is stageable.
 
+            List<Part> chain = new List<Part>(); //prolly dont need a list, just the previous part but whatever.
+
             while (thePart != null) {
+
+                chain.Add(thePart);
 
                 if (thePart.inverseStage > stage) {
 
@@ -845,22 +849,12 @@ namespace KerbalEngineer.VesselSimulator {
                     ModuleAnchoredDecoupler manch = thePart.GetModule<ModuleAnchoredDecoupler>();
 
                     if (mdec != null) {
-                        ModuleDynamicNodes mdyn = thePart.GetModule<ModuleDynamicNodes>();
-                        if (mdyn != null) { //engine plate
-                            if (original == thePart) { //checking self, make sure not upside down
-                                if (thePart.parent != null && mdec.ExplosiveNode != null && mdec.ExplosiveNode.attachedPart == thePart.parent) //leaves with stage
-                                    stage = thePart.inverseStage;
-                            } else if (original.parent != null && original.parent == thePart) { //plate direct child.
-                                if (mdec.ExplosiveNode != null && mdec.ExplosiveNode.attachedPart == original)
-                                    stage = thePart.inverseStage; //goodbye!
-                            } else stage = thePart.inverseStage;  //decouple.           
-                        } else {//regular decoupler
-                            if (original == thePart) {    //checking self
-                                if (mdec.isOmniDecoupler || (thePart.parent != null && mdec.ExplosiveNode != null && mdec.ExplosiveNode.attachedPart == thePart.parent)) //leaves with stage
-                                    stage = thePart.inverseStage;
-                            } else if (original.parent != null && original.parent == thePart) {
-                                //decoupler direct child (i.e surface attached to round pods)
-                                if (mdec.isOmniDecoupler || (mdec.ExplosiveNode != null && (mdec.ExplosiveNode.attachedPart == original || mdec.ExplosiveNode.attachedPart == thePart.parent))) //leaves with stage
+                        AttachNode att = thePart.FindAttachNode(mdec.explosiveNodeID);
+                        if (mdec.isOmniDecoupler)
+                            stage = thePart.inverseStage;
+                        else {
+                            if (att != null) {
+                                if ((thePart.parent != null && att.attachedPart == thePart.parent) || chain.Contains(att.attachedPart))
                                     stage = thePart.inverseStage;
                             } else stage = thePart.inverseStage;
                         }
@@ -869,17 +863,10 @@ namespace KerbalEngineer.VesselSimulator {
                     if (manch != null) //radial decouplers (ALSO REENTRY PODS BECAUSE REASONS!)
                     {
                         AttachNode att = thePart.FindAttachNode(manch.explosiveNodeID); // these stupid fuckers don't initialize in the Editor scene.
-                        if (original == thePart) { //checking self.
-                            if (att != null) { //pod?
-                                if ((thePart.parent != null && att.attachedPart == thePart.parent)) //upside down pod?
-                                    stage = thePart.inverseStage;//upside down pod!
-                            } else {
-                                stage = thePart.inverseStage; //radials, always leaves because they're super hard to put on backwards. Like pants.
-                            }
-                        } else if (att != null && original.parent != null && original.parent == thePart) { //pod direct children.
-                            if (att.attachedPart == original || att.attachedPart == thePart.parent)
-                                stage = thePart.inverseStage; //this child has be voted off the island.
-                        } else stage = thePart.inverseStage;
+                        if (att != null) {
+                            if ((thePart.parent != null && att.attachedPart == thePart.parent) || chain.Contains(att.attachedPart))
+                                stage = thePart.inverseStage;
+                        } else stage = thePart.inverseStage; //radial decouplers it seems the attach node ('surface') comes back null.
                     }
 
                     if (mdock != null) //docking port
@@ -895,23 +882,6 @@ namespace KerbalEngineer.VesselSimulator {
             }
 
             return stage;
-        }
-
-        private bool IsActiveDecoupler(Part thePart) {
-            return thePart.FindModulesImplementing<ModuleDecouple>().Any(mod => !mod.isDecoupled) ||
-                   thePart.FindModulesImplementing<ModuleAnchoredDecoupler>().Any(mod => !mod.isDecoupled);
-        }
-
-        private bool IsDecoupler(Part thePart) {
-            PartExtensions.ProtoModuleDecoupler protoDecoupler = thePart.GetProtoModuleDecoupler();
-            if (protoDecoupler != null && protoDecoupler.IsStageEnabled)
-                return true;
-
-            ModuleDockingNode modDock = thePart.GetModule<ModuleDockingNode>();
-            if (modDock != null && modDock.IsStageable())
-                return true;
-
-            return false;
         }
 
         private static bool IsEnginePlate(Part thePart) {
