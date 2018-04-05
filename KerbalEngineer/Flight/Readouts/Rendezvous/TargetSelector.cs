@@ -190,7 +190,7 @@ namespace KerbalEngineer.Flight.Readouts.Rendezvous {
                     }
                 } else {
                     if (RendezvousProcessor.TrackingStationSource != target)
-                        if (GUILayout.Button("Use " + target.GetName() + " As Reference", this.ButtonStyle, GUILayout.Width(this.ContentWidth))) {
+                        if (GUILayout.Button("Use " + RendezvousProcessor.nameForTargetable(target) + " As Reference", this.ButtonStyle, GUILayout.Width(this.ContentWidth))) {
                             RendezvousProcessor.TrackingStationSource = target;
                         }
                 }
@@ -260,7 +260,7 @@ namespace KerbalEngineer.Flight.Readouts.Rendezvous {
 
                 GUILayout.Space(3f);
 
-                this.DrawLine("Selected Target", target.GetName(), section.IsHud);
+                this.DrawLine("Selected Target", RendezvousProcessor.nameForTargetable(target), section.IsHud);
 
                 if (RendezvousProcessor.sourceDisplay != null) {
                     if (RendezvousProcessor.landedSamePlanet || RendezvousProcessor.overrideANDN)

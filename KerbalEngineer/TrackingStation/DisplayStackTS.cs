@@ -33,6 +33,7 @@ using UnityEngine;
 
 namespace KerbalEngineer.TrackingStation {
     using Flight.Readouts;
+    using Flight.Readouts.Rendezvous;
     using KeyBinding;
 
     /// <summary>
@@ -337,14 +338,7 @@ namespace KerbalEngineer.TrackingStation {
                 ITargetable src = Flight.Readouts.Rendezvous.RendezvousProcessor.TrackingStationSource;
 
                 if (src != null) {
-                    MapObject mo = null;
-                    if (src is CelestialBody)
-                        mo = ((CelestialBody)src).MapObject;
-                    else if (src is global::Vessel)
-                        mo = ((global::Vessel)src).mapObject;
-
-                    if (mo != null)
-                        SectionLibrary.TrackingStationSection.Name = "TRACKING (REF: " + mo.GetName() + ")";
+                    SectionLibrary.TrackingStationSection.Name = "TRACKING (REF: " + RendezvousProcessor.nameForTargetable(src) + ")";
                 }
 
                 SectionLibrary.TrackingStationSection.Draw();

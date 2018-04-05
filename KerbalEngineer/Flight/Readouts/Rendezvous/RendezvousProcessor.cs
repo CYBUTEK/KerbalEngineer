@@ -22,6 +22,7 @@ namespace KerbalEngineer.Flight.Readouts.Rendezvous {
     using Extensions;
     using Helpers;
     using UnityEngine;
+    using KSP.Localization;
 
     public class RendezvousProcessor : IUpdatable, IUpdateRequest {
         private static readonly RendezvousProcessor instance = new RendezvousProcessor();
@@ -454,11 +455,7 @@ namespace KerbalEngineer.Flight.Readouts.Rendezvous {
 
         public string findNameForOrbit(Orbit orbit, ITargetable start) {
             if (start.GetOrbit() == orbit || start.GetOrbit() == null)
-                if (start is CelestialBody)
-                    return ((CelestialBody)start).MapObject.GetName();
-                else if (start is global::Vessel)
-                    return ((global::Vessel)start).mapObject.GetName();
-                else return start.GetName();
+                return nameForTargetable(start);
             else
                 return (findNameForOrbit(orbit, start.GetOrbit().referenceBody));
         }
@@ -483,6 +480,16 @@ namespace KerbalEngineer.Flight.Readouts.Rendezvous {
                 source = source.referenceBody.orbit;
                 target = o;
             }
+        }
+
+        public static string nameForTargetable(ITargetable tgt) {
+            MapObject mo = null;
+            if (tgt is CelestialBody)
+                mo = ((CelestialBody)tgt).MapObject;
+            else if (tgt is global::Vessel)
+                mo = ((global::Vessel)tgt).mapObject;
+            else return Localizer.Format("<<1>>", tgt.GetDisplayName());
+            return Localizer.Format("<<1>>", mo.GetDisplayName());
         }
 
         private double CalcInterceptAngle(Orbit targetOrbit, Orbit originOrbit) {
