@@ -29,15 +29,16 @@ using UnityEngine;
 
 #endregion
 
-namespace KerbalEngineer.Flight.Sections {
+namespace KerbalEngineer.TrackingStation {
+    using Flight.Sections;
     using Unity.Flight;
     /// <summary>
     ///     Object for management and display of readout modules.
     /// </summary>
-    public class SectionModule : ISectionModule {
+    public class SectionModuleTS : ISectionModule {
         #region Fields
 
-        private SectionEditor editor;
+        private SectionEditorTS editor;
         private bool isHud;
         private int numberOfReadouts;
 
@@ -48,11 +49,11 @@ namespace KerbalEngineer.Flight.Sections {
         /// <summary>
         ///     Creates a new section module.
         /// </summary>
-        public SectionModule() {
+        public SectionModuleTS() {
             this.FloatingPositionX = Screen.width * 0.5f - 125.0f;
             this.FloatingPositionY = 100.0f;
-            this.EditorPositionX = Screen.width * 0.5f - SectionEditor.Width * 0.5f;
-            this.EditorPositionY = Screen.height * 0.5f - SectionEditor.Height * 0.5f;
+            this.EditorPositionX = Screen.width * 0.5f - SectionEditorTS.Width * 0.5f;
+            this.EditorPositionY = Screen.height * 0.5f - SectionEditorTS.Height * 0.5f;
             this.ReadoutModules = new List<ReadoutModule>();
             this.InitialiseStyles();
             GuiDisplaySize.OnSizeChanged += this.OnSizeChanged;
@@ -110,9 +111,10 @@ namespace KerbalEngineer.Flight.Sections {
             get { return this.editor != null; }
             set {
                 if (value && this.editor == null) {
-                    this.editor = FlightEngineerCore.Instance.AddSectionEditor(this);
+                    this.editor = DisplayStackTS.Instance.MakeEditor();
                 } else if (!value && this.editor != null) {
                     Object.Destroy(this.editor);
+                    DisplayStackTS.editor = null;
                 }
             }
         }
@@ -124,7 +126,7 @@ namespace KerbalEngineer.Flight.Sections {
             get { return this.Window != null; }
             set {
                 if (value && this.Window == null) {
-                    this.Window = FlightEngineerCore.Instance.AddSectionWindow(this);
+                   // this.Window = FlightEngineerCore.Instance.AddSectionWindow(this);
                 } else if (!value && this.Window != null) {
                     Object.Destroy(this.Window);
                 }
@@ -293,7 +295,7 @@ namespace KerbalEngineer.Flight.Sections {
             if (this.numberOfReadouts != this.ReadoutModules.Count) {
                 this.numberOfReadouts = this.ReadoutModules.Count;
                 if (!this.IsFloating) {
-                    DisplayStack.Instance.RequestResize();
+                    DisplayStackTS.Instance.RequestResize();
                 } else {
                     this.Window.RequestResize();
                 }

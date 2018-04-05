@@ -40,7 +40,7 @@ namespace KerbalEngineer.Flight
     /// <summary>
     ///     Core management system for the Flight Engineer.
     /// </summary>
-    [KSPAddon(KSPAddon.Startup.Flight, false)]
+    [KSPAddon(KSPAddon.Startup.FlightAndKSC, false)]
     public sealed class FlightEngineerCore : MonoBehaviour
     {
         #region Instance
@@ -229,6 +229,7 @@ namespace KerbalEngineer.Flight
                 editor.ParentSection = section;
                 editor.Position = new Rect(section.EditorPositionX, section.EditorPositionY, SectionEditor.Width, SectionEditor.Height);
                 this.SectionEditors.Add(editor);
+                ReadoutCategory.Selected = ReadoutCategory.GetCategory("Orbital");
                 return editor;
             }
             catch (Exception ex)

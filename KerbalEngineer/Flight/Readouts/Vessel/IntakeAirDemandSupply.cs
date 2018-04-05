@@ -77,7 +77,7 @@ namespace KerbalEngineer.Flight.Readouts.Vessel
                 .Sum(p => p.Resources["IntakeAir"].amount);
         }
 
-        public override void Draw(SectionModule section)
+        public override void Draw(Unity.Flight.ISectionModule section)
         {
             this.DrawLine(this.demand.ToString("F4") + " / " + this.supply.ToString("F4"), section.IsHud);
         }

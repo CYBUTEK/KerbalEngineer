@@ -21,21 +21,22 @@
 
 using KerbalEngineer.Extensions;
 using KerbalEngineer.Flight.Sections;
+using KerbalEngineer.Helpers;
 
 #endregion
 
-namespace KerbalEngineer.Flight.Readouts.Orbital
+namespace KerbalEngineer.Flight.Readouts.Rendezvous
 {
-    public class LongitudeOfPeriapsis : ReadoutModule
+    public class TimeToTransferAngleTime : ReadoutModule
     {
         #region Constructors
 
-        public LongitudeOfPeriapsis()
+        public TimeToTransferAngleTime()
         {
-            this.Name = "Longitude of Pe";
-            this.Category = ReadoutCategory.GetCategory("Orbital");
-            this.HelpString = "Shows the vessel's longitude of periapsis.";
-            this.IsDefault = false;
+            this.Name = "Time til Transfer";
+            this.Category = ReadoutCategory.GetCategory("Rendezvous");
+            this.HelpString = "The time until the phase angle equals the transfer angle.";
+            this.IsDefault = true;
         }
 
         #endregion
@@ -44,7 +45,20 @@ namespace KerbalEngineer.Flight.Readouts.Orbital
 
         public override void Draw(Unity.Flight.ISectionModule section)
         {
-            this.DrawLine((FlightGlobals.ship_orbit.LAN + FlightGlobals.ship_orbit.argumentOfPeriapsis).ToAngle(), section.IsHud);
+            if (RendezvousProcessor.ShowDetails)
+            {
+                this.DrawLine(TimeFormatter.ConvertToString(RendezvousProcessor.TimeToTransferAngle), section.IsHud);
+            }
+        }
+
+        public override void Reset()
+        {
+            FlightEngineerCore.Instance.AddUpdatable(RendezvousProcessor.Instance);
+        }
+
+        public override void Update()
+        {
+            RendezvousProcessor.RequestUpdate();
         }
 
         #endregion

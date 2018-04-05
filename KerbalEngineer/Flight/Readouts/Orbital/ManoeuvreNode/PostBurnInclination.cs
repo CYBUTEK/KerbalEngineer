@@ -44,7 +44,7 @@ namespace KerbalEngineer.Flight.Readouts.Orbital.ManoeuvreNode
 
         #region Methods: public
 
-        public override void Draw(SectionModule section)
+        public override void Draw(Unity.Flight.ISectionModule section)
         {
             if (!ManoeuvreProcessor.ShowDetails)
             {

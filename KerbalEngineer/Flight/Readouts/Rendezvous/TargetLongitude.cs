@@ -32,9 +32,9 @@ namespace KerbalEngineer.Flight.Readouts.Surface
             IsDefault = false;
         }
 
-        public override void Draw(SectionModule section)
+        public override void Draw(Unity.Flight.ISectionModule section)
         {
-            var target = FlightGlobals.fetch.VesselTarget;
+            var target = Rendezvous.RendezvousProcessor.targetVessel;
             if (target != null)
             {
                 var vessel = target.GetVessel();

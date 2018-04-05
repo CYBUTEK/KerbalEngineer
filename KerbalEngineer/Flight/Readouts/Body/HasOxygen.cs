@@ -27,7 +27,7 @@ namespace KerbalEngineer.Flight.Readouts.Body
             IsDefault = false;
         }
 
-        public override void Draw(SectionModule section)
+        public override void Draw(Unity.Flight.ISectionModule section)
         {
             DrawLine(FlightGlobals.ActiveVessel.mainBody.atmosphereContainsOxygen ? "Yes" : "No", section.IsHud);
         }

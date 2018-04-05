@@ -30,6 +30,7 @@ using UnityEngine;
 namespace KerbalEngineer.Flight.Readouts
 {
     using Extensions;
+    using Unity.Flight;
 
     public abstract class ReadoutModule
     {
@@ -137,7 +138,7 @@ namespace KerbalEngineer.Flight.Readouts
         /// <summary>
         ///     Called when a readout is asked to draw its self.
         /// </summary>
-        public virtual void Draw(SectionModule section) { }
+        public virtual void Draw(Unity.Flight.ISectionModule section) { }
 
         /// <summary>
         ///     Called on each fixed update frame where the readout is visible.

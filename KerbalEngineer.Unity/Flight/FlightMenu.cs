@@ -177,6 +177,7 @@ namespace KerbalEngineer.Unity.Flight
         /// </summary>
         private void CreateSectionControl(ISectionModule section)
         {
+            if (section == null) return;
             GameObject menuSectionObject = Instantiate(menuSectionPrefab);
             if (menuSectionObject != null)
             {
