@@ -1,3 +1,17 @@
+1.1.4.7, 2018-04-05, KSP 1.4.2 #2110
+ - KER is now available in the Tracking Station! Always unlocked in career you can now view any readout from the Rendezvous tab whlie in the tracking station. 
+ You can set any body or vessel as the 'reference' object and KER will perform the rendezvous calculations between it and your focues object. It will always find and use the correct, 
+ concentric, parent orbits so the calculations are always valid (see update 1.1.4.5). If there are not 2 orbits to compare, only the 'target orbit' readouts will populate (apo, pe, semi, etc).
+ The configuration for this readout section is separate from the in-flight rendezvous readout section. So while they both contain the same defaults, they can both be configured 
+ differently to your taste.
+ - Changes to 'Intercept Angle' and new readout.
+ The 'Intercept Angle' readout is the current phase angle to target minus the hohmann transfer window phase angle. Ideally you start your transfer at 0.
+ That's the theory anyway, I had no idea that's how it worked and there is no in-game description. So now the 'Intercept Angle' has been renamed to 'Transfer Angle' and is no
+ longer doing the subtraction with the phase angle, it's just the raw transfer phase angle. So wherease before you burned at 0 Intercept Angle, you now burn when Transfer Angle = Phase Angle. 
+ This provides a little less obfuscated data to the player, so you can calculate and share transfer phase angles with other players without resorting to other tools.
+ But wait, jrbudda, (you might be saying), transfers now require reading both the phase angle and transfer angle and comparing them! Necessitating 2 readouts always whereas before it was just one!
+ I got you covered. I've added a new rendezvous Readout: 'Time til Transfer Angle', which as you might guess is the time until transfer angle = phase angle for your current selection.
+
 1.1.4.6, 2018-04-03, KSP 1.4.2 #2110
  - Fix yet more incorrect mass calculations in the VAB/SPH, particularly involving the Re-entry pod(s) decoupler and surface attached parts.
 
