@@ -224,8 +224,8 @@ namespace KerbalEngineer.Flight.Readouts.Rendezvous {
                     bool switchBack = PlanetariumCamera.fetch.target != act.mapObject;
 
                     if (switchBack && MapView.MapIsEnabled && GUILayout.Button("Focus Vessel", this.ButtonStyle, GUILayout.Width(this.ContentWidth))) {
-                        if (!wasMapview) MapView.ExitMapView();
                         PlanetariumCamera.fetch.SetTarget(act.mapObject);
+                        if (!wasMapview) MapView.ExitMapView();
                     }
 
                     if (FlightCamera.fetch.mode != FlightCamera.Modes.LOCKED && !MapView.MapIsEnabled && GUILayout.Button("Look at Target", this.ButtonStyle, GUILayout.Width(this.ContentWidth))) {

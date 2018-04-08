@@ -51,6 +51,7 @@ namespace KerbalEngineer.VesselSimulator {
         public bool resPriorityUseParentInverseStage;
         public double resRequestRemainingThreshold;
         public bool isEngine;
+        public bool isRCS;
         public bool isFuelLine;
         public bool isFuelTank;
         public bool isLanded;
@@ -119,6 +120,7 @@ namespace KerbalEngineer.VesselSimulator {
                 partSim.noCrossFeedNodeKey = "bottom"; //sadly this only works in one direction.
             partSim.decoupledInStage = partSim.DecoupledInStage(p);
             partSim.isFuelLine = p.HasModule<CModuleFuelLine>();
+            partSim.isRCS = p.HasModule<ModuleRCS>() || p.HasModule<ModuleRCSFX>(); //I don't think it checks inheritance.
             partSim.isSepratron = partSim.IsSepratron();
             partSim.inverseStage = p.inverseStage;
             if (log != null) log.AppendLine("inverseStage = ", partSim.inverseStage);
@@ -200,18 +202,6 @@ namespace KerbalEngineer.VesselSimulator {
             return partSim;
         }
 
-        public ResourceContainer ResourceDrains {
-            get {
-                return resourceDrains;
-            }
-        }
-
-        public ResourceContainer Resources {
-            get {
-                return resources;
-            }
-        }
-
         public void CreateEngineSims(List<EngineSim> allEngines, double atmosphere, double mach, bool vectoredThrust, bool fullThrust, LogMsg log) {
             if (log != null) log.AppendLine("CreateEngineSims for ", this.name);
             List<ModuleEngines> cacheModuleEngines = part.FindModulesImplementing<ModuleEngines>();
@@ -239,6 +229,33 @@ namespace KerbalEngineer.VesselSimulator {
             }
         }
 
+        public void CreateRCSSims(List<RCSSim> allRCS, double atmosphere, double mach, bool vectoredThrust, bool fullThrust, LogMsg log) {
+            if (log != null) log.AppendLine("CreateRCSSims for ", this.name);
+            List<ModuleRCS> cacheModuleRCS = part.FindModulesImplementing<ModuleRCS>();
+
+            try {
+                if (cacheModuleRCS.Count > 0) {
+                    //find first active engine, assuming that two are never active at the same time
+                    foreach (ModuleRCS engine in cacheModuleRCS) {
+                        if (engine.isEnabled) {
+                            if (log != null) log.AppendLine("Module: ", engine.moduleName);
+                            RCSSim engineSim = RCSSim.New(
+                                this,
+                                engine,
+                                atmosphere,
+                                (float)mach,
+                                vectoredThrust,
+                                fullThrust,
+                                log);
+                            allRCS.Add(engineSim);
+                        }
+                    }
+                }
+            } catch {
+                Debug.Log("[KER] Error Catch in CreateRCSSims");
+            }
+        }
+
         public void DrainResources(double time, LogMsg log) {
             //if (log != null) log.Append("DrainResources(", name, ":", partId)
             //                    .AppendLine(", ", time, ")");
@@ -250,6 +267,7 @@ namespace KerbalEngineer.VesselSimulator {
                 //if (log != null) log.AppendLine(ResourceContainer.GetResourceName(type), " left = ", resources[type]);
             }
         }
+
 
         public String DumpPartAndParentsToLog(LogMsg log, String prefix) {
             if (log != null) {
@@ -803,6 +821,16 @@ namespace KerbalEngineer.VesselSimulator {
             //if (time < double.MaxValue)
             //    if (log != null) log.Append("TimeToDrainResource(", name, ":", partId)
             //                        .AppendLine(") = ", time);
+            return time;
+        }
+
+        public double CalcTimeToDrainResource(double consumptionRate, int resource, LogMsg log) {
+            double time = double.MaxValue;
+
+            if (consumptionRate > 0) {
+                time = Math.Min(time, resources[resource] / consumptionRate);
+            }
+
             return time;
         }
 

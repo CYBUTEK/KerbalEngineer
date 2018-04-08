@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <ArrayOfSettingItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
   <SettingItem>
     <Name>Orbital.ApoapsisHeight</Name>
@@ -62,23 +62,23 @@
   </SettingItem>
   <SettingItem>
     <Name>Orbital.ArgumentOfPeriapsis</Name>
-    <Value xsi:type="string" />
+    <Value xsi:type="string"></Value>
   </SettingItem>
   <SettingItem>
     <Name>Orbital.TrueAnomaly</Name>
-    <Value xsi:type="string" />
+    <Value xsi:type="string"></Value>
   </SettingItem>
   <SettingItem>
     <Name>Orbital.MeanAnomaly</Name>
-    <Value xsi:type="string" />
+    <Value xsi:type="string"></Value>
   </SettingItem>
   <SettingItem>
     <Name>Orbital.MeanAnomalyAtEpoc</Name>
-    <Value xsi:type="string" />
+    <Value xsi:type="string"></Value>
   </SettingItem>
   <SettingItem>
     <Name>Orbital.EccentricAnomaly</Name>
-    <Value xsi:type="string" />
+    <Value xsi:type="string"></Value>
   </SettingItem>
   <SettingItem>
     <Name>Orbital.SemiMajorAxis</Name>
@@ -146,11 +146,11 @@
   </SettingItem>
   <SettingItem>
     <Name>Orbital.SpeedAtApoapsis</Name>
-    <Value xsi:type="string" />
+    <Value xsi:type="string"></Value>
   </SettingItem>
   <SettingItem>
     <Name>Orbital.SpeedAtPeriapsis</Name>
-    <Value xsi:type="string" />
+    <Value xsi:type="string"></Value>
   </SettingItem>
   <SettingItem>
     <Name>Orbital.TimeToAtmosphere</Name>
@@ -182,7 +182,7 @@
   </SettingItem>
   <SettingItem>
     <Name>Surface.MachNumber</Name>
-    <Value xsi:type="string" />
+    <Value xsi:type="string"></Value>
   </SettingItem>
   <SettingItem>
     <Name>Surface.Latitude</Name>
@@ -354,7 +354,7 @@
   </SettingItem>
   <SettingItem>
     <Name>Rendezvous.InterceptAngle</Name>
-    <Value xsi:type="string" />
+    <Value xsi:type="string"></Value>
   </SettingItem>
   <SettingItem>
     <Name>Rendezvous.RelativeVelocity</Name>
@@ -430,15 +430,15 @@
   </SettingItem>
   <SettingItem>
     <Name>Thermal.InternalFlux</Name>
-    <Value xsi:type="string" />
+    <Value xsi:type="string"></Value>
   </SettingItem>
   <SettingItem>
     <Name>Thermal.ConvectionFlux</Name>
-    <Value xsi:type="string" />
+    <Value xsi:type="string"></Value>
   </SettingItem>
   <SettingItem>
     <Name>Thermal.RadiationFlux</Name>
-    <Value xsi:type="string" />
+    <Value xsi:type="string"></Value>
   </SettingItem>
   <SettingItem>
     <Name>Thermal.CriticalPart</Name>
@@ -470,7 +470,7 @@
   </SettingItem>
   <SettingItem>
     <Name>Thermal.CoolestPart</Name>
-    <Value xsi:type="string" />
+    <Value xsi:type="string"></Value>
   </SettingItem>
   <SettingItem>
     <Name>Thermal.CoolestTemperature</Name>
@@ -511,5 +511,85 @@
   <SettingItem>
     <Name>Rendezvous.TargetLongitude</Name>
     <Value xsi:type="string">Shows the target vessel's longitude around a celestial body. Longitude is the angle from the bodies prime meridian.</Value>
+  </SettingItem>
+  <SettingItem>
+    <Name>Orbital.PostBurnInclination</Name>
+    <Value xsi:type="string">The inclination of the vessel's orbit after the burn.</Value>
+  </SettingItem>
+  <SettingItem>
+    <Name>Orbital.PostBurnPeriod</Name>
+    <Value xsi:type="string">The period of the vessel's orbit after the burn.</Value>
+  </SettingItem>
+  <SettingItem>
+    <Name>Orbital.TripTotalDeltaV</Name>
+    <Value xsi:type="string">Total DeltaV of all maneuver nodes.</Value>
+  </SettingItem>
+  <SettingItem>
+    <Name>Surface.AtmosphericPressure</Name>
+    <Value xsi:type="string">Displays the current atmospheric pressure.</Value>
+  </SettingItem>
+  <SettingItem>
+    <Name>Rendezvous.TimeToTransferAngleTime</Name>
+    <Value xsi:type="string">The time until the phase angle equals the transfer angle.</Value>
+  </SettingItem>
+  <SettingItem>
+    <Name>Body.BodyName</Name>
+    <Value xsi:type="string">Shows the name of the current body.</Value>
+  </SettingItem>
+  <SettingItem>
+    <Name>Body.HasAtmosphere</Name>
+    <Value xsi:type="string">Shows whether the current body has an atmosphere.</Value>
+  </SettingItem>
+  <SettingItem>
+    <Name>Body.HasOxygen</Name>
+    <Value xsi:type="string">Shows whether the current body has an oxygen rich atmosphere.</Value>
+  </SettingItem>
+  <SettingItem>
+    <Name>Body.HighAtmosphereHeight</Name>
+    <Value xsi:type="string">The altitude where the upper atmosphere begins.</Value>
+  </SettingItem>
+  <SettingItem>
+    <Name>Body.LowSpaceHeight</Name>
+    <Value xsi:type="string">The altitude where lower space begins.</Value>
+  </SettingItem>
+  <SettingItem>
+    <Name>Body.HighSpaceHeight</Name>
+    <Value xsi:type="string">The altitude where upper space begins.</Value>
+  </SettingItem>
+  <SettingItem>
+    <Name>Miscellaneous.SystemTime24</Name>
+    <Value xsi:type="string">Shows the System Time in 24 hour format</Value>
+  </SettingItem>
+  <SettingItem>
+    <Name>Miscellaneous.SystemDateTime</Name>
+    <Value xsi:type="string">Shows the System Date/Time in ISO 8601 format</Value>
+  </SettingItem>
+  <SettingItem>
+    <Name>Vessel.RCSDeltaV</Name>
+    <Value xsi:type="string">Shows the current possible DeltaV from RCS</Value>
+  </SettingItem>
+  <SettingItem>
+    <Name>Vessel.RCSIsp</Name>
+    <Value xsi:type="string">Shows the average specific impulse of the RCS System.</Value>
+  </SettingItem>
+  <SettingItem>
+    <Name>Vessel.RCSThrust</Name>
+    <Value xsi:type="string">Shows the maximum thrust from RCS thrusters</Value>
+  </SettingItem>
+  <SettingItem>
+    <Name>Vessel.RCSTWR</Name>
+    <Value xsi:type="string">Shows the TWR for the RCS system at the current gravity</Value>
+  </SettingItem>
+  <SettingItem>
+    <Name>Rendezvous.TimeTilClosestApproach</Name>
+    <Value xsi:type="string">Time until the next closest approach to the target.</Value>
+  </SettingItem>
+  <SettingItem>
+    <Name>Rendezvous.SeparationAtClosestApproach</Name>
+    <Value xsi:type="string">Distance to the target at closest approach.</Value>
+  </SettingItem>
+  <SettingItem>
+    <Name>Rendezvous.SpeedAtClosestApproach</Name>
+    <Value xsi:type="string">Shows the difference in orbital speed between your vessel and the target object at the next encounter.</Value>
   </SettingItem>
 </ArrayOfSettingItem>

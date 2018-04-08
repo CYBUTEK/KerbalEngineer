@@ -199,9 +199,9 @@ namespace KerbalEngineer.Flight.Readouts.Surface
                     Biome = ScienceUtil.GetExperimentBiome(FlightGlobals.ActiveVessel.mainBody, this.impactLatitude, this.impactLongitude);
                 }
                 catch (Exception ex)
-                {
-                    MyLogger.Log("GetExperimentBiome(" + FlightGlobals.ActiveVessel.mainBody.name + ", " + this.impactLatitude + ", " + this.impactLongitude + ") died");
-                    MyLogger.Exception(ex);
+                { //this gets spammy with misbehaving mod planets.
+                    //MyLogger.Log("GetExperimentBiome(" + FlightGlobals.ActiveVessel.mainBody.name + ", " + this.impactLatitude + ", " + this.impactLongitude + ") died");
+                    //MyLogger.Exception(ex);
                     Biome = "<failed>";
                 }
             }

@@ -149,6 +149,10 @@ namespace KerbalEngineer.Flight.Readouts
                 readouts.Add(new HeadingRate());
                 readouts.Add(new PitchRate());
                 readouts.Add(new RollRate());
+                readouts.Add(new RCSDeltaV());
+                readouts.Add(new RCSIsp());
+                readouts.Add(new RCSThrust());
+                readouts.Add(new RCSTWR());
 
                 // Rendezvous
                 readouts.Add(new TargetSelector());
@@ -171,8 +175,9 @@ namespace KerbalEngineer.Flight.Readouts
                 readouts.Add(new Rendezvous.OrbitalPeriod());
                 readouts.Add(new Rendezvous.SemiMajorAxis());
                 readouts.Add(new Rendezvous.SemiMinorAxis());
-                readouts.Add(new Rendezvous.RelativeRadialVelocity());
-                readouts.Add(new Rendezvous.TimeToRendezvous());
+                readouts.Add(new Rendezvous.TimeTilClosestApproach());
+                readouts.Add(new Rendezvous.SeparationAtClosestApproach());
+                readouts.Add(new Rendezvous.SpeedAtClosestApproach());
                 readouts.Add(new TargetLatitude());
                 readouts.Add(new TargetLongitude());
 

@@ -1,3 +1,11 @@
+1.1.4.8, 2018-04-08, KSP 1.4.2 #2110
+ - Added 'RCS' toggle to the VAB/SPH build overlay. Shows thrust, isp, min/max twr and min/max deltav for the RCS system at each stage.
+ - Added 'RCS DeltaV', 'RCS TWR', 'RCS Isp', 'RCS Thrust' to Vessel readouts.
+ - Added 'Time til Encounter', 'Separation at Encounter', 'Relative Velocity at Encounter' to Rendezvous readouts.
+ - Removed 'Time to Rendezvous' and 'Relative Radial Velocity' Rendezvous readouts.
+ - Force xml settings to encode in UTF8, fixes issues on some language platforms.
+ - Update distributed help strings.
+
 1.1.4.7, 2018-04-05, KSP 1.4.2 #2110
  - KER is now available in the Tracking Station! Always unlocked in career you can now view any readout from the Rendezvous tab whlie in the tracking station. 
  You can set any body or vessel as the 'reference' object and KER will perform the rendezvous calculations between it and your focues object. It will always find and use the correct, 

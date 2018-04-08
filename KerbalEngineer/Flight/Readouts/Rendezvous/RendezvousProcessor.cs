@@ -143,16 +143,6 @@ namespace KerbalEngineer.Flight.Readouts.Rendezvous {
         public static double TimeToPeriapsis { get; private set; }
 
         /// <summary>
-        ///     Gets the relative radial velocity.
-        /// </summary>
-        public static double RelativeRadialVelocity { get; private set; }
-
-        /// <summary>
-        ///     Gets approximate (linearly) time to the minimum distance between objects.
-        /// </summary>
-        public static double TimeToRendezvous { get; private set; }
-
-        /// <summary>
         ///     Gets time for landed ship to intersect target orbital plane in system.
         /// </summary>
         public static double[] TimeToPlane { get; private set; } = new double[2];
@@ -193,6 +183,22 @@ namespace KerbalEngineer.Flight.Readouts.Rendezvous {
         /// </summary>
         public static string sourceDisplay { get; private set; }
 
+
+        /// <summary>
+        ///     Gets the time of the next closest approach.
+        /// </summary>
+        public static double TimeTilEncounter { get; private set; }
+
+        /// <summary>
+        ///     Gets the distance at next closest approach
+        /// </summary>
+        public static double SeparationAtEncounter { get; private set; }
+
+        /// <summary>
+        ///     Gets the relative speed at next closest approach
+        /// </summary>
+        public static double SpeedAtEncounter { get; private set; }
+
         /// <summary>
         ///     Gets and sets whether the updatable object should be updated.
         /// </summary>
@@ -204,6 +210,7 @@ namespace KerbalEngineer.Flight.Readouts.Rendezvous {
         public static void RequestUpdate() {
             instance.UpdateRequested = true;
         }
+
 
         public static bool overrideANDN = false;
 
@@ -240,6 +247,7 @@ namespace KerbalEngineer.Flight.Readouts.Rendezvous {
                     target = FlightGlobals.ActiveVessel.targetObject;
                     vessel = FlightGlobals.ActiveVessel;
                 }
+                TrackingStationSource = null;
             } else if (HighLogic.LoadedScene == GameScenes.TRACKSTATION) {
 
                 if (PlanetariumCamera.fetch.target.type == MapObject.ObjectType.CelestialBody)
@@ -274,14 +282,14 @@ namespace KerbalEngineer.Flight.Readouts.Rendezvous {
             activeVessel = vessel;
 
             if (actualSourceOrbit == null) {
-              //  Debug.Log("Source orbit is null!");
+                //  Debug.Log("Source orbit is null!");
                 TrackingStationSource = null;
                 ShowDetails = false;
                 return;
             }
 
             if (actualTargetOrbit == null) {
-               // Debug.Log("Target orbit is null!");
+                // Debug.Log("Target orbit is null!");
                 ShowDetails = false;
                 return;
             }
@@ -301,37 +309,53 @@ namespace KerbalEngineer.Flight.Readouts.Rendezvous {
                 originOrbit = null;
             }
 
-            AltitudeSeaLevel = targetOrbit.altitude;
-            ApoapsisHeight = targetOrbit.ApA;
-            PeriapsisHeight = targetOrbit.PeA;
-            TimeToApoapsis = targetOrbit.timeToAp;
-            TimeToPeriapsis = targetOrbit.timeToPe;
-            SemiMajorAxis = targetOrbit.semiMajorAxis;
-            SemiMinorAxis = targetOrbit.semiMinorAxis;
-            OrbitalPeriod = targetOrbit.period;
-            RelativeInclination = targetOrbit.inclination;
 
-            TimeToAscendingNode = 0;
-            TimeToDescendingNode = 0;
-            AngleToAscendingNode = 0;
-            AngleToDescendingNode = 0;
+            { //These are not 'rendezvous' calculations, just raw data about the target object.
+                AltitudeSeaLevel = targetOrbit.altitude;
+                ApoapsisHeight = targetOrbit.ApA;
+                PeriapsisHeight = targetOrbit.PeA;
+                TimeToApoapsis = targetOrbit.timeToAp;
+                TimeToPeriapsis = targetOrbit.timeToPe;
+                SemiMajorAxis = targetOrbit.semiMajorAxis;
+                SemiMinorAxis = targetOrbit.semiMinorAxis;
+                OrbitalPeriod = targetOrbit.period;
+                RelativeInclination = targetOrbit.inclination;
+            }
 
-            RelativeVelocity = 0;
-            RelativeSpeed = 0;
-            PhaseAngle = 0;
-            InterceptAngle = 0;
-            TimeToTransferAngle = 0;
+            { //Set everything else 0 incase some are not valid.
+                TimeToAscendingNode = 0;
+                TimeToDescendingNode = 0;
+                AngleToAscendingNode = 0;
+                AngleToDescendingNode = 0;
 
-            AngleToPlane[0] = 0;
-            TimeToPlane[0] = 0;
-            AngleToPlane[1] = 0;
-            TimeToPlane[1] = 0;
-            Distance = 0;
+                RelativeVelocity = 0;
+                RelativeSpeed = 0;
+                PhaseAngle = 0;
+                InterceptAngle = 0;
+                TimeToTransferAngle = 0;
 
-            if (originOrbit != null) {
+                AngleToPlane[0] = 0;
+                TimeToPlane[0] = 0;
+                AngleToPlane[1] = 0;
+                TimeToPlane[1] = 0;
+                Distance = 0;
+
+                TimeTilEncounter = 0;
+                SeparationAtEncounter = 0;
+                SpeedAtEncounter = 0;
+
+                TimeTilEncounter = double.NaN;
+                SeparationAtEncounter = double.NaN;
+                SpeedAtEncounter = double.NaN;
+
+            }
+
+
+            if (originOrbit != null) { //Actually calculating an encounter with 2 different things.
 
                 overrideANDN = isLanded && actualSourceOrbit.referenceBody == targetOrbit.referenceBody;
                 overrideANDNRev = targetLanded && !isLanded && actualTargetOrbit.referenceBody == actualSourceOrbit.referenceBody && target.GetVessel() != null;
+                bodyRotationPeriod = actualSourceOrbit.referenceBody.rotationPeriod;
 
                 if (landedSamePlanet) { //this should only occur when landed targeting something else landed on same body.
 
@@ -342,17 +366,34 @@ namespace KerbalEngineer.Flight.Readouts.Rendezvous {
                     TimeToPeriapsis = 0;
                     SemiMajorAxis = 0;
                     SemiMinorAxis = 0;
-
-                    bodyRotationPeriod = actualSourceOrbit.referenceBody.rotationPeriod;
-
                     Distance = Vector3d.Distance(target.GetVessel().GetWorldPos3D(), vessel.GetWorldPos3D());
-
                     OrbitalPeriod = bodyRotationPeriod;
 
-                    TimeToRendezvous = 0;
-                    RelativeRadialVelocity = 0;
-                } else {
+                } else if (overrideANDN) {//launching
 
+                    if (vessel != null) {
+                        AngleToPlane = CalcAngleToPlane(vessel.GetOrbit().referenceBody, vessel.latitude, vessel.longitude, targetOrbit);
+                        TimeToPlane[0] = (AngleToPlane[0] / 360) * vessel.GetOrbit().referenceBody.rotationPeriod;
+                        TimeToPlane[1] = (AngleToPlane[1] / 360) * vessel.GetOrbit().referenceBody.rotationPeriod;
+                    }
+
+                    RelativeInclination = targetOrbit.inclination;
+
+                } else if (overrideANDNRev) { //landing
+
+                    global::Vessel tgt = target.GetVessel();
+
+                    if (vessel != null) {
+                        AngleToPlane = CalcAngleToPlane(vessel.GetOrbit().referenceBody, tgt.latitude, tgt.longitude, originOrbit);
+                        TimeToPlane[0] = (AngleToPlane[0] / 360) * vessel.GetOrbit().referenceBody.rotationPeriod;
+                        TimeToPlane[1] = (AngleToPlane[1] / 360) * vessel.GetOrbit().referenceBody.rotationPeriod;
+                    }
+
+                    RelativeInclination = originOrbit.inclination;
+                    Distance = Vector3d.Distance(target.GetVessel().GetWorldPos3D(), vessel.GetWorldPos3D());
+                    AltitudeSeaLevel = tgt.altitude;
+
+                } else { //standard 2 orbits
 
                     RelativeInclination = originOrbit.GetRelativeInclination(targetOrbit);
                     RelativeSpeed = originOrbit.orbitalSpeed - targetOrbit.orbitalSpeed;
@@ -362,7 +403,6 @@ namespace KerbalEngineer.Flight.Readouts.Rendezvous {
 
                     double tspd = 360 / targetOrbit.period;
                     double sspd = 360 / originOrbit.period;
-
 
                     if (PhaseAngle < 0) {
                         double diff = InterceptAngle - PhaseAngle;
@@ -384,54 +424,37 @@ namespace KerbalEngineer.Flight.Readouts.Rendezvous {
 
                     Distance = Vector3d.Distance(targetOrbit.pos, originOrbit.pos);
 
-                    bodyRotationPeriod = actualSourceOrbit.referenceBody.rotationPeriod;
 
-                    // beware that the order/sign of coordinates is inconsistent across different exposed variables
-                    // in particular, v below does not equal to FlightGlobals.ship_tgtVelocity
-                    Vector3d x = targetOrbit.pos - originOrbit.pos;
-                    Vector3d v = targetOrbit.vel - originOrbit.vel;
-                    double xv = Vector3d.Dot(x, v);
-                    TimeToRendezvous = -xv / Vector3d.SqrMagnitude(v);
-                    RelativeRadialVelocity = xv / Vector3d.Magnitude(x);
-
-                    if (overrideANDN) //calc launch time
-                    {
-                        if (vessel != null) {
-                            AngleToPlane = CalcAngleToPlane(vessel.GetOrbit().referenceBody, vessel.latitude, vessel.longitude, targetOrbit);
-                            TimeToPlane[0] = (AngleToPlane[0] / 360) * vessel.GetOrbit().referenceBody.rotationPeriod;
-                            TimeToPlane[1] = (AngleToPlane[1] / 360) * vessel.GetOrbit().referenceBody.rotationPeriod;
+                    //From OrbitTargeter
+                    double tOne = 0;
+                    if (target is CelestialBody) {
+                        Vector3d relativePositionAtUT = originOrbit.getRelativePositionAtUT(originOrbit.closestTgtApprUT);
+                        Vector3d relativePositionAtUT2 = targetOrbit.getRelativePositionAtUT(originOrbit.closestTgtApprUT);
+                        double separation = (relativePositionAtUT - relativePositionAtUT2).magnitude;
+                        tOne = originOrbit.closestTgtApprUT;
+                    } else {
+                        double num3 = 0.0;
+                        double num4 = 0.0;
+                        double num5 = 0.0;
+                        double eVs = 0.0;
+                        double num6 = 0.0;
+                        double eVs2 = 0.0;
+                        int iterations = 0;
+                        int num7 = Orbit.FindClosestPoints(originOrbit, targetOrbit, ref num3, ref num4, ref num5, ref eVs, ref num6, ref eVs2, 0.0001, 20, ref iterations);
+                        tOne = originOrbit.StartUT + originOrbit.GetDTforTrueAnomaly(num5, 0.0);
+                        double tTwo = originOrbit.StartUT + originOrbit.GetDTforTrueAnomaly(num6, 0.0);
+                        if (tOne > tTwo) {
+                            UtilMath.SwapValues(ref tOne, ref tTwo);
+                            UtilMath.SwapValues(ref num5, ref num6);
+                            UtilMath.SwapValues(ref eVs, ref eVs2);
                         }
 
-                        RelativeInclination = targetOrbit.inclination;
-                        RelativeRadialVelocity = 0;
-                        TimeToRendezvous = 0;
-                        PhaseAngle = 0;
-                        InterceptAngle = 0;
-                        TimeToTransferAngle = 0;
-                    } else if (overrideANDNRev) { //calc land time.
-                        global::Vessel tgt = target.GetVessel();
+                    }
 
-                        if (vessel != null) {
-                            AngleToPlane = CalcAngleToPlane(vessel.GetOrbit().referenceBody, tgt.latitude, tgt.longitude, originOrbit);
-                            TimeToPlane[0] = (AngleToPlane[0] / 360) * vessel.GetOrbit().referenceBody.rotationPeriod;
-                            TimeToPlane[1] = (AngleToPlane[1] / 360) * vessel.GetOrbit().referenceBody.rotationPeriod;
-                        }
-
-                        RelativeInclination = originOrbit.inclination;
-                        Distance = Vector3d.Distance(target.GetVessel().GetWorldPos3D(), vessel.GetWorldPos3D());
-                        AltitudeSeaLevel = tgt.altitude;
-                        PhaseAngle = 0;
-                        InterceptAngle = 0;
-                        TimeToTransferAngle = 0;
-                        ApoapsisHeight = 0;
-                        PeriapsisHeight = 0;
-                        TimeToApoapsis = 0;
-                        TimeToPeriapsis = 0;
-                        SemiMajorAxis = 0;
-                        SemiMinorAxis = 0;
-                        OrbitalPeriod = 0;
-                        RelativeRadialVelocity = 0;
-                        TimeToRendezvous = 0;
+                    if (tOne > originOrbit.StartUT) {
+                        TimeTilEncounter = tOne - originOrbit.StartUT;
+                        SeparationAtEncounter = (originOrbit.getPositionAtUT(tOne) - targetOrbit.getPositionAtUT(tOne)).magnitude;
+                        SpeedAtEncounter = Math.Abs(originOrbit.getOrbitalSpeedAt(tOne) - targetOrbit.getOrbitalSpeedAt(tOne));
                     }
 
                 }
@@ -484,12 +507,16 @@ namespace KerbalEngineer.Flight.Readouts.Rendezvous {
 
         public static string nameForTargetable(ITargetable tgt) {
             MapObject mo = null;
+
             if (tgt is CelestialBody)
                 mo = ((CelestialBody)tgt).MapObject;
             else if (tgt is global::Vessel)
                 mo = ((global::Vessel)tgt).mapObject;
-            else return Localizer.Format("<<1>>", tgt.GetDisplayName());
-            return Localizer.Format("<<1>>", mo.GetDisplayName());
+
+            if (mo == null || mo.Discoverable == null)
+                return Localizer.Format("<<1>>", tgt.GetDisplayName());
+            else
+                return Localizer.Format("<<1>>", mo.GetDisplayName());
         }
 
         private double CalcInterceptAngle(Orbit targetOrbit, Orbit originOrbit) {
