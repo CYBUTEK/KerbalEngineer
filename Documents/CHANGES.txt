@@ -1,3 +1,6 @@
+1.1.4.9, 2018-04-11, KSP 1.4.2 #2110
+ - Update minimum version to 1.4.0
+
 1.1.4.8, 2018-04-08, KSP 1.4.2 #2110
  - Added 'RCS' toggle to the VAB/SPH build overlay. Shows thrust, isp, min/max twr and min/max deltav for the RCS system at each stage.
  - Added 'RCS DeltaV', 'RCS TWR', 'RCS Isp', 'RCS Thrust' to Vessel readouts.
