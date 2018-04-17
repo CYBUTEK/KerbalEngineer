@@ -1,9 +1,122 @@
-1.1.2.0, 2016-09-15, KSP Build #1480
-    Fixed compile errors caused due to game update.
-    Fixed asset bundle errors due to engine update.
+1.1.4.9, 2018-04-11, KSP 1.4.2 #2110
+ - Update minimum version to 1.4.0
 
-    Fixed: True Anomaly displayed in degrees rather than radians. (Padishar)
-    Added: Target Latitude & Longitude readouts to the rendezvous section. (Padishar)
+1.1.4.8, 2018-04-08, KSP 1.4.2 #2110
+ - Added 'RCS' toggle to the VAB/SPH build overlay. Shows thrust, isp, min/max twr and min/max deltav for the RCS system at each stage.
+ - Added 'RCS DeltaV', 'RCS TWR', 'RCS Isp', 'RCS Thrust' to Vessel readouts.
+ - Added 'Time til Encounter', 'Separation at Encounter', 'Relative Velocity at Encounter' to Rendezvous readouts.
+ - Removed 'Time to Rendezvous' and 'Relative Radial Velocity' Rendezvous readouts.
+ - Force xml settings to encode in UTF8, fixes issues on some language platforms.
+ - Update distributed help strings.
+
+1.1.4.7, 2018-04-05, KSP 1.4.2 #2110
+ - KER is now available in the Tracking Station! Always unlocked in career you can now view any readout from the Rendezvous tab whlie in the tracking station. 
+ You can set any body or vessel as the 'reference' object and KER will perform the rendezvous calculations between it and your focues object. It will always find and use the correct, 
+ concentric, parent orbits so the calculations are always valid (see update 1.1.4.5). If there are not 2 orbits to compare, only the 'target orbit' readouts will populate (apo, pe, semi, etc).
+ The configuration for this readout section is separate from the in-flight rendezvous readout section. So while they both contain the same defaults, they can both be configured 
+ differently to your taste.
+ - Changes to 'Intercept Angle' and new readout.
+ The 'Intercept Angle' readout is the current phase angle to target minus the hohmann transfer window phase angle. Ideally you start your transfer at 0.
+ That's the theory anyway, I had no idea that's how it worked and there is no in-game description. So now the 'Intercept Angle' has been renamed to 'Transfer Angle' and is no
+ longer doing the subtraction with the phase angle, it's just the raw transfer phase angle. So wherease before you burned at 0 Intercept Angle, you now burn when Transfer Angle = Phase Angle. 
+ This provides a little less obfuscated data to the player, so you can calculate and share transfer phase angles with other players without resorting to other tools.
+ But wait, jrbudda, (you might be saying), transfers now require reading both the phase angle and transfer angle and comparing them! Necessitating 2 readouts always whereas before it was just one!
+ I got you covered. I've added a new rendezvous Readout: 'Time til Transfer Angle', which as you might guess is the time until transfer angle = phase angle for your current selection.
+
+1.1.4.6, 2018-04-03, KSP 1.4.2 #2110
+ - Fix yet more incorrect mass calculations in the VAB/SPH, particularly involving the Re-entry pod(s) decoupler and surface attached parts.
+
+1.1.4.5, 2018-03-30, KSP 1.4.2 #2110
+	Fixed a NPE spam bug if target lat/long was enabled and target was not a ship
+    Rendezvous Readout Overhaul:
+        The goal here is to clean up the Rendezvous readouts to present only good information depending on the situation of your ship and the target. 
+		Most of the calculations being done are between 2 orbits and are either not useful or mathmatically meaningless unless the 2 orbits are concentric and neither endppoint is landed.
+		This update tries to be 'smart' about which data to present:
+		   If you are landed and your target is in direct orbit (i.e. Kerbin to Minimus):
+		      - The time and angles to AN/DN will show a (L) and represent the time and angles til you intersect the plane of the target.
+			  - The relative inclination is the raw inclination of the target, not realitve to the landed planet's inclination as before (hard to notice on Kerbin because it's 0)
+			  - Most other orbit compatison readouts will be 0
+			  - Target orbit data will be as normal.
+			  - Distance is cartesian distance between you and the target.
+		   Conversely if you are in orbit and targeting a landed thing (i.e. Mun oribit to landed ship):
+		      - The time and angles to AN/DN will show a (L) and represent the time and angles til your target intersects your orbital plane.
+			  - The relative inclination is your raw inclination.
+			  - Most other orbit compatison readouts will be 0
+			  - Target orbit data will all be 0.
+			  - Distance is cartesian distance between you and the target.
+		   If you and your target are both orbiting the same body:
+		      - Readouts are unchanged as this is how they were designed.
+		   If your target is in a different SOI, regardless if you or your target is landed:
+		      - KER will search upward towards the sun from both ends to find the 2 orbits that share the same body and use those for calculation.
+			  - The actual orbit used as a source will be shown as 'Ref Orbit'
+			  - The actual orbit used as a target will be shown as 'Target Orbit'
+			  - Everything else will display as normal for those 2 concentric orbits.
+			     For Example(s): 
+				  - If you are targeting Eve and sitting on the launchpad, the calculation will show Kerbin as the Ref Orbit and all calculations will be between those 2 planets (this is actually how KER worked before it just wasn't clear about it)
+				  - If you are targeting Eve and orbiting kerbin it will be same as above, using Kerbin's and Eve's orbits (this is not how it was before)
+				  - If you are orbiting the Mun and targeting a probe landed on Laythe (y tho?), it will use Kerbin and Jool's orbits. 
+					- Once you escape the Mun it will use Kerbin and Jool. 
+					- Once you escape Kerbin it will use your ship and Jool. 
+					- Once in Jool's SOI it will use your ship and Laythe
+					- Once in Laythe's SOI it will use the landed target calculations previously descibed.
+					- Once on the ground it will use the ground-ground calulation in the next section.
+			If you and your target are both landed on the same body:
+					- Pretty much everything will be 0 except distance and target lat/long/alt.
+					
+				  
+1.1.4.4, 2018-03-28, KSP 1.4.1 #2089
+    When using the 'Switch To Target' button on the Rendezvous readout, the target ship's target will be set to the original ship (so you can switch back without digging through a menu or the map).
+    Added 'Focus Target' / 'Focus Vessel' buttons on the Rendezvous readout. Switches to the map and focuses your target if it's a vessel or celestial body. 'Focus Vessel' switches back to your ship ideally remembering if you were in the map or not.
+    Added 'Look At Target' button to the Rendezvous readout. Rotates the camera to look at the target. Flight mode only. No more searching the stars for that little green box.
+
+1.1.4.3, 2018-03-23, KSP 1.4.1 #2089
+    Fix phantom stage when root part is stageable.
+    Handle decoupler stage detection in a more mod-friendly way.
+
+1.1.4.2, 2018-03-23, KSP 1.4.1 #2089
+    Changed active engine detection code for multimode engines. Fixes GTI Multi Mode Engines mod.
+    When landed and targeting something in the same SOI, the 'rel time to AN/DN' rendevous readouts now show the time until the landed ship comes under the target body's orbit.
+    Negative times now display in year/day/hr/min/s format instead of just seconds.
+
+1.1.4.1, 2018-03-22, KSP 1.4.1 #2089
+    Fix VAB mass calculation with non-zero kerbal crew weight
+    Fix NPE when surface attaching a part to an engine plate
+    Add Total Trip DeltaV to orbital readouts
+
+1.1.4.0, 2017-03-21, KSP 1.4.1 #2089
+    Fixed new Engine Plates not calculating correctly in the VAB
+    Fix VAB mass calculation with decouplers not accounting for direction or type of decoupler
+
+1.1.3.0, 2017-05-28, KSP 1.3.0 #1804
+    Fixed: Check for NaN and Infinities before clamping angles, resolving a hang state caused by the Intercept Angle readout.
+    Added: Setting for enabling/disabling whether the toolbar icon in-flight activates on mouse hover.
+    Added: Body category with the following readouts:
+        Body Name
+        Has Atmosphere
+        Has Oxygen
+        High Atmophere Height
+        Low Space Height
+        High Space Height
+
+1.1.2.8, 2016-12-03, KSP 1.2.1 #1604
+    Fixed: Compile errors caused due to game update.
+    Fixed: Asset bundle errors due to engine update.
+    Fixed: Part info overlay no longer visible when hovering over part selection panel.
+    Fixed: Clamp360 now returns [0, 360]. (Pad)
+    Fixed: Possible NRE when "Back to target selection" sets the target to null. (Pad)
+    Fixed: Clamp value passed to Acos function within the impact processor to avoid potential NaN. (Pad)
+    Fixed: Use inverseStage of tank for stage priority flow instead of decoupled stage count. (Pad)
+    Changed: True Anomaly to be displayed in degrees rather than radians. (was changed in stock 1.1.x) (Pad)
+    Changed: Typos in the post-burn apo/peri readout descriptions. (Pad)
+    Changed: Added missing space before the 'W' in the target longitude readout formatting. (Pad)
+    Changed: Simulation and logging to produces less GC. (Pad)
+    Changed: Tweaked impact processor calculations. (Pad)
+    Added: Target Latitude & Longitude readouts to the rendezvous section. (Pad)
+    Added: Extra readout help strings. (rkagerer)
+    Added: Planes and Relays to the target selector readout. (Pad)
+    Added: Post-burn orbital period and inclination readouts. (Pad)
+    Added: Support for balance and priority flow modes. (Pad)
+    Added: Custom keybinding of the part info show/hide functionality.
 
 1.1.1.0, 2016-04-29, KSP Build #1250
     Added: Missing cleanup of some contained references within various pooled classes.

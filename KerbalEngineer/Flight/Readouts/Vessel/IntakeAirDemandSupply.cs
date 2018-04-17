@@ -42,7 +42,7 @@ namespace KerbalEngineer.Flight.Readouts.Vessel
         {
             this.Name = "Intake Air (D/S)";
             this.Category = ReadoutCategory.GetCategory("Vessel");
-            this.HelpString = "Displays the Ration between required and available Intake Air.";
+            this.HelpString = "Displays the Ratio between required and available Intake Air.";
             this.IsDefault = false;
         }
 
@@ -77,7 +77,7 @@ namespace KerbalEngineer.Flight.Readouts.Vessel
                 .Sum(p => p.Resources["IntakeAir"].amount);
         }
 
-        public override void Draw(SectionModule section)
+        public override void Draw(Unity.Flight.ISectionModule section)
         {
             this.DrawLine(this.demand.ToString("F4") + " / " + this.supply.ToString("F4"), section.IsHud);
         }

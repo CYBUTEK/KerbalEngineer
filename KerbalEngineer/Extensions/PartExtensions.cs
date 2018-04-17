@@ -118,8 +118,46 @@ namespace KerbalEngineer.Extensions
         /// </summary>
         public static double GetDryMass(this Part part)
         {
-            return (part.physicalSignificance == Part.PhysicalSignificance.FULL) ? part.mass : 0d;
+            return (part.physicalSignificance == Part.PhysicalSignificance.FULL) ? part.mass + part.getCrewAdjustment() : 0d;
         }
+
+        public static double getCrewAdjustment(this Part part)
+        {
+            if (HighLogic.LoadedSceneIsEditor && PhysicsGlobals.KerbalCrewMass != 0 && ShipConstruction.ShipManifest != null)
+            { //fix weird stock behavior with this physics setting.
+
+                var crewlist = ShipConstruction.ShipManifest.GetAllCrew(false);
+
+                int crew = 0;
+
+                foreach (var crewmem in crewlist)
+                {
+                    if (crewmem != null) crew++;
+                }
+
+                if (crew > 0)
+                {
+                    var pcm = ShipConstruction.ShipManifest.GetPartCrewManifest(part.craftID);
+
+                    int actualCrew = 0;
+
+                    foreach (var crewmem in pcm.GetPartCrew())
+                    {
+                        if (crewmem != null)
+                            actualCrew++;
+                    }
+
+                    if (actualCrew < crew)
+                    {
+                        return -PhysicsGlobals.KerbalCrewMass * (crew - actualCrew);
+                    }
+
+                }
+            }
+
+            return 0;
+        }
+   
 
         /// <summary>
         ///     Gets the maximum thrust of the part if it's an engine.
@@ -374,7 +412,7 @@ namespace KerbalEngineer.Extensions
         /// </summary>
         public static double GetWetMass(this Part part)
         {
-            return (part.physicalSignificance == Part.PhysicalSignificance.FULL) ? part.mass + part.GetResourceMass() : part.GetResourceMass();
+            return (part.physicalSignificance == Part.PhysicalSignificance.FULL) ? part.mass + part.GetResourceMass() + part.getCrewAdjustment() : part.GetResourceMass();
         }
 
         /// <summary>

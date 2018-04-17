@@ -15,6 +15,8 @@
 //     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // 
 
+using System;
+
 namespace KerbalEngineer.Helpers
 {
     public static class TimeFormatter
@@ -25,6 +27,10 @@ namespace KerbalEngineer.Helpers
             int days = 0;
             int hours = 0;
             int minutes = 0;
+
+            bool negative = seconds < 0;
+
+            seconds = Math.Abs(seconds);
 
             if (seconds > 0.0)
             {
@@ -43,18 +49,18 @@ namespace KerbalEngineer.Helpers
 
             if (years > 0)
             {
-                return string.Format("{0}y {1}d {2}h {3}m {4}s", years, days, hours, minutes, seconds.ToString(format));
+                return (negative ? "-" : "") + string.Format("{0}y {1}d {2}h {3}m {4}s", years, days, hours, minutes, seconds.ToString(format));
             }
             if (days > 0)
             {
-                return string.Format("{0}d {1}h {2}m {3}s", days, hours, minutes, seconds.ToString(format));
+                return (negative ? "-" : "") + string.Format("{0}d {1}h {2}m {3}s", days, hours, minutes, seconds.ToString(format));
             }
             if (hours > 0)
             {
-                return string.Format("{0}h {1}m {2}s", hours, minutes, seconds.ToString(format));
+                return (negative ? "-" : "") + string.Format("{0}h {1}m {2}s", hours, minutes, seconds.ToString(format));
             }
 
-            return minutes > 0 ? string.Format("{0}m {1}s", minutes, seconds.ToString(format)) : string.Format("{0}s", seconds.ToString(format));
+            return (negative ? "-" : "") + (minutes > 0 ? string.Format("{0}m {1}s", minutes, seconds.ToString(format)) : string.Format("{0}s", seconds.ToString(format)));
         }
     }
 }

@@ -29,14 +29,12 @@ using UnityEngine;
 
 #endregion
 
-namespace KerbalEngineer.Flight.Sections
-{
+namespace KerbalEngineer.Flight.Sections {
     using Unity.Flight;
     /// <summary>
     ///     Object for management and display of readout modules.
     /// </summary>
-    public class SectionModule : ISectionModule
-    {
+    public class SectionModule : ISectionModule {
         #region Fields
 
         private SectionEditor editor;
@@ -50,8 +48,7 @@ namespace KerbalEngineer.Flight.Sections
         /// <summary>
         ///     Creates a new section module.
         /// </summary>
-        public SectionModule()
-        {
+        public SectionModule() {
             this.FloatingPositionX = Screen.width * 0.5f - 125.0f;
             this.FloatingPositionY = 100.0f;
             this.EditorPositionX = Screen.width * 0.5f - SectionEditor.Width * 0.5f;
@@ -96,19 +93,25 @@ namespace KerbalEngineer.Flight.Sections
         public bool IsCustom { get; set; }
 
         /// <summary>
+        ///     Gets and sets whether to show the edit button
+        /// </summary>
+        public bool showEditButton { get; set; } = true;
+
+        /// <summary>
+        ///     Gets and sets whether to show the float button
+        /// </summary>
+        public bool showFloatButton { get; set; } = true;
+
+
+        /// <summary>
         ///     Gets and sets whether the section editor is visible.
         /// </summary>
-        public bool IsEditorVisible
-        {
+        public bool IsEditorVisible {
             get { return this.editor != null; }
-            set
-            {
-                if (value && this.editor == null)
-                {
+            set {
+                if (value && this.editor == null) {
                     this.editor = FlightEngineerCore.Instance.AddSectionEditor(this);
-                }
-                else if (!value && this.editor != null)
-                {
+                } else if (!value && this.editor != null) {
                     Object.Destroy(this.editor);
                 }
             }
@@ -117,17 +120,12 @@ namespace KerbalEngineer.Flight.Sections
         /// <summary>
         ///     Gets and sets whether the section is in a floating state.
         /// </summary>
-        public bool IsFloating
-        {
+        public bool IsFloating {
             get { return this.Window != null; }
-            set
-            {
-                if (value && this.Window == null)
-                {
+            set {
+                if (value && this.Window == null) {
                     this.Window = FlightEngineerCore.Instance.AddSectionWindow(this);
-                }
-                else if (!value && this.Window != null)
-                {
+                } else if (!value && this.Window != null) {
                     Object.Destroy(this.Window);
                 }
             }
@@ -136,23 +134,18 @@ namespace KerbalEngineer.Flight.Sections
         /// <summary>
         ///     Gets and sets whether the section module is a HUD.
         /// </summary>
-        public bool IsHud
-        {
+        public bool IsHud {
             get { return this.isHud; }
-            set
-            {
-                if (this.isHud == value)
-                {
+            set {
+                if (this.isHud == value) {
                     return;
                 }
 
                 this.isHud = value;
-                if (this.isHud)
-                {
+                if (this.isHud) {
                     this.IsFloating = true;
                 }
-                if (this.Window != null)
-                {
+                if (this.Window != null) {
                     this.Window.RequestResize();
                 }
             }
@@ -186,8 +179,7 @@ namespace KerbalEngineer.Flight.Sections
         /// <summary>
         ///     Gets and sets the names of the installed readout modules. (Only used with serialisation.)
         /// </summary>
-        public string[] ReadoutModuleNames
-        {
+        public string[] ReadoutModuleNames {
             get { return this.ReadoutModules.Select(r => r.Category + "." + r.GetType().Name).ToArray(); }
             set { this.ReadoutModules = value.Select(ReadoutLibrary.GetReadout).ToList(); }
         }
@@ -220,16 +212,13 @@ namespace KerbalEngineer.Flight.Sections
         /// <summary>
         ///     Initialises all the styles required for this object.
         /// </summary>
-        private void InitialiseStyles()
-        {
-            this.boxStyle = new GUIStyle(HighLogic.Skin.box)
-            {
+        private void InitialiseStyles() {
+            this.boxStyle = new GUIStyle(HighLogic.Skin.box) {
                 margin = new RectOffset(),
                 padding = new RectOffset(5, 5, 5, 5)
             };
 
-            this.titleStyle = new GUIStyle(HighLogic.Skin.label)
-            {
+            this.titleStyle = new GUIStyle(HighLogic.Skin.label) {
                 normal =
                 {
                     textColor = Color.white
@@ -241,8 +230,7 @@ namespace KerbalEngineer.Flight.Sections
                 stretchWidth = true
             };
 
-            this.buttonStyle = new GUIStyle(HighLogic.Skin.button)
-            {
+            this.buttonStyle = new GUIStyle(HighLogic.Skin.button) {
                 normal =
                 {
                     textColor = Color.white
@@ -254,8 +242,7 @@ namespace KerbalEngineer.Flight.Sections
                 fixedWidth = 60.0f * GuiDisplaySize.Offset
             };
 
-            this.messageStyle = new GUIStyle(HighLogic.Skin.label)
-            {
+            this.messageStyle = new GUIStyle(HighLogic.Skin.label) {
                 normal =
                 {
                     textColor = Color.white
@@ -270,8 +257,7 @@ namespace KerbalEngineer.Flight.Sections
             };
         }
 
-        private void OnSizeChanged()
-        {
+        private void OnSizeChanged() {
             this.InitialiseStyles();
         }
 
@@ -282,15 +268,12 @@ namespace KerbalEngineer.Flight.Sections
         /// <summary>
         ///     Updates all of the internal readout modules at fixed time intervals.
         /// </summary>
-        public void FixedUpdate()
-        {
-            if (!this.IsVisible)
-            {
+        public void FixedUpdate() {
+            if (!this.IsVisible) {
                 return;
             }
 
-            foreach (var readout in this.ReadoutModules)
-            {
+            foreach (var readout in this.ReadoutModules) {
                 readout.FixedUpdate();
             }
         }
@@ -298,27 +281,20 @@ namespace KerbalEngineer.Flight.Sections
         /// <summary>
         ///     Updates all of the internal readout modules.
         /// </summary>
-        public void Update()
-        {
-            if (!this.IsVisible)
-            {
+        public void Update() {
+            if (!this.IsVisible) {
                 return;
             }
 
-            foreach (var readout in this.ReadoutModules)
-            {
+            foreach (var readout in this.ReadoutModules) {
                 readout.Update();
             }
 
-            if (this.numberOfReadouts != this.ReadoutModules.Count)
-            {
+            if (this.numberOfReadouts != this.ReadoutModules.Count) {
                 this.numberOfReadouts = this.ReadoutModules.Count;
-                if (!this.IsFloating)
-                {
+                if (!this.IsFloating) {
                     DisplayStack.Instance.RequestResize();
-                }
-                else
-                {
+                } else {
                     this.Window.RequestResize();
                 }
             }
@@ -333,15 +309,12 @@ namespace KerbalEngineer.Flight.Sections
         /// <summary>
         ///     Draws the section and all of the internal readout modules.
         /// </summary>
-        public void Draw()
-        {
-            if (!this.IsVisible)
-            {
+        public void Draw() {
+            if (!this.IsVisible) {
                 return;
             }
 
-            if (!this.IsHud)
-            {
+            if (!this.IsHud) {
                 this.DrawSectionTitleBar();
             }
 
@@ -355,32 +328,25 @@ namespace KerbalEngineer.Flight.Sections
         /// <summary>
         ///     Draws all the readout modules.
         /// </summary>
-        private void DrawReadoutModules()
-        {
-            if (!this.IsHud)
-            {
+        private void DrawReadoutModules() {
+            if (!this.IsHud) {
                 GUILayout.BeginVertical(this.boxStyle);
             }
 
             this.LineCount = 0;
-            if (this.ReadoutModules.Count > 0)
-            {
-                foreach (var readout in this.ReadoutModules)
-                {
+            if (this.ReadoutModules.Count > 0) {
+                foreach (var readout in this.ReadoutModules) {
                     readout.LineCountStart();
                     readout.Draw(this);
                     readout.LineCountEnd();
                     this.LineCount += readout.LineCount;
                 }
-            }
-            else
-            {
+            } else {
                 GUILayout.Label("No readouts are installed.", this.messageStyle);
                 this.LineCount = 1;
             }
 
-            if (!this.IsHud)
-            {
+            if (!this.IsHud) {
                 GUILayout.EndVertical();
             }
         }
@@ -388,12 +354,11 @@ namespace KerbalEngineer.Flight.Sections
         /// <summary>
         ///     Draws the section title and action buttons.
         /// </summary>
-        private void DrawSectionTitleBar()
-        {
+        private void DrawSectionTitleBar() {
             GUILayout.BeginHorizontal();
             GUILayout.Label(this.Name.ToUpper(), this.titleStyle);
-            this.IsEditorVisible = GUILayout.Toggle(this.IsEditorVisible, "EDIT", this.buttonStyle);
-            this.IsFloating = GUILayout.Toggle(this.IsFloating, "FLOAT", this.buttonStyle);
+            if (showEditButton) this.IsEditorVisible = GUILayout.Toggle(this.IsEditorVisible, "EDIT", this.buttonStyle);
+            if (showFloatButton) this.IsFloating = GUILayout.Toggle(this.IsFloating, "FLOAT", this.buttonStyle);
             GUILayout.EndHorizontal();
         }
 
@@ -403,8 +368,7 @@ namespace KerbalEngineer.Flight.Sections
 
         #region Public Methods
 
-        public void ClearNullReadouts()
-        {
+        public void ClearNullReadouts() {
             this.ReadoutModules.RemoveAll(r => r == null);
         }
 

@@ -36,7 +36,7 @@ namespace KerbalEngineer.Flight.Readouts.Orbital.ManoeuvreNode
         {
             this.Name = "Post-burn Periapsis";
             this.Category = ReadoutCategory.GetCategory("Orbital");
-            this.HelpString = "Closest point of the vessel's ofbit after the burn.";
+            this.HelpString = "Closest point of the vessel's orbit after the burn.";
             this.IsDefault = false;
         }
 
@@ -44,7 +44,7 @@ namespace KerbalEngineer.Flight.Readouts.Orbital.ManoeuvreNode
 
         #region Methods: public
 
-        public override void Draw(SectionModule section)
+        public override void Draw(Unity.Flight.ISectionModule section)
         {
             if (!ManoeuvreProcessor.ShowDetails)
             {

@@ -32,13 +32,20 @@ namespace KerbalEngineer.Flight.Readouts.Surface
             IsDefault = false;
         }
 
-        public override void Draw(SectionModule section)
+        public override void Draw(Unity.Flight.ISectionModule section)
         {
-            var target = FlightGlobals.fetch.VesselTarget?.GetVessel();
+            var target = Rendezvous.RendezvousProcessor.targetVessel;
             if (target != null)
             {
-                double longitude = AngleHelper.Clamp180(target.longitude);
-                DrawLine(Units.ToAngleDMS(longitude) + (longitude < 0.0 ? "W" : " E"), section.IsHud);
+                var vessel = target.GetVessel();
+                if(vessel == null)
+                {
+                    DrawLine("N/A", section.IsHud);
+                } else
+                {
+                    double longitude = AngleHelper.Clamp180(vessel.longitude);
+                    DrawLine(Units.ToAngleDMS(longitude) + (longitude < 0.0 ? " W" : " E"), section.IsHud);
+                }
             }
         }
     }

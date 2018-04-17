@@ -19,22 +19,19 @@
 
 #region Using Directives
 
-using KerbalEngineer.Extensions;
 using KerbalEngineer.Flight.Sections;
+using KerbalEngineer.Helpers;
 
 #endregion
 
-namespace KerbalEngineer.Flight.Readouts.Rendezvous
-{
-    public class RelativeRadialVelocity : ReadoutModule
-    {
+namespace KerbalEngineer.Flight.Readouts.Rendezvous {
+    public class SeparationAtClosestApproach : ReadoutModule {
         #region Constructors
 
-        public RelativeRadialVelocity()
-        {
-            this.Name = "Relative Radial Velocity";
+        public SeparationAtClosestApproach() {
+            this.Name = "Separation at Encounter";
             this.Category = ReadoutCategory.GetCategory("Rendezvous");
-            this.HelpString = "Relative radial velocity between your vessel and the target object";
+            this.HelpString = "Distance to the target at closest approach.";
             this.IsDefault = false;
         }
 
@@ -42,21 +39,20 @@ namespace KerbalEngineer.Flight.Readouts.Rendezvous
 
         #region Methods: public
 
-        public override void Draw(SectionModule section)
-        {
-            if (RendezvousProcessor.ShowDetails)
-            {
-               this.DrawLine(RendezvousProcessor.RelativeRadialVelocity.ToSpeed(), section.IsHud);
+        public override void Draw(Unity.Flight.ISectionModule section) {
+            if (RendezvousProcessor.ShowDetails) {
+                if (double.IsNaN(RendezvousProcessor.SeparationAtEncounter))
+                    this.DrawLine("N/A", section.IsHud);
+                else
+                    this.DrawLine(Units.ToDistance(RendezvousProcessor.SeparationAtEncounter), section.IsHud);
             }
         }
 
-        public override void Reset()
-        {
+        public override void Reset() {
             FlightEngineerCore.Instance.AddUpdatable(RendezvousProcessor.Instance);
         }
 
-        public override void Update()
-        {
+        public override void Update() {
             RendezvousProcessor.RequestUpdate();
         }
 

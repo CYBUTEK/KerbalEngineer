@@ -26,6 +26,8 @@ namespace KerbalEngineer.Unity.Flight
 
         bool IsVisible { get; set; }
 
+        bool IsHud { get; set; }
+
         string Name { get; }
     }
 }

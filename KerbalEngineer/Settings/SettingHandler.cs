@@ -23,6 +23,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Xml;
 using System.Xml.Serialization;
 
 #endregion
@@ -224,10 +225,16 @@ namespace KerbalEngineer.Settings
         private void Serialise(string fileName)
         {
             this.CreateDirectory(fileName);
-            using (var stream = new FileStream(fileName, FileMode.Create))
-            {
-                new XmlSerializer(typeof(List<SettingItem>), this.Items.Select(s => s.Value.GetType()).ToArray()).Serialize(stream, this.Items);
-                stream.Close();
+
+            XmlWriterSettings xmlWriterSettings = new XmlWriterSettings {
+                Encoding = System.Text.Encoding.UTF8,
+                Indent = true              
+            };
+
+            using (XmlWriter xmlWriter = XmlWriter.Create(fileName, xmlWriterSettings)) {
+                var x = new XmlSerializer(typeof(List<SettingItem>), this.Items.Select(s => s.Value.GetType()).ToArray());
+                x.Serialize(xmlWriter, this.Items);
+                xmlWriter.Close();
             }
         }
 

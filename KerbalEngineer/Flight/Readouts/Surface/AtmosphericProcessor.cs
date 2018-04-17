@@ -97,6 +97,16 @@ namespace KerbalEngineer.Flight.Readouts.Surface
         /// </summary>
         public static double TerminalVelocity { get; private set; }
 
+        /// <summary>
+        ///     Gets the static pressure of the active vessel.
+        /// </summary>
+        public static double StaticPressure { get; private set; }
+
+        /// <summary>
+        ///     Gets the dynamic pressure of the active vessel.
+        /// </summary>
+        public static double DynamicPressure { get; private set; }
+
         #endregion
 
         #region IUpdatable Members
@@ -134,6 +144,9 @@ namespace KerbalEngineer.Flight.Readouts.Surface
                     var c = PhysicsGlobals.DragMultiplier;
 
                     TerminalVelocity = Math.Sqrt((2.0 * m * g) / (p * a * c));
+
+                    StaticPressure = FlightGlobals.ActiveVessel.staticPressurekPa;
+                    DynamicPressure = FlightGlobals.ActiveVessel.dynamicPressurekPa;
                 }
 
                 Efficiency = FlightGlobals.ship_srfSpeed / TerminalVelocity;

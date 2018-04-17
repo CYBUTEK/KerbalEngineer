@@ -20,6 +20,7 @@
 #region Using Directives
 
 using System;
+using System.Linq;
 
 using KerbalEngineer.Extensions;
 using KerbalEngineer.Flight.Readouts.Vessel;
@@ -67,9 +68,15 @@ namespace KerbalEngineer.Flight.Readouts.Orbital.ManoeuvreNode
 
         public static double PostBurnPe { get; private set; }
 
+        public static double PostBurnInclination { get; private set; }
+
+        public static double PostBurnPeriod { get; private set; }
+
         public static double ProgradeDeltaV { get; private set; }
 
         public static double RadialDeltaV { get; private set; }
+
+        public static double TripDeltaV { get; private set; }
 
         public static bool ShowDetails { get; set; }
 
@@ -116,6 +123,8 @@ namespace KerbalEngineer.Flight.Readouts.Orbital.ManoeuvreNode
             TotalDeltaV = node.GetBurnVector(FlightGlobals.ship_orbit).magnitude;
             PostBurnAp = node.nextPatch != null ? node.nextPatch.ApA : 0;
             PostBurnPe = node.nextPatch != null ? node.nextPatch.PeA : 0;
+            PostBurnInclination = node.nextPatch != null ? node.nextPatch.inclination : 0;
+            PostBurnPeriod = node.nextPatch != null ? node.nextPatch.period : 0;
 
             UniversalTime = FlightGlobals.ActiveVessel.patchedConicSolver.maneuverNodes[0].UT;
             AngleToPrograde = FlightGlobals.ActiveVessel.patchedConicSolver.maneuverNodes[0].patch.GetAngleToPrograde(UniversalTime);
@@ -128,6 +137,12 @@ namespace KerbalEngineer.Flight.Readouts.Orbital.ManoeuvreNode
 
             BurnTime = burnTime;
             HalfBurnTime = midPointTime;
+
+            var tripDeltaV = TotalDeltaV;
+            foreach (var n in FlightGlobals.ActiveVessel.patchedConicSolver.maneuverNodes.Skip(1) ) {
+                tripDeltaV += n.DeltaV.magnitude;
+            }
+            TripDeltaV = tripDeltaV;
 
             ShowDetails = true;
         }

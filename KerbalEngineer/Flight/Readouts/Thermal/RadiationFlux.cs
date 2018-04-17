@@ -32,7 +32,7 @@ namespace KerbalEngineer.Flight.Readouts.Thermal
             IsDefault = true;
         }
 
-        public override void Draw(SectionModule section)
+        public override void Draw(Unity.Flight.ISectionModule section)
         {
             if (ThermalProcessor.ShowDetails)
             {

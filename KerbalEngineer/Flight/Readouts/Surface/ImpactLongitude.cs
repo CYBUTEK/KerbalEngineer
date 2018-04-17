@@ -43,11 +43,11 @@ namespace KerbalEngineer.Flight.Readouts.Surface
 
         #region Methods: public
 
-        public override void Draw(SectionModule section)
+        public override void Draw(Unity.Flight.ISectionModule section)
         {
             if (ImpactProcessor.ShowDetails)
             {
-                this.DrawLine(Units.ToAngleDMS(ImpactProcessor.Longitude) + (ImpactProcessor.Longitude < 0.0 ? "W" : " E"), section.IsHud);
+                this.DrawLine(Units.ToAngleDMS(ImpactProcessor.Longitude) + (ImpactProcessor.Longitude < 0.0 ? " W" : " E"), section.IsHud);
             }
         }
 

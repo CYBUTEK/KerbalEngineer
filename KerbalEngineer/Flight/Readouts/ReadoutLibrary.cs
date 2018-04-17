@@ -1,19 +1,15 @@
-﻿// 
-//     Copyright (C) 2015 CYBUTEK
-// 
-//     This program is free software: you can redistribute it and/or modify
-//     it under the terms of the GNU General Public License as published by
-//     the Free Software Foundation, either version 3 of the License, or
-//     (at your option) any later version.
-// 
-//     This program is distributed in the hope that it will be useful,
-//     but WITHOUT ANY WARRANTY; without even the implied warranty of
-//     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-//     GNU General Public License for more details.
-// 
-//     You should have received a copy of the GNU General Public License
-//     along with this program.  If not, see <http://www.gnu.org/licenses/>.
-// 
+﻿// Copyright (C) 2015 CYBUTEK
+//
+// This program is free software: you can redistribute it and/or modify it under the terms of the GNU
+// General Public License as published by the Free Software Foundation, either version 3 of the
+// License, or (at your option) any later version.
+//
+// This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without
+// even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+// General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License along with this program. If not,
+// see <http://www.gnu.org/licenses/>.
 
 namespace KerbalEngineer.Flight.Readouts
 {
@@ -28,6 +24,7 @@ namespace KerbalEngineer.Flight.Readouts
     using Surface;
     using Thermal;
     using Vessel;
+    using Body;
     using AltitudeSeaLevel = Surface.AltitudeSeaLevel;
     using ApoapsisHeight = Orbital.ApoapsisHeight;
     using OrbitalPeriod = Orbital.OrbitalPeriod;
@@ -42,7 +39,7 @@ namespace KerbalEngineer.Flight.Readouts
         private static List<ReadoutModule> readouts = new List<ReadoutModule>();
 
         /// <summary>
-        ///     Sets up and populates the readout library with the stock readouts.
+        /// Sets up and populates the readout library with the stock readouts.
         /// </summary>
         static ReadoutLibrary()
         {
@@ -53,6 +50,7 @@ namespace KerbalEngineer.Flight.Readouts
                 ReadoutCategory.SetCategory("Vessel", "Vessel performance statistics.");
                 ReadoutCategory.SetCategory("Rendezvous", "Readouts for rendezvous manovoeures.");
                 ReadoutCategory.SetCategory("Thermal", "Thermal characteristics readouts.");
+                ReadoutCategory.SetCategory("Body", "Characteristics of the current SOI.");
                 ReadoutCategory.SetCategory("Miscellaneous", "Miscellaneous readouts.");
                 ReadoutCategory.Selected = ReadoutCategory.GetCategory("Orbital");
 
@@ -93,13 +91,16 @@ namespace KerbalEngineer.Flight.Readouts
                 readouts.Add(new NodeAngleToRetrograde());
                 readouts.Add(new PostBurnApoapsis());
                 readouts.Add(new PostBurnPeriapsis());
+                readouts.Add(new PostBurnInclination());
+                readouts.Add(new PostBurnPeriod());
                 readouts.Add(new SpeedAtApoapsis());
                 readouts.Add(new SpeedAtPeriapsis());
                 readouts.Add(new TimeToAtmosphere());
+                readouts.Add(new TripTotalDeltaV());
 
                 // Surface
-				readouts.Add(new AltitudeSeaLevel());
-				readouts.Add(new AltitudeTerrain());
+                readouts.Add(new AltitudeSeaLevel());
+                readouts.Add(new AltitudeTerrain());
                 readouts.Add(new VerticalSpeed());
                 readouts.Add(new VerticalAcceleration());
                 readouts.Add(new HorizontalSpeed());
@@ -110,6 +111,7 @@ namespace KerbalEngineer.Flight.Readouts
                 readouts.Add(new GeeForce());
                 readouts.Add(new TerminalVelocity());
                 readouts.Add(new AtmosphericEfficiency());
+                readouts.Add(new AtmosphericPressure());
                 readouts.Add(new Biome());
                 readouts.Add(new Situation());
                 readouts.Add(new Slope());
@@ -147,11 +149,16 @@ namespace KerbalEngineer.Flight.Readouts
                 readouts.Add(new HeadingRate());
                 readouts.Add(new PitchRate());
                 readouts.Add(new RollRate());
+                readouts.Add(new RCSDeltaV());
+                readouts.Add(new RCSIsp());
+                readouts.Add(new RCSThrust());
+                readouts.Add(new RCSTWR());
 
                 // Rendezvous
                 readouts.Add(new TargetSelector());
                 readouts.Add(new PhaseAngle());
                 readouts.Add(new InterceptAngle());
+                readouts.Add(new TimeToTransferAngleTime());
                 readouts.Add(new RelativeVelocity());
                 readouts.Add(new RelativeSpeed());
                 readouts.Add(new RelativeInclination());
@@ -168,8 +175,9 @@ namespace KerbalEngineer.Flight.Readouts
                 readouts.Add(new Rendezvous.OrbitalPeriod());
                 readouts.Add(new Rendezvous.SemiMajorAxis());
                 readouts.Add(new Rendezvous.SemiMinorAxis());
-                readouts.Add(new Rendezvous.RelativeRadialVelocity());
-                readouts.Add(new Rendezvous.TimeToRendezvous());
+                readouts.Add(new Rendezvous.TimeTilClosestApproach());
+                readouts.Add(new Rendezvous.SeparationAtClosestApproach());
+                readouts.Add(new Rendezvous.SpeedAtClosestApproach());
                 readouts.Add(new TargetLatitude());
                 readouts.Add(new TargetLongitude());
 
@@ -188,12 +196,22 @@ namespace KerbalEngineer.Flight.Readouts
                 readouts.Add(new CoolestTemperature());
                 readouts.Add(new CoolestSkinTemperature());
 
+                // Body
+                readouts.Add(new BodyName());
+                readouts.Add(new HasAtmosphere());
+                readouts.Add(new HasOxygen());
+                readouts.Add(new HighAtmosphereHeight());
+                readouts.Add(new LowSpaceHeight());
+                readouts.Add(new HighSpaceHeight());
+
                 // Misc
                 readouts.Add(new Separator());
                 readouts.Add(new GuiSizeAdjustor());
                 readouts.Add(new SimulationDelay());
                 readouts.Add(new VectoredThrustToggle());
                 readouts.Add(new SystemTime());
+                readouts.Add(new SystemTime24());
+                readouts.Add(new SystemDateTime());
                 readouts.Add(new LogSimToggle());
 
                 LoadHelpStrings();
@@ -205,7 +223,7 @@ namespace KerbalEngineer.Flight.Readouts
         }
 
         /// <summary>
-        ///     Gets and sets the available readout modules.
+        /// Gets and sets the available readout modules.
         /// </summary>
         public static List<ReadoutModule> Readouts
         {
@@ -220,7 +238,7 @@ namespace KerbalEngineer.Flight.Readouts
         }
 
         /// <summary>
-        ///     Gets a list of readout modules which are associated with the specified category.
+        /// Gets a list of readout modules which are associated with the specified category.
         /// </summary>
         public static List<ReadoutModule> GetCategory(ReadoutCategory category)
         {
@@ -228,7 +246,7 @@ namespace KerbalEngineer.Flight.Readouts
         }
 
         /// <summary>
-        ///     Gets a readout module with the specified name or class name. (Returns null if not found.)
+        /// Gets a readout module with the specified name or class name. (Returns null if not found.)
         /// </summary>
         public static ReadoutModule GetReadout(string name)
         {
@@ -236,7 +254,7 @@ namespace KerbalEngineer.Flight.Readouts
         }
 
         /// <summary>
-        ///     Resets all the readout modules.
+        /// Resets all the readout modules.
         /// </summary>
         public static void Reset()
         {
@@ -247,7 +265,7 @@ namespace KerbalEngineer.Flight.Readouts
         }
 
         /// <summary>
-        ///     Loads the help strings from file.
+        /// Loads the help strings from file.
         /// </summary>
         private static void LoadHelpStrings()
         {

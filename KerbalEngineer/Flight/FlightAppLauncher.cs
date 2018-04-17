@@ -21,6 +21,7 @@ namespace KerbalEngineer.Flight
     using System.Collections.Generic;
     using KSP.UI;
     using Sections;
+    using Settings;
     using Unity.Flight;
     using UnityEngine;
 
@@ -122,6 +123,22 @@ namespace KerbalEngineer.Flight
         }
 
         /// <summary>
+        ///     Gets or sets whether the flight app launcher UI is activated via mouse hovering.
+        /// </summary>
+        public static bool IsHoverActivated
+        {
+            get
+            {
+                return GeneralSettings.Handler.Get("FlightAppLauncher_IsHoverActivated", true);
+            }
+
+            set
+            {
+                GeneralSettings.Handler.Set("FlightAppLauncher_IsHoverActivated", value);
+            }
+        }
+
+        /// <summary>
         ///     Creates and initialises a new custom section.
         /// </summary>
         public ISectionModule NewCustomSection()
@@ -161,12 +178,15 @@ namespace KerbalEngineer.Flight
 
         protected override void OnHover()
         {
-            Open();
+            if (IsHoverActivated)
+            {
+                Open();
+            }
         }
 
         protected override void OnHoverOut()
         {
-            if (IsOn == false)
+            if (IsOn == false && IsHoverActivated)
             {
                 Close();
             }

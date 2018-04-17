@@ -32,7 +32,7 @@ namespace KerbalEngineer.Flight.Readouts.Surface
             IsDefault = true;
         }
 
-        public override void Draw(SectionModule section)
+        public override void Draw(Unity.Flight.ISectionModule section)
         {
             if (FlightGlobals.ActiveVessel.terrainAltitude > 0.0 || FlightGlobals.ActiveVessel.situation == Vessel.Situations.SPLASHED)
             {

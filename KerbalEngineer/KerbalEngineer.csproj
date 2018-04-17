@@ -54,7 +54,15 @@
     <Compile Include="Flight\ActionMenuGui.cs" />
     <Compile Include="Flight\FlightAppLauncher.cs" />
     <Compile Include="Flight\Presets\Preset.cs" />
+    <Compile Include="Flight\Readouts\Body\BodyName.cs" />
+    <Compile Include="Flight\Readouts\Body\HasAtmosphere.cs" />
+    <Compile Include="Flight\Readouts\Body\HasOxygen.cs" />
+    <Compile Include="Flight\Readouts\Body\HighAtmosphereHeight.cs" />
+    <Compile Include="Flight\Readouts\Body\HighSpaceHeight.cs" />
+    <Compile Include="Flight\Readouts\Body\LowSpaceHeight.cs" />
     <Compile Include="Flight\Readouts\Miscellaneous\LogSimToggle.cs" />
+    <Compile Include="Flight\Readouts\Miscellaneous\SystemDateTime.cs" />
+    <Compile Include="Flight\Readouts\Miscellaneous\SystemTime24.cs" />
     <Compile Include="Flight\Readouts\Miscellaneous\SystemTime.cs" />
     <Compile Include="Flight\Readouts\Miscellaneous\VectoredThrustToggle.cs" />
     <Compile Include="Flight\Readouts\Miscellaneous\Separator.cs" />
@@ -75,7 +83,10 @@
     <Compile Include="Flight\Readouts\Orbital\ManoeuvreNode\NodeTotalDeltaV.cs" />
     <Compile Include="Flight\Readouts\Orbital\ManoeuvreNode\NodeProgradeDeltaV.cs" />
     <Compile Include="Flight\Readouts\Orbital\ManoeuvreNode\PostBurnApoapsis.cs" />
+    <Compile Include="Flight\Readouts\Orbital\ManoeuvreNode\PostBurnInclination.cs" />
     <Compile Include="Flight\Readouts\Orbital\ManoeuvreNode\PostBurnPeriapsis.cs" />
+    <Compile Include="Flight\Readouts\Orbital\ManoeuvreNode\PostBurnPeriod.cs" />
+    <Compile Include="Flight\Readouts\Orbital\ManoeuvreNode\TripTotalDeltaV.cs" />
     <Compile Include="Flight\Readouts\Orbital\MeanAnomalyAtEpoc.cs" />
     <Compile Include="Flight\Readouts\Orbital\MeanAnomaly.cs" />
     <Compile Include="Flight\Readouts\Orbital\EccentricAnomaly.cs" />
@@ -100,6 +111,7 @@
     <Compile Include="Flight\Readouts\Rendezvous\TargetLongitude.cs" />
     <Compile Include="Flight\Readouts\Rendezvous\TimeToRelativeDescendingNode.cs" />
     <Compile Include="Flight\Readouts\Rendezvous\TimeToRelativeAscendingNode.cs" />
+    <Compile Include="Flight\Readouts\Surface\AtmosphericPressure.cs" />
     <Compile Include="Flight\Readouts\Surface\ImpactBiome.cs" />
     <Compile Include="Flight\Readouts\Surface\Slope.cs" />
     <Compile Include="Flight\Readouts\Surface\Biome.cs" />
@@ -158,6 +170,7 @@
     <Compile Include="KeyBinding\KeyBinder.cs" />
     <Compile Include="Control\ControlCentre.cs" />
     <Compile Include="KeyBinding\KeyBindingsObject.cs" />
+    <Compile Include="Settings\GeneralSettings.cs" />
     <Compile Include="Settings\SettingsWindow.cs" />
     <Compile Include="StyleManager.cs" />
     <Compile Include="UIControls\DropDown.cs" />
@@ -246,15 +259,11 @@
   </ItemGroup>
   <ItemGroup>
     <Reference Include="Assembly-CSharp">
-      <HintPath>..\..\Game\KSP_x64_Data\Managed\Assembly-CSharp.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="Assembly-CSharp-firstpass">
-      <HintPath>..\..\Game\KSP_x64_Data\Managed\Assembly-CSharp-firstpass.dll</HintPath>
+      <HintPath>..\..\..\KSP-Environment\KSP_x64_Data\Managed\Assembly-CSharp.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="KSPAssets">
-      <HintPath>..\..\Game\KSP_x64_Data\Managed\KSPAssets.dll</HintPath>
+      <HintPath>..\..\..\KSP-Environment\KSP_x64_Data\Managed\KSPAssets.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="System">
@@ -266,11 +275,11 @@
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine">
-      <HintPath>..\..\Game\KSP_x64_Data\Managed\UnityEngine.dll</HintPath>
+      <HintPath>..\..\..\KSP-Environment\KSP_x64_Data\Managed\UnityEngine.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.UI">
-      <HintPath>..\..\Game\KSP_x64_Data\Managed\UnityEngine.UI.dll</HintPath>
+      <HintPath>..\..\..\KSP-Environment\KSP_x64_Data\Managed\UnityEngine.UI.dll</HintPath>
       <Private>False</Private>
     </Reference>
   </ItemGroup>
@@ -281,6 +290,7 @@
       <Private>True</Private>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="PostBuildMacros">
     <GetAssemblyIdentity AssemblyFiles="$(TargetPath)">
@@ -296,7 +306,7 @@
         PostBuildMacros;
       </PostBuildEventDependsOn>
     <PostBuildEvent>xcopy "$(SolutionDir)AssetBundles\*" "$(SolutionDir)Output\KerbalEngineer\AssetBundles\*" /E /Y
-xcopy "$(SolutionDir)Output\*" "$(SolutionDir)..\Game\GameData\*" /E /Y
+xcopy "$(SolutionDir)Output\*" "$(SolutionDir)..\..\KSP-Environment\GameData\*" /E /Y
 del "$(SolutionDir)Release\*" /Q
 xcopy "$(SolutionDir)Documents\*" "$(SolutionDir)Release\Documents\*" /E /Y
 7z.exe a -tzip -mx3 "$(SolutionDir)Release\$(ProjectName)-@(VersionNumber).zip" "$(SolutionDir)Output\*"

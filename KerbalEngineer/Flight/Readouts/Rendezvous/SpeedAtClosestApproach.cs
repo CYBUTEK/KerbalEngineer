@@ -19,22 +19,22 @@
 
 #region Using Directives
 
+using KerbalEngineer.Extensions;
 using KerbalEngineer.Flight.Sections;
-using KerbalEngineer.Helpers;
 
 #endregion
 
 namespace KerbalEngineer.Flight.Readouts.Rendezvous
 {
-    public class TimeToRendezvous : ReadoutModule
+    public class SpeedAtClosestApproach : ReadoutModule
     {
         #region Constructors
 
-        public TimeToRendezvous()
+        public SpeedAtClosestApproach()
         {
-            this.Name = "Time to Rendezvous";
+            this.Name = "Rel. Speed at Encounter";
             this.Category = ReadoutCategory.GetCategory("Rendezvous");
-            this.HelpString = "Approximate (linearly) time to the minimum distance between objects.";
+            this.HelpString = "Shows the difference in orbital speed between your vessel and the target object at the next encounter.";
             this.IsDefault = false;
         }
 
@@ -42,11 +42,14 @@ namespace KerbalEngineer.Flight.Readouts.Rendezvous
 
         #region Methods: public
 
-        public override void Draw(SectionModule section)
+        public override void Draw(Unity.Flight.ISectionModule section)
         {
             if (RendezvousProcessor.ShowDetails)
             {
-               this.DrawLine(TimeFormatter.ConvertToString(RendezvousProcessor.TimeToRendezvous), section.IsHud);
+                if (double.IsNaN(RendezvousProcessor.SpeedAtEncounter))
+                    this.DrawLine("N/A", section.IsHud);
+                else
+                    this.DrawLine(RendezvousProcessor.SpeedAtEncounter.ToSpeed(), section.IsHud);
             }
         }
 

@@ -176,6 +176,11 @@ namespace KerbalEngineer.Helpers
             return value.ToString("F" + decimals) + "%";
         }
 
+        public static string ToPressure(double value)
+        {
+            return value.ToString((value < 100000.0) ? (value < 10000.0) ? (value < 100.0) ? (Math.Abs(value) < double.Epsilon) ? "N0" : "N3" : "N2" : "N1" : "N0") + "kN/m²";
+        }
+
         public static string ToRate(double value, int decimals = 1)
         {
             return value < 1.0 ? (value * 60.0).ToString("F" + decimals) + "/min" : value.ToString("F" + decimals) + "/sec";

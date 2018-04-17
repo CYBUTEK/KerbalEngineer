@@ -43,7 +43,7 @@ namespace KerbalEngineer.Flight.Readouts.Orbital
 
         #region Methods: public
 
-        public override void Draw(SectionModule section)
+        public override void Draw(Unity.Flight.ISectionModule section)
         {
             this.DrawLine(TimeFormatter.ConvertToString(FlightGlobals.ActiveVessel.orbit.GetTimeToDescendingNode()), section.IsHud);
         }

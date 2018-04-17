@@ -40,7 +40,7 @@ namespace KerbalEngineer.Flight
     /// <summary>
     ///     Core management system for the Flight Engineer.
     /// </summary>
-    [KSPAddon(KSPAddon.Startup.Flight, false)]
+    [KSPAddon(KSPAddon.Startup.FlightAndKSC, false)]
     public sealed class FlightEngineerCore : MonoBehaviour
     {
         #region Instance
@@ -57,6 +57,9 @@ namespace KerbalEngineer.Flight
         private static bool isCareerMode = true;
         private static bool isKerbalLimited = true;
         private static bool isTrackingStationLimited = true;
+        private static bool switchVesselOnUpdate = false;
+        private static Vessel switchVesselTarget = null;
+        private static ITargetable switchVesselTargetTarget = null;
 
         #endregion
 
@@ -205,6 +208,17 @@ namespace KerbalEngineer.Flight
         #region Methods
 
         /// <summary>
+        ///     Switches the active vessel.  This is delayed until the next Update call to avoid issues when called from OnGUI in KSP 1.2
+        /// </summary>
+        public static void SwitchToVessel(Vessel vessel, ITargetable target = null)
+        {
+            switchVesselTarget = vessel;
+            switchVesselOnUpdate = true;
+            switchVesselTargetTarget = target;
+        }
+
+
+        /// <summary>
         ///     Creates a section editor, adds it to the FlightEngineerCore and returns a reference to it.
         /// </summary>
         public SectionEditor AddSectionEditor(SectionModule section)
@@ -215,6 +229,7 @@ namespace KerbalEngineer.Flight
                 editor.ParentSection = section;
                 editor.Position = new Rect(section.EditorPositionX, section.EditorPositionY, SectionEditor.Width, SectionEditor.Height);
                 this.SectionEditors.Add(editor);
+                ReadoutCategory.Selected = ReadoutCategory.GetCategory("Orbital");
                 return editor;
             }
             catch (Exception ex)
@@ -356,6 +371,31 @@ namespace KerbalEngineer.Flight
         /// </summary>
         private void Update()
         {
+            if (switchVesselOnUpdate)
+            {
+                Vessel tempVessel = switchVesselTarget;
+                switchVesselTarget = null;
+                switchVesselOnUpdate = false;
+
+                //bool doRestore = (tempVessel != null) && tempVessel.loaded;
+
+                if (switchVesselTargetTarget != null)
+                { // you will switch or I will beat you.
+                    tempVessel.protoVessel.targetInfo = new ProtoTargetInfo(switchVesselTargetTarget);
+                    tempVessel.pTI = tempVessel.protoVessel.targetInfo;
+                    tempVessel.targetObject = switchVesselTargetTarget;
+                }
+
+                FlightGlobals.SetActiveVessel(tempVessel);
+
+                //if (doRestore)
+                //    FlightInputHandler.ResumeVesselCtrlState(tempVessel);
+                //else
+                //    FlightInputHandler.SetNeutralControls();
+
+
+            }
+
             if (FlightGlobals.ActiveVessel == null)
             {
                 return;

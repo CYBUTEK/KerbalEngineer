@@ -58,7 +58,7 @@ namespace KerbalEngineer.Flight.Readouts.Miscellaneous
 
         #region Methods: public
 
-        public override void Draw(SectionModule section)
+        public override void Draw(Unity.Flight.ISectionModule section)
         {
             GUILayout.Box(String.Empty, section.IsHud ? this.boxStyleHud : this.boxStyle);
         }

@@ -1,19 +1,15 @@
-﻿// 
-//     Copyright (C) 2015 CYBUTEK
-// 
-//     This program is free software: you can redistribute it and/or modify
-//     it under the terms of the GNU General Public License as published by
-//     the Free Software Foundation, either version 3 of the License, or
-//     (at your option) any later version.
-// 
-//     This program is distributed in the hope that it will be useful,
-//     but WITHOUT ANY WARRANTY; without even the implied warranty of
-//     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-//     GNU General Public License for more details.
-// 
-//     You should have received a copy of the GNU General Public License
-//     along with this program.  If not, see <http://www.gnu.org/licenses/>.
-// 
+﻿// Copyright (C) 2015 CYBUTEK
+//
+// This program is free software: you can redistribute it and/or modify it under the terms of the GNU
+// General Public License as published by the Free Software Foundation, either version 3 of the
+// License, or (at your option) any later version.
+//
+// This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without
+// even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+// General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License along with this program. If not,
+// see <http://www.gnu.org/licenses/>.
 
 namespace KerbalEngineer
 {
@@ -23,9 +19,9 @@ namespace KerbalEngineer
     public static class EngineerGlobals
     {
         /// <summary>
-        ///     Current version of the Kerbal Engineer assembly.
+        /// Current version of the Kerbal Engineer assembly.
         /// </summary>
-        public const string ASSEMBLY_VERSION = "1.1.2.0";
+        public const string ASSEMBLY_VERSION = "1.1.4.9";
 
         private static string assemblyFile;
         private static string assemblyName;
@@ -33,7 +29,7 @@ namespace KerbalEngineer
         private static string settingsPath;
 
         /// <summary>
-        ///     Gets the Kerbal Engineer assembly's path including the file name.
+        /// Gets the Kerbal Engineer assembly's path including the file name.
         /// </summary>
         public static string AssemblyFile
         {
@@ -44,7 +40,7 @@ namespace KerbalEngineer
         }
 
         /// <summary>
-        ///     Gets the Kerbal Engineer assembly's file name.
+        /// Gets the Kerbal Engineer assembly's file name.
         /// </summary>
         public static string AssemblyName
         {
@@ -55,7 +51,7 @@ namespace KerbalEngineer
         }
 
         /// <summary>
-        ///     Gets the Kerbal Engineer assembly's path excluding the file name.
+        /// Gets the Kerbal Engineer assembly's path excluding the file name.
         /// </summary>
         public static string AssemblyPath
         {
@@ -66,7 +62,7 @@ namespace KerbalEngineer
         }
 
         /// <summary>
-        ///     Gets the settings directory path.
+        /// Gets the settings directory path.
         /// </summary>
         public static string SettingsPath
         {

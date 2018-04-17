@@ -1,4 +1,4 @@
-﻿// 
+﻿// Draw(Unity.Flight.ISectionModule section)
 //     Kerbal Engineer Redux
 // 
 //     Copyright (C) 2014 CYBUTEK
@@ -42,7 +42,7 @@ namespace KerbalEngineer.Flight.Readouts.Vessel
 
         #region Methods: public
 
-        public override void Draw(SectionModule section)
+        public override void Draw(Unity.Flight.ISectionModule section)
         {
             if (SimulationProcessor.ShowDetails)
             {

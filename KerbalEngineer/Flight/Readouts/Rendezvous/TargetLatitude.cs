@@ -42,13 +42,22 @@ namespace KerbalEngineer.Flight.Readouts.Surface
 
         #region Methods: public
 
-        public override void Draw(SectionModule section)
+        public override void Draw(Unity.Flight.ISectionModule section)
         {
-            var target = FlightGlobals.fetch.VesselTarget?.GetVessel();
+            var target = Rendezvous.RendezvousProcessor.targetVessel;
+
             if (target != null)
             {
-                double latitude = AngleHelper.Clamp360(target.latitude);
-                DrawLine(Units.ToAngleDMS(latitude) + (latitude < 0 ? " S" : " N"), section.IsHud);
+                var vessel = target.GetVessel();
+                if(vessel == null)
+                {
+                    DrawLine("N/A", section.IsHud);
+                }
+                else
+                {
+                    double latitude = AngleHelper.Clamp180(vessel.latitude);
+                    DrawLine(Units.ToAngleDMS(latitude) + (latitude < 0 ? " S" : " N"), section.IsHud);
+                }
             }
         }
 
