@@ -198,6 +198,8 @@ namespace KerbalEngineer.Flight.Readouts.Rendezvous {
                 if (HighLogic.LoadedSceneIsFlight) {
                     var act = FlightGlobals.ActiveVessel;
 
+                    if (act == null) return; //wat
+
                     if (!(target is CelestialBody) && GUILayout.Button("Switch to Target", this.ButtonStyle, GUILayout.Width(this.ContentWidth))) {
                         FlightEngineerCore.SwitchToVessel(target.GetVessel(), act);
                     }

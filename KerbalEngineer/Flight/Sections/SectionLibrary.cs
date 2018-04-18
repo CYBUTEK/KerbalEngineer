@@ -235,7 +235,6 @@ namespace KerbalEngineer.Flight.Sections {
 
             SettingHandler handler = SettingHandler.Load("SectionLibrary.xml", new[] { typeof(List<SectionModule>), typeof(SectionModuleTS) });
             StockSections = handler.Get("StockSections", StockSections);
-            TrackingStationSection = handler.Get("TrackingStation", TrackingStationSection);
             CustomSections = handler.Get("CustomSections", CustomSections);
 
             foreach (SectionModule section in GetAllSections()) {
@@ -244,14 +243,45 @@ namespace KerbalEngineer.Flight.Sections {
         }
 
         /// <summary>
+        ///     Loads the state of all stored sections.
+        /// </summary>
+        public static void LoadTS() {
+            if (!SettingHandler.Exists("SectionLibraryTS.xml")) {
+                return;
+            }
+
+            GetAllSections().ForEach(s => {
+                if (s.Window != null) {
+                    Object.Destroy(s.Window);
+                }
+            });
+
+            SettingHandler handler = SettingHandler.Load("SectionLibraryTS.xml", new[] { typeof(List<SectionModule>), typeof(SectionModuleTS) });
+            TrackingStationSection = handler.Get("TrackingStation", TrackingStationSection);
+
+            foreach (SectionModule section in GetAllSections()) {
+                section.ClearNullReadouts();
+            }
+        }
+
+
+        /// <summary>
         ///     Saves the state of all the stored sections.
         /// </summary>
         public static void Save() {
-            SettingHandler handler = new SettingHandler();
+                        SettingHandler handler = new SettingHandler();
             handler.Set("StockSections", StockSections);
-            handler.Set("TrackingStation", TrackingStationSection);
             handler.Set("CustomSections", CustomSections);
             handler.Save("SectionLibrary.xml");
+        }
+
+        /// <summary>
+        ///     Saves the state of all the stored sections.
+        /// </summary>
+        public static void SaveTS() {
+            SettingHandler handler = new SettingHandler();
+            handler.Set("TrackingStation", TrackingStationSection);
+            handler.Save("SectionLibraryTS.xml");
         }
         #endregion
 

@@ -1,3 +1,8 @@
+1.1.4.10, 2018-04-17, KSP 1.4.2 #2110
+ - Fixed Relative Velocity and Relative Speed calculations to update properly.
+ - Renamed Relative Speed to Relative Orbital Speed to be less ambigious.
+ - Fixed going into tracking station resetting the 'float' option on the flight windows.
+ 
 1.1.4.9, 2018-04-11, KSP 1.4.2 #2110
  - Update minimum version to 1.4.0
 

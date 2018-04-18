@@ -20,6 +20,7 @@
 namespace KerbalEngineer.Flight.Readouts.Surface
 {
     using Helpers;
+    using Rendezvous;
     using Sections;
 
     public class TargetLongitude : ReadoutModule
@@ -34,6 +35,8 @@ namespace KerbalEngineer.Flight.Readouts.Surface
 
         public override void Draw(Unity.Flight.ISectionModule section)
         {
+            if (!RendezvousProcessor.ShowDetails) return;
+
             var target = Rendezvous.RendezvousProcessor.targetVessel;
             if (target != null)
             {

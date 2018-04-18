@@ -139,11 +139,11 @@ namespace KerbalEngineer {
 
         public static void Exception(Exception ex, string location) {
             lock (messages) {
-                messages.Add(new[] { "Exception " + DateTime.Now.TimeOfDay, location + " // " + ex.Message });
+                messages.Add(new[] { DateTime.Now.TimeOfDay.ToString(), "Exception " + location + " // " + ex.ToString() });
                 messages.Add(new[] { string.Empty, ex.StackTrace });
                 ex = ex.InnerException;
                 while (ex != null) {
-                    messages.Add(new[] { "Inner Exception " + DateTime.Now.TimeOfDay, location + " // " + ex.Message });
+                    messages.Add(new[] {DateTime.Now.TimeOfDay.ToString(), "Inner Exception " + location + " // " + ex.ToString() });
                     messages.Add(new[] { string.Empty, ex.StackTrace });
                     ex = ex.InnerException;
                 }

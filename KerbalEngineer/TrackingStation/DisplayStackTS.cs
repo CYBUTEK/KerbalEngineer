@@ -99,7 +99,7 @@ namespace KerbalEngineer.TrackingStation {
                 if (Instance == null) {
                     Instance = this;
                     GuiDisplaySize.OnSizeChanged += this.OnSizeChanged;
-                    MyLogger.Log("DisplayStackTS->Awake");
+                    Debug.Log("DisplayStackTS->Awake");
                 } else {
                     Destroy(this);
                 }
@@ -114,7 +114,7 @@ namespace KerbalEngineer.TrackingStation {
         protected void OnDestroy() {
             try {
                 this.Save();
-                SectionLibrary.Save();
+                SectionLibrary.SaveTS();
             } catch (Exception ex) {
                 MyLogger.Exception(ex);
             }
@@ -134,11 +134,11 @@ namespace KerbalEngineer.TrackingStation {
         /// </summary>
         protected void Start() {
             try {
-                SectionLibrary.Load();
+                SectionLibrary.LoadTS();
                 this.windowId = this.GetHashCode();
                 this.InitialiseStyles();
                 this.Load();
-                MyLogger.Log("DisplayStackTS->Start");
+                Debug.Log("DisplayStackTS->Start");
             } catch (Exception ex) {
                 Debug.Log(ex.ToString() + ex.InnerException == null ? "" : ex.InnerException.ToString());
             }

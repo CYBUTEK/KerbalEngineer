@@ -246,6 +246,7 @@ namespace KerbalEngineer.Flight
         {
             try
             {
+                if (this.gameObject == null) return null;
                 var window = this.gameObject.AddComponent<SectionWindow>();
                 window.ParentSection = section;
                 window.WindowPosition = new Rect(section.FloatingPositionX, section.FloatingPositionY, 0, 0);

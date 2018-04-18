@@ -340,10 +340,6 @@ namespace KerbalEngineer.Flight.Readouts.Rendezvous {
                 TimeToPlane[1] = 0;
                 Distance = 0;
 
-                TimeTilEncounter = 0;
-                SeparationAtEncounter = 0;
-                SpeedAtEncounter = 0;
-
                 TimeTilEncounter = double.NaN;
                 SeparationAtEncounter = double.NaN;
                 SpeedAtEncounter = double.NaN;
@@ -396,8 +392,13 @@ namespace KerbalEngineer.Flight.Readouts.Rendezvous {
                 } else { //standard 2 orbits
 
                     RelativeInclination = originOrbit.GetRelativeInclination(targetOrbit);
-                    RelativeSpeed = originOrbit.orbitalSpeed - targetOrbit.orbitalSpeed;
-                    RelativeVelocity = RelativeSpeed;
+
+                    RelativeSpeed = originOrbit.GetRelativeVel().magnitude - target.GetObtVelocity().magnitude;
+                    RelativeVelocity = (originOrbit.GetRelativeVel() - target.GetObtVelocity()).magnitude;
+
+                   // FlightGlobals.ship_tgtVelocity = FlightGlobals.ship_obtVelocity - this.VesselTarget.GetObtVelocity();
+                   // FlightGlobals.ship_tgtSpeed = FlightGlobals.ship_tgtVelocity.magnitude;
+
                     PhaseAngle = originOrbit.GetPhaseAngle(targetOrbit);
                     InterceptAngle = CalcInterceptAngle(targetOrbit, originOrbit);
 
