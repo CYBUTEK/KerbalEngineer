@@ -107,10 +107,14 @@
     <Compile Include="Flight\Readouts\Rendezvous\RelativeVelocity.cs" />
     <Compile Include="Flight\Readouts\Rendezvous\SemiMinorAxis.cs" />
     <Compile Include="Flight\Readouts\Rendezvous\SemiMajorAxis.cs" />
+    <Compile Include="Flight\Readouts\Rendezvous\SeparationAtClosestApproach.cs" />
+    <Compile Include="Flight\Readouts\Rendezvous\SpeedAtClosestApproach.cs" />
     <Compile Include="Flight\Readouts\Rendezvous\TargetLatitude.cs" />
     <Compile Include="Flight\Readouts\Rendezvous\TargetLongitude.cs" />
+    <Compile Include="Flight\Readouts\Rendezvous\TimeTilClosestApproach.cs" />
     <Compile Include="Flight\Readouts\Rendezvous\TimeToRelativeDescendingNode.cs" />
     <Compile Include="Flight\Readouts\Rendezvous\TimeToRelativeAscendingNode.cs" />
+    <Compile Include="Flight\Readouts\Rendezvous\TimeToTransferAngle.cs" />
     <Compile Include="Flight\Readouts\Surface\AtmosphericPressure.cs" />
     <Compile Include="Flight\Readouts\Surface\ImpactBiome.cs" />
     <Compile Include="Flight\Readouts\Surface\Slope.cs" />
@@ -137,6 +141,10 @@
     <Compile Include="Flight\Readouts\Vessel\DeltaVCurrentTotal.cs" />
     <Compile Include="Flight\Readouts\Vessel\PitchRate.cs" />
     <Compile Include="Flight\Readouts\Vessel\HeadingRate.cs" />
+    <Compile Include="Flight\Readouts\Vessel\RCSDeltaV.cs" />
+    <Compile Include="Flight\Readouts\Vessel\RCSIsp.cs" />
+    <Compile Include="Flight\Readouts\Vessel\RCSThrust.cs" />
+    <Compile Include="Flight\Readouts\Vessel\RCSTWR.cs" />
     <Compile Include="Flight\Readouts\Vessel\RollRate.cs" />
     <Compile Include="Flight\Readouts\Vessel\Roll.cs" />
     <Compile Include="Flight\Readouts\Vessel\Pitch.cs" />
@@ -173,6 +181,10 @@
     <Compile Include="Settings\GeneralSettings.cs" />
     <Compile Include="Settings\SettingsWindow.cs" />
     <Compile Include="StyleManager.cs" />
+    <Compile Include="TrackingStation\DisplayStackTS.cs" />
+    <Compile Include="TrackingStation\SectionEditorTS.cs" />
+    <Compile Include="TrackingStation\SectionModuleTS.cs" />
+    <Compile Include="TrackingStation\TrackingStationAppLauncher.cs" />
     <Compile Include="UIControls\DropDown.cs" />
     <Compile Include="MyLogger.cs" />
     <Compile Include="EngineerGlobals.cs" />
@@ -250,12 +262,11 @@
     <Compile Include="VesselSimulator\EngineSim.cs" />
     <Compile Include="Helpers\Pool.cs" />
     <Compile Include="VesselSimulator\PartSim.cs" />
+    <Compile Include="VesselSimulator\RCSSim.cs" />
     <Compile Include="VesselSimulator\ResourceContainer.cs" />
     <Compile Include="VesselSimulator\SimManager.cs" />
     <Compile Include="VesselSimulator\Simulation.cs" />
     <Compile Include="VesselSimulator\Stage.cs" />
-    <Compile Include="Flight\Readouts\Rendezvous\RelativeRadialVelocity.cs" />
-    <Compile Include="Flight\Readouts\Rendezvous\TimeToRendezvous.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="Assembly-CSharp">

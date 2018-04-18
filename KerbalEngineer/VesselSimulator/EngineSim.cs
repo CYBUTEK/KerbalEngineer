@@ -95,10 +95,12 @@ namespace KerbalEngineer.VesselSimulator
             bool atmChangeFlow = engineMod.atmChangeFlow;
             FloatCurve atmCurve = engineMod.useAtmCurve ? engineMod.atmCurve : null;
             FloatCurve velCurve = engineMod.useVelCurve ? engineMod.velCurve : null;
+            FloatCurve thrustCurve = engineMod.useThrustCurve ? engineMod.thrustCurve : null;
             float currentThrottle = engineMod.currentThrottle;
             float IspG = engineMod.g;
             bool throttleLocked = engineMod.throttleLocked || fullThrust;
             List<Propellant> propellants = engineMod.propellants;
+            float thrustCurveRatio = engineMod.thrustCurveRatio;
             bool active = engineMod.isOperational;
             float resultingThrust = engineMod.resultingThrust;
             bool isFlamedOut = engineMod.flameout;
@@ -121,7 +123,7 @@ namespace KerbalEngineer.VesselSimulator
             {
                 if (log != null) log.AppendLine("hasVessel is true"); 
 
-                float flowModifier = GetFlowModifier(atmChangeFlow, atmCurve, engineSim.partSim.part.atmDensity, velCurve, machNumber, ref engineSim.maxMach);
+                float flowModifier = GetFlowModifier(atmChangeFlow, atmCurve, engineSim.partSim.part.atmDensity, velCurve, machNumber, thrustCurve, thrustCurveRatio, ref engineSim.maxMach);
                 engineSim.isp = atmosphereCurve.Evaluate((float)atmosphere);
                 engineSim.thrust = GetThrust(Mathf.Lerp(minFuelFlow, maxFuelFlow, GetThrustPercent(thrustPercentage)) * flowModifier, engineSim.isp);
                 engineSim.actualThrust = engineSim.isActive ? resultingThrust : 0.0;
@@ -156,7 +158,7 @@ namespace KerbalEngineer.VesselSimulator
             else
             {
                 if (log != null) log.buf.AppendLine("hasVessel is false");
-                float flowModifier = GetFlowModifier(atmChangeFlow, atmCurve, CelestialBodies.SelectedBody.GetDensity(BuildAdvanced.Altitude), velCurve, machNumber, ref engineSim.maxMach);
+                float flowModifier = GetFlowModifier(atmChangeFlow, atmCurve, CelestialBodies.SelectedBody.GetDensity(BuildAdvanced.Altitude), velCurve, machNumber, thrustCurve, thrustCurveRatio, ref engineSim.maxMach);
                 engineSim.isp = atmosphereCurve.Evaluate((float)atmosphere);
                 engineSim.thrust = GetThrust(Mathf.Lerp(minFuelFlow, maxFuelFlow, GetThrustPercent(thrustPercentage)) * flowModifier, engineSim.isp);
                 engineSim.actualThrust = 0d;
@@ -256,7 +258,7 @@ namespace KerbalEngineer.VesselSimulator
             return isp * Units.GRAVITY;
         }
 
-        public static float GetFlowModifier(bool atmChangeFlow, FloatCurve atmCurve, double atmDensity, FloatCurve velCurve, float machNumber, ref float maxMach)
+        public static float GetFlowModifier(bool atmChangeFlow, FloatCurve atmCurve, double atmDensity, FloatCurve velCurve, float machNumber, FloatCurve thrustCurve, float thrustCurveRatio, ref float maxMach)
         {
             float flowModifier = 1.0f;
             if (atmChangeFlow)
@@ -271,6 +273,10 @@ namespace KerbalEngineer.VesselSimulator
             {
                 flowModifier = flowModifier * velCurve.Evaluate(machNumber);
                 maxMach = velCurve.maxTime;
+            }
+            if (thrustCurve != null)
+            {
+                flowModifier = flowModifier * thrustCurve.Evaluate(thrustCurveRatio);
             }
             if (flowModifier < float.Epsilon)
             {
