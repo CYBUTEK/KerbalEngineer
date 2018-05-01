@@ -123,6 +123,13 @@ namespace KerbalEngineer.VesselSimulator
             {
                 if (log != null) log.AppendLine("hasVessel is true"); 
 
+                foreach(Propellant p in propellants) {
+                    if (p.ignoreForThrustCurve) continue;
+                    double ratio = p.totalResourceAvailable / p.totalResourceCapacity;
+                    if (ratio < thrustCurveRatio)
+                        thrustCurveRatio = (float) ratio;
+                }
+
                 float flowModifier = GetFlowModifier(atmChangeFlow, atmCurve, engineSim.partSim.part.atmDensity, velCurve, machNumber, thrustCurve, thrustCurveRatio, ref engineSim.maxMach);
                 engineSim.isp = atmosphereCurve.Evaluate((float)atmosphere);
                 engineSim.thrust = GetThrust(Mathf.Lerp(minFuelFlow, maxFuelFlow, GetThrustPercent(thrustPercentage)) * flowModifier, engineSim.isp);
@@ -444,7 +451,7 @@ namespace KerbalEngineer.VesselSimulator
                         if (log != null) log.Append("Find ", ResourceContainer.GetResourceName(type), " sources for ", partSim.name)
                                             .AppendLine(":", partSim.partId);
 
-                        partSim.GetSourceSet(type, true, allParts, visited, sourcePartSet, log, "");
+                        partSim.GetSourceSet(type, allParts, visited, sourcePartSet, log, "");
                         break;
 
                     default:

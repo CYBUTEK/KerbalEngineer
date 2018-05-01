@@ -201,7 +201,7 @@ namespace KerbalEngineer.Editor
         {
             try
             {
-                if (!visible || EditorLogic.fetch == null || EditorLogic.fetch.ship.parts.Count == 0 || EditorLogic.fetch.editorScreen != EditorScreen.Parts)
+                if (!visible || EditorLogic.fetch == null || EditorLogic.fetch.ship.parts.Count == 0 )
                 {
                     return;
                 }

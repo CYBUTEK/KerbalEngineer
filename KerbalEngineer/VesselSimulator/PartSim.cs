@@ -407,17 +407,17 @@ namespace KerbalEngineer.VesselSimulator {
         }
 
         // This is a new function for STAGE_STACK_FLOW(_BALANCE)
-        public void GetSourceSet(int type, bool includeSurfaceMountedParts, List<PartSim> allParts, HashSet<PartSim> visited, HashSet<PartSim> allSources, LogMsg log, String indent) {
+        public void GetSourceSet(int type, List<PartSim> allParts, HashSet<PartSim> visited, HashSet<PartSim> allSources, LogMsg log, String indent) {
             // Initial version of support for new flow mode
 
             // Call a modified version of the old GetSourceSet code that adds all potential sources rather than stopping the recursive scan
             // when certain conditions are met
             int priMax = int.MinValue;
-            GetSourceSet_Internal(type, includeSurfaceMountedParts, allParts, visited, allSources, ref priMax, log, indent);
+            GetSourceSet_Internal(type, allParts, visited, allSources, ref priMax, log, indent);
             if (log != null) log.AppendLine(allSources.Count, " parts with priority of ", priMax);
         }
 
-        public void GetSourceSet_Internal(int type, bool includeSurfaceMountedParts, List<PartSim> allParts, HashSet<PartSim> visited, HashSet<PartSim> allSources, ref int priMax, LogMsg log, String indent) {
+        public void GetSourceSet_Internal(int type, List<PartSim> allParts, HashSet<PartSim> visited, HashSet<PartSim> allSources, ref int priMax, LogMsg log, String indent) {
             if (log != null) {
                 log.Append(indent, "GetSourceSet_Internal(", ResourceContainer.GetResourceName(type), ") for ")
                     .AppendLine(name, ":", partId);
@@ -451,26 +451,25 @@ namespace KerbalEngineer.VesselSimulator {
                         if (log != null) log.Append(indent, "Adding fuel target as source (", partSim.name, ":")
                                             .AppendLine(partSim.partId, ")");
 
-                        partSim.GetSourceSet_Internal(type, includeSurfaceMountedParts, allParts, visited, allSources, ref priMax, log, indent);
+                        partSim.GetSourceSet_Internal(type, allParts, visited, allSources, ref priMax, log, indent);
                     }
                 }
             }
 
             if (fuelCrossFeed) {
-                if (includeSurfaceMountedParts) {
-                    // check surface mounted fuel targets
-                    for (int i = 0; i < surfaceMountFuelTargets.Count; i++) {
-                        PartSim partSim = this.surfaceMountFuelTargets[i];
-                        if (partSim != null) {
-                            if (visited.Contains(partSim)) {
-                                if (log != null) log.Append(indent, "Surface part already visited, skipping (", partSim.name, ":")
-                                                    .AppendLine(partSim.partId, ")");
-                            } else {
-                                if (log != null) log.Append(indent, "Adding surface part as source (", partSim.name, ":")
-                                                    .AppendLine(partSim.partId, ")");
 
-                                partSim.GetSourceSet_Internal(type, includeSurfaceMountedParts, allParts, visited, allSources, ref priMax, log, indent);
-                            }
+                // check surface mounted fuel targets
+                for (int i = 0; i < surfaceMountFuelTargets.Count; i++) {
+                    PartSim partSim = this.surfaceMountFuelTargets[i];
+                    if (partSim != null) {
+                        if (visited.Contains(partSim)) {
+                            if (log != null) log.Append(indent, "Surface part already visited, skipping (", partSim.name, ":")
+                                                .AppendLine(partSim.partId, ")");
+                        } else {
+                            if (log != null) log.Append(indent, "Adding surface part as source (", partSim.name, ":")
+                                                .AppendLine(partSim.partId, ")");
+
+                            partSim.GetSourceSet_Internal(type, allParts, visited, allSources, ref priMax, log, indent);
                         }
                     }
                 }
@@ -500,7 +499,7 @@ namespace KerbalEngineer.VesselSimulator {
                                         if (log != null) log.Append(indent, "Adding attached part as source  (", attachSim.attachedPartSim.name, ":")
                                                             .AppendLine(attachSim.attachedPartSim.partId, ")");
 
-                                        attachSim.attachedPartSim.GetSourceSet_Internal(type, includeSurfaceMountedParts, allParts, visited, allSources, ref priMax, log, indent);
+                                        attachSim.attachedPartSim.GetSourceSet_Internal(type, allParts, visited, allSources, ref priMax, log, indent);
                                     }
                                 }
                             }

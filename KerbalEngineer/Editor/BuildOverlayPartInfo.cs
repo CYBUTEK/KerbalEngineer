@@ -104,7 +104,7 @@ namespace KerbalEngineer.Editor
         {
             try
             {
-                if (!Visible || Hidden || EditorLogic.RootPart == null || EditorLogic.fetch.editorScreen != EditorScreen.Parts || (EditorPanels.Instance.IsMouseOver() && IsPointerOverStaging() == false))
+                if (!Visible || Hidden || EditorLogic.RootPart == null || (EditorPanels.Instance.IsMouseOver() && IsPointerOverStaging() == false))
                 {
                     return;
                 }

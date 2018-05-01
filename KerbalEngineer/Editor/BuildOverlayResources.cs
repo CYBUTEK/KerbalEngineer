@@ -74,7 +74,7 @@ namespace KerbalEngineer.Editor
         {
             try
             {
-                if (!Visible || resources.Count == 0 || EditorLogic.fetch.editorScreen != EditorScreen.Parts)
+                if (!Visible || resources.Count == 0)
                 {
                     return;
                 }
