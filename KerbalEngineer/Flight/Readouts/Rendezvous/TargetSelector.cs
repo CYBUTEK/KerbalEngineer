@@ -132,7 +132,7 @@ namespace KerbalEngineer.Flight.Readouts.Rendezvous {
         private int DrawPlanets() {
             var count = 0;
             foreach (var body in FlightGlobals.Bodies) {
-                if (FlightGlobals.ActiveVessel.mainBody.referenceBody != body.referenceBody || body == Planetarium.fetch.Sun || body == FlightGlobals.ActiveVessel.mainBody) {
+                if (FlightGlobals.ActiveVessel.mainBody == Planetarium.fetch.Sun || FlightGlobals.ActiveVessel.mainBody.referenceBody != body.referenceBody || body == Planetarium.fetch.Sun || body == FlightGlobals.ActiveVessel.mainBody) {
                     continue;
                 }
 
@@ -289,12 +289,16 @@ namespace KerbalEngineer.Flight.Readouts.Rendezvous {
 
             if (this.searchQuery.Length == 0) {
                 if (this.typeIsBody) {
+                    GUILayout.Label("Local Bodies", this.FlexiLabelStyle, GUILayout.Width(this.ContentWidth));
                     count += this.DrawMoons();
+                    GUILayout.Label("Remote Bodies", this.FlexiLabelStyle, GUILayout.Width(this.ContentWidth));
                     count += this.DrawPlanets();
                 } else {
+                    GUILayout.Label(this.vesselType.ToString(), this.FlexiLabelStyle, GUILayout.Width(this.ContentWidth));
                     count += this.DrawVessels();
                 }
             } else {
+                GUILayout.Label("Search Results", this.FlexiLabelStyle, GUILayout.Width(this.ContentWidth));
                 count += this.DrawVessels();
                 count += this.DrawMoons();
                 count += this.DrawPlanets();
