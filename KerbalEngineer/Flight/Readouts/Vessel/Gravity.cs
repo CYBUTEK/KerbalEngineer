@@ -19,33 +19,46 @@
 
 #region Using Directives
 
-using KerbalEngineer.Extensions;
 using KerbalEngineer.Flight.Sections;
+using KerbalEngineer.Helpers;
+using KerbalEngineer.VesselSimulator;
 
 #endregion
 
-namespace KerbalEngineer.Flight.Readouts.Body {
-    public class LowSpaceHeight : ReadoutModule {
+namespace KerbalEngineer.Flight.Readouts.Vessel
+{
+    public class Gravity : ReadoutModule
+    {
         #region Constructors
 
-        public LowSpaceHeight() {
-            this.Name = "Low Space Alt.";
-            this.Category = ReadoutCategory.GetCategory("Body");
-            this.HelpString = "The altitude where lower space begins.";
-            this.IsDefault = true;
+        public Gravity()
+        {
+            this.Name = "Gravity";
+            this.Category = ReadoutCategory.GetCategory("Vessel");
+            this.HelpString = "The current gravity experienced by the vessel.";
+            this.IsDefault = false;
         }
 
         #endregion
 
         #region Methods: public
 
-        public override void Draw(Unity.Flight.ISectionModule section) {
+        public override void Draw(Unity.Flight.ISectionModule section)
+        {
+            if (SimulationProcessor.ShowDetails)
+            {
+                this.DrawLine(Units.ToSpeed(SimManager.Gravity), section.IsHud);
+            }
+        }
 
-            if (FlightGlobals.ActiveVessel.mainBody.atmosphere) {
-                this.DrawLine(FlightGlobals.ActiveVessel.mainBody.atmosphereDepth.ToDistance(), section.IsHud);
-            } else
-                this.DrawLine(0.0.ToDistance(), section.IsHud);
+        public override void Reset()
+        {
+            FlightEngineerCore.Instance.AddUpdatable(SimulationProcessor.Instance);
+        }
 
+        public override void Update()
+        {
+            SimulationProcessor.RequestUpdate();
         }
 
         #endregion

@@ -374,6 +374,7 @@ namespace KerbalEngineer.Flight.Readouts.Rendezvous {
                     }
 
                     RelativeInclination = targetOrbit.inclination;
+                    PhaseAngle = actualSourceOrbit.GetPhaseAngle(actualTargetOrbit); //this works for some reason.
 
                 } else if (overrideANDNRev) { //landing
 
@@ -388,6 +389,8 @@ namespace KerbalEngineer.Flight.Readouts.Rendezvous {
                     RelativeInclination = originOrbit.inclination;
                     Distance = Vector3d.Distance(target.GetVessel().GetWorldPos3D(), vessel.GetWorldPos3D());
                     AltitudeSeaLevel = tgt.altitude;
+                    PhaseAngle = actualSourceOrbit.GetPhaseAngle(actualTargetOrbit); //this works for some reason.
+
 
                 } else { //standard 2 orbits
 

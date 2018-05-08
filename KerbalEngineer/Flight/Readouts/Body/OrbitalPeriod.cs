@@ -19,37 +19,31 @@
 
 #region Using Directives
 
-using System;
-
 using KerbalEngineer.Extensions;
 using KerbalEngineer.Flight.Sections;
 
 #endregion
 
-namespace KerbalEngineer.Flight.Readouts.Orbital
-{
-    public class CurrentSoi : ReadoutModule
-    {
+namespace KerbalEngineer.Flight.Readouts.Body {
+    public class BodyOrbitalPeriod : ReadoutModule {
         #region Constructors
-        
-        public CurrentSoi()
-        {
-            this.Name = "Current SOI";
-            this.Category = ReadoutCategory.GetCategory("Orbital");
-            this.HelpString = "Shows the SOI of the current body the vessel is orbiting.";
-            this.IsDefault = false;
+
+        public BodyOrbitalPeriod() {
+            this.Name = "Body Orbital Period";
+            this.Category = ReadoutCategory.GetCategory("Body");
+            this.HelpString = "The time to complete one orbit about the body's parent.";
+            this.IsDefault = true;
         }
 
         #endregion
 
         #region Methods: public
 
-        public override void Draw(Unity.Flight.ISectionModule section)
-        {
-            if (!Double.IsInfinity(FlightGlobals.currentMainBody.sphereOfInfluence))
-            {
-                this.DrawLine(FlightGlobals.currentMainBody.sphereOfInfluence.ToDistance(), section.IsHud);
-            }
+        public override void Draw(Unity.Flight.ISectionModule section) {
+            if (FlightGlobals.ActiveVessel.mainBody.orbit == null)
+                this.DrawLine("N/A", section.IsHud);
+            else
+                this.DrawLine(Helpers.Units.ToTime(FlightGlobals.ActiveVessel.mainBody.orbit.period), section.IsHud);
         }
 
         #endregion

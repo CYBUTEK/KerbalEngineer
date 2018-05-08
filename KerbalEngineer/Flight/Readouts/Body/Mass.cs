@@ -25,14 +25,14 @@ using KerbalEngineer.Flight.Sections;
 #endregion
 
 namespace KerbalEngineer.Flight.Readouts.Body {
-    public class LowSpaceHeight : ReadoutModule {
+    public class BodyMass : ReadoutModule {
         #region Constructors
 
-        public LowSpaceHeight() {
-            this.Name = "Low Space Alt.";
+        public BodyMass() {
+            this.Name = "Body Mass";
             this.Category = ReadoutCategory.GetCategory("Body");
-            this.HelpString = "The altitude where lower space begins.";
-            this.IsDefault = true;
+            this.HelpString = "The mass of the body.";
+            this.IsDefault = false;
         }
 
         #endregion
@@ -40,12 +40,7 @@ namespace KerbalEngineer.Flight.Readouts.Body {
         #region Methods: public
 
         public override void Draw(Unity.Flight.ISectionModule section) {
-
-            if (FlightGlobals.ActiveVessel.mainBody.atmosphere) {
-                this.DrawLine(FlightGlobals.ActiveVessel.mainBody.atmosphereDepth.ToDistance(), section.IsHud);
-            } else
-                this.DrawLine(0.0.ToDistance(), section.IsHud);
-
+            this.DrawLine(Helpers.Units.ToMass(FlightGlobals.ActiveVessel.mainBody.Mass), section.IsHud);
         }
 
         #endregion

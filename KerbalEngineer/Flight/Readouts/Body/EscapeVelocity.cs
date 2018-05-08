@@ -21,17 +21,18 @@
 
 using KerbalEngineer.Extensions;
 using KerbalEngineer.Flight.Sections;
+using System;
 
 #endregion
 
 namespace KerbalEngineer.Flight.Readouts.Body {
-    public class LowSpaceHeight : ReadoutModule {
+    public class EscapeVelocity : ReadoutModule {
         #region Constructors
 
-        public LowSpaceHeight() {
-            this.Name = "Low Space Alt.";
+        public EscapeVelocity() {
+            this.Name = "Surface Escape Velocity";
             this.Category = ReadoutCategory.GetCategory("Body");
-            this.HelpString = "The altitude where lower space begins.";
+            this.HelpString = "The velocity needed to escape the SOI, starting from sea level.";
             this.IsDefault = true;
         }
 
@@ -40,12 +41,8 @@ namespace KerbalEngineer.Flight.Readouts.Body {
         #region Methods: public
 
         public override void Draw(Unity.Flight.ISectionModule section) {
-
-            if (FlightGlobals.ActiveVessel.mainBody.atmosphere) {
-                this.DrawLine(FlightGlobals.ActiveVessel.mainBody.atmosphereDepth.ToDistance(), section.IsHud);
-            } else
-                this.DrawLine(0.0.ToDistance(), section.IsHud);
-
+            var ev = Math.Sqrt(2 * FlightGlobals.currentMainBody.gravParameter / FlightGlobals.currentMainBody.Radius);
+            this.DrawLine(Helpers.Units.ToSpeed(ev), section.IsHud);
         }
 
         #endregion

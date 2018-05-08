@@ -67,7 +67,6 @@ namespace KerbalEngineer.Flight.Readouts
                 readouts.Add(new Eccentricity());
                 readouts.Add(new OrbitalSpeed());
                 readouts.Add(new OrbitalPeriod());
-                readouts.Add(new CurrentSoi());
                 readouts.Add(new LongitudeOfAscendingNode());
                 readouts.Add(new LongitudeOfPeriapsis());
                 readouts.Add(new ArgumentOfPeriapsis());
@@ -134,6 +133,7 @@ namespace KerbalEngineer.Flight.Readouts
                 readouts.Add(new ThrustOffsetAngle());
                 readouts.Add(new ThrustTorque());
                 readouts.Add(new SurfaceThrustToWeight());
+                readouts.Add(new Gravity());
                 readouts.Add(new Acceleration());
                 readouts.Add(new SuicideBurnAltitude());
                 readouts.Add(new SuicideBurnDistance());
@@ -203,6 +203,14 @@ namespace KerbalEngineer.Flight.Readouts
                 readouts.Add(new HighAtmosphereHeight());
                 readouts.Add(new LowSpaceHeight());
                 readouts.Add(new HighSpaceHeight());
+                readouts.Add(new GeostationaryHeight());
+                readouts.Add(new CurrentSoi());
+                readouts.Add(new BodyRotationPeriod());
+                readouts.Add(new BodyOrbitalPeriod());
+                readouts.Add(new EscapeVelocity());
+                readouts.Add(new BodyMass());
+                readouts.Add(new BodyRadius());
+                readouts.Add(new BodyGravity());
 
                 // Misc
                 readouts.Add(new Separator());
