@@ -1,7 +1,9 @@
-1.1.4.11, 2018-5-4, KSP 1.4.3 #2152
+1.1.4.11, 2018-5-8, KSP 1.4.3 #2152
+ - Added new 'Body' readouts: Body Radius, Body Mass, Synchronous Orbit Altitiude, Body Orbital Period, Body Rotation Period, Surface Gravity, Surface Escape Velocity, Body SOI Altitude.
+ - Added new 'Vessel' readout: Gravity.
  - Fix target selector showing everything twice while orbiting Kerbol.
  - Add labels to target selector categories.
- - Handle thurst curve engines in the VAB with full thrust != 1. (thx Kerbas-ad-astra)
+ - Handle thrust curve engines in the VAB with full thrust != 1. (thx Kerbas-ad-astra)
  - Don't hide KER build window when setting action groups.
 
 1.1.4.10, 2018-04-17, KSP 1.4.2 #2110
