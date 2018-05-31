@@ -56,7 +56,7 @@ namespace KerbalEngineer.VesselSimulator
         // Support for RealFuels using reflection to check localCorrectThrust without dependency
 
         private static bool hasCheckedForMods;
-        private static bool hasInstalledRealFuels;
+        public static bool hasInstalledRealFuels;
         private static FieldInfo RF_ModuleEngineConfigs_localCorrectThrust;
         private static FieldInfo RF_ModuleHybridEngine_localCorrectThrust;
         private static FieldInfo RF_ModuleHybridEngines_localCorrectThrust;

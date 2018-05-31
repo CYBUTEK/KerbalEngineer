@@ -269,7 +269,7 @@ namespace KerbalEngineer.Flight.Sections {
         ///     Saves the state of all the stored sections.
         /// </summary>
         public static void Save() {
-                        SettingHandler handler = new SettingHandler();
+            SettingHandler handler = new SettingHandler();
             handler.Set("StockSections", StockSections);
             handler.Set("CustomSections", CustomSections);
             handler.Save("SectionLibrary.xml");

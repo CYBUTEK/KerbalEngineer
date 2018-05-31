@@ -1,6 +1,7 @@
 {
 	"NAME":"Kerbal Engineer Redux",
 	"URL":"https://raw.githubusercontent.com/jrbudda/KerbalEngineer/master/Output/KerbalEngineer/KerbalEngineer.version",
+	"DOWNLOAD":"https://github.com/jrbudda/KerbalEngineer/releases",
 	"VERSION":
 	{
 		"MAJOR":1,
