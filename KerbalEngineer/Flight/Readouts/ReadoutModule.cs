@@ -45,7 +45,7 @@ namespace KerbalEngineer.Flight.Readouts
 
         protected ReadoutModule()
         {
-            this.InitialiseStyles();
+            this.InitialiseStyles(false);
             GuiDisplaySize.OnSizeChanged += this.OnSizeChanged;
         }
 
@@ -53,10 +53,6 @@ namespace KerbalEngineer.Flight.Readouts
 
         #region Properties
 
-        /// <summary>
-        ///     Gets and sets the button style.
-        /// </summary>
-        public GUIStyle ButtonStyle { get; set; }
 
         /// <summary>
         ///     Gets ans sets the readout category.
@@ -97,19 +93,9 @@ namespace KerbalEngineer.Flight.Readouts
         public int LineCount { get; private set; }
 
         /// <summary>
-        ///     Gets and sets the message style.
-        /// </summary>
-        public GUIStyle MessageStyle { get; set; }
-
-        /// <summary>
         ///     Gets and sets the readout name.
         /// </summary>
         public string Name { get; set; }
-
-        /// <summary>
-        ///     Gets and sets the name style.
-        /// </summary>
-        public GUIStyle NameStyle { get; set; }
 
         /// <summary>
         ///     Gets and sets whether the readout has requested a section resize.
@@ -121,6 +107,7 @@ namespace KerbalEngineer.Flight.Readouts
         /// </summary>
         public bool ShowHelp { get; set; }
 
+
         /// <summary>
         ///     Gets and sets the text field style.
         /// </summary>
@@ -130,6 +117,21 @@ namespace KerbalEngineer.Flight.Readouts
         ///     Gets and sets the value style.
         /// </summary>
         public GUIStyle ValueStyle { get; set; }
+
+        /// <summary>
+        ///     Gets and sets the name style.
+        /// </summary>
+        public GUIStyle NameStyle { get; set; }
+
+        /// <summary>
+        ///     Gets and sets the message style.
+        /// </summary>
+        public GUIStyle MessageStyle { get; set; }
+
+        /// <summary>
+        ///     Gets and sets the button style.
+        /// </summary>
+        public GUIStyle ButtonStyle { get; set; }
 
         #endregion
 
@@ -177,17 +179,18 @@ namespace KerbalEngineer.Flight.Readouts
         protected void DrawLine(string value, bool compact = false)
         {
             GUILayout.BeginHorizontal(GUILayout.Width(this.ContentWidth));
+
             if (!compact)
             {
-                GUILayout.Label(this.Name, this.NameStyle);
+                GUILayout.Label(this.Name, NameStyle);
                 GUILayout.FlexibleSpace();
-                GUILayout.Label(value.ToLength(20), this.ValueStyle);
+                GUILayout.Label(value.ToLength(20), ValueStyle);
             }
             else
             {
-                GUILayout.Label(this.Name, this.NameStyle, GUILayout.Height(this.NameStyle.fontSize * 1.2f));
+                GUILayout.Label(this.Name, NameStyle, GUILayout.Height(NameStyle.fontSize * 1.2f));
                 GUILayout.FlexibleSpace();
-                GUILayout.Label(value.ToLength(20), this.ValueStyle, GUILayout.Height(this.ValueStyle.fontSize * 1.2f));
+                GUILayout.Label(value.ToLength(20), ValueStyle, GUILayout.Height(ValueStyle.fontSize * 1.2f));
             }
             GUILayout.EndHorizontal();
 
@@ -199,15 +202,15 @@ namespace KerbalEngineer.Flight.Readouts
             GUILayout.BeginHorizontal(GUILayout.Width(this.ContentWidth));
             if (!compact)
             {
-                GUILayout.Label(name, this.NameStyle);
+                GUILayout.Label(name, NameStyle);
                 GUILayout.FlexibleSpace();
-                GUILayout.Label(value.ToLength(20), this.ValueStyle);
+                GUILayout.Label(value.ToLength(20), ValueStyle);
             }
             else
             {
-                GUILayout.Label(name, this.NameStyle, GUILayout.Height(this.NameStyle.fontSize * 1.2f));
+                GUILayout.Label(name, NameStyle, GUILayout.Height(NameStyle.fontSize * 1.2f));
                 GUILayout.FlexibleSpace();
-                GUILayout.Label(value.ToLength(20), this.ValueStyle, GUILayout.Height(this.ValueStyle.fontSize * 1.2f));
+                GUILayout.Label(value.ToLength(20), ValueStyle, GUILayout.Height(ValueStyle.fontSize * 1.2f));
             }
             GUILayout.EndHorizontal();
 
@@ -221,11 +224,11 @@ namespace KerbalEngineer.Flight.Readouts
             {
                 if (!compact)
                 {
-                    GUILayout.Label(this.Name, this.NameStyle);
+                    GUILayout.Label(this.Name, NameStyle);
                 }
                 else
                 {
-                    GUILayout.Label(this.Name, this.NameStyle, GUILayout.Height(this.NameStyle.fontSize * 1.2f));
+                    GUILayout.Label(this.Name, NameStyle, GUILayout.Height(NameStyle.fontSize * 1.2f));
                 }
                 GUILayout.FlexibleSpace();
             }
@@ -239,11 +242,11 @@ namespace KerbalEngineer.Flight.Readouts
             GUILayout.BeginHorizontal(GUILayout.Width(this.ContentWidth));
             if (!compact)
             {
-                GUILayout.Label(value, this.MessageStyle);
+                GUILayout.Label(value, MessageStyle);
             }
             else
             {
-                GUILayout.Label(value, this.MessageStyle, GUILayout.Height(this.MessageStyle.fontSize * 1.2f));
+                GUILayout.Label(value, MessageStyle, GUILayout.Height(MessageStyle.fontSize * 1.2f));
             }
             GUILayout.EndHorizontal();
             this.lineCountEnd++;
@@ -256,9 +259,12 @@ namespace KerbalEngineer.Flight.Readouts
         /// <summary>
         ///     Initialises all the styles required for this object.
         /// </summary>
-        private void InitialiseStyles()
+        private void InitialiseStyles(bool force)
         {
-            this.NameStyle = new GUIStyle(HighLogic.Skin.label)
+
+            if (NameStyle != null && !force) return;
+
+            NameStyle = new GUIStyle(HighLogic.Skin.label)
             {
                 normal =
                 {
@@ -272,17 +278,17 @@ namespace KerbalEngineer.Flight.Readouts
                 fixedHeight = 20.0f * GuiDisplaySize.Offset
             };
 
-            this.ValueStyle = new GUIStyle(HighLogic.Skin.label)
+            ValueStyle = new GUIStyle(HighLogic.Skin.label)
             {
                 margin = new RectOffset(),
                 padding = new RectOffset(0, 5, 0, 0),
                 alignment = TextAnchor.MiddleRight,
                 fontSize = (int)(11 * GuiDisplaySize.Offset),
                 fontStyle = FontStyle.Normal,
-                fixedHeight = 20.0f * GuiDisplaySize.Offset
+                fixedHeight = 20.0f * GuiDisplaySize.Offset,              
             };
 
-            this.MessageStyle = new GUIStyle(HighLogic.Skin.label)
+            MessageStyle = new GUIStyle(HighLogic.Skin.label)
             {
                 normal =
                 {
@@ -297,13 +303,13 @@ namespace KerbalEngineer.Flight.Readouts
                 stretchWidth = true
             };
 
-            this.FlexiLabelStyle = new GUIStyle(this.NameStyle)
+            FlexiLabelStyle = new GUIStyle(NameStyle)
             {
                 fixedWidth = 0,
                 stretchWidth = true
             };
 
-            this.ButtonStyle = new GUIStyle(HighLogic.Skin.button)
+            ButtonStyle = new GUIStyle(HighLogic.Skin.button)
             {
                 normal =
                 {
@@ -316,7 +322,7 @@ namespace KerbalEngineer.Flight.Readouts
                 fixedHeight = 18.0f * GuiDisplaySize.Offset
             };
 
-            this.TextFieldStyle = new GUIStyle(HighLogic.Skin.textField)
+            TextFieldStyle = new GUIStyle(HighLogic.Skin.textField)
             {
                 margin = new RectOffset(0, 0, 1, 1),
                 padding = new RectOffset(5, 5, 0, 0),
@@ -328,7 +334,7 @@ namespace KerbalEngineer.Flight.Readouts
 
         private void OnSizeChanged()
         {
-            this.InitialiseStyles();
+            this.InitialiseStyles(true);
             this.ResizeRequested = true;
         }
 

@@ -197,7 +197,7 @@ namespace KerbalEngineer.VesselSimulator
             {
                 Propellant propellant = propellants[i];
 
-                if (propellant.name == "ElectricCharge" || propellant.name == "IntakeAir")
+                if (propellant.ignoreForIsp || propellant.name == "ElectricCharge" || propellant.name == "IntakeAir")
                 {
                     continue;
                 }

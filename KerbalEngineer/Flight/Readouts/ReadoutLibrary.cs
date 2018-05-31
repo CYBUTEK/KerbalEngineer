@@ -11,8 +11,7 @@
 // You should have received a copy of the GNU General Public License along with this program. If not,
 // see <http://www.gnu.org/licenses/>.
 
-namespace KerbalEngineer.Flight.Readouts
-{
+namespace KerbalEngineer.Flight.Readouts {
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -33,18 +32,16 @@ namespace KerbalEngineer.Flight.Readouts
     using SemiMinorAxis = Orbital.SemiMinorAxis;
     using TimeToApoapsis = Orbital.TimeToApoapsis;
     using TimeToPeriapsis = Orbital.TimeToPeriapsis;
+    using Sections;
 
-    public static class ReadoutLibrary
-    {
+    public static class ReadoutLibrary {
         private static List<ReadoutModule> readouts = new List<ReadoutModule>();
 
         /// <summary>
         /// Sets up and populates the readout library with the stock readouts.
         /// </summary>
-        static ReadoutLibrary()
-        {
-            try
-            {
+        static ReadoutLibrary() {
+            try {
                 ReadoutCategory.SetCategory("Orbital", "Readout for orbital manovoeures.");
                 ReadoutCategory.SetCategory("Surface", "Surface and atmospheric readouts.");
                 ReadoutCategory.SetCategory("Vessel", "Vessel performance statistics.");
@@ -91,7 +88,9 @@ namespace KerbalEngineer.Flight.Readouts
                 readouts.Add(new PostBurnApoapsis());
                 readouts.Add(new PostBurnPeriapsis());
                 readouts.Add(new PostBurnInclination());
+                readouts.Add(new PostBurnRealtiveInclination());
                 readouts.Add(new PostBurnPeriod());
+                readouts.Add(new PostBurnEccentricity());
                 readouts.Add(new SpeedAtApoapsis());
                 readouts.Add(new SpeedAtPeriapsis());
                 readouts.Add(new TimeToAtmosphere());
@@ -214,6 +213,7 @@ namespace KerbalEngineer.Flight.Readouts
 
                 // Misc
                 readouts.Add(new Separator());
+                readouts.Add(new ClearSeparator());
                 readouts.Add(new GuiSizeAdjustor());
                 readouts.Add(new SimulationDelay());
                 readouts.Add(new VectoredThrustToggle());
@@ -223,9 +223,8 @@ namespace KerbalEngineer.Flight.Readouts
                 readouts.Add(new LogSimToggle());
 
                 LoadHelpStrings();
-            }
-            catch (Exception ex)
-            {
+                LoadReadoutConfig();
+            } catch (Exception ex) {
                 MyLogger.Exception(ex);
             }
         }
@@ -233,14 +232,11 @@ namespace KerbalEngineer.Flight.Readouts
         /// <summary>
         /// Gets and sets the available readout modules.
         /// </summary>
-        public static List<ReadoutModule> Readouts
-        {
-            get
-            {
+        public static List<ReadoutModule> Readouts {
+            get {
                 return readouts;
             }
-            set
-            {
+            set {
                 readouts = value;
             }
         }
@@ -248,26 +244,22 @@ namespace KerbalEngineer.Flight.Readouts
         /// <summary>
         /// Gets a list of readout modules which are associated with the specified category.
         /// </summary>
-        public static List<ReadoutModule> GetCategory(ReadoutCategory category)
-        {
+        public static List<ReadoutModule> GetCategory(ReadoutCategory category) {
             return readouts.Where(r => r.Category == category).ToList();
         }
 
         /// <summary>
         /// Gets a readout module with the specified name or class name. (Returns null if not found.)
         /// </summary>
-        public static ReadoutModule GetReadout(string name)
-        {
+        public static ReadoutModule GetReadout(string name) {
             return readouts.FirstOrDefault(r => r.Name == name || r.GetType().Name == name || r.Category + "." + r.GetType().Name == name);
         }
 
         /// <summary>
         /// Resets all the readout modules.
         /// </summary>
-        public static void Reset()
-        {
-            foreach (ReadoutModule readout in readouts)
-            {
+        public static void Reset() {
+            foreach (ReadoutModule readout in readouts) {
                 readout.Reset();
             }
         }
@@ -275,21 +267,71 @@ namespace KerbalEngineer.Flight.Readouts
         /// <summary>
         /// Loads the help strings from file.
         /// </summary>
-        private static void LoadHelpStrings()
-        {
-            try
-            {
+        private static void LoadHelpStrings() {
+            try {
                 SettingHandler handler = SettingHandler.Load("HelpStrings.xml");
-                foreach (ReadoutModule readout in readouts)
-                {
+                foreach (ReadoutModule readout in readouts) {
                     readout.HelpString = handler.GetSet(readout.Category + "." + readout.GetType().Name, readout.HelpString);
                 }
                 handler.Save("HelpStrings.xml");
-            }
-            catch (Exception ex)
-            {
+            } catch (Exception ex) {
                 MyLogger.Exception(ex);
             }
         }
+
+        /// <summary>
+        /// Loads config
+        /// </summary>
+        private static void LoadReadoutConfig() {
+            try {
+                SettingHandler handler = SettingHandler.Load("ReadoutsConfig.xml", new Type[] { typeof(ReadoutModuleConfigNode)});
+                foreach (ReadoutModule readout in readouts) {
+                    ReadoutModuleConfigNode r = handler.Get<ReadoutModuleConfigNode>(readout.Name, null);
+                    if (r != null) {
+                        readout.ValueStyle.normal.textColor = r.Color;
+                    }
+                }
+                handler.Save("ReadoutsConfig.xml");
+            } catch (Exception ex) {
+                MyLogger.Exception(ex);
+            }
+        }
+
+        public static void RemoveReadoutConfig(ReadoutModule readout) {
+            try {
+                SettingHandler handler = SettingHandler.Load("ReadoutsConfig.xml", new Type[] { typeof(ReadoutModuleConfigNode)});
+                var r = handler.Get<ReadoutModuleConfigNode>(readout.Name, null);
+
+                if (r == null) {
+                    return;
+                }
+
+                handler.Set(r.Name, null);
+                handler.Save("ReadoutsConfig.xml");
+            } catch (Exception ex) {
+                MyLogger.Exception(ex);
+            }
+        }
+
+
+        public static void SaveReadoutConfig(ReadoutModule readout) {
+            try {
+                SettingHandler handler = SettingHandler.Load("ReadoutsConfig.xml", new Type[] { typeof(ReadoutModuleConfigNode)});
+                var r = handler.Get<ReadoutModuleConfigNode>(readout.Name, null);
+
+                if (r == null) {
+                    r = new ReadoutModuleConfigNode();
+                }
+
+                r.Name = readout.Name;
+                r.Color = readout.ValueStyle.normal.textColor;
+
+                handler.Set(r.Name, r);
+                handler.Save("ReadoutsConfig.xml");
+            } catch (Exception ex) {
+                MyLogger.Exception(ex);
+            }
+        }
+
     }
 }

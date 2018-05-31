@@ -344,6 +344,8 @@ namespace KerbalEngineer.Flight.Readouts.Rendezvous {
                 SeparationAtEncounter = double.NaN;
                 SpeedAtEncounter = double.NaN;
 
+                Orbital.ManoeuvreNode.ManoeuvreProcessor.PostBurnRelativeInclination = 0;
+
             }
 
 
@@ -396,11 +398,24 @@ namespace KerbalEngineer.Flight.Readouts.Rendezvous {
 
                     RelativeInclination = originOrbit.GetRelativeInclination(targetOrbit);
 
+
+
+                    if (FlightGlobals.ActiveVessel.patchedConicSolver == null ||
+                        FlightGlobals.ActiveVessel.patchedConicSolver.maneuverNodes == null ||
+                        FlightGlobals.ActiveVessel.patchedConicSolver.maneuverNodes.Count == 0) {
+                    } else {
+                        var node = FlightGlobals.ActiveVessel.patchedConicSolver.maneuverNodes[0];
+                        if (node != null && node.nextPatch != null)
+                            Orbital.ManoeuvreNode.ManoeuvreProcessor.PostBurnRelativeInclination = node.nextPatch.GetRelativeInclination(FlightGlobals.ActiveVessel.targetObject.GetOrbit());
+                    }
+
+
+
                     RelativeSpeed = originOrbit.GetRelativeVel().magnitude - target.GetObtVelocity().magnitude;
                     RelativeVelocity = (originOrbit.GetRelativeVel() - target.GetObtVelocity()).magnitude;
 
-                   // FlightGlobals.ship_tgtVelocity = FlightGlobals.ship_obtVelocity - this.VesselTarget.GetObtVelocity();
-                   // FlightGlobals.ship_tgtSpeed = FlightGlobals.ship_tgtVelocity.magnitude;
+                    // FlightGlobals.ship_tgtVelocity = FlightGlobals.ship_obtVelocity - this.VesselTarget.GetObtVelocity();
+                    // FlightGlobals.ship_tgtSpeed = FlightGlobals.ship_tgtVelocity.magnitude;
 
                     PhaseAngle = originOrbit.GetPhaseAngle(targetOrbit);
                     InterceptAngle = CalcInterceptAngle(targetOrbit, originOrbit);

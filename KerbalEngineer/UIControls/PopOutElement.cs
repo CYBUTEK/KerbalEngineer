@@ -29,7 +29,7 @@ using UnityEngine;
 
 namespace KerbalEngineer.UIControls
 {
-    public class DropDown : MonoBehaviour
+    public class PopOutElement : MonoBehaviour
     {
         #region Fields
 
@@ -43,6 +43,8 @@ namespace KerbalEngineer.UIControls
         public bool Resize { get; set; }
 
         public Callback DrawCallback { get; set; }
+        public Callback ClosedCallback { get; set; }
+
 
         public Rect Position
         {
@@ -58,6 +60,7 @@ namespace KerbalEngineer.UIControls
             try
             {
                 this.enabled = false;
+                this.Resize = true;
             }
             catch (Exception ex)
             {
@@ -115,6 +118,7 @@ namespace KerbalEngineer.UIControls
                 if ((Input.GetMouseButtonDown(0) || Input.GetMouseButtonDown(1) || Input.GetMouseButtonDown(2)) && !this.position.MouseIsOver() && !this.button.MouseIsOver())
                 {
                     this.enabled = false;
+                    this.ClosedCallback.Invoke();
                 }
             }
             catch (Exception ex)
@@ -163,13 +167,13 @@ namespace KerbalEngineer.UIControls
 
         #region Public Methods
 
-        public void SetPosition(Rect button)
+        public void SetPosition(Rect button, Rect size)
         {
             try
             {
                 this.position.x = button.x;
                 this.position.y = button.y + button.height;
-                this.position.width = button.width;
+                this.position.width = size.width;
                 this.button = button;
             }
             catch (Exception ex)

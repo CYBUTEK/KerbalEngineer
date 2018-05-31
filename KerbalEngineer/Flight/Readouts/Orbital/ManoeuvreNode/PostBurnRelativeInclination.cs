@@ -19,19 +19,21 @@
 
 #region Using Directives
 
+using System;
+
 using KerbalEngineer.Extensions;
 using KerbalEngineer.Flight.Sections;
 
 #endregion
 
-namespace KerbalEngineer.Flight.Readouts.Body {
-    public class BodyRadius : ReadoutModule {
+namespace KerbalEngineer.Flight.Readouts.Orbital.ManoeuvreNode {
+    public class PostBurnRealtiveInclination : ReadoutModule {
         #region Constructors
 
-        public BodyRadius() {
-            this.Name = "Body Radius";
-            this.Category = ReadoutCategory.GetCategory("Body");
-            this.HelpString = "The radius of the body at sea level.";
+        public PostBurnRealtiveInclination() {
+            this.Name = "Post-burn Rel. Inclination";
+            this.Category = ReadoutCategory.GetCategory("Orbital");
+            this.HelpString = "The inclination of the vessel's orbit relative to the target after the burn.";
             this.IsDefault = false;
         }
 
@@ -40,10 +42,21 @@ namespace KerbalEngineer.Flight.Readouts.Body {
         #region Methods: public
 
         public override void Draw(Unity.Flight.ISectionModule section) {
-            if (FlightGlobals.ActiveVessel.mainBody == null)
-                DrawLine("N/A", section.IsHud);
+            if (!ManoeuvreProcessor.ShowDetails) {
+                return;
+            }
+            if (FlightGlobals.ActiveVessel.targetObject == null || FlightGlobals.ActiveVessel.targetObject.GetOrbit() == null)
+                this.DrawLine("N/A", section.IsHud);
             else
-                this.DrawLine(Helpers.Units.ToDistance(FlightGlobals.ActiveVessel.mainBody.Radius), section.IsHud);
+                this.DrawLine(ManoeuvreProcessor.PostBurnRelativeInclination.ToAngle(), section.IsHud);
+        }
+
+        public override void Reset() {
+            ManoeuvreProcessor.Reset();
+        }
+
+        public override void Update() {
+            ManoeuvreProcessor.RequestUpdate();
         }
 
         #endregion

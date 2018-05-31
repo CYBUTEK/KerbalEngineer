@@ -19,19 +19,24 @@
 
 #region Using Directives
 
-using KerbalEngineer.Extensions;
+using System;
+
+using KerbalEngineer.Helpers;
 using KerbalEngineer.Flight.Sections;
 
 #endregion
 
-namespace KerbalEngineer.Flight.Readouts.Body {
-    public class BodyRadius : ReadoutModule {
+namespace KerbalEngineer.Flight.Readouts.Orbital.ManoeuvreNode
+{
+    public class PostBurnEccentricity : ReadoutModule
+    {
         #region Constructors
 
-        public BodyRadius() {
-            this.Name = "Body Radius";
-            this.Category = ReadoutCategory.GetCategory("Body");
-            this.HelpString = "The radius of the body at sea level.";
+        public PostBurnEccentricity()
+        {
+            this.Name = "Post-burn Eccentricity";
+            this.Category = ReadoutCategory.GetCategory("Orbital");
+            this.HelpString = "The eccentricity of the vessel's orbit after the burn.";
             this.IsDefault = false;
         }
 
@@ -39,11 +44,24 @@ namespace KerbalEngineer.Flight.Readouts.Body {
 
         #region Methods: public
 
-        public override void Draw(Unity.Flight.ISectionModule section) {
-            if (FlightGlobals.ActiveVessel.mainBody == null)
-                DrawLine("N/A", section.IsHud);
-            else
-                this.DrawLine(Helpers.Units.ToDistance(FlightGlobals.ActiveVessel.mainBody.Radius), section.IsHud);
+        public override void Draw(Unity.Flight.ISectionModule section)
+        {
+            if (!ManoeuvreProcessor.ShowDetails)
+            {
+                return;
+            }
+
+            this.DrawLine(TimeFormatter.ConvertToString(ManoeuvreProcessor.PostBurnEcc, "F5"), section.IsHud);
+        }
+
+        public override void Reset()
+        {
+            ManoeuvreProcessor.Reset();
+        }
+
+        public override void Update()
+        {
+            ManoeuvreProcessor.RequestUpdate();
         }
 
         #endregion

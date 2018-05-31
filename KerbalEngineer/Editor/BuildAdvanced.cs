@@ -44,7 +44,7 @@ namespace KerbalEngineer.Editor
         private float atmosphericMach;
         private GUIStyle bodiesButtonActiveStyle;
         private GUIStyle bodiesButtonStyle;
-        private DropDown bodiesList;
+        private PopOutElement bodiesList;
         private Rect bodiesListPosition;
         private GUIStyle buttonStyle;
         private int compactCheck;
@@ -153,7 +153,7 @@ namespace KerbalEngineer.Editor
             try
             {
                 Instance = this;
-                bodiesList = gameObject.AddComponent<DropDown>();
+                bodiesList = gameObject.AddComponent<PopOutElement>();
                 bodiesList.DrawCallback = DrawBodiesList;
                 Load();
 
@@ -899,7 +899,7 @@ namespace KerbalEngineer.Editor
 
                     bodiesListPosition = new Rect(position.width - 452.0f * GuiDisplaySize.Offset, 5.0f, 125.0f * GuiDisplaySize.Offset, 20.0f);
                     bodiesList.enabled = GUI.Toggle(bodiesListPosition, bodiesList.enabled, "BODY: " + CelestialBodies.SelectedBody.Name.ToUpper(), buttonStyle);
-                    bodiesList.SetPosition(bodiesListPosition.Translate(position));
+                    bodiesList.SetPosition(bodiesListPosition.Translate(position), bodiesListPosition);
 
                     if (GUI.Toggle(new Rect(position.width - 485.0f * GuiDisplaySize.Offset, 5.0f, 30.0f * GuiDisplaySize.Offset, 20.0f), showRCS, "RCS", buttonStyle) != showRCS) {
                         hasChanged = true;

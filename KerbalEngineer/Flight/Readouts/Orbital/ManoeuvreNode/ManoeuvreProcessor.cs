@@ -66,9 +66,13 @@ namespace KerbalEngineer.Flight.Readouts.Orbital.ManoeuvreNode
 
         public static double PostBurnAp { get; private set; }
 
+        public static double PostBurnEcc { get; private set; }
+
         public static double PostBurnPe { get; private set; }
 
         public static double PostBurnInclination { get; private set; }
+
+        public static double PostBurnRelativeInclination { get; set; }
 
         public static double PostBurnPeriod { get; private set; }
 
@@ -122,6 +126,7 @@ namespace KerbalEngineer.Flight.Readouts.Orbital.ManoeuvreNode
             RadialDeltaV = deltaV.x;
             TotalDeltaV = node.GetBurnVector(FlightGlobals.ship_orbit).magnitude;
             PostBurnAp = node.nextPatch != null ? node.nextPatch.ApA : 0;
+            PostBurnEcc = node.nextPatch != null ? node.nextPatch.eccentricity : 0;
             PostBurnPe = node.nextPatch != null ? node.nextPatch.PeA : 0;
             PostBurnInclination = node.nextPatch != null ? node.nextPatch.inclination : 0;
             PostBurnPeriod = node.nextPatch != null ? node.nextPatch.period : 0;

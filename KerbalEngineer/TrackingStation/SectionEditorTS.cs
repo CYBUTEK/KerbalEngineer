@@ -43,13 +43,14 @@ namespace KerbalEngineer.TrackingStation {
 
         private GUIStyle categoryButtonActiveStyle;
         private GUIStyle categoryButtonStyle;
-        private DropDown categoryList;
+        private PopOutElement categoryList;
+        private PopOutColorPicker colorPicker;
         private GUIStyle categoryTitleButtonStyle;
         private GUIStyle helpBoxStyle;
         private GUIStyle helpTextStyle;
         private GUIStyle panelTitleStyle;
         private Rect position;
-        private DropDown presetList;
+        private PopOutElement presetList;
         private GUIStyle readoutButtonStyle;
         private GUIStyle readoutNameStyle;
         private Vector2 scrollPositionAvailable;
@@ -80,10 +81,13 @@ namespace KerbalEngineer.TrackingStation {
 
         protected void Awake() {
             try {
-                this.categoryList = this.gameObject.AddComponent<DropDown>();
+                this.categoryList = this.gameObject.AddComponent<PopOutElement>();
                 this.categoryList.DrawCallback = this.DrawCategories;
-                this.presetList = this.gameObject.AddComponent<DropDown>();
+                this.presetList = this.gameObject.AddComponent<PopOutElement>();
                 this.presetList.DrawCallback = this.DrawPresets;
+                this.colorPicker = this.gameObject.AddComponent<PopOutColorPicker>();
+                this.colorPicker.DrawCallback = this.DrawColorPicker;
+                this.colorPicker.ClosedCallback = this.saveColor;
             } catch (Exception ex) {
                 MyLogger.Exception(ex);
             }
@@ -115,6 +119,14 @@ namespace KerbalEngineer.TrackingStation {
 
         #region Methods: private
 
+        private void saveColor() {
+            if (editingReadout == null) return;
+            if (editingReadout.ValueStyle.normal.textColor == HighLogic.Skin.label.normal.textColor)
+                ReadoutLibrary.RemoveReadoutConfig(editingReadout);
+            else
+                ReadoutLibrary.SaveReadoutConfig(editingReadout);
+        }
+
         /// <summary>
         ///     Called to draw the editor when the UI is enabled.
         /// </summary>
@@ -139,7 +151,7 @@ namespace KerbalEngineer.TrackingStation {
                     GUILayout.BeginHorizontal(GUILayout.Height(30.0f));
                     GUILayout.Label(readout.Name, this.readoutNameStyle);
                     readout.ShowHelp = GUILayout.Toggle(readout.ShowHelp, "?", this.readoutButtonStyle, GUILayout.Width(30.0f));
-                    if (GUILayout.Button("INSTALL", this.readoutButtonStyle, GUILayout.Width(125.0f))) {
+                    if (GUILayout.Button("INSTALL", this.readoutButtonStyle, GUILayout.Width(75.0f))) {
                         this.ParentSection.ReadoutModules.Add(readout);
                     }
                     GUILayout.EndHorizontal();
@@ -177,7 +189,7 @@ namespace KerbalEngineer.TrackingStation {
         private void DrawCategorySelector() {
             this.categoryList.enabled = GUILayout.Toggle(this.categoryList.enabled, "▼ SELECTED CATEGORY: " + ReadoutCategory.Selected.ToString().ToUpper() + " ▼", this.categoryTitleButtonStyle);
             if (Event.current.type == EventType.repaint) {
-                this.categoryList.SetPosition(GUILayoutUtility.GetLastRect().Translate(this.position));
+                this.categoryList.SetPosition(GUILayoutUtility.GetLastRect().Translate(this.position), GUILayoutUtility.GetLastRect());
             }
         }
 
@@ -211,6 +223,9 @@ namespace KerbalEngineer.TrackingStation {
             //GUILayout.EndHorizontal();
         }
 
+        Texture2D swatch = new Texture2D(16, 20);
+        private Rect scrollRectInstalled = new Rect();
+
         /// <summary>
         ///     Draws the installed readouts panel.
         /// </summary>
@@ -240,8 +255,30 @@ namespace KerbalEngineer.TrackingStation {
                         this.ParentSection.ReadoutModules[i + 1] = readout;
                     }
                 }
+
+                Color temp = GUI.color;
+
+                GUI.color = readout.ValueStyle.normal.textColor;
+
+                if (readout.Cloneable == false) {
+                    if (GUILayout.Button(swatch, this.readoutButtonStyle, GUILayout.Width(30.0f))) {
+                        editingReadout = readout;
+                        colorPicker.enabled = true;
+                    }
+
+                    if (Event.current.type == EventType.repaint && editingReadout == readout) {
+                        colorPicker.SetPosition(GUILayoutUtility.GetLastRect().Translate(this.position).Translate(new Rect(8, scrollRectInstalled.y - scrollPositionInstalled.y, 8, 8)), new Rect(0, 0, 180, 20));
+                    }
+
+                } else { //dont show for separators.
+                    GUILayout.Label("", GUILayout.Width(26.0f));
+                }
+
+
+                GUI.color = temp;
+
                 readout.ShowHelp = GUILayout.Toggle(readout.ShowHelp, "?", this.readoutButtonStyle, GUILayout.Width(30.0f));
-                if (GUILayout.Button("REMOVE", this.readoutButtonStyle, GUILayout.Width(125.0f))) {
+                if (GUILayout.Button("REMOVE", this.readoutButtonStyle, GUILayout.Width(75.0f))) {
                     removeReadout = true;
                     removeReadoutIndex = i;
                 }
@@ -251,6 +288,10 @@ namespace KerbalEngineer.TrackingStation {
             }
 
             GUILayout.EndScrollView();
+
+            if (Event.current.type == EventType.repaint) {
+                scrollRectInstalled = GUILayoutUtility.GetLastRect();
+            }
 
             if (removeReadout) {
                 this.ParentSection.ReadoutModules.RemoveAt(removeReadoutIndex);
@@ -307,6 +348,8 @@ namespace KerbalEngineer.TrackingStation {
 
             this.DrawPresetSaveButton();
         }
+
+        private ReadoutModule editingReadout = null;
 
         /// <summary>
         ///     Initialises all the styles required for this object.
@@ -451,6 +494,11 @@ namespace KerbalEngineer.TrackingStation {
             } catch (Exception ex) {
                 MyLogger.Exception(ex);
             }
+        }
+
+        private void DrawColorPicker() {
+            if (editingReadout == null) return;
+            editingReadout.ValueStyle.normal.textColor = this.colorPicker.DrawColorPicker(editingReadout.ValueStyle.normal.textColor);
         }
 
         #endregion

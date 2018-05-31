@@ -15,21 +15,20 @@
 
 using KerbalEngineer.Flight.Sections;
 
-namespace KerbalEngineer.Flight.Readouts.Body
-{
-    public class BodyName : ReadoutModule
-    {
-        public BodyName()
-        {
+namespace KerbalEngineer.Flight.Readouts.Body {
+    public class BodyName : ReadoutModule {
+        public BodyName() {
             Name = "Current Body Name";
             Category = ReadoutCategory.GetCategory("Body");
             HelpString = "Shows the name of the current body.";
             IsDefault = false;
         }
 
-        public override void Draw(Unity.Flight.ISectionModule section)
-        {
-            DrawLine(FlightGlobals.ActiveVessel.mainBody.bodyName, section.IsHud);
+        public override void Draw(Unity.Flight.ISectionModule section) {
+            if (FlightGlobals.ActiveVessel.mainBody == null)
+                DrawLine("N/A", section.IsHud);
+            else
+                DrawLine(FlightGlobals.ActiveVessel.mainBody.bodyName, section.IsHud);
         }
     }
 }
