@@ -56,7 +56,7 @@ namespace KerbalEngineer.Flight.Readouts.Orbital.ManoeuvreNode {
         }
 
         public override void Update() {
-            ManoeuvreProcessor.RequestUpdate();
+            Rendezvous.RendezvousProcessor.RequestUpdate();
         }
 
         #endregion

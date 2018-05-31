@@ -417,6 +417,10 @@ namespace KerbalEngineer.Flight.Readouts.Rendezvous {
             this.ResizeRequested = true;
         }
 
+        public override void Update() {
+            RendezvousProcessor.RequestUpdate();
+        }
+
         #endregion
 
         #endregion

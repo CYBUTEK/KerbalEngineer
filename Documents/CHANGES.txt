@@ -2,7 +2,7 @@
  - You can now set custom colors for all readout values. These are stored in ReadoutsConfig.xml which you can delete if something goes horribly awry.
  - Added readouts: post-burn eccentricity, post-burn relative inclination, dynamic pressure.
  - Added 'clear separator' misc readout. Serves as a transparent spacer.
- - In addition to Intake Air and Electric Charge the delta-V calulation now ignores all propellants marked as 'ignoreForIsp'. If this breaks something please report it.
+ - In addition to Intake Air and Electric Charge the delta-V calculation now ignores all propellants marked as 'ignoreForIsp'. If this breaks something please report it.
  - Fix in-flight calculations for Real Fuels engines while throttled up.
 
 1.1.4.11, 2018-5-8, KSP 1.4.3 #2152

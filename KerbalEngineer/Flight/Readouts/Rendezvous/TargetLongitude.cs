@@ -51,5 +51,9 @@ namespace KerbalEngineer.Flight.Readouts.Surface
                 }
             }
         }
+
+        public override void Update() {
+            RendezvousProcessor.RequestUpdate();
+        }
     }
 }
