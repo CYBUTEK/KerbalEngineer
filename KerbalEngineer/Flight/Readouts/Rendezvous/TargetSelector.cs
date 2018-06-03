@@ -264,18 +264,24 @@ namespace KerbalEngineer.Flight.Readouts.Rendezvous {
 
                 this.DrawLine("Selected Target", RendezvousProcessor.nameForTargetable(target), section.IsHud);
 
-                if (RendezvousProcessor.sourceDisplay != null) {
-                    if (RendezvousProcessor.landedSamePlanet || RendezvousProcessor.overrideANDN)
-                        this.DrawLine("Ref Orbit", "Landed on " + RendezvousProcessor.activeVessel.GetOrbit().referenceBody.GetName(), section.IsHud);
-                    else
-                        this.DrawLine("Ref Orbit", RendezvousProcessor.sourceDisplay, section.IsHud);
-                }
+                try {
 
-                if (RendezvousProcessor.targetDisplay != null) {
-                    if (RendezvousProcessor.landedSamePlanet || RendezvousProcessor.overrideANDNRev)
-                        this.DrawLine("Target Orbit", "Landed on " + target.GetOrbit().referenceBody.GetName(), section.IsHud);
-                    else
-                        this.DrawLine("Target Orbit", RendezvousProcessor.targetDisplay, section.IsHud);
+                    if (RendezvousProcessor.sourceDisplay != null) {
+                        if (RendezvousProcessor.landedSamePlanet || RendezvousProcessor.overrideANDN)
+                            this.DrawLine("Ref Orbit", "Landed on " + RendezvousProcessor.activeVessel.GetOrbit().referenceBody.GetName(), section.IsHud);
+                        else
+                            this.DrawLine("Ref Orbit", RendezvousProcessor.sourceDisplay, section.IsHud);
+                    }
+
+                    if (RendezvousProcessor.targetDisplay != null) {
+                        if (RendezvousProcessor.landedSamePlanet || RendezvousProcessor.overrideANDNRev)
+                            this.DrawLine("Target Orbit", "Landed on " + target.GetOrbit().referenceBody.GetName(), section.IsHud);
+                        else
+                            this.DrawLine("Target Orbit", RendezvousProcessor.targetDisplay, section.IsHud);
+                    }
+
+                } catch (System.Exception) {
+                    Debug.Log(" target " + target + " " + RendezvousProcessor.activeVessel + " " + target.GetOrbit() + " " + RendezvousProcessor.overrideANDN + " " + RendezvousProcessor.overrideANDNRev + " " + RendezvousProcessor.landedSamePlanet);
                 }
 
             }

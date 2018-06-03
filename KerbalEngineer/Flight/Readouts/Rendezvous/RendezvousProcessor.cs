@@ -232,7 +232,11 @@ namespace KerbalEngineer.Flight.Readouts.Rendezvous {
 
             ITargetable target = null;
             global::Vessel vessel = null;
-
+            landedSamePlanet = false;
+            isLanded = false;
+            overrideANDN = false;
+            overrideANDNRev = false;
+            
             if (HighLogic.LoadedSceneIsFlight) {
                 if (FlightGlobals.fetch == null ||
                     FlightGlobals.fetch.VesselTarget == null ||
@@ -400,7 +404,7 @@ namespace KerbalEngineer.Flight.Readouts.Rendezvous {
 
 
 
-                    if (FlightGlobals.ActiveVessel.patchedConicSolver == null ||
+                    if (FlightGlobals.ActiveVessel == null || FlightGlobals.ActiveVessel.patchedConicSolver == null ||
                         FlightGlobals.ActiveVessel.patchedConicSolver.maneuverNodes == null ||
                         FlightGlobals.ActiveVessel.patchedConicSolver.maneuverNodes.Count == 0) {
                     } else {

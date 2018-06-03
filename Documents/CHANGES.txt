@@ -1,3 +1,7 @@
+1.1.5.1, 2018-6-2, KSP 1.4.3 #2152
+ - Fix Target Selector and post-burn-relative-inclicnation not updating if they were the only rendezvous readouts showing.
+ - Fix error in tracking station.
+
 1.1.5.0, 2018-6-1, KSP 1.4.3 #2152
  - You can now set custom colors for all readout values. These are stored in ReadoutsConfig.xml which you can delete if something goes horribly awry.
  - Added readouts: post-burn eccentricity, post-burn relative inclination, dynamic pressure.
