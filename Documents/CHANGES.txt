@@ -1,5 +1,5 @@
 1.1.5.1, 2018-6-2, KSP 1.4.3 #2152
- - Fix Target Selector and post-burn-relative-inclicnation not updating if they were the only rendezvous readouts showing.
+ - Fix Target Selector and post-burn-relative-inclination not updating if they were the only rendezvous readouts showing.
  - Fix error in tracking station.
 
 1.1.5.0, 2018-6-1, KSP 1.4.3 #2152

@@ -176,7 +176,7 @@ namespace KerbalEngineer.Flight.Readouts
 
         #region Methods: protected
 
-        protected void DrawLine(string value, bool compact = false)
+        protected void DrawLine(string value, bool compact)
         {
             GUILayout.BeginHorizontal(GUILayout.Width(this.ContentWidth));
 
