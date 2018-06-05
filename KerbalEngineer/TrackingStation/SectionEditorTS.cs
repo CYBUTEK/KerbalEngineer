@@ -303,11 +303,8 @@ namespace KerbalEngineer.TrackingStation {
                 return;
             }
 
-            this.ParentSection.Name = preset.Name;
-            this.ParentSection.Abbreviation = preset.Abbreviation;
-            this.ParentSection.ReadoutModuleNames = preset.ReadoutNames;
-            this.ParentSection.IsHud = preset.IsHud;
-            this.ParentSection.IsHudBackground = preset.IsHudBackground;
+            this.ParentSection.ApplyPreset(preset);
+
             this.presetList.enabled = false;
         }
 

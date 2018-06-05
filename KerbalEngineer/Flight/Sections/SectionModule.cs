@@ -30,6 +30,7 @@ using UnityEngine;
 #endregion
 
 namespace KerbalEngineer.Flight.Sections {
+    using Presets;
     using Unity.Flight;
     /// <summary>
     ///     Object for management and display of readout modules.
@@ -349,6 +350,15 @@ namespace KerbalEngineer.Flight.Sections {
             if (!this.IsHud) {
                 GUILayout.EndVertical();
             }
+        }
+
+        public void ApplyPreset(Preset preset) {
+            if (preset == null) return;
+            this.Name = preset.Name;
+            this.Abbreviation = preset.Abbreviation;
+            this.ReadoutModuleNames = preset.ReadoutNames;
+            this.IsHud = preset.IsHud;
+            this.IsHudBackground = preset.IsHudBackground;
         }
 
         /// <summary>

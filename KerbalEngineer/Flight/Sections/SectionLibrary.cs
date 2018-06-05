@@ -39,31 +39,43 @@ namespace KerbalEngineer.Flight.Sections {
             StockSections = new List<SectionModule>();
             CustomSections = new List<SectionModule>();
 
-            StockSections.Add(new SectionModule {
+            SectionModule obt = new SectionModule {
                 Name = "ORBITAL",
                 Abbreviation = "ORBT",
                 ReadoutModules = ReadoutLibrary.GetCategory(ReadoutCategory.GetCategory("Orbital")).Where(r => r.IsDefault).ToList()
-            });
+            };
 
-            StockSections.Add(new SectionModule {
+            obt.ApplyPreset(Presets.PresetLibrary.GetPreset(obt.Abbreviation));
+            StockSections.Add(obt);
+
+            SectionModule srf = new SectionModule {
                 Name = "SURFACE",
                 Abbreviation = "SURF",
                 ReadoutModules = ReadoutLibrary.GetCategory(ReadoutCategory.GetCategory("Surface")).Where(r => r.IsDefault).ToList()
-            });
+            };
 
-            StockSections.Add(new SectionModule {
+            srf.ApplyPreset(Presets.PresetLibrary.GetPreset(srf.Abbreviation));
+            StockSections.Add(srf);
+
+            SectionModule vsl = new SectionModule {
                 Name = "VESSEL",
                 Abbreviation = "VESL",
                 ReadoutModules = ReadoutLibrary.GetCategory(ReadoutCategory.GetCategory("Vessel")).Where(r => r.IsDefault).ToList()
-            });
+            };
 
-            StockSections.Add(new SectionModule {
+            vsl.ApplyPreset(Presets.PresetLibrary.GetPreset(vsl.Abbreviation));
+            StockSections.Add(vsl);
+
+            SectionModule rdz = new SectionModule {
                 Name = "RENDEZVOUS",
                 Abbreviation = "RDZV",
                 ReadoutModules = ReadoutLibrary.GetCategory(ReadoutCategory.GetCategory("Rendezvous")).Where(r => r.IsDefault).ToList()
-            });
+            };
 
-            TrackingStationSection = new SectionModuleTS {
+            rdz.ApplyPreset(Presets.PresetLibrary.GetPreset(rdz.Abbreviation));
+            StockSections.Add(rdz);
+
+            SectionModuleTS ts = new SectionModuleTS {
                 Name = "TRACKING",
                 Abbreviation = "TRCK",
                 ReadoutModules = ReadoutLibrary.GetCategory(ReadoutCategory.GetCategory("Rendezvous")).Where(r => r.IsDefault).ToList(),
@@ -71,24 +83,30 @@ namespace KerbalEngineer.Flight.Sections {
                 showFloatButton = false
             };
 
-            CustomSections.Add(new SectionModule {
+            ts.ApplyPreset(Presets.PresetLibrary.GetPreset(ts.Abbreviation));
+            TrackingStationSection = ts;
+
+            var thr = new SectionModule {
                 Name = "THERMAL",
                 Abbreviation = "HEAT",
                 ReadoutModules = ReadoutLibrary.GetCategory(ReadoutCategory.GetCategory("Thermal")).Where(r => r.IsDefault).ToList(),
-                IsCustom = true
-            });
+            };
 
-            CustomSections.Add(new SectionModule {
+            thr.ApplyPreset(Presets.PresetLibrary.GetPreset(thr.Abbreviation));
+            StockSections.Add(thr);
+
+            var body = new SectionModule {
                 Name = "BODY",
                 Abbreviation = "BODY",
                 ReadoutModules = ReadoutLibrary.GetCategory(ReadoutCategory.GetCategory("Body")).Where(r => r.IsDefault).ToList(),
-                IsCustom = true
-            });
+            };
+
+            body.ApplyPreset(Presets.PresetLibrary.GetPreset(body.Abbreviation));
+            StockSections.Add(body);
 
             SectionModule hud1 = new SectionModule {
                 Name = "HUD 1",
                 Abbreviation = "HUD 1",
-                IsCustom = true,
                 IsVisible = true,
                 ReadoutModules = new List<ReadoutModule>
                 {
@@ -98,15 +116,16 @@ namespace KerbalEngineer.Flight.Sections {
                     ReadoutLibrary.GetReadout("TimeToPeriapsis")
                 },
             };
-            hud1.FloatingPositionX = Screen.width * 0.25f - (hud1.ReadoutModules.First().ContentWidth * 0.5f);
+            hud1.FloatingPositionX = Screen.width * 0.35f - (hud1.ReadoutModules.First().ContentWidth * 0.5f);
             hud1.FloatingPositionY = 0.0f;
             hud1.IsHud = true;
-            CustomSections.Add(hud1);
+
+            hud1.ApplyPreset(Presets.PresetLibrary.GetPreset(hud1.Abbreviation));
+            StockSections.Add(hud1);
 
             SectionModule hud2 = new SectionModule {
                 Name = "HUD 2",
                 Abbreviation = "HUD 2",
-                IsCustom = true,
                 IsVisible = true,
                 ReadoutModules = new List<ReadoutModule>
                 {
@@ -117,11 +136,12 @@ namespace KerbalEngineer.Flight.Sections {
                     ReadoutLibrary.GetReadout("MachNumber")
                 },
             };
-            hud2.FloatingPositionX = Screen.width * 0.75f - (hud2.ReadoutModules.First().ContentWidth * 0.5f);
+            hud2.FloatingPositionX = Screen.width * 0.65f - (hud2.ReadoutModules.First().ContentWidth * 0.5f);
             hud2.FloatingPositionY = 0.0f;
             hud2.IsHud = true;
-            CustomSections.Add(hud2);
 
+            hud2.ApplyPreset(Presets.PresetLibrary.GetPreset(hud2.Abbreviation));
+            StockSections.Add(hud2);
         }
 
         public static SectionModuleTS TrackingStationSection { get; set; }

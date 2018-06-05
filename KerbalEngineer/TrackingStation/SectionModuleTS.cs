@@ -30,8 +30,10 @@ using UnityEngine;
 #endregion
 
 namespace KerbalEngineer.TrackingStation {
+    using Flight.Presets;
     using Flight.Sections;
     using Unity.Flight;
+
     /// <summary>
     ///     Object for management and display of readout modules.
     /// </summary>
@@ -372,6 +374,15 @@ namespace KerbalEngineer.TrackingStation {
 
         public void ClearNullReadouts() {
             this.ReadoutModules.RemoveAll(r => r == null);
+        }
+
+        public void ApplyPreset(Preset preset) {
+            if (preset == null) return;
+            this.Name = preset.Name;
+            this.Abbreviation = preset.Abbreviation;
+            this.ReadoutModuleNames = preset.ReadoutNames;
+            this.IsHud = preset.IsHud;
+            this.IsHudBackground = preset.IsHudBackground;
         }
 
         #endregion

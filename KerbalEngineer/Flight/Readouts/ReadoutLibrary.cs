@@ -306,7 +306,8 @@ namespace KerbalEngineer.Flight.Readouts {
                     return;
                 }
 
-                handler.Set(r.Name, null);
+                handler.Items.Remove(handler.Items.Find(i => i.Name == readout.Name));
+
                 handler.Save("ReadoutsConfig.xml");
             } catch (Exception ex) {
                 MyLogger.Exception(ex);
