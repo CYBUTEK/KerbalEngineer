@@ -1,3 +1,10 @@
+1.1.5.2, 2018-6-5, KSP 1.4.3 #2152
+ - Load presets on new install instead of hard-coded defaults. Allows separators. But not colors. You do your own colors.
+ - Add presets for hud 1 and hud 2. Change some default readouts.
+ - Fix error when resetting a readout color to default.
+ - Fix a few readouts that were taking up too much space in 'hud' mode.
+ - Fix post-burn-eccentricity readout using the wrong units.
+
 1.1.5.1, 2018-6-2, KSP 1.4.3 #2152
  - Fix Target Selector and post-burn-relative-inclination not updating if they were the only rendezvous readouts showing.
  - Fix error in tracking station.

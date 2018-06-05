@@ -116,7 +116,7 @@ namespace KerbalEngineer.Flight.Sections {
                     ReadoutLibrary.GetReadout("TimeToPeriapsis")
                 },
             };
-            hud1.FloatingPositionX = Screen.width * 0.35f - (hud1.ReadoutModules.First().ContentWidth * 0.5f);
+            hud1.FloatingPositionX = Screen.width * 0.33f - (hud1.ReadoutModules.First().ContentWidth * 0.5f);
             hud1.FloatingPositionY = 0.0f;
             hud1.IsHud = true;
 
@@ -136,7 +136,7 @@ namespace KerbalEngineer.Flight.Sections {
                     ReadoutLibrary.GetReadout("MachNumber")
                 },
             };
-            hud2.FloatingPositionX = Screen.width * 0.65f - (hud2.ReadoutModules.First().ContentWidth * 0.5f);
+            hud2.FloatingPositionX = Screen.width * 0.7f - (hud2.ReadoutModules.First().ContentWidth * 0.5f);
             hud2.FloatingPositionY = 0.0f;
             hud2.IsHud = true;
 

@@ -1,17 +1,26 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <ArrayOfSettingItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
   <SettingItem>
     <Name>preset</Name>
     <Value xsi:type="Preset">
-      <Name>VESSEL</Name>
       <Abbreviation>VESL</Abbreviation>
+      <IsHud>false</IsHud>
+      <IsHudBackground>false</IsHudBackground>
+      <Name>VESSEL</Name>
       <ReadoutNames>
-        <string>Vessel.DeltaVStaged</string>
+        <string>Vessel.Name</string>
+        <string>Vessel.Mass</string>
         <string>Miscellaneous.Separator</string>
+        <string>Vessel.DeltaVStaged</string>
         <string>Vessel.DeltaVTotal</string>
         <string>Miscellaneous.Separator</string>
         <string>Vessel.ThrustToWeight</string>
         <string>Vessel.Acceleration</string>
+        <string>Miscellaneous.Separator</string>
+        <string>Vessel.SuicideBurnDistance</string>
+        <string>Vessel.SuicideBurnDeltaV</string>
+        <string>Miscellaneous.Separator</string>
+        <string>Vessel.RCSDeltaV</string>
       </ReadoutNames>
     </Value>
   </SettingItem>
