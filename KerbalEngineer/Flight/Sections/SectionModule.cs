@@ -88,10 +88,6 @@ namespace KerbalEngineer.Flight.Sections {
         /// </summary>
         public float FloatingPositionY { get; set; }
 
-        /// <summary>
-        ///     Gets and sets whether the section is custom.
-        /// </summary>
-        public bool IsCustom { get; set; }
 
         /// <summary>
         ///     Gets and sets whether to show the edit button
@@ -102,7 +98,6 @@ namespace KerbalEngineer.Flight.Sections {
         ///     Gets and sets whether to show the float button
         /// </summary>
         public bool showFloatButton { get; set; } = true;
-
 
         /// <summary>
         ///     Gets and sets whether the section editor is visible.

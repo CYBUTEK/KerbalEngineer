@@ -50,9 +50,13 @@ namespace KerbalEngineer.Flight.Readouts.Vessel
         {
             if (SimulationProcessor.ShowDetails)
             {
-                this.gravity = FlightGlobals.getGeeForceAtPosition(FlightGlobals.ship_position).magnitude;
-                this.total = (SimulationProcessor.LastStage.RCSThrust / (SimulationProcessor.LastStage.totalMass * this.gravity)).ToString("F2");
-                this.DrawLine(this.total, section.IsHud);
+                if(SimulationProcessor.LastStage.totalMass > 0) {
+                    this.gravity = FlightGlobals.getGeeForceAtPosition(FlightGlobals.ship_position).magnitude;
+                    this.total = (SimulationProcessor.LastStage.RCSThrust / (SimulationProcessor.LastStage.totalMass * this.gravity)).ToString("F2");
+                    this.DrawLine(this.total, section.IsHud);
+                } else {
+                    this.DrawLine("N/A", section.IsHud);
+                }
             }
         }
 

@@ -27,13 +27,11 @@ using UnityEngine;
 
 #endregion
 
-namespace KerbalEngineer.Flight.Readouts
-{
+namespace KerbalEngineer.Flight.Readouts {
     using Extensions;
     using Unity.Flight;
 
-    public abstract class ReadoutModule
-    {
+    public abstract class ReadoutModule {
         #region Fields
 
         private int lineCountEnd;
@@ -43,8 +41,7 @@ namespace KerbalEngineer.Flight.Readouts
 
         #region Constructors
 
-        protected ReadoutModule()
-        {
+        protected ReadoutModule() {
             this.InitialiseStyles(false);
             GuiDisplaySize.OnSizeChanged += this.OnSizeChanged;
         }
@@ -67,8 +64,7 @@ namespace KerbalEngineer.Flight.Readouts
         /// <summary>
         ///     Gets the width of the content. (Sum of NameStyle + ValueStyle widths.)
         /// </summary>
-        public float ContentWidth
-        {
+        public float ContentWidth {
             get { return 230.0f * GuiDisplaySize.Offset; }
         }
 
@@ -133,6 +129,11 @@ namespace KerbalEngineer.Flight.Readouts
         /// </summary>
         public GUIStyle ButtonStyle { get; set; }
 
+        /// <summary>
+        ///     Gets and sets the button style.
+        /// </summary>
+        public GUIStyle CompactButtonStyle { get; set; }
+
         #endregion
 
         #region Methods: public
@@ -147,17 +148,14 @@ namespace KerbalEngineer.Flight.Readouts
         /// </summary>
         public virtual void FixedUpdate() { }
 
-        public void LineCountEnd()
-        {
+        public void LineCountEnd() {
             this.LineCount = this.lineCountEnd;
-            if (this.lineCountEnd.CompareTo(this.lineCountStart) < 0)
-            {
+            if (this.lineCountEnd.CompareTo(this.lineCountStart) < 0) {
                 this.ResizeRequested = true;
             }
         }
 
-        public void LineCountStart()
-        {
+        public void LineCountStart() {
             this.lineCountStart = this.lineCountEnd;
             this.lineCountEnd = 0;
         }
@@ -176,18 +174,14 @@ namespace KerbalEngineer.Flight.Readouts
 
         #region Methods: protected
 
-        protected void DrawLine(string value, bool compact)
-        {
+        protected void DrawLine(string value, bool compact) {
             GUILayout.BeginHorizontal(GUILayout.Width(this.ContentWidth));
 
-            if (!compact)
-            {
+            if (!compact) {
                 GUILayout.Label(this.Name, NameStyle);
                 GUILayout.FlexibleSpace();
                 GUILayout.Label(value.ToLength(20), ValueStyle);
-            }
-            else
-            {
+            } else {
                 GUILayout.Label(this.Name, NameStyle, GUILayout.Height(NameStyle.fontSize * 1.2f));
                 GUILayout.FlexibleSpace();
                 GUILayout.Label(value.ToLength(20), ValueStyle, GUILayout.Height(ValueStyle.fontSize * 1.2f));
@@ -197,37 +191,27 @@ namespace KerbalEngineer.Flight.Readouts
             this.lineCountEnd++;
         }
 
-        protected void DrawLine(string name, string value, bool compact = false)
-        {
+        protected void DrawLine(string name, string value, bool compact = false) {
             GUILayout.BeginHorizontal(GUILayout.Width(this.ContentWidth));
-            if (!compact)
-            {
+            if (!compact) {
                 GUILayout.Label(name, NameStyle);
                 GUILayout.FlexibleSpace();
                 GUILayout.Label(value.ToLength(20), ValueStyle);
-            }
-            else
-            {
+            } else {
                 GUILayout.Label(name, NameStyle, GUILayout.Height(NameStyle.fontSize * 1.2f));
                 GUILayout.FlexibleSpace();
                 GUILayout.Label(value.ToLength(20), ValueStyle, GUILayout.Height(ValueStyle.fontSize * 1.2f));
             }
             GUILayout.EndHorizontal();
-
             this.lineCountEnd++;
         }
 
-        protected void DrawLine(Action drawAction, bool showName = true, bool compact = false)
-        {
+        protected void DrawLine(Action drawAction, bool showName = true, bool compact = false) {
             GUILayout.BeginHorizontal(GUILayout.Width(this.ContentWidth));
-            if (showName)
-            {
-                if (!compact)
-                {
+            if (showName) {
+                if (!compact) {
                     GUILayout.Label(this.Name, NameStyle);
-                }
-                else
-                {
+                } else {
                     GUILayout.Label(this.Name, NameStyle, GUILayout.Height(NameStyle.fontSize * 1.2f));
                 }
                 GUILayout.FlexibleSpace();
@@ -237,15 +221,11 @@ namespace KerbalEngineer.Flight.Readouts
             this.lineCountEnd++;
         }
 
-        protected void DrawMessageLine(string value, bool compact = false)
-        {
+        protected void DrawMessageLine(string value, bool compact = false) {
             GUILayout.BeginHorizontal(GUILayout.Width(this.ContentWidth));
-            if (!compact)
-            {
+            if (!compact) {
                 GUILayout.Label(value, MessageStyle);
-            }
-            else
-            {
+            } else {
                 GUILayout.Label(value, MessageStyle, GUILayout.Height(MessageStyle.fontSize * 1.2f));
             }
             GUILayout.EndHorizontal();
@@ -259,13 +239,11 @@ namespace KerbalEngineer.Flight.Readouts
         /// <summary>
         ///     Initialises all the styles required for this object.
         /// </summary>
-        private void InitialiseStyles(bool force)
-        {
+        private void InitialiseStyles(bool force) {
 
             if (NameStyle != null && !force) return;
 
-            NameStyle = new GUIStyle(HighLogic.Skin.label)
-            {
+            NameStyle = new GUIStyle(HighLogic.Skin.label) {
                 normal =
                 {
                     textColor = Color.white
@@ -278,18 +256,16 @@ namespace KerbalEngineer.Flight.Readouts
                 fixedHeight = 20.0f * GuiDisplaySize.Offset
             };
 
-            ValueStyle = new GUIStyle(HighLogic.Skin.label)
-            {
+            ValueStyle = new GUIStyle(HighLogic.Skin.label) {
                 margin = new RectOffset(),
                 padding = new RectOffset(0, 5, 0, 0),
                 alignment = TextAnchor.MiddleRight,
                 fontSize = (int)(11 * GuiDisplaySize.Offset),
                 fontStyle = FontStyle.Normal,
-                fixedHeight = 20.0f * GuiDisplaySize.Offset,              
+                fixedHeight = 20.0f * GuiDisplaySize.Offset,
             };
 
-            MessageStyle = new GUIStyle(HighLogic.Skin.label)
-            {
+            MessageStyle = new GUIStyle(HighLogic.Skin.label) {
                 normal =
                 {
                     textColor = Color.white
@@ -303,14 +279,12 @@ namespace KerbalEngineer.Flight.Readouts
                 stretchWidth = true
             };
 
-            FlexiLabelStyle = new GUIStyle(NameStyle)
-            {
+            FlexiLabelStyle = new GUIStyle(NameStyle) {
                 fixedWidth = 0,
                 stretchWidth = true
             };
 
-            ButtonStyle = new GUIStyle(HighLogic.Skin.button)
-            {
+            ButtonStyle = new GUIStyle(HighLogic.Skin.button) {
                 normal =
                 {
                     textColor = Color.white
@@ -322,8 +296,13 @@ namespace KerbalEngineer.Flight.Readouts
                 fixedHeight = 18.0f * GuiDisplaySize.Offset
             };
 
-            TextFieldStyle = new GUIStyle(HighLogic.Skin.textField)
-            {
+            CompactButtonStyle = new GUIStyle(ButtonStyle) {
+                fontSize = (int)(10 * GuiDisplaySize.Offset),
+                margin = new RectOffset(0, 0, 5, 5),
+                fixedHeight = ButtonStyle.fontSize
+            };
+
+            TextFieldStyle = new GUIStyle(HighLogic.Skin.textField) {
                 margin = new RectOffset(0, 0, 1, 1),
                 padding = new RectOffset(5, 5, 0, 0),
                 alignment = TextAnchor.MiddleLeft,
@@ -332,8 +311,7 @@ namespace KerbalEngineer.Flight.Readouts
             };
         }
 
-        private void OnSizeChanged()
-        {
+        private void OnSizeChanged() {
             this.InitialiseStyles(true);
             this.ResizeRequested = true;
         }

@@ -19,27 +19,21 @@
 
 #region Using Directives
 
+using KerbalEngineer.Extensions;
 using KerbalEngineer.Flight.Sections;
-
 using UnityEngine;
 
 #endregion
 
 namespace KerbalEngineer.Flight.Readouts.Surface {
-    public class GeeForce : ReadoutModule {
-        #region Fields
-
-        private double maxGeeForce;
-
-        #endregion
-
+    public class ImpactMarker : ReadoutModule {
         #region Constructors
 
-        public GeeForce() {
-            this.Name = "G-Force";
+        public ImpactMarker() {
+            this.Name = "Impact Marker";
             this.Category = ReadoutCategory.GetCategory("Surface");
-            this.HelpString = "Shows the current g-force and maximum g-force experienced.";
-            this.IsDefault = true;
+            this.HelpString = "Shows your estimated impact position on the surface and the map.";
+            this.IsDefault = false;
         }
 
         #endregion
@@ -47,26 +41,27 @@ namespace KerbalEngineer.Flight.Readouts.Surface {
         #region Methods: public
 
         public override void Draw(Unity.Flight.ISectionModule section) {
-
-            if (FlightGlobals.ship_geeForce > this.maxGeeForce) {
-                this.maxGeeForce = FlightGlobals.ship_geeForce;
+            if (ImpactProcessor.ShowDetails) {
+                this.DrawLine(() => {
+                    GUIStyle s = section.IsHud ? this.CompactButtonStyle : this.ButtonStyle;
+                    if (GUILayout.Button(ImpactProcessor.ShowMarker ? "Hide" : "Show", s,
+                        GUILayout.Width(this.ContentWidth / 4), GUILayout.Height(s.fixedHeight))) {
+                        show = !show;
+                    }
+                },true, section.IsHud);
             }
-
-            this.DrawLine(() => {
-                if(!section.IsHud)
-                    GUILayout.Label(FlightGlobals.ship_geeForce.ToString("F3") + " / " + this.maxGeeForce.ToString("F3"), this.ValueStyle);
-                else
-                    GUILayout.Label(FlightGlobals.ship_geeForce.ToString("F3") + " / " + this.maxGeeForce.ToString("F3"), this.ValueStyle, GUILayout.Height(ValueStyle.fontSize*1.2f));
-                if (GUILayout.Button("R", section.IsHud ? this.CompactButtonStyle : this.ButtonStyle,
-                    GUILayout.Width(ButtonStyle.fixedHeight))) {
-                    this.maxGeeForce = 0.0;
-                }
-            }, true, section.IsHud);
-
         }
 
+        private bool show = true;
+
         public override void Reset() {
-            this.maxGeeForce = 0;
+            FlightEngineerCore.Instance.AddUpdatable(ImpactProcessor.Instance);
+        }
+
+        public override void Update() {
+           if(show)
+                FlightEngineerCore.markerDeadman = 2;
+            ImpactProcessor.RequestUpdate();
         }
 
         #endregion

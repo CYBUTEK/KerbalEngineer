@@ -148,7 +148,6 @@ namespace KerbalEngineer.Flight
                 Name = "Custom " + (SectionLibrary.CustomSections.Count + 1),
                 Abbreviation = "CUST " + (SectionLibrary.CustomSections.Count + 1),
                 IsVisible = true,
-                IsCustom = true,
                 IsEditorVisible = true
             };
 

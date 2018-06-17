@@ -114,8 +114,9 @@ namespace KerbalEngineer.Flight.Readouts {
                 readouts.Add(new Situation());
                 readouts.Add(new Slope());
                 readouts.Add(new ImpactTime());
-                readouts.Add(new ImpactLongitude());
                 readouts.Add(new ImpactLatitude());
+                readouts.Add(new ImpactLongitude());
+                readouts.Add(new ImpactMarker());
                 readouts.Add(new ImpactAltitude());
                 readouts.Add(new ImpactBiome());
 
@@ -137,6 +138,8 @@ namespace KerbalEngineer.Flight.Readouts {
                 readouts.Add(new SuicideBurnAltitude());
                 readouts.Add(new SuicideBurnDistance());
                 readouts.Add(new SuicideBurnDeltaV());
+                readouts.Add(new SuicideBurnCountdown());
+                readouts.Add(new SuicideBurnLength());
                 readouts.Add(new IntakeAirUsage());
                 readouts.Add(new IntakeAirDemand());
                 readouts.Add(new IntakeAirSupply());
@@ -199,6 +202,7 @@ namespace KerbalEngineer.Flight.Readouts {
                 readouts.Add(new BodyName());
                 readouts.Add(new HasAtmosphere());
                 readouts.Add(new HasOxygen());
+                readouts.Add(new MinOrbitHeight());
                 readouts.Add(new HighAtmosphereHeight());
                 readouts.Add(new LowSpaceHeight());
                 readouts.Add(new HighSpaceHeight());

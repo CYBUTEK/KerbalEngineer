@@ -218,41 +218,8 @@ namespace KerbalEngineer.TrackingStation {
         /// </summary>
         private void DrawControlBar() {
             GUILayout.Label("FLIGHT ENGINEER " + EngineerGlobals.ASSEMBLY_VERSION, this.titleStyle);
-
-            //  this.DrawControlBarButtons(SectionLibrary.StockSections);
-            // this.DrawControlBarButtons(SectionLibrary.CustomSections);
         }
 
-        /// <summary>
-        ///     Draws a button list for a set of sections.
-        /// </summary>
-        private void DrawControlBarButtons(IEnumerable<SectionModule> sections) {
-            var index = 0;
-            foreach (var section in sections.Where(s => !string.IsNullOrEmpty(s.Abbreviation) || !s.IsCustom)) {
-                if (index % 4 == 0) {
-                    if (index > 0) {
-                        GUILayout.EndHorizontal();
-                    }
-                    GUILayout.BeginHorizontal();
-                }
-                section.IsVisible = GUILayout.Toggle(section.IsVisible, section.Abbreviation.ToUpper(), this.buttonStyle);
-                index++;
-            }
-            if (index > 0) {
-                GUILayout.EndHorizontal();
-            }
-        }
-
-        /// <summary>
-        ///     Draws a list of sections.
-        /// </summary>
-        private void DrawSections(IEnumerable<SectionModule> sections) {
-            foreach (var section in sections) {
-                if (!section.IsFloating) {
-                    section.Draw();
-                }
-            }
-        }
 
         /// <summary>
         ///     Initialises all the styles required for this object.

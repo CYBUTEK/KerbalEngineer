@@ -10,6 +10,7 @@
       <ReadoutNames>
         <string>Vessel.Name</string>
         <string>Vessel.Mass</string>
+        <string>Vessel.Gravity</string>
         <string>Miscellaneous.Separator</string>
         <string>Vessel.DeltaVStaged</string>
         <string>Vessel.DeltaVTotal</string>
@@ -17,10 +18,12 @@
         <string>Vessel.ThrustToWeight</string>
         <string>Vessel.Acceleration</string>
         <string>Miscellaneous.Separator</string>
-        <string>Vessel.SuicideBurnDistance</string>
-        <string>Vessel.SuicideBurnDeltaV</string>
-        <string>Miscellaneous.Separator</string>
         <string>Vessel.RCSDeltaV</string>
+        <string>Vessel.RCSTWR</string>
+        <string>Miscellaneous.Separator</string>
+        <string>Vessel.Heading</string>
+        <string>Vessel.Pitch</string>
+        <string>Vessel.Roll</string>
       </ReadoutNames>
     </Value>
   </SettingItem>

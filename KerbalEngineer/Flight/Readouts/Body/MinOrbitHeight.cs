@@ -19,48 +19,30 @@
 
 #region Using Directives
 
-using System;
-
 using KerbalEngineer.Extensions;
 using KerbalEngineer.Flight.Sections;
 
 #endregion
 
-namespace KerbalEngineer.Flight.Readouts.Vessel
-{
-    public class SuicideBurnDeltaV : ReadoutModule
-    {
+namespace KerbalEngineer.Flight.Readouts.Body {
+    public class MinOrbitHeight : ReadoutModule {
         #region Constructors
 
-        public SuicideBurnDeltaV()
-        {
-            this.Name = "Suicide Burn dV";
-            this.Category = ReadoutCategory.GetCategory("Vessel");
-            this.HelpString = "Shows the DeltaV of a suicide burn.";
-            this.IsDefault = false;
+        public MinOrbitHeight() {
+            this.Name = "Min. Safe Alt.";
+            this.Category = ReadoutCategory.GetCategory("Body");
+            this.HelpString = "The minimum safe altitude for orbiting.";
+            this.IsDefault = true;
         }
 
         #endregion
 
         #region Methods: public
 
-        public override void Draw(Unity.Flight.ISectionModule section)
-        {
-            if (!SimulationProcessor.ShowDetails || !Surface.ImpactProcessor.ShowDetails) {
-                return;
-            }
-
-            this.DrawLine(Surface.ImpactProcessor.SuicideDeltaV.ToString("N1") + "m/s", section.IsHud);
-        }
-
-        public override void Reset()
-        {
-           // Surface.ImpactProcessor.Reset();
-        }
-
-        public override void Update()
-        {
-            Surface.ImpactProcessor.RequestUpdate();
+        public override void Draw(Unity.Flight.ISectionModule section) {
+                CelestialBody b = FlightGlobals.ActiveVessel.mainBody;
+                double h = b.minOrbitalDistance - FlightGlobals.ActiveVessel.mainBody.Radius;
+                this.DrawLine(h.ToDistance(), section.IsHud);
         }
 
         #endregion

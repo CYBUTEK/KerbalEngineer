@@ -210,19 +210,23 @@ namespace KerbalEngineer.Flight.Sections {
                 this.ParentSection.IsHudBackground = GUILayout.Toggle(this.ParentSection.IsHudBackground, "BG", this.readoutButtonStyle, GUILayout.Width(50.0f));
             }
 
-            if (this.ParentSection.IsCustom) {
-                if (isShowingInControlBar && string.IsNullOrEmpty(this.ParentSection.Abbreviation)) {
-                    DisplayStack.Instance.RequestResize();
-                }
-
-                if (GUILayout.Button("DELETE SECTION", this.readoutButtonStyle, GUILayout.Width(150.0f))) {
-                    this.ParentSection.IsFloating = false;
-                    this.ParentSection.IsEditorVisible = false;
-                    this.ParentSection.IsDeleted = true;
-                    SectionLibrary.CustomSections.Remove(this.ParentSection);
-                    DisplayStack.Instance.RequestResize();
-                }
+            if (isShowingInControlBar && string.IsNullOrEmpty(this.ParentSection.Abbreviation)) {
+                DisplayStack.Instance.RequestResize();
             }
+
+            if (GUILayout.Button("DELETE SECTION", this.readoutButtonStyle, GUILayout.Width(150.0f))) {
+                this.ParentSection.IsFloating = false;
+                this.ParentSection.IsEditorVisible = false;
+                this.ParentSection.IsDeleted = true;
+
+                if (SectionLibrary.StockSections.Contains(this.ParentSection))
+                    SectionLibrary.StockSections.Remove(this.ParentSection);
+                if (SectionLibrary.CustomSections.Contains(this.ParentSection))
+                    SectionLibrary.CustomSections.Remove(this.ParentSection);
+
+                DisplayStack.Instance.RequestResize();
+            }
+
             GUILayout.EndHorizontal();
         }
 

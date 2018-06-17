@@ -23,20 +23,21 @@ using System;
 
 using KerbalEngineer.Extensions;
 using KerbalEngineer.Flight.Sections;
+using KerbalEngineer.Helpers;
 
 #endregion
 
 namespace KerbalEngineer.Flight.Readouts.Vessel
 {
-    public class SuicideBurnDeltaV : ReadoutModule
+    public class SuicideBurnCountdown : ReadoutModule
     {
         #region Constructors
 
-        public SuicideBurnDeltaV()
+        public SuicideBurnCountdown()
         {
-            this.Name = "Suicide Burn dV";
+            this.Name = "Suicide Burn Countdown";
             this.Category = ReadoutCategory.GetCategory("Vessel");
-            this.HelpString = "Shows the DeltaV of a suicide burn.";
+            this.HelpString = "Time until suicide burn should start.";
             this.IsDefault = false;
         }
 
@@ -50,12 +51,12 @@ namespace KerbalEngineer.Flight.Readouts.Vessel
                 return;
             }
 
-            this.DrawLine(Surface.ImpactProcessor.SuicideDeltaV.ToString("N1") + "m/s", section.IsHud);
+            this.DrawLine(TimeFormatter.ConvertToString(Surface.ImpactProcessor.SuicideCountdown), section.IsHud);
         }
 
         public override void Reset()
         {
-           // Surface.ImpactProcessor.Reset();
+           
         }
 
         public override void Update()

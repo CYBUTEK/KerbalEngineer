@@ -104,9 +104,29 @@ namespace KerbalEngineer.Flight.Sections {
             body.ApplyPreset(Presets.PresetLibrary.GetPreset(body.Abbreviation));
             StockSections.Add(body);
 
+            var burn = new SectionModule {
+                Name = "MANEUVER",
+                Abbreviation = "BURN",
+                ReadoutModules = ReadoutLibrary.GetCategory(ReadoutCategory.GetCategory("Orbital")).Where(r => r.Name.StartsWith("Node")).ToList()
+            };
+
+            burn.ApplyPreset(Presets.PresetLibrary.GetPreset(burn.Abbreviation));
+            StockSections.Add(burn);
+
+
+            var land = new SectionModule {
+                Name = "LANDING",
+                Abbreviation = "LAND",
+                ReadoutModules = ReadoutLibrary.GetCategory(ReadoutCategory.GetCategory("Surface")).Where(r => r.Name.StartsWith("Impact")).ToList()
+            };
+            land.ReadoutModules.AddRange(ReadoutLibrary.GetCategory(ReadoutCategory.GetCategory("Vessel")).Where(r => r.Name.StartsWith("Suicide")).ToList());
+            land.ApplyPreset(Presets.PresetLibrary.GetPreset(land.Abbreviation));
+            StockSections.Add(land);
+
+
             SectionModule hud1 = new SectionModule {
                 Name = "HUD 1",
-                Abbreviation = "HUD 1",
+                Abbreviation = "",
                 IsVisible = true,
                 ReadoutModules = new List<ReadoutModule>
                 {
@@ -125,7 +145,7 @@ namespace KerbalEngineer.Flight.Sections {
 
             SectionModule hud2 = new SectionModule {
                 Name = "HUD 2",
-                Abbreviation = "HUD 2",
+                Abbreviation = "",
                 IsVisible = true,
                 ReadoutModules = new List<ReadoutModule>
                 {
