@@ -5,7 +5,7 @@ using System.Text;
 using UnityEngine;
 
 namespace KerbalEngineer.Drawing {
-    //This is borrowed from mechjeb solely for debugging purposes.
+    //This is borrowed from mechjeb solely for debugging purposes. (OK I lied)
     class DebugDrawing {
 
         static Material _material;

@@ -92,17 +92,18 @@ namespace KerbalEngineer.Flight.Readouts.Surface {
         public void Update() {
 
             if (FlightEngineerCore.gamePaused)
-                    return;
+                return;
 
             Vector3d futurepos = new Vector3d();
             var body = FlightGlobals.ActiveVessel.mainBody;
             var vessel = FlightGlobals.ActiveVessel;
-            
+
             double terrainAltitude = 0;
             bool impactHappening = false;
             double impactLatitude = 0;
             double impactLongitude = 0;
             double impactTime = 0;
+            double impacttheta = 0;
 
             SuicideAltitude = 0;
             SuicideCountdown = 0;
@@ -118,7 +119,7 @@ namespace KerbalEngineer.Flight.Readouts.Surface {
 
             if (vessel.orbit.PeA >= body.minOrbitalDistance) {
                 //periapsis must be lower min dist;
-              if(debugImpact)  Debug.Log("no impact: periapse > min alt " + vessel.orbit.PeA + body.minOrbitalDistance);
+                if (debugImpact) Debug.Log("no impact: periapse > min alt " + vessel.orbit.PeA + body.minOrbitalDistance);
                 return;
             }
 
@@ -143,7 +144,7 @@ namespace KerbalEngineer.Flight.Readouts.Surface {
 
             var e = vessel.orbit.eccentricity;
             var a = vessel.orbit.semiMajorAxis;
-            var r = body.Radius*0.9999; //avoid floating point errors.
+            var r = body.Radius * 0.9999; //avoid floating point errors.
 
             //get current position direction vector
             var currentpos = vessel.orbit.getRelativePositionFromTrueAnomaly(vessel.orbit.trueAnomaly); // this.RadiusDirection(vessel.orbit.trueAnomaly * Units.RAD_TO_DEG);
@@ -187,20 +188,18 @@ namespace KerbalEngineer.Flight.Readouts.Surface {
             //    endangle = startangle + 360; 
             //}
 
-            double interval = Math.Abs(endangle - startangle) / 20;
+            double interval = Math.Abs(endangle - startangle) / 36;
             int it = 0;
             int itf = 0;
-            var st = new System.Diagnostics.Stopwatch();
-            st.Start();
 
-
-            if(debugImpact) Debug.Log("Impact pre " + side + " " + startangle + ">" + endangle + " " + interval + " " + terrainAltitude);
+            if (debugImpact) Debug.Log("Impact pre " + side + " " + startangle + ">" + endangle + " " + interval + " " + terrainAltitude);
             bool ok = false;
+
             do {
                 ok = false;
                 it += 1;
                 //-164 + 1.8*-1 ; -165 > -147
-                for (double impacttheta = startangle + interval * side; side == 1 ? impacttheta <= endangle : impacttheta >= endangle; impacttheta += interval * side) {
+                for (impacttheta = startangle + interval * side; side == 1 ? impacttheta <= endangle : impacttheta >= endangle; impacttheta += interval * side) {
                     itf += 1;
                     double tARads = Math.PI * impacttheta / 180;
                     futurepos = vessel.orbit.getRelativePositionFromTrueAnomaly(tARads); //this.RadiusDirection(impacttheta);
@@ -236,7 +235,7 @@ namespace KerbalEngineer.Flight.Readouts.Surface {
 
                     double delta = shipalt - terrainAltitude;
 
-                    if(debugImpact)  Debug.Log("Impact iteration " + currentpos + " " + futurepos + " " + side + " " + startangle + ">" + endangle + " " + impacttheta + " " + interval + " " + shipalt + " " + terrainAltitude + " " + delta);
+                    if (debugImpact) Debug.Log("Impact iteration " + currentpos + " " + futurepos + " " + side + " " + startangle + ">" + endangle + " " + impacttheta + " " + interval + " " + shipalt + " " + terrainAltitude + " " + delta);
 
                     if ((side * delta < 0)) {
                         impactHappening = true;
@@ -245,11 +244,11 @@ namespace KerbalEngineer.Flight.Readouts.Surface {
                         endangle = impacttheta + side * interval;
                         interval = Math.Abs(endangle - startangle) / 20.0;
                         endangle += interval * side;
-                        if(debugImpact)        Debug.Log("Impact Switch! " + startangle + " > " + endangle + " " + interval);
+                        if (debugImpact) Debug.Log("Impact Switch! " + startangle + " > " + endangle + " " + interval);
                         ok = true;
                         break;
                     } else if (delta == 0) { //i guess it could happen.
-                        if(debugImpact)      Debug.Log("Impact Zero! " + startangle + " > " + endangle + " " + interval);
+                        if (debugImpact) Debug.Log("Impact Zero! " + startangle + " > " + endangle + " " + interval);
                         impactHappening = true;
                         interval = 0;
                         ok = true;
@@ -263,59 +262,10 @@ namespace KerbalEngineer.Flight.Readouts.Surface {
                     break;
                 }
 
-            } while (interval > 0.0001 && impactHappening && it < 20);
+            } while (interval > 0.00001 && impactHappening && it < 36);
 
-            if (debugImpact) Debug.Log("Impact calc! iterations " + impactHappening + " " + it + " " + itf + " duration " + st.ElapsedMilliseconds);
+            if (debugImpact) Debug.Log("Impact calc! iterations " + impactHappening + " " + it + " " + itf );
 
-            st.Stop();
-
-            //jrbudda: this was all very clever, but falls apart in too many situations.
-
-            //experimentally determined; even for very flat trajectories, the errors go into the sub-millimeter area after 5 iterations or so
-            // const int impactiterations = 6;
-
-            ////do a few iterations of impact site calculations
-            //for (var i = 0; i < impactiterations; i++) {
-
-            //    double impacttheta = 0;
-            //    if (e > 0) {
-            //        //in this step, we are using the calculated impact altitude of the last step, to refine the impact site position
-            //        double costheta = (vessel.orbit.PeR * (1 + e) / (body.Radius + impactAltitude) - 1) / e;
-            //        if (costheta < -1d)
-            //            costheta = -1d;
-            //        else if (costheta > 1d)
-            //            costheta = 1d;
-            //        impacttheta = -180 * Math.Acos(costheta) / Math.PI;
-            //    }
-
-            //    //calculate time to impact
-            //    impactTime = vessel.orbit.timeToPe - this.TimeToPeriapsis(impacttheta);
-            //    //calculate position vector of impact site
-            //    impactpos = this.RadiusDirection(impacttheta);
-            //    //calculate longitude of impact site in inertial reference frame
-            //    var impactirflong = 180 * Math.Atan2(impactpos.x, impactpos.y) / Math.PI;
-            //    var deltairflong = impactirflong - currentirflong;
-            //    //get body rotation until impact
-            //    var bodyrot = 360 * impactTime / body.rotationPeriod;
-            //    //get current longitude in body coordinates
-            //    var currentlong = vessel.longitude;
-            //    //finally, calculate the impact longitude in body coordinates
-            //    impactLongitude = this.NormAngle(currentlong - deltairflong - bodyrot);
-            //    //calculate impact latitude from impact position
-            //    impactLatitude = 180 * Math.Asin(impactpos.z / impactpos.magnitude) / Math.PI;
-            //    //calculate the actual altitude of the impact site
-            //    //altitude for long/lat code stolen from some ISA MapSat forum post; who knows why this works, but it seems to.
-            //    var rad = QuaternionD.AngleAxis(impactLongitude, Vector3d.down) * QuaternionD.AngleAxis(impactLatitude, Vector3d.forward) * Vector3d.right;
-            //    impactAltitude = body.pqsController.GetSurfaceHeight(rad) - body.pqsController.radius;
-            //    if ((impactAltitude < 0) && body.ocean) {
-            //        impactAltitude = 0;
-            //    }
-
-            //    Debug.Log("impact: " + impactAltitude);
-
-            //}
-
-            // Set accessable properties.
             if (impactHappening) {
                 ShowDetails = true;
                 Time = impactTime;
@@ -323,10 +273,14 @@ namespace KerbalEngineer.Flight.Readouts.Surface {
                 Latitude = impactLatitude;
                 Altitude = terrainAltitude;
 
-                double m_Gravity = body.gravParameter / Math.Pow(body.Radius, 2.0);
-                double m_Acceleration = Vessel.SimulationProcessor.LastStage.totalMass > 0 ? Vessel.SimulationProcessor.LastStage.thrust / Vessel.SimulationProcessor.LastStage.totalMass :0;
+                try {
+                    Biome = ScienceUtil.GetExperimentBiome(body, impactLatitude, impactLongitude);
+                } catch (Exception ex) { //this gets spammy with misbehaving mod planets.
+                    Biome = "<failed>";
+                }
 
-                double deltaTime = Time;
+                double m_Gravity = body.gravParameter / Math.Pow(body.Radius + terrainAltitude, 2.0);
+                double m_Acceleration = Vessel.SimulationProcessor.LastStage.totalMass > 0 ? Vessel.SimulationProcessor.LastStage.thrust / Vessel.SimulationProcessor.LastStage.totalMass : 0;
 
                 bool debugBurn = false;
 
@@ -336,57 +290,62 @@ namespace KerbalEngineer.Flight.Readouts.Surface {
                     return;
                 }
 
-                //idk man this is how stock does it.
+                double brakingDist = 0;
+                double burnTime = 0;
+                Vector3d srfb = new Vector3d();
+                double shipalt = 0;
 
-                Vector3d on = vessel.GetObtVelocity();
-                Vector3d obti = vessel.GetOrbit().getOrbitalVelocityAtUT(Planetarium.GetUniversalTime() + deltaTime).xzy;
+                brakingDist = getBrakingDistanceForDT(vessel, 0, body, out shipalt, out burnTime, out srfb, false);
+                //get instant breaking dist as sanity check.
 
-                if (debugBurn) Debug.Log(" obts " + on + " " + obti);
+                int iterations = 0;
 
-                Vector3d rposFromNow = vessel.GetOrbit().getRelativePositionAtUT(Planetarium.GetUniversalTime() + deltaTime).xzy;
-                Vector3d posFromNow = vessel.GetOrbit().getPositionAtUT(Planetarium.GetUniversalTime() + deltaTime);
+                if (brakingDist < shipalt) { //only search if it's actually possible to stop.
+                    double tstart = 0;
+                    double tend = Time;
+                    double lastt = 0;
+                    double brakedelta = double.MaxValue;
+                    double btime = 0;
+                    Vector3d srf = new Vector3d();
+                    double bdist = 0;
 
-                if (debugBurn) Debug.Log(" posss " + vessel.GetOrbit().pos.xzy + " " + vessel.CoMD +  " " + rposFromNow + " " + posFromNow );
+                    do { //dat binary search doe. Is there a closed form solution to this? idk. brute force!
+                        iterations++;
+                        double t = tstart + (tend - tstart) / 2;
 
-                if (debugBurn) Debug.Log(" coms " + vessel.CoM + " " + vessel.CoMD);
+                        if (Math.Abs(lastt - t) < 0.05) {
+                            getBrakingDistanceForDT(vessel, lastt, body, out shipalt, out btime, out srf, debugBurn);
+                            break; //that should be quite enough, tyvm.
+                        }
 
-                Vector3d d = body.getRFrmVelOrbit(vessel.GetOrbit());
-                Vector3d refi = Vector3d.Cross(body.angularVelocity, rposFromNow);
+                        lastt = t;
 
-                if (debugBurn) Debug.Log(" reffrm " + d + " " + refi);
+                        bdist = getBrakingDistanceForDT(vessel, t, body, out shipalt, out btime, out srf, false);
 
-                Vector3d c = vessel.GetSrfVelocity();
-                Vector3d srfi = obti - refi;
+                        if (bdist <= shipalt) {
+                            if (shipalt - bdist < brakedelta ) {
+                                brakedelta = shipalt - bdist;
+                                brakingDist = bdist;
+                                burnTime = btime;
+                                srfb = srf;
+                            }
+                            tstart = t; //search forward.
+                            //if (debugBurn) Debug.Log("forward: t " + t + " shipalt " + shipalt + " srf " + srf + " bdist " + bdist);
 
-                if (debugBurn) Debug.Log(" srfs " + c  + " " + c.magnitude + " " + srfi + " " + srfi.sqrMagnitude);
+                        } else {
+                            tend = t; //search backwards.
+                           // if (debugBurn) Debug.Log("backward: t " + t + " shipalt " + shipalt + " srf " + srf + " bdist " + bdist);
+                        }
 
-                var upAxis = FlightGlobals.getUpAxis(body, posFromNow);
 
-                if (debugBurn) Debug.Log(" ups " + FlightGlobals.getUpAxis(body, vessel.CoMD) + " " + upAxis);
-
-                double ivertDeltaV = Math.Abs(Vector3d.Dot(obti, upAxis));
-                double ihDeltaV = Math.Sqrt(srfi.sqrMagnitude - ivertDeltaV * ivertDeltaV);
-
-                double loss = ivertDeltaV == 0 ? 0 : Math.Cos(Math.Atan(ihDeltaV / ivertDeltaV)); //assume ship is always surface retrograde
-
-                double vaccel = m_Acceleration * loss - m_Gravity;
-
-                if(vaccel <= 0) { //cant stop at this angle.
-                    if (debugBurn) Debug.Log("vaccel less than 0 " + vaccel);
-                    return;
+                    } while (true);
+                } else {
+                    if (debugBurn) Debug.Log("Can't stop, won't stop. srf:" + srfb + " " + shipalt);
                 }
 
-                double haccel = m_Acceleration * (1 - loss);
-                double netaccel = Math.Sqrt(vaccel * vaccel + haccel * haccel);
+                if (debugBurn) Debug.Log("breaking dist " + brakingDist + " " + iterations);
 
-                double burnTime = srfi.magnitude / netaccel;
-                double gLosses = m_Gravity;
-
-                double brakingDist = ivertDeltaV * burnTime - (0.5) * (vaccel) * burnTime * burnTime;
-
-                if(debugBurn) Debug.Log("breaking dist " + brakingDist);
-
-                SuicideDeltaV = srfi.magnitude;
+                SuicideDeltaV = srfb.magnitude;
                 SuicideAltitude = terrainAltitude + brakingDist;
                 SuicideLength = burnTime;
 
@@ -400,7 +359,7 @@ namespace KerbalEngineer.Flight.Readouts.Surface {
 
                 double burntA = -Math.Acos(costheta);
 
-                if (debugBurn) Debug.Log("burnpos " +costheta + " " +  vessel.orbit.pos + " " + vessel.orbit.getRelativePositionFromTrueAnomaly(burntA));
+                if (debugBurn) Debug.Log("burnpos " + costheta + " " + vessel.orbit.pos + " " + vessel.orbit.getRelativePositionFromTrueAnomaly(burntA));
 
                 SuicideCountdown = vessel.orbit.GetDTforTrueAnomaly(burntA, double.MaxValue);
 
@@ -409,10 +368,11 @@ namespace KerbalEngineer.Flight.Readouts.Surface {
 
                 //this next bit is suprisingly tricky. Orbital arc distance given 2 true anomalies.
                 //from http://mathforum.org/kb/servlet/JiveServlet/download/130-2391290-7852023-766514/PERIMETER%20OF%20THE%20ELLIPTICAL%20ARC%20A%20GEOMETRIC%20METHOD.pdf
+                //this only works right if you're after apoapsis (same quadrant), but you should be using countdown anyway.
                 double Eburn = vessel.orbit.GetEccentricAnomaly(burntA); //should always be a smallish negative number.
                 double EShip = vessel.orbit.GetEccentricAnomaly(vessel.orbit.trueAnomaly); //why is orbit.E 0 ????
                 if (EShip > 0)
-                    EShip = -2*Math.PI + EShip;
+                    EShip = -2 * Math.PI + EShip;
                 double chord = (vessel.orbit.pos - vessel.orbit.getRelativePositionFromTrueAnomaly(burntA)).magnitude;
                 double dTheta = Eburn - EShip;
                 double Rc = Math.Abs(chord / 2 / Math.Sin(dTheta / 2));
@@ -420,13 +380,7 @@ namespace KerbalEngineer.Flight.Readouts.Surface {
 
                 if (debugBurn) Debug.Log("dist debug eburn " + Eburn + " eship " + EShip + " ch " + chord + " dt " + dTheta + " rc " + Rc);
 
-                if (debugBurn) Debug.Log("pre obt " + obti + " srf " + srfi + " upaxis " + upAxis + " glosses " + gLosses + " vertdeltav " + ivertDeltaV + " hdeltav " + ihDeltaV + " loss " + loss  );
 
-                try {
-                    Biome = ScienceUtil.GetExperimentBiome(body, impactLatitude, impactLongitude);
-                } catch (Exception ex) { //this gets spammy with misbehaving mod planets.
-                    Biome = "<failed>";
-                }
             } else {
                 ShowDetails = false;
             }
@@ -439,13 +393,50 @@ namespace KerbalEngineer.Flight.Readouts.Surface {
         public static double SuicideLength { get; private set; }
         public static double SuicideCountdown { get; private set; }
 
+
+        private double getBrakingDistanceForDT(global::Vessel vessel, double t, CelestialBody body, out double shipalt, out double burntime, out Vector3d srf, bool debug) {
+            Vector3d posFromNow = vessel.GetOrbit().getRelativePositionAtUT(Planetarium.GetUniversalTime() +  t);
+            double shipradius = posFromNow.magnitude;
+            shipalt = shipradius - body.Radius;
+
+            //hmm. use instant or surface gravity? instant will underestimate brake dist. Surface will overestimate.
+            double m_Gravity = body.gravParameter / Math.Pow(shipradius - shipalt / 2, 2.0);
+            //use the average!
+
+            srf = GetSrfAtDT(vessel, t, body);
+            var upAxis = posFromNow.normalized.xzy;
+            double ivertDeltaV = -Vector3d.Dot(srf, upAxis);
+
+            if (ivertDeltaV <= 0) {
+                if (debug) {
+                    Debug.Log("calc brake: going up (land) " + srf + " " + upAxis + " " + posFromNow + " " + ivertDeltaV);
+                }
+                burntime = 0;
+                return 0;
+            }
+
+            double ihDeltaV = Math.Sqrt(srf.sqrMagnitude - ivertDeltaV * ivertDeltaV);
+            double loss = ivertDeltaV == 0 ? 0 : Math.Cos(Math.Atan(ihDeltaV / ivertDeltaV)); //assume ship is always surface retrograde
+            double accel = Vessel.SimulationProcessor.LastStage.totalMass > 0 ? Vessel.SimulationProcessor.LastStage.thrust / Vessel.SimulationProcessor.LastStage.totalMass : 0;
+            double vaccel = accel * loss - m_Gravity;
+            double haccel = accel * (1 - loss);
+            double netaccel = Math.Sqrt(vaccel * vaccel + haccel * haccel);
+            burntime = srf.magnitude / netaccel;
+            double vburnTime = ivertDeltaV / vaccel;
+            double bdist = ivertDeltaV * vburnTime - (0.5) * (vaccel) * vburnTime * vburnTime;
+            if (debug) Debug.Log("calc brake " + " g " + m_Gravity + " a " + accel + " loss " + loss + " vi " +ivertDeltaV + " hi " + ihDeltaV + " b " + burntime + " vb " + vburnTime );
+            return bdist;
+        }
+
+
         #endregion
+
 
         public static bool ShowMarker = true;
 
         public static void drawImpact(Color color) {
             if (ShowDetails && ShowMarker)
-                Drawing.DebugDrawing.DrawGroundMarker(FlightGlobals.ActiveVessel.mainBody, Latitude, Longitude, color, MapView.MapIsEnabled, 0,0);
+                Drawing.DebugDrawing.DrawGroundMarker(FlightGlobals.ActiveVessel.mainBody, Latitude, Longitude, color, MapView.MapIsEnabled, 0, 0);
         }
 
         #region IUpdateRequest Members
@@ -474,6 +465,13 @@ namespace KerbalEngineer.Flight.Readouts.Surface {
         #endregion
 
         #region Methods: private
+
+        private Vector3d GetSrfAtDT(global::Vessel vessel, double deltaTime, CelestialBody body) {
+            Vector3d obti = vessel.GetOrbit().getOrbitalVelocityAtUT(Planetarium.GetUniversalTime() + deltaTime).xzy;
+            Vector3d rposFromNow = vessel.GetOrbit().getRelativePositionAtUT(Planetarium.GetUniversalTime() + deltaTime).xzy;
+            Vector3d refi = Vector3d.Cross(body.angularVelocity, rposFromNow);
+            return obti - refi;
+        }
 
         private double NormAngle(double ang) {
             if (ang > 180) {

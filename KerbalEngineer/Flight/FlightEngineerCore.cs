@@ -301,7 +301,7 @@ void OnRenderObject() {
                 Readouts.Surface.ImpactProcessor.drawImpact(Color.red);
             if (Camera.current.name.Contains("01"))
                 Readouts.Surface.ImpactProcessor.drawImpact(Color.red);
-            if (MapView.MapIsEnabled && Camera.current.name.Contains("UIMain"))
+            if (MapView.MapIsEnabled && Camera.current.name.Contains("UIVec"))
                 Readouts.Surface.ImpactProcessor.drawImpact(Color.red);
 
         }
