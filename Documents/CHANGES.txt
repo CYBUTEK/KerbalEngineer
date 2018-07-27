@@ -1,3 +1,10 @@
+1.1.5.3, 2018-7-27, KSP 1.4.5 #2243
+ - Total overhaul of impact and suicide burn calculations.
+ - Added impact marker to map and flight view. Toggleable via the Impact Marker readout button.
+ - Add suicide burn countdown and burn length readouts.
+ - Add minimum safe orbtial altitude readout.
+ - Change a number of default sections and readouts. Will only apply to a clean install.
+
 1.1.5.2, 2018-6-5, KSP 1.4.3 #2152
  - Load presets on new install instead of hard-coded defaults. Allows separators. But not colors. You do your own colors.
  - Add presets for hud 1 and hud 2. Change some default readouts.

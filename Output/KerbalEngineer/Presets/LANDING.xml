@@ -18,7 +18,6 @@
         <string>Vessel.SuicideBurnAltitude</string>
         <string>Vessel.SuicideBurnDeltaV</string>
         <string>Vessel.SuicideBurnLength</string>
-        <string>Vessel.SuicideBurnDistance</string>
         <string>Vessel.SuicideBurnCountdown</string>
       </ReadoutNames>
     </Value>

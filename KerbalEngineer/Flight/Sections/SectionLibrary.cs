@@ -126,8 +126,9 @@ namespace KerbalEngineer.Flight.Sections {
 
             SectionModule hud1 = new SectionModule {
                 Name = "HUD 1",
-                Abbreviation = "",
+                Abbreviation = "HUD 1",
                 IsVisible = true,
+                showButton = false,
                 ReadoutModules = new List<ReadoutModule>
                 {
                     ReadoutLibrary.GetReadout("ApoapsisHeight"),
@@ -145,8 +146,9 @@ namespace KerbalEngineer.Flight.Sections {
 
             SectionModule hud2 = new SectionModule {
                 Name = "HUD 2",
-                Abbreviation = "",
+                Abbreviation = "HUD 2",
                 IsVisible = true,
+                showButton = false,
                 ReadoutModules = new List<ReadoutModule>
                 {
                     ReadoutLibrary.GetReadout("AltitudeTerrain"),

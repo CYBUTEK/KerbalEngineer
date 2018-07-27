@@ -99,6 +99,8 @@ namespace KerbalEngineer.Flight.Sections {
         /// </summary>
         public bool showFloatButton { get; set; } = true;
 
+        public bool showButton = true;
+
         /// <summary>
         ///     Gets and sets whether the section editor is visible.
         /// </summary>

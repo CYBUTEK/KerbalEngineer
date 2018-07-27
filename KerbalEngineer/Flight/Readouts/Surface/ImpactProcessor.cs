@@ -314,7 +314,7 @@ namespace KerbalEngineer.Flight.Readouts.Surface {
                         double t = tstart + (tend - tstart) / 2;
 
                         if (Math.Abs(lastt - t) < 0.05) {
-                            getBrakingDistanceForDT(vessel, lastt, body, out shipalt, out btime, out srf, debugBurn);
+                            if (debugBurn) getBrakingDistanceForDT(vessel, lastt, body, out shipalt, out btime, out srf, true);
                             break; //that should be quite enough, tyvm.
                         }
 
@@ -330,11 +330,11 @@ namespace KerbalEngineer.Flight.Readouts.Surface {
                                 srfb = srf;
                             }
                             tstart = t; //search forward.
-                            //if (debugBurn) Debug.Log("forward: t " + t + " shipalt " + shipalt + " srf " + srf + " bdist " + bdist);
+                            if (debugBurn) Debug.Log("forward: t " + t + " shipalt " + shipalt + " srf " + srf + " bdist " + bdist);
 
                         } else {
                             tend = t; //search backwards.
-                           // if (debugBurn) Debug.Log("backward: t " + t + " shipalt " + shipalt + " srf " + srf + " bdist " + bdist);
+                           if (debugBurn) Debug.Log("backward: t " + t + " shipalt " + shipalt + " srf " + srf + " bdist " + bdist);
                         }
 
 

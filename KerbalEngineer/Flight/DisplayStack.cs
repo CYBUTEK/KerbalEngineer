@@ -233,7 +233,7 @@ namespace KerbalEngineer.Flight
         private void DrawControlBarButtons(IEnumerable<SectionModule> sections)
         {
             var index = 0;
-            foreach (var section in sections.Where(s => !string.IsNullOrEmpty(s.Abbreviation)))
+            foreach (var section in sections.Where(s => s.showButton))
             {
                 if (index % 4 == 0)
                 {
