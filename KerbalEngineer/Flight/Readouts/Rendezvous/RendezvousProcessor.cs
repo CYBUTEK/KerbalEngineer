@@ -263,7 +263,6 @@ namespace KerbalEngineer.Flight.Readouts.Rendezvous {
                     vessel = TrackingStationSource.GetVessel();
                 else
                     TrackingStationSource = target;
-
             }
 
             activeTarget = target;
@@ -312,8 +311,7 @@ namespace KerbalEngineer.Flight.Readouts.Rendezvous {
                 targetOrbit = actualTargetOrbit;
                 originOrbit = null;
             }
-
-
+            
             { //These are not 'rendezvous' calculations, just raw data about the target object.
                 AltitudeSeaLevel = targetOrbit.altitude;
                 ApoapsisHeight = targetOrbit.ApA;

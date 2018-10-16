@@ -435,7 +435,7 @@ namespace KerbalEngineer.Flight.Readouts.Surface {
         public static bool ShowMarker = true;
 
         public static void drawImpact(Color color) {
-            if (ShowDetails && ShowMarker)
+            if (ShowDetails && ShowMarker && FlightGlobals.fetch !=null && FlightGlobals.ActiveVessel != null && FlightGlobals.ActiveVessel.mainBody != null )
                 Drawing.DebugDrawing.DrawGroundMarker(FlightGlobals.ActiveVessel.mainBody, Latitude, Longitude, color, MapView.MapIsEnabled, 0, 0);
         }
 

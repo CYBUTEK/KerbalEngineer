@@ -573,6 +573,22 @@ namespace KerbalEngineer.Editor
             }
             GUILayout.EndHorizontal();
 
+            GUILayout.BeginHorizontal();
+            GUILayout.Label("VAB Overlay X Pos.: " + BuildOverlay.BuildOverlayVessel.WindowX, settingStyle);
+            if (GUILayout.Button("<<", buttonStyle, GUILayout.Width(50 * GuiDisplaySize.Offset))) {
+                BuildOverlay.BuildOverlayVessel.WindowX-=10;
+            }
+            if (GUILayout.Button("<", buttonStyle, GUILayout.Width(50 * GuiDisplaySize.Offset))) {
+                BuildOverlay.BuildOverlayVessel.WindowX--;
+            }
+            if (GUILayout.Button(">", buttonStyle, GUILayout.Width(50 * GuiDisplaySize.Offset))) {
+                BuildOverlay.BuildOverlayVessel.WindowX++;
+            }
+            if (GUILayout.Button(">>", buttonStyle, GUILayout.Width(50 * GuiDisplaySize.Offset))) {
+                BuildOverlay.BuildOverlayVessel.WindowX+=10;
+            }
+            GUILayout.EndHorizontal();
+
             GUILayout.Label("Minimum delay between simulations: " + SimManager.minSimTime.TotalMilliseconds + "ms", settingStyle);
             GUI.skin = HighLogic.Skin;
             SimManager.minSimTime = TimeSpan.FromMilliseconds(GUILayout.HorizontalSlider((float)SimManager.minSimTime.TotalMilliseconds, 0, 2000.0f));

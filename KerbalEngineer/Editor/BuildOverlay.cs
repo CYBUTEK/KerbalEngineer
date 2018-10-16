@@ -81,13 +81,13 @@ namespace KerbalEngineer.Editor
         {
             get
             {
-                return nameStyle ?? (nameStyle = new GUIStyle
+                return (nameStyle !=null && !hasChanged) ? nameStyle : (nameStyle = new GUIStyle
                 {
                     normal =
                     {
                         textColor = Color.white
                     },
-                    fontSize = 11,
+                    fontSize = (int)(11 * GuiDisplaySize.Offset),
                     fontStyle = FontStyle.Bold,
                     alignment = TextAnchor.UpperLeft,
                     stretchWidth = true
@@ -105,7 +105,7 @@ namespace KerbalEngineer.Editor
         {
             get
             {
-                return tabStyle ?? (tabStyle = new GUIStyle
+                return (tabStyle !=null & !hasChanged) ? tabStyle : (tabStyle = new GUIStyle
                 {
                     normal =
                     {
@@ -128,7 +128,7 @@ namespace KerbalEngineer.Editor
                         textColor = Color.yellow
                     },
                     padding = new RectOffset(20, 20, 0, 0),
-                    fontSize = 11,
+                    fontSize = (int)(11 * GuiDisplaySize.Offset),
                     fontStyle = FontStyle.Bold,
                     alignment = TextAnchor.MiddleCenter,
                     fixedHeight = 15.0f,
@@ -141,30 +141,36 @@ namespace KerbalEngineer.Editor
         {
             get
             {
-                return titleStyle ?? (titleStyle = new GUIStyle
+                return (titleStyle != null && !hasChanged ) ? titleStyle : (titleStyle = new GUIStyle
                 {
                     normal =
                     {
                         textColor = Color.yellow
                     },
-                    fontSize = 11,
+                    fontSize = (int)(11 * GuiDisplaySize.Offset),
                     fontStyle = FontStyle.Bold,
                     stretchWidth = true
                 });
             }
         }
 
+        private static bool hasChanged;
+
+        protected void OnGUI() {
+           // hasChanged = false;
+        }
+
         public static GUIStyle ValueStyle
         {
             get
             {
-                return valueStyle ?? (valueStyle = new GUIStyle
+                return (valueStyle !=null && !hasChanged) ? valueStyle : (valueStyle = new GUIStyle
                 {
                     normal =
                     {
                         textColor = Color.white
                     },
-                    fontSize = 11,
+                    fontSize = (int)(11 * GuiDisplaySize.Offset),
                     fontStyle = FontStyle.Normal,
                     alignment = TextAnchor.UpperRight,
                     stretchWidth = true
@@ -235,11 +241,16 @@ namespace KerbalEngineer.Editor
                 buildOverlayVessel = this.gameObject.AddComponent<BuildOverlayVessel>();
                 buildOverlayResources = this.gameObject.AddComponent<BuildOverlayResources>();
                 Load();
+                GuiDisplaySize.OnSizeChanged += OnSizeChanged;
             }
             catch (Exception ex)
             {
                 MyLogger.Exception(ex);
             }
+        }
+
+        private void OnSizeChanged() {
+            hasChanged = true;
         }
 
         protected void OnDestroy()
@@ -259,6 +270,7 @@ namespace KerbalEngineer.Editor
                 {
                     Destroy(buildOverlayResources);
                 }
+                GuiDisplaySize.OnSizeChanged -= OnSizeChanged;
             }
             catch (Exception ex)
             {
