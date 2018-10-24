@@ -44,6 +44,8 @@ namespace KerbalEngineer.VesselSimulator {
         public bool hasModuleEngines;
         public bool hasMultiModeEngine;
 
+        List<Part> chain = new List<Part>(); //prolly dont need a list, just the previous part but whatever.
+
         public bool hasVessel;
         public String initialVesselName;
         public int inverseStage;
@@ -121,7 +123,7 @@ namespace KerbalEngineer.VesselSimulator {
             partSim.decoupledInStage = partSim.DecoupledInStage(p);
             partSim.isFuelLine = p.HasModule<CModuleFuelLine>();
             partSim.isRCS = p.HasModule<ModuleRCS>() || p.HasModule<ModuleRCSFX>(); //I don't think it checks inheritance.
-            partSim.isSepratron = partSim.IsSepratron();
+            partSim.isSepratron = p.IsSepratron();
             partSim.inverseStage = p.inverseStage;
             if (log != null) log.AppendLine("inverseStage = ", partSim.inverseStage);
             partSim.resPriorityOffset = p.resourcePriorityOffset;
@@ -863,7 +865,7 @@ namespace KerbalEngineer.VesselSimulator {
             if (original.parent == null)
                 return stage; //root part is always present. Fixes phantom stage if root is stageable.
 
-            List<Part> chain = new List<Part>(); //prolly dont need a list, just the previous part but whatever.
+            chain.Clear();
 
             while (thePart != null) {
 
@@ -881,7 +883,7 @@ namespace KerbalEngineer.VesselSimulator {
                             stage = thePart.inverseStage;
                         else {
                             if (att != null) {
-                                if ((thePart.parent != null && att.attachedPart == thePart.parent) || chain.Contains(att.attachedPart))
+                                if ((thePart.parent != null && att.attachedPart == thePart.parent) || att.attachedPart.ContainedPart(chain))
                                     stage = thePart.inverseStage;
                             } else stage = thePart.inverseStage;
                         }
@@ -891,7 +893,7 @@ namespace KerbalEngineer.VesselSimulator {
                     {
                         AttachNode att = thePart.FindAttachNode(manch.explosiveNodeID); // these stupid fuckers don't initialize in the Editor scene.
                         if (att != null) {
-                            if ((thePart.parent != null && att.attachedPart == thePart.parent) || chain.Contains(att.attachedPart))
+                            if ((thePart.parent != null && att.attachedPart == thePart.parent) || att.attachedPart.ContainedPart(chain))
                                 stage = thePart.inverseStage;
                         } else stage = thePart.inverseStage; //radial decouplers it seems the attach node ('surface') comes back null.
                     }
@@ -907,6 +909,8 @@ namespace KerbalEngineer.VesselSimulator {
 
                 thePart = thePart.parent;
             }
+
+            chain.Clear();
 
             return stage;
         }
