@@ -909,9 +909,7 @@ namespace KerbalEngineer.VesselSimulator {
 
                 thePart = thePart.parent;
             }
-
-            chain.Clear();
-
+            
             return stage;
         }
 
