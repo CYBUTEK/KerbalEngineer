@@ -1,3 +1,6 @@
+1.1.5.5, 2018-12-20, KSP 1.6.0 #2395
+ - Version bump for 1.6.0
+
 1.1.5.4, 2018-10-15, KSP 1.5.0 #2332
  - Version bump for 1.5.0
  - VAB bottom overlay respects KER Gui Size setting
