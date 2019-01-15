@@ -469,14 +469,13 @@ namespace KerbalEngineer.Flight.Readouts.Rendezvous {
                             UtilMath.SwapValues(ref num5, ref num6);
                             UtilMath.SwapValues(ref eVs, ref eVs2);
                         }
-
                     }
 
-                    if (tOne > originOrbit.StartUT) {
+                   if (tOne > originOrbit.StartUT) {
                         TimeTilEncounter = tOne - originOrbit.StartUT;
                         SeparationAtEncounter = (originOrbit.getPositionAtUT(tOne) - targetOrbit.getPositionAtUT(tOne)).magnitude;
                         SpeedAtEncounter = Math.Abs(originOrbit.getOrbitalSpeedAt(tOne) - targetOrbit.getOrbitalSpeedAt(tOne));
-                    }
+                   }
 
                 }
             }

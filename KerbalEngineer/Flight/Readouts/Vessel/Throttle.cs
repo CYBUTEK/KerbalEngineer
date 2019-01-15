@@ -19,22 +19,22 @@
 
 #region Using Directives
 
-using KerbalEngineer.Extensions;
 using KerbalEngineer.Flight.Sections;
+using KerbalEngineer.Helpers;
 
 #endregion
 
-namespace KerbalEngineer.Flight.Readouts.Rendezvous
+namespace KerbalEngineer.Flight.Readouts.Vessel
 {
-    public class SpeedAtClosestApproach : ReadoutModule
+    public class Throttle : ReadoutModule
     {
         #region Constructors
 
-        public SpeedAtClosestApproach()
+        public Throttle()
         {
-            this.Name = "Rel. Speed at Approach";
-            this.Category = ReadoutCategory.GetCategory("Rendezvous");
-            this.HelpString = "Shows the difference in orbital speed between your vessel and the target object at the next closest approach.";
+            this.Name = "Throttle";
+            this.Category = ReadoutCategory.GetCategory("Vessel");
+            this.HelpString = "Shows the current requested throttle %. ";
             this.IsDefault = false;
         }
 
@@ -44,23 +44,19 @@ namespace KerbalEngineer.Flight.Readouts.Rendezvous
 
         public override void Draw(Unity.Flight.ISectionModule section)
         {
-            if (RendezvousProcessor.ShowDetails)
+            if (SimulationProcessor.ShowDetails)
             {
-                if (double.IsNaN(RendezvousProcessor.SpeedAtEncounter))
-                    this.DrawLine("N/A", section.IsHud);
-                else
-                    this.DrawLine(RendezvousProcessor.SpeedAtEncounter.ToSpeed(), section.IsHud);
+                this.DrawLine(FlightInputHandler.state.mainThrottle.ToString("0%"), section.IsHud);
             }
         }
 
         public override void Reset()
         {
-            FlightEngineerCore.Instance.AddUpdatable(RendezvousProcessor.Instance);
         }
 
         public override void Update()
         {
-            RendezvousProcessor.RequestUpdate();
+            SimulationProcessor.RequestUpdate();
         }
 
         #endregion

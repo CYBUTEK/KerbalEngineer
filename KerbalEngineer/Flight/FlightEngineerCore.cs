@@ -351,17 +351,17 @@ void OnRenderObject() {
             }
 
             try {
-                SectionLibrary.Update();
-                this.UpdateModules();
 
                 markerDeadman -= 1; //this makes sure the impact marker disappears if the impact marker readout is no longer updating for any reason.
                 if (markerDeadman <= 0) {
                     markerDeadman = 0;
                     Flight.Readouts.Surface.ImpactProcessor.ShowMarker = false;
                 } else {
-                    Flight.Readouts.Surface.ImpactProcessor.ShowMarker = true;
+                    Flight.Readouts.Surface.ImpactProcessor.ShowMarker = IsDisplayable;
                 }
 
+                SectionLibrary.Update();
+                this.UpdateModules();
             } catch (Exception ex) {
                 MyLogger.Exception(ex);
             }

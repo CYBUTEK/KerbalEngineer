@@ -29,7 +29,7 @@ namespace KerbalEngineer.Flight.Readouts.Rendezvous {
         #region Constructors
 
         public SeparationAtClosestApproach() {
-            this.Name = "Separation at Encounter";
+            this.Name = "Separation at Approach";
             this.Category = ReadoutCategory.GetCategory("Rendezvous");
             this.HelpString = "Distance to the target at closest approach.";
             this.IsDefault = false;

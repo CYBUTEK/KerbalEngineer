@@ -32,7 +32,7 @@ namespace KerbalEngineer.Flight.Readouts.Rendezvous
 
         public TimeTilClosestApproach()
         {
-            this.Name = "Time til Encounter";
+            this.Name = "Time til Approach";
             this.Category = ReadoutCategory.GetCategory("Rendezvous");
             this.HelpString = "Time until the next closest approach to the target.";
             this.IsDefault = false;

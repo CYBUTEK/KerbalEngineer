@@ -1,3 +1,8 @@
+1.1.5.7, 2018-1-14, KSP 1.6.1 #2401
+ - Fix Impact Marker showing while on EVA and KER overlay isn't available due to career limitations.
+ - Add readout for throttle % to Vessel readouts.
+ - Merge some pull requests.
+
 1.1.5.6, 2018-1-8, KSP 1.6.0 #2395
  - Fix missing part data causing VAB filters to break.
 
