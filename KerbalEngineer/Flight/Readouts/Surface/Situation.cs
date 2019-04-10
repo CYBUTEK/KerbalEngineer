@@ -77,7 +77,7 @@ namespace KerbalEngineer.Flight.Readouts.Surface
 
         private static string GetBiome()
         {
-            return ScienceUtil.GetExperimentBiome(FlightGlobals.ActiveVessel.mainBody, FlightGlobals.ActiveVessel.latitude, FlightGlobals.ActiveVessel.longitude);
+            return ScienceUtil.GetExperimentBiomeLocalized(FlightGlobals.ActiveVessel.mainBody, FlightGlobals.ActiveVessel.latitude, FlightGlobals.ActiveVessel.longitude);
         }
 
         private static string GetBodyPlural()
