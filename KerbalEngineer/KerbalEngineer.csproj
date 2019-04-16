@@ -15,7 +15,7 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>false</DebugSymbols>
     <DebugType>none</DebugType>
-    <Optimize>false</Optimize>
+    <Optimize>true</Optimize>
     <OutputPath>..\Output\KerbalEngineer\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
@@ -39,6 +39,7 @@
     <Compile Include="Control\IControlPanel.cs" />
     <Compile Include="Control\Panels\BuildOverlayPanel.cs" />
     <Compile Include="Control\Panels\BuildEngineerPanel.cs" />
+    <Compile Include="Drawing\DebugDrawing.cs" />
     <Compile Include="Editor\BuildAdvanced.cs" />
     <Compile Include="Editor\BuildAppLauncher.cs" />
     <Compile Include="Editor\BuildOverlay.cs" />
@@ -59,8 +60,17 @@
     <Compile Include="Flight\Readouts\Body\HasOxygen.cs" />
     <Compile Include="Flight\Readouts\Body\HighAtmosphereHeight.cs" />
     <Compile Include="Flight\Readouts\Body\HighSpaceHeight.cs" />
+    <Compile Include="Flight\Readouts\Body\Gravity.cs" />
+    <Compile Include="Flight\Readouts\Body\MinOrbitHeight.cs" />
+    <Compile Include="Flight\Readouts\Body\Mass.cs" />
+    <Compile Include="Flight\Readouts\Body\BodyRadius.cs" />
+    <Compile Include="Flight\Readouts\Body\OrbitalPeriod.cs" />
+    <Compile Include="Flight\Readouts\Body\EscapeVelocity.cs" />
+    <Compile Include="Flight\Readouts\Body\RotationPeriod.cs" />
+    <Compile Include="Flight\Readouts\Body\GeostationaryHeight.cs" />
     <Compile Include="Flight\Readouts\Body\LowSpaceHeight.cs" />
     <Compile Include="Flight\Readouts\Miscellaneous\LogSimToggle.cs" />
+    <Compile Include="Flight\Readouts\Miscellaneous\ClearSeparator.cs" />
     <Compile Include="Flight\Readouts\Miscellaneous\SystemDateTime.cs" />
     <Compile Include="Flight\Readouts\Miscellaneous\SystemTime24.cs" />
     <Compile Include="Flight\Readouts\Miscellaneous\SystemTime.cs" />
@@ -83,15 +93,17 @@
     <Compile Include="Flight\Readouts\Orbital\ManoeuvreNode\NodeTotalDeltaV.cs" />
     <Compile Include="Flight\Readouts\Orbital\ManoeuvreNode\NodeProgradeDeltaV.cs" />
     <Compile Include="Flight\Readouts\Orbital\ManoeuvreNode\PostBurnApoapsis.cs" />
+    <Compile Include="Flight\Readouts\Orbital\ManoeuvreNode\PostBurnRelativeInclination.cs" />
     <Compile Include="Flight\Readouts\Orbital\ManoeuvreNode\PostBurnInclination.cs" />
     <Compile Include="Flight\Readouts\Orbital\ManoeuvreNode\PostBurnPeriapsis.cs" />
+    <Compile Include="Flight\Readouts\Orbital\ManoeuvreNode\PostBurnEccentricity.cs" />
     <Compile Include="Flight\Readouts\Orbital\ManoeuvreNode\PostBurnPeriod.cs" />
     <Compile Include="Flight\Readouts\Orbital\ManoeuvreNode\TripTotalDeltaV.cs" />
     <Compile Include="Flight\Readouts\Orbital\MeanAnomalyAtEpoc.cs" />
     <Compile Include="Flight\Readouts\Orbital\MeanAnomaly.cs" />
     <Compile Include="Flight\Readouts\Orbital\EccentricAnomaly.cs" />
     <Compile Include="Flight\Readouts\Orbital\ArgumentOfPeriapsis.cs" />
-    <Compile Include="Flight\Readouts\Orbital\CurrentSoi.cs" />
+    <Compile Include="Flight\Readouts\Body\CurrentSoi.cs" />
     <Compile Include="Flight\Readouts\Orbital\SemiMajorAxis.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -115,7 +127,9 @@
     <Compile Include="Flight\Readouts\Rendezvous\TimeToRelativeDescendingNode.cs" />
     <Compile Include="Flight\Readouts\Rendezvous\TimeToRelativeAscendingNode.cs" />
     <Compile Include="Flight\Readouts\Rendezvous\TimeToTransferAngle.cs" />
+    <Compile Include="Flight\Readouts\Surface\DynamicPressure.cs" />
     <Compile Include="Flight\Readouts\Surface\AtmosphericPressure.cs" />
+    <Compile Include="Flight\Readouts\Surface\ImpactMarker.cs" />
     <Compile Include="Flight\Readouts\Surface\ImpactBiome.cs" />
     <Compile Include="Flight\Readouts\Surface\Slope.cs" />
     <Compile Include="Flight\Readouts\Surface\Biome.cs" />
@@ -136,6 +150,7 @@
     <Compile Include="Flight\Readouts\Thermal\HottestTemperature.cs" />
     <Compile Include="Flight\Readouts\Thermal\HottestPart.cs" />
     <Compile Include="Flight\Readouts\Thermal\ThermalProcessor.cs" />
+    <Compile Include="Flight\Readouts\Vessel\Gravity.cs" />
     <Compile Include="Flight\Readouts\Vessel\Name.cs" />
     <Compile Include="Flight\Readouts\Vessel\AttitudeProcessor.cs" />
     <Compile Include="Flight\Readouts\Vessel\DeltaVCurrentTotal.cs" />
@@ -150,6 +165,8 @@
     <Compile Include="Flight\Readouts\Vessel\Pitch.cs" />
     <Compile Include="Flight\Readouts\Vessel\Heading.cs" />
     <Compile Include="Flight\Readouts\Vessel\PartCount.cs" />
+    <Compile Include="Flight\Readouts\Vessel\SuicideBurnLength.cs" />
+    <Compile Include="Flight\Readouts\Vessel\SuicideBurnCountdown.cs" />
     <Compile Include="Flight\Readouts\Vessel\SuicideBurnDeltaV.cs" />
     <Compile Include="Flight\Readouts\Vessel\SuicideBurnAltitude.cs" />
     <Compile Include="Flight\Readouts\Vessel\SuicideBurnDistance.cs" />
@@ -162,11 +179,12 @@
     <Compile Include="Flight\Readouts\Vessel\SimulationProcessor.cs" />
     <Compile Include="Flight\Readouts\Vessel\Acceleration.cs" />
     <Compile Include="Flight\Presets\PresetLibrary.cs" />
-    <Compile Include="Flight\Readouts\Vessel\SuicideBurnProcessor.cs" />
     <Compile Include="Flight\Readouts\Vessel\SurfaceThrustToWeight.cs" />
     <Compile Include="Flight\Readouts\Surface\Situation.cs" />
+    <Compile Include="Flight\Readouts\Vessel\Throttle.cs" />
     <Compile Include="Flight\Readouts\Vessel\ThrustOffsetAngle.cs" />
     <Compile Include="Flight\Readouts\Vessel\ThrustTorque.cs" />
+    <Compile Include="Flight\Readouts\ReadoutModuleConfigNode.cs" />
     <Compile Include="GuiDisplaySize.cs" />
     <Compile Include="Helpers\AngleHelper.cs" />
     <Compile Include="Helpers\Averager.cs" />
@@ -185,7 +203,8 @@
     <Compile Include="TrackingStation\SectionEditorTS.cs" />
     <Compile Include="TrackingStation\SectionModuleTS.cs" />
     <Compile Include="TrackingStation\TrackingStationAppLauncher.cs" />
-    <Compile Include="UIControls\DropDown.cs" />
+    <Compile Include="UIControls\PopOutColorPicker.cs" />
+    <Compile Include="UIControls\PopOutElement.cs" />
     <Compile Include="MyLogger.cs" />
     <Compile Include="EngineerGlobals.cs" />
     <Compile Include="Extensions\DoubleExtensions.cs" />
@@ -257,7 +276,6 @@
     <Compile Include="Settings\SettingItem.cs" />
     <Compile Include="TapeDriveAnimator.cs" />
     <Compile Include="KeyBinding\KeyBindPopup.cs" />
-    <Compile Include="UIControls\WindowObject.cs" />
     <Compile Include="VesselSimulator\AttachNodeSim.cs" />
     <Compile Include="VesselSimulator\EngineSim.cs" />
     <Compile Include="Helpers\Pool.cs" />
@@ -270,11 +288,11 @@
   </ItemGroup>
   <ItemGroup>
     <Reference Include="Assembly-CSharp">
-      <HintPath>..\..\..\KSP-Environment\KSP_x64_Data\Managed\Assembly-CSharp.dll</HintPath>
+      <HintPath>X:\Steam\steamapps\common\Kerbal Space Program\KSP_x64_Data\Managed\Assembly-CSharp.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="KSPAssets">
-      <HintPath>..\..\..\KSP-Environment\KSP_x64_Data\Managed\KSPAssets.dll</HintPath>
+    <Reference Include="Assembly-CSharp-firstpass">
+      <HintPath>X:\Steam\steamapps\common\Kerbal Space Program\KSP_x64_Data\Managed\Assembly-CSharp-firstpass.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="System">
@@ -286,11 +304,11 @@
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine">
-      <HintPath>..\..\..\KSP-Environment\KSP_x64_Data\Managed\UnityEngine.dll</HintPath>
+      <HintPath>X:\Steam\steamapps\common\Kerbal Space Program\KSP_x64_Data\Managed\UnityEngine.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.UI">
-      <HintPath>..\..\..\KSP-Environment\KSP_x64_Data\Managed\UnityEngine.UI.dll</HintPath>
+      <HintPath>X:\Steam\steamapps\common\Kerbal Space Program\KSP_x64_Data\Managed\UnityEngine.UI.dll</HintPath>
       <Private>False</Private>
     </Reference>
   </ItemGroup>
@@ -298,7 +316,7 @@
     <ProjectReference Include="..\KerbalEngineer.Unity\KerbalEngineer.Unity.csproj">
       <Project>{5387bb1e-32b1-4bac-b03f-100570b9554c}</Project>
       <Name>KerbalEngineer.Unity</Name>
-      <Private>True</Private>
+      <Private>False</Private>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup />
@@ -320,8 +338,8 @@
 xcopy "$(SolutionDir)Output\*" "$(SolutionDir)..\..\KSP-Environment\GameData\*" /E /Y
 del "$(SolutionDir)Release\*" /Q
 xcopy "$(SolutionDir)Documents\*" "$(SolutionDir)Release\Documents\*" /E /Y
-7z.exe a -tzip -mx3 "$(SolutionDir)Release\$(ProjectName)-@(VersionNumber).zip" "$(SolutionDir)Output\*"
-7z.exe a -tzip -mx3 "$(SolutionDir)Release\$(ProjectName)-@(VersionNumber).zip" "$(SolutionDir)Documents\*"</PostBuildEvent>
+"C:\Program Files (x86)\7-Zip\7z.exe" a -tzip -mx3 "$(SolutionDir)Release\$(ProjectName)-@(VersionNumber).zip" "$(SolutionDir)Output\*"
+"C:\Program Files (x86)\7-Zip\7z.exe" a -tzip -mx3 "$(SolutionDir)Release\$(ProjectName)-@(VersionNumber).zip" "$(SolutionDir)Documents\*"</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

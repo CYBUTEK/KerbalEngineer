@@ -47,7 +47,6 @@
     <Reference Include="System" />
     <Reference Include="System.XML" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="UnityEngine">
       <HintPath>Library\UnityAssemblies\UnityEngine.dll</HintPath>
@@ -56,36 +55,11 @@
     <Reference Include="UnityEditor">
       <HintPath>Library\UnityAssemblies\UnityEditor.dll</HintPath>
     </Reference>
-    <Reference Include="nunit.framework">
-      <HintPath>Library\UnityAssemblies\nunit.framework.dll</HintPath>
-    </Reference>
-    <Reference Include="UnityEngine.UI">
-      <HintPath>Library\UnityAssemblies\UnityEngine.UI.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="UnityEditor.UI">
-      <HintPath>Library\UnityAssemblies\UnityEditor.UI.dll</HintPath>
-    </Reference>
-    <Reference Include="UnityEditor.WindowsStandalone.Extensions">
-      <HintPath>Library\UnityAssemblies\UnityEditor.WindowsStandalone.Extensions.dll</HintPath>
-    </Reference>
-    <Reference Include="SyntaxTree.VisualStudio.Unity.Bridge">
-      <HintPath>Library\UnityAssemblies\SyntaxTree.VisualStudio.Unity.Bridge.dll</HintPath>
-    </Reference>
     <Reference Include="PartTools">
       <HintPath>Assets\PartTools\Lib\PartTools.dll</HintPath>
     </Reference>
     <Reference Include="PartToolsEditor">
       <HintPath>Assets\PartTools\Lib\PartToolsEditor.dll</HintPath>
-    </Reference>
-    <Reference Include="KerbalEngineer.Unity">
-      <HintPath>Assets\Plugins\KerbalEngineer.Unity.dll</HintPath>
-    </Reference>
-    <Reference Include="KSPAssetCompiler">
-      <HintPath>Assets\Plugins\KSPAssets\KSPAssetCompiler.dll</HintPath>
-    </Reference>
-    <Reference Include="KSPAssets">
-      <HintPath>Assets\Plugins\KSPAssets\KSPAssets.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
