@@ -22,7 +22,7 @@
 using System;
 
 using KerbalEngineer.Flight.Sections;
-
+using KerbalEngineer.Settings;
 using UnityEngine;
 
 #endregion
@@ -243,6 +243,11 @@ namespace KerbalEngineer.Flight.Readouts {
 
             if (NameStyle != null && !force) return;
 
+            ReadoutModule existing = ReadoutLibrary.GetReadout(this.Name);
+            Color c = HighLogic.Skin.label.normal.textColor;
+            if (existing != null)
+                c = existing.ValueStyle.normal.textColor;
+
             NameStyle = new GUIStyle(HighLogic.Skin.label) {
                 normal =
                 {
@@ -309,6 +314,11 @@ namespace KerbalEngineer.Flight.Readouts {
                 fontSize = (int)(11 * GuiDisplaySize.Offset),
                 fixedHeight = 18.0f * GuiDisplaySize.Offset
             };
+
+
+           this.ValueStyle.normal.textColor = c;
+  
+
         }
 
         private void OnSizeChanged() {

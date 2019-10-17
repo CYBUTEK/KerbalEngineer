@@ -20,7 +20,7 @@
 #region Using Directives
 
 using System;
-
+using System.Diagnostics;
 using KerbalEngineer.Settings;
 
 #endregion
@@ -51,46 +51,46 @@ namespace KerbalEngineer
             try
             {
                 var handler = SettingHandler.Load("GuiDisplaySize.xml");
-                handler.GetSet("multiplier", ref multiplier);
-                handler.GetSet("increment", ref increment);
+                handler.Set("multiplier", 1.1);
+                increment = handler.GetSet("increment", increment);
                 handler.Save("GuiDisplaySize.xml");
-                offset = 1 + (increment * multiplier) - increment;
             }
             catch (Exception ex)
             {
                 MyLogger.Exception(ex, "GuiDisplaySize->GuiDisplaySize");
             }
+            offset = 1 + (increment * multiplier) - increment;
         }
 
         #endregion
 
         #region Properties
 
-        public static float Multiplier
-        {
-            get { return multiplier; }
-            set
-            {
-                try
-                {
-                    if (multiplier == value)
-                    {
-                        return;
-                    }
+        //public static float Multiplier
+        //{
+        //    get { return multiplier; }
+        //    set
+        //    {
+        //        try
+        //        {
+        //            if (multiplier == value)
+        //            {
+        //                return;
+        //            }
 
-                    multiplier = value;
-                    var handler = SettingHandler.Load("GuiDisplaySize.xml");
-                    handler.Set("multiplier", multiplier);
-                    handler.Save("GuiDisplaySize.xml");
-                    offset = 1 + (increment * multiplier) - increment;
-                    OnSizeChanged();
-                }
-                catch (Exception ex)
-                {
-                    MyLogger.Exception(ex, "GuiDisplaySize->Multiplier");
-                }
-            }
-        }
+        //            multiplier = value;
+        //            var handler = SettingHandler.Load("GuiDisplaySize.xml");
+        //            handler.Set("multiplier", multiplier);
+        //            handler.Save("GuiDisplaySize.xml");
+        //            offset = 1 + (increment * multiplier) - increment;
+        //            OnSizeChanged();
+        //        }
+        //        catch (Exception ex)
+        //        {
+        //            MyLogger.Exception(ex, "GuiDisplaySize->Multiplier");
+        //        }
+        //    }
+        //}
 
         public static int Increment
         {

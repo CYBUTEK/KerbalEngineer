@@ -173,7 +173,7 @@ namespace KerbalEngineer.TrackingStation {
         /// <summary>
         ///     Gets the number of drawn readout lines.
         /// </summary>
-        public int LineCount { get; private set; }
+        public int LineCount { get; set; }
 
         /// <summary>
         ///     Gets and sets the name of the section.

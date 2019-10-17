@@ -129,7 +129,13 @@ namespace KerbalEngineer.Flight
         {
             get
             {
-                return GeneralSettings.Handler.Get("FlightAppLauncher_IsHoverActivated", true);
+                try
+                {
+                    return GeneralSettings.Handler.Get("FlightAppLauncher_IsHoverActivated", true);
+                } catch
+                {
+                    return true;
+                } 
             }
 
             set

@@ -191,7 +191,7 @@ namespace KerbalEngineer.Flight.Sections {
         /// </summary>
         private void DrawCategorySelector() {
             this.categoryList.enabled = GUILayout.Toggle(this.categoryList.enabled, "▼ SELECTED CATEGORY: " + ReadoutCategory.Selected.ToString().ToUpper() + " ▼", this.categoryTitleButtonStyle);
-            if (Event.current.type == EventType.repaint) {
+            if (Event.current.type == EventType.Repaint) {
                 this.categoryList.SetPosition(GUILayoutUtility.GetLastRect().Translate(this.position), GUILayoutUtility.GetLastRect());
             }
         }
@@ -276,7 +276,7 @@ namespace KerbalEngineer.Flight.Sections {
                         colorPicker.enabled = true;
                     }
 
-                    if (Event.current.type == EventType.repaint && editingReadout == readout) {
+                    if (Event.current.type == EventType.Repaint && editingReadout == readout) {
                         colorPicker.SetPosition(GUILayoutUtility.GetLastRect().Translate(this.position).Translate(new Rect(8, scrollRectInstalled.y - scrollPositionInstalled.y, 8, 8)), new Rect(0, 0, 180, 20));
                     }
 
@@ -300,7 +300,7 @@ namespace KerbalEngineer.Flight.Sections {
 
             GUILayout.EndScrollView();
 
-            if (Event.current.type == EventType.repaint) {
+            if (Event.current.type == EventType.Repaint) {
                 scrollRectInstalled = GUILayoutUtility.GetLastRect();
             }
 
@@ -332,7 +332,7 @@ namespace KerbalEngineer.Flight.Sections {
         /// </summary>
         private void DrawPresetSelector() {
             this.presetList.enabled = GUILayout.Toggle(this.presetList.enabled, "▼ PRESETS ▼", this.categoryTitleButtonStyle, GUILayout.Width(150.0f));
-            if (Event.current.type == EventType.repaint) {
+            if (Event.current.type == EventType.Repaint) {
                 this.presetList.SetPosition(GUILayoutUtility.GetLastRect().Translate(this.position), GUILayoutUtility.GetLastRect());
             }
         }

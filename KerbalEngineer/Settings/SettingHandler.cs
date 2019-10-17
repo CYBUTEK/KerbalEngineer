@@ -100,7 +100,15 @@ namespace KerbalEngineer.Settings
             {
                 if (item.Name == name)
                 {
-                    return (T)Convert.ChangeType(item.Value, typeof(T));
+                    try
+                    {
+                        return (T)Convert.ChangeType(item.Value, typeof(T));
+                    }
+                    catch
+                    {
+                        item.Value = defaultObject;
+                        return (T)Convert.ChangeType(item.Value, typeof(T));
+                    }
                 }
             }
             return defaultObject;
@@ -132,15 +140,20 @@ namespace KerbalEngineer.Settings
         /// </summary>
         public void Set(string name, object value)
         {
+            int i=-1;
+
             foreach (var item in this.Items)
             {
                 if (item.Name == name)
                 {
-                    item.Value = value;
-                    return;
+                    i = Items.IndexOf(item);
                 }
             }
-            this.Items.Add(new SettingItem(name, value));
+
+            if (i>=0)
+                Items.RemoveAt(i);
+
+            this.Items.Insert(i >=0? i: Items.Count, new SettingItem(name, value));
         }
 
         #endregion
@@ -156,35 +169,23 @@ namespace KerbalEngineer.Settings
             {
                 if (item.Name == name)
                 {
-                    return (T)Convert.ChangeType(item.Value, typeof(T));
+                    try
+                    {
+                        return (T)Convert.ChangeType(item.Value, typeof(T));
+                    }
+                    catch 
+                    {
+                        //invalid xml or something
+                        item.Value = defaultObject;
+                    }
                 }
             }
+
             if (defaultObject != null)
             {
                 this.Items.Add(new SettingItem(name, defaultObject));
             }
             return defaultObject;
-        }
-
-        /// <summary>
-        ///     Gets a setting from its name and inputs it into the output object. Will add the object to the handler if it does
-        ///     not exist.
-        /// </summary>
-        public bool GetSet<T>(string name, ref T outputObject)
-        {
-            foreach (var item in this.Items)
-            {
-                if (item.Name == name)
-                {
-                    outputObject = (T)Convert.ChangeType(item.Value, typeof(T));
-                    return true;
-                }
-            }
-            if (outputObject != null)
-            {
-                this.Items.Add(new SettingItem(name, outputObject));
-            }
-            return false;
         }
 
         #endregion

@@ -188,7 +188,7 @@ namespace KerbalEngineer.TrackingStation {
         /// </summary>
         private void DrawCategorySelector() {
             this.categoryList.enabled = GUILayout.Toggle(this.categoryList.enabled, "▼ SELECTED CATEGORY: " + ReadoutCategory.Selected.ToString().ToUpper() + " ▼", this.categoryTitleButtonStyle);
-            if (Event.current.type == EventType.repaint) {
+            if (Event.current.type == EventType.Repaint) {
                 this.categoryList.SetPosition(GUILayoutUtility.GetLastRect().Translate(this.position), GUILayoutUtility.GetLastRect());
             }
         }
@@ -266,7 +266,7 @@ namespace KerbalEngineer.TrackingStation {
                         colorPicker.enabled = true;
                     }
 
-                    if (Event.current.type == EventType.repaint && editingReadout == readout) {
+                    if (Event.current.type == EventType.Repaint && editingReadout == readout) {
                         colorPicker.SetPosition(GUILayoutUtility.GetLastRect().Translate(this.position).Translate(new Rect(8, scrollRectInstalled.y - scrollPositionInstalled.y, 8, 8)), new Rect(0, 0, 180, 20));
                     }
 
@@ -289,7 +289,7 @@ namespace KerbalEngineer.TrackingStation {
 
             GUILayout.EndScrollView();
 
-            if (Event.current.type == EventType.repaint) {
+            if (Event.current.type == EventType.Repaint) {
                 scrollRectInstalled = GUILayoutUtility.GetLastRect();
             }
 

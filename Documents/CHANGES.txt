@@ -1,3 +1,9 @@
+1.1.7.0, 2019-10-16, KSP 1.8.0 #2686
+ - Update to KSP 1.8, target .NET 4.
+ - Fix readout colors reverting to default on GUI size change.
+ - Improve handling of invalid or outdated xml settings.
+ - Removed MiniAVC.dll for now.
+  
 1.1.6.0, 2019-4-10, KSP 1.7.0 #2483
  - Version bump for 1.7.0
  - Show localized biome name
