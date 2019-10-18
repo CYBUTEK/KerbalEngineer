@@ -60,7 +60,7 @@ namespace KerbalEngineer.Flight.Readouts.Miscellaneous
 
         public override void Draw(Unity.Flight.ISectionModule section)
         {
-            GUILayout.Box("WHY THO", section.IsHud ? this.boxStyleHud : this.boxStyle);
+            GUILayout.Box("", section.IsHud ? this.boxStyleHud : this.boxStyle);
         }
 
         #endregion

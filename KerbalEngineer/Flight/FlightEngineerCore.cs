@@ -313,11 +313,11 @@ void OnRenderObject() {
         private void Start() {
             try {
                 SectionLibrary.Load();
-                ReadoutLibrary.Reset();
-                MyLogger.Log("FlightEngineerCore->Start");
             } catch (Exception ex) {
                 MyLogger.Exception(ex);
             }
+            ReadoutLibrary.Reset();
+            MyLogger.Log("FlightEngineerCore->Start");
         }
 
         /// <summary>

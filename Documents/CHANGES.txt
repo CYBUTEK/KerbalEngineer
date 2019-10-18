@@ -1,3 +1,7 @@
+1.1.7.1, 2019-10-18, KSP 1.8.0 #2686
+ - Fix impact marker rendering.
+ - Further improvements to handling old xml settings.
+
 1.1.7.0, 2019-10-16, KSP 1.8.0 #2686
  - Update to KSP 1.8, target .NET 4.
  - Fix readout colors reverting to default on GUI size change.

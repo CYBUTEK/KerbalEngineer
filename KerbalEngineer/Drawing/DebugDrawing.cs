@@ -10,8 +10,9 @@ namespace KerbalEngineer.Drawing {
 
         static Material _material;
         static Material material {
-            get {
-                if (_material == null) _material = new Material(Shader.Find("Particles/Additive"));
+            get
+            {
+                if (_material == null) _material = new Material(Shader.Find("Legacy Shaders/Particles/Additive"));
                 return _material;
             }
         }

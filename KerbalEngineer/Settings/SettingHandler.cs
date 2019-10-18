@@ -25,6 +25,7 @@ using System.IO;
 using System.Linq;
 using System.Xml;
 using System.Xml.Serialization;
+using KSP.UI.Screens;
 
 #endregion
 
@@ -200,7 +201,6 @@ namespace KerbalEngineer.Settings
         public void Save(string fileName)
         {
             fileName = Path.Combine(settingsDirectory, fileName);
-
             this.Serialise(fileName);
         }
 
@@ -226,6 +226,11 @@ namespace KerbalEngineer.Settings
         private void Serialise(string fileName)
         {
             this.CreateDirectory(fileName);
+
+            //foreach (var i in Items)
+            //{
+            //    MyLogger.Log("Name " + i.Name + " value " + i.Value.GetType());
+            //}
 
             XmlWriterSettings xmlWriterSettings = new XmlWriterSettings {
                 Encoding = System.Text.Encoding.UTF8,
@@ -281,7 +286,17 @@ namespace KerbalEngineer.Settings
         {
             fileName = Path.Combine(settingsDirectory, fileName);
 
-            return Deserialise(fileName, extraTypes);
+            var items = Deserialise(fileName, extraTypes);
+
+            for (var i = items.Items.Count - 1; i >= 0; i--) {
+                if (items.Items[i].Value is XmlNode[])
+                {
+                    MyLogger.Log("fixed old or invalid setting: " + items.Items[i].Name);
+                    items.Items[i].Value = items.Items[i].Value.ToString();
+                }
+            }
+ 
+            return items;
         }
 
         #endregion
