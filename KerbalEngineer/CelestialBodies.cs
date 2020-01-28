@@ -22,6 +22,7 @@ namespace KerbalEngineer
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using Helpers;
 
     /*
      * 
@@ -176,7 +177,7 @@ namespace KerbalEngineer
 
             public double GetAtmospheres(double altitude)
             {
-                return GetPressure(altitude) * PhysicsGlobals.KpaToAtmospheres;
+                return GetPressure(altitude) * Units.KpaToAtmospheres;
             }
 
             public void SetSelected(bool state, int depth = 0)
