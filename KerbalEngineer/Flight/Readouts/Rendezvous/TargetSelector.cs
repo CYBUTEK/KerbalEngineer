@@ -114,12 +114,12 @@ namespace KerbalEngineer.Flight.Readouts.Rendezvous {
                     continue;
                 }
 
-                if (this.searchQuery.Length > 0 && !body.bodyName.ToLower().Contains(this.searchQuery)) {
+                if (this.searchQuery.Length > 0 && !body.bodyDisplayName.LocalizeRemoveGender().ToLower().Contains(this.searchQuery)) {
                     continue;
                 }
 
                 count++;
-                if (GUILayout.Button(body.bodyName, this.ButtonStyle, GUILayout.Width(this.ContentWidth))) {
+                if (GUILayout.Button(body.bodyDisplayName.LocalizeRemoveGender(), this.ButtonStyle, GUILayout.Width(this.ContentWidth))) {
                     this.SetTargetAs(body);
                 }
             }
@@ -136,12 +136,12 @@ namespace KerbalEngineer.Flight.Readouts.Rendezvous {
                     continue;
                 }
 
-                if (this.searchQuery.Length > 0 && !body.bodyName.ToLower().Contains(this.searchQuery)) {
+                if (this.searchQuery.Length > 0 && !body.bodyDisplayName.LocalizeRemoveGender().ToLower().Contains(this.searchQuery)) {
                     continue;
                 }
 
                 count++;
-                if (GUILayout.Button(body.GetName(), this.ButtonStyle, GUILayout.Width(this.ContentWidth))) {
+                if (GUILayout.Button(body.GetDisplayName().LocalizeRemoveGender(), this.ButtonStyle, GUILayout.Width(this.ContentWidth))) {
                     this.SetTargetAs(body);
                 }
             }
@@ -268,14 +268,14 @@ namespace KerbalEngineer.Flight.Readouts.Rendezvous {
 
                     if (RendezvousProcessor.sourceDisplay != null) {
                         if (RendezvousProcessor.landedSamePlanet || RendezvousProcessor.overrideANDN)
-                            this.DrawLine("Ref Orbit", "Landed on " + RendezvousProcessor.activeVessel.GetOrbit().referenceBody.GetName(), section.IsHud);
+                            this.DrawLine("Ref Orbit", "Landed on " + RendezvousProcessor.activeVessel.GetOrbit().referenceBody.GetDisplayName().LocalizeRemoveGender(), section.IsHud);
                         else
                             this.DrawLine("Ref Orbit", RendezvousProcessor.sourceDisplay, section.IsHud);
                     }
 
                     if (RendezvousProcessor.targetDisplay != null) {
                         if (RendezvousProcessor.landedSamePlanet || RendezvousProcessor.overrideANDNRev)
-                            this.DrawLine("Target Orbit", "Landed on " + target.GetOrbit().referenceBody.GetName(), section.IsHud);
+                            this.DrawLine("Target Orbit", "Landed on " + target.GetOrbit().referenceBody.GetDisplayName().LocalizeRemoveGender(), section.IsHud);
                         else
                             this.DrawLine("Target Orbit", RendezvousProcessor.targetDisplay, section.IsHud);
                     }
@@ -394,12 +394,12 @@ namespace KerbalEngineer.Flight.Readouts.Rendezvous {
                 if (this.searchQuery.Length == 0) {
                     count++;
 
-                    if (GUILayout.Button(vessel.GetName(), this.ButtonStyle, GUILayout.Width(this.ContentWidth))) {
+                    if (GUILayout.Button(vessel.GetDisplayName().LocalizeRemoveGender(), this.ButtonStyle, GUILayout.Width(this.ContentWidth))) {
                         this.SetTargetAs(vessel);
                     }
                 } else if (vessel.vesselName.ToLower().Contains(this.searchQuery)) {
                     count++;
-                    if (GUILayout.Button(vessel.GetName(), this.ButtonStyle, GUILayout.Width(this.ContentWidth))) {
+                    if (GUILayout.Button(vessel.GetDisplayName().LocalizeRemoveGender(), this.ButtonStyle, GUILayout.Width(this.ContentWidth))) {
                         this.SetTargetAs(vessel);
                     }
                 }

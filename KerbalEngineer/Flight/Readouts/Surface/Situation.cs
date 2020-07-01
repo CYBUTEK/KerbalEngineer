@@ -82,7 +82,7 @@ namespace KerbalEngineer.Flight.Readouts.Surface
 
         private static string GetBodyPlural()
         {
-            return FlightGlobals.currentMainBody.bodyName.EndsWith("s") ? FlightGlobals.currentMainBody.bodyName + "\'" : FlightGlobals.currentMainBody.bodyName + "\'s";
+            return FlightGlobals.currentMainBody.bodyDisplayName.LocalizeRemoveGender().EndsWith("s") ? FlightGlobals.currentMainBody.bodyDisplayName.LocalizeRemoveGender() + "\'" : FlightGlobals.currentMainBody.bodyDisplayName.LocalizeRemoveGender() + "\'s";
         }
 
         #endregion

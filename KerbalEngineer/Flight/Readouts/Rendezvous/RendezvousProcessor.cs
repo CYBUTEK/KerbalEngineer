@@ -534,9 +534,9 @@ namespace KerbalEngineer.Flight.Readouts.Rendezvous {
                 mo = ((global::Vessel)tgt).mapObject;
 
             if (mo == null || mo.Discoverable == null)
-                return Localizer.Format("<<1>>", tgt.GetDisplayName());
+                return Localizer.Format("<<1>>", tgt.GetDisplayName().LocalizeRemoveGender());
             else
-                return Localizer.Format("<<1>>", mo.GetDisplayName());
+                return Localizer.Format("<<1>>", mo.GetDisplayName().LocalizeRemoveGender());
         }
 
         private double CalcInterceptAngle(Orbit targetOrbit, Orbit originOrbit) {
