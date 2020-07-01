@@ -24,6 +24,7 @@ namespace KerbalEngineer.Helpers {
         public const double GRAVITY = 9.80665;
         public const double RAD_TO_DEG = 180.0 / Math.PI;
         public const double DEG_TO_RAD = Math.PI / 180.0;
+        public const double KpaToAtmospheres = 1 / 101.324996948242;
 
         public static string Concat(int value1, int value2) {
             return value1 + " / " + value2;

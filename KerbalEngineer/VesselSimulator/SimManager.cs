@@ -27,6 +27,7 @@ namespace KerbalEngineer.VesselSimulator
     using System.Reflection;
     using System.Threading;
     using UnityEngine;
+    using Helpers;
 
     #endregion
 
@@ -367,7 +368,7 @@ namespace KerbalEngineer.VesselSimulator
                 else
                 {
                     parts = FlightGlobals.ActiveVessel.Parts;
-                    Atmosphere = FlightGlobals.ActiveVessel.staticPressurekPa * PhysicsGlobals.KpaToAtmospheres;
+                    Atmosphere = FlightGlobals.ActiveVessel.staticPressurekPa * Units.KpaToAtmospheres;
                 }
 
                 // This call doesn't ever fail at the moment but we'll check and return a sensible error for display
