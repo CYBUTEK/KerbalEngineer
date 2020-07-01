@@ -30,22 +30,21 @@ using UnityEngine;
 
 namespace KerbalEngineer.Flight.Readouts.Miscellaneous
 {
-    public class ClearSeparator : ReadoutModule
+    public class Crosshair : ReadoutModule
     {
         #region Fields
 
         private GUIStyle boxStyle;
         private GUIStyle boxStyleHud;
-
         #endregion
 
         #region Constructors
 
-        public ClearSeparator()
+        public Crosshair()
         {
-            this.Name = "Clear Separator";
+            this.Name = "Crosshair";
             this.Category = ReadoutCategory.GetCategory("Miscellaneous");
-            this.HelpString = "Creates a space to help seperate subsections in a module.";
+            this.HelpString = "Creates a cross that can be used as a placeable crosshair.";
             this.IsDefault = false;
             this.Cloneable = true;
 
@@ -60,19 +59,36 @@ namespace KerbalEngineer.Flight.Readouts.Miscellaneous
 
         public override void Draw(Unity.Flight.ISectionModule section)
         {
-            GUILayout.Box(String.Empty, section.IsHud ? this.boxStyleHud : this.boxStyle);
+            GUILayout.BeginHorizontal();
+            GUILayout.FlexibleSpace();
+            GUILayout.Box(tex, section.IsHud ? this.boxStyleHud : this.boxStyle);
+            GUILayout.FlexibleSpace();
+            GUILayout.EndHorizontal();
         }
 
         #endregion
 
         #region Methods: private
 
+        private static readonly Texture2D tex = TextureHelper.createCrosshair(new Color(1.0f, 1.0f, 1.0f, 0.75f));
+        private static readonly Texture2D bg = TextureHelper.CreateTextureFromColour(new Color(0.0f, 0.0f, 0.0f, 0.0f));
+
         private void InitialiseStyles()
         {
             this.boxStyle = new GUIStyle
             {
-                fixedHeight = 1.0f,
-                stretchWidth = true
+                normal =
+                {
+                  background  = bg,
+                  textColor = new Color(1,1,1,0f)
+                },
+                active =
+                {
+                    background  = bg
+                },
+                border = new RectOffset(0, 0, 0, 0),
+                fixedHeight = 0.0f,
+                imagePosition = ImagePosition.ImageOnly
             };
 
             this.boxStyleHud = new GUIStyle(this.boxStyle)

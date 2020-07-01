@@ -219,6 +219,7 @@ namespace KerbalEngineer.Flight.Readouts {
                 // Misc
                 readouts.Add(new Separator());
                 readouts.Add(new ClearSeparator());
+                readouts.Add(new Crosshair());
                 readouts.Add(new GuiSizeAdjustor());
                 readouts.Add(new SimulationDelay());
                 readouts.Add(new VectoredThrustToggle());

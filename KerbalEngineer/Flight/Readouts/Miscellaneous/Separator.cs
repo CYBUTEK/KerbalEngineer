@@ -45,7 +45,7 @@ namespace KerbalEngineer.Flight.Readouts.Miscellaneous
         {
             this.Name = "Separator";
             this.Category = ReadoutCategory.GetCategory("Miscellaneous");
-            this.HelpString = "Creats a line to help seperate subsections in a module.";
+            this.HelpString = "Creates a line to help seperate subsections in a module.";
             this.IsDefault = false;
             this.Cloneable = true;
 

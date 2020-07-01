@@ -101,6 +101,15 @@ namespace KerbalEngineer.VesselSimulator
             bool throttleLocked = engineMod.throttleLocked || fullThrust;
             List<Propellant> propellants = engineMod.propellants;
             float thrustCurveRatio = engineMod.thrustCurveRatio;
+
+            foreach (Propellant p in propellants)
+            {
+                if (p.ignoreForThrustCurve) continue;
+                double ratio = p.totalResourceAvailable / p.totalResourceCapacity;
+                if (ratio < thrustCurveRatio)
+                    thrustCurveRatio = (float)ratio;
+            }
+
             bool active = engineMod.isOperational;
             
             //I do not know if this matters. RF and stock always have finalThrust. But stock uses resultingThrust in the mass flow calculations, so keep it.
@@ -121,19 +130,13 @@ namespace KerbalEngineer.VesselSimulator
             engineSim.resourceFlowModes.Reset();
             engineSim.appliedForces.Clear();
 
+
+
             double flowRate = 0.0;
             if (engineSim.partSim.hasVessel)
             {
                 if (log != null) log.AppendLine("hasVessel is true"); 
-
-                foreach(Propellant p in propellants) {
-                    if (p.ignoreForThrustCurve) continue;
-                    double ratio = p.totalResourceAvailable / p.totalResourceCapacity;
-                    if (ratio < thrustCurveRatio)
-                        thrustCurveRatio = (float) ratio;
-                }
-
-                float flowModifier = GetFlowModifier(atmChangeFlow, atmCurve, engineSim.partSim.part.atmDensity, velCurve, machNumber, thrustCurve, thrustCurveRatio, ref engineSim.maxMach);
+                float flowModifier = GetFlowModifier(atmChangeFlow, atmCurve, engineSim.partSim.part.atmDensity, velCurve, machNumber, thrustCurve, thrustCurveRatio, ref engineSim.maxMach, engineMod.flowMultCap, engineMod.flowMultCapSharpness);
                 engineSim.isp = atmosphereCurve.Evaluate((float)atmosphere);
                 engineSim.thrust = GetThrust(Mathf.Lerp(minFuelFlow, maxFuelFlow, GetThrustPercent(thrustPercentage)) * flowModifier, engineSim.isp);
                 engineSim.actualThrust = engineSim.isActive ?  resultingThrust : 0.0;
@@ -169,7 +172,7 @@ namespace KerbalEngineer.VesselSimulator
             else
             {
                 if (log != null) log.buf.AppendLine("hasVessel is false");
-                float flowModifier = GetFlowModifier(atmChangeFlow, atmCurve, CelestialBodies.SelectedBody.GetDensity(BuildAdvanced.Altitude), velCurve, machNumber, thrustCurve, thrustCurveRatio, ref engineSim.maxMach);
+                float flowModifier = GetFlowModifier(atmChangeFlow, atmCurve, CelestialBodies.SelectedBody.GetDensity(BuildAdvanced.Altitude), velCurve, machNumber, thrustCurve, thrustCurveRatio, ref engineSim.maxMach, engineMod.flowMultCap, engineMod.flowMultCapSharpness);
                 engineSim.isp = atmosphereCurve.Evaluate((float)atmosphere);
                 engineSim.thrust = GetThrust(Mathf.Lerp(minFuelFlow, maxFuelFlow, GetThrustPercent(thrustPercentage)) * flowModifier, engineSim.isp);
                 engineSim.actualThrust = 0d;
@@ -269,7 +272,7 @@ namespace KerbalEngineer.VesselSimulator
             return isp * Units.GRAVITY;
         }
 
-        public static float GetFlowModifier(bool atmChangeFlow, FloatCurve atmCurve, double atmDensity, FloatCurve velCurve, float machNumber, FloatCurve thrustCurve, float thrustCurveRatio, ref float maxMach)
+        public static float GetFlowModifier(bool atmChangeFlow, FloatCurve atmCurve, double atmDensity, FloatCurve velCurve, float machNumber, FloatCurve thrustCurve, float thrustCurveRatio, ref float maxMach, float flowMultCap, float flowMultCapSharp)
         {
             float flowModifier = 1.0f;
             if (atmChangeFlow)
@@ -289,7 +292,11 @@ namespace KerbalEngineer.VesselSimulator
             {
                 flowModifier = flowModifier * thrustCurve.Evaluate(thrustCurveRatio);
             }
-            if (flowModifier < float.Epsilon)
+            if (flowModifier > flowMultCap)
+            {
+                flowModifier = flowMultCapSharp / ((flowMultCapSharp - 1) / flowMultCap + 1 / flowModifier);
+            }
+            if (flowModifier < 1E-05f)
             {
                 flowModifier = float.Epsilon;
             }

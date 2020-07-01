@@ -1,3 +1,10 @@
+1.1.7.2, 2020-7-1, KSP 1.10.0 #2917
+ - Update to 1.10
+ - Fix incorrect caluclations if default pressure of Kerbin is changed. Thanks Sigma88
+ - Use localized names of vessels and celetial bodies when possible. Thanks Sigma88.
+ - Added 'Crosshair' readout to misc category. This is just a 16x16 crosshair you could put in a transparent hud somewhere.
+ - Fix some jet engine thrusts not calculating correctly with Mach due to not honoring flow multiplier cap.
+ 
 1.1.7.1, 2019-10-18, KSP 1.8.0 #2686
  - Fix impact marker rendering.
  - Further improvements to handling old xml settings.
