@@ -123,37 +123,37 @@ namespace KerbalEngineer.Extensions
 
         public static double getCrewAdjustment(this Part part)
         {
-            if (HighLogic.LoadedSceneIsEditor && PhysicsGlobals.KerbalCrewMass != 0 && ShipConstruction.ShipManifest != null)
-            { //fix weird stock behavior with this physics setting.
+            //if (HighLogic.LoadedSceneIsEditor && PhysicsGlobals.KerbalCrewMass != 0 && ShipConstruction.ShipManifest != null)
+            //{ //fix weird stock behavior with this physics setting.
 
-                var crewlist = ShipConstruction.ShipManifest.GetAllCrew(false);
+            //    var crewlist = ShipConstruction.ShipManifest.GetAllCrew(false);
 
-                int crew = 0;
+            //    int crew = 0;
 
-                foreach (var crewmem in crewlist)
-                {
-                    if (crewmem != null) crew++;
-                }
+            //    foreach (var crewmem in crewlist)
+            //    {
+            //        if (crewmem != null) crew++;
+            //    }
 
-                if (crew > 0)
-                {
-                    var pcm = ShipConstruction.ShipManifest.GetPartCrewManifest(part.craftID);
+            //    if (crew > 0)
+            //    {
+            //        var pcm = ShipConstruction.ShipManifest.GetPartCrewManifest(part.craftID);
 
-                    int actualCrew = 0;
+            //        int actualCrew = 0;
 
-                    foreach (var crewmem in pcm.GetPartCrew())
-                    {
-                        if (crewmem != null)
-                            actualCrew++;
-                    }
+            //        foreach (var crewmem in pcm.GetPartCrew())
+            //        {
+            //            if (crewmem != null)
+            //                actualCrew++;
+            //        }
 
-                    if (actualCrew < crew)
-                    {
-                        return -PhysicsGlobals.KerbalCrewMass * (crew - actualCrew);
-                    }
+            //        if (actualCrew < crew)
+            //        {
+            //            return -PhysicsGlobals.KerbalCrewMass * (crew - actualCrew);
+            //        }
 
-                }
-            }
+            //    }
+            //}
 
             return 0;
         }

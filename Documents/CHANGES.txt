@@ -1,3 +1,10 @@
+1.1.8.1, 2020-12-29, KSP 1.11.0 #3045
+ - Update to 1.11
+ - Remove kerbal crew mass hacks now that calculation is correct in stock.
+ - Fix units on gravity readout
+ - Fix assembly binding errors
+ - Fix ignoreForIsp propellants mass calc. Thanks RCrockford.
+ 
 1.1.7.2, 2020-7-1, KSP 1.10.0 #2917
  - Update to 1.10
  - Fix incorrect caluclations if default pressure of Kerbin is changed. Thanks Sigma88

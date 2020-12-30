@@ -10,7 +10,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("CYBUTEK")]
 [assembly: AssemblyProduct("KerbalEngineer")]
-[assembly: AssemblyCopyright("Copyright © CYBUTEK/jrbudda 2019")]
+[assembly: AssemblyCopyright("Copyright © CYBUTEK/jrbudda 2020")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -33,3 +33,4 @@ using System.Runtime.InteropServices;
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
 [assembly: AssemblyVersion(KerbalEngineer.EngineerGlobals.ASSEMBLY_VERSION)]
+[assembly: KSPAssemblyDependency("KerbalEngineer.Unity", 1, 0)]
