@@ -30,7 +30,9 @@ namespace KerbalEngineer.VesselSimulator
     {
         private static readonly Pool<EngineSim> pool = new Pool<EngineSim>(Create, Reset);
 
-        private readonly ResourceContainer resourceConsumptions = new ResourceContainer();
+        // track draining for mass and isp separately, since some fuels are not used for isp calcs but do need to be included for mass draining.
+        private readonly ResourceContainer resourceConsumptionsForMass = new ResourceContainer();
+        private readonly ResourceContainer resourceConsumptionsForIsp = new ResourceContainer();
         private readonly ResourceContainer resourceFlowModes = new ResourceContainer();
 
         public double actualThrust = 0;
@@ -54,7 +56,8 @@ namespace KerbalEngineer.VesselSimulator
 
         private static void Reset(EngineSim engineSim)
         {
-            engineSim.resourceConsumptions.Reset();
+            engineSim.resourceConsumptionsForMass.Reset();
+            engineSim.resourceConsumptionsForIsp.Reset();
             engineSim.resourceFlowModes.Reset();
             engineSim.partSim = null;
             engineSim.actualThrust = 0;
@@ -126,7 +129,8 @@ namespace KerbalEngineer.VesselSimulator
             engineSim.isActive = active;
             engineSim.thrustVec = vecThrust;
             engineSim.isFlamedOut = isFlamedOut;
-            engineSim.resourceConsumptions.Reset();
+            engineSim.resourceConsumptionsForMass.Reset();
+            engineSim.resourceConsumptionsForIsp.Reset();
             engineSim.resourceFlowModes.Reset();
             engineSim.appliedForces.Clear();
 
@@ -194,8 +198,7 @@ namespace KerbalEngineer.VesselSimulator
             for (int i = 0; i < propellants.Count; ++i)
             {
                 Propellant propellant = propellants[i];
-                if (!propellant.ignoreForIsp)
-                    flowMass += propellant.ratio * ResourceContainer.GetResourceDensity(propellant.id);
+                flowMass += propellant.ratio * ResourceContainer.GetResourceDensity(propellant.id);
             }
 
             if (log != null) log.buf.AppendFormat("flowMass = {0:g6}\n", flowMass);
@@ -204,7 +207,7 @@ namespace KerbalEngineer.VesselSimulator
             {
                 Propellant propellant = propellants[i];
 
-                if (propellant.ignoreForIsp || propellant.name == "ElectricCharge" || propellant.name == "IntakeAir")
+                if (propellant.name == "ElectricCharge" || propellant.name == "IntakeAir")
                 {
                     continue;
                 }
@@ -216,7 +219,10 @@ namespace KerbalEngineer.VesselSimulator
                         theEngine.name,
                         theEngine.partId,
                         consumptionRate);
-                engineSim.resourceConsumptions.Add(propellant.id, consumptionRate);
+                // Add all for mass
+                engineSim.resourceConsumptionsForMass.Add(propellant.id, consumptionRate);
+                if (!propellant.ignoreForIsp)
+                    engineSim.resourceConsumptionsForIsp.Add(propellant.id, consumptionRate);
                 engineSim.resourceFlowModes.Add(propellant.id, (double)propellant.GetFlowMode());
             }
 
@@ -259,11 +265,19 @@ namespace KerbalEngineer.VesselSimulator
 			return thrustvec;
 		}
 
-        public ResourceContainer ResourceConsumptions
+        public ResourceContainer ResourceConsumptionsForMass
         {
             get
             {
-                return resourceConsumptions;
+                return resourceConsumptionsForMass;
+            }
+        }
+
+        public ResourceContainer ResourceConsumptionsForIsp
+        {
+            get
+            {
+                return resourceConsumptionsForIsp;
             }
         }
 
@@ -368,9 +382,9 @@ namespace KerbalEngineer.VesselSimulator
             }
             //DumpSourcePartSets(log, "after clear");
 
-            for (int index = 0; index < this.resourceConsumptions.Types.Count; index++)
+            for (int index = 0; index < this.resourceConsumptionsForMass.Types.Count; index++)
             {
-                int type = this.resourceConsumptions.Types[index];
+                int type = this.resourceConsumptionsForMass.Types[index];
 
                 HashSet<PartSim> sourcePartSet;
                 if (!sourcePartSets.TryGetValue(type, out sourcePartSet))
@@ -484,9 +498,9 @@ namespace KerbalEngineer.VesselSimulator
             }
             
             // If we don't have sources for all the needed resources then return false without setting up any drains
-            for (int i = 0; i < this.resourceConsumptions.Types.Count; i++)
+            for (int i = 0; i < this.resourceConsumptionsForMass.Types.Count; i++)
             {
-                int type = this.resourceConsumptions.Types[i];
+                int type = this.resourceConsumptionsForMass.Types[i];
                 HashSet<PartSim> sourcePartSet; 
                 if (!sourcePartSets.TryGetValue(type, out sourcePartSet) || sourcePartSet.Count == 0)
                 {
@@ -497,12 +511,12 @@ namespace KerbalEngineer.VesselSimulator
             }
 
             // Now we set the drains on the members of the sets and update the draining parts set
-            for (int i = 0; i < this.resourceConsumptions.Types.Count; i++)
+            for (int i = 0; i < this.resourceConsumptionsForMass.Types.Count; i++)
             {
-                int type = this.resourceConsumptions.Types[i];
+                int type = this.resourceConsumptionsForMass.Types[i];
                 HashSet<PartSim> sourcePartSet = sourcePartSets[type];
                 ResourceFlowMode mode = (ResourceFlowMode)resourceFlowModes[type];
-                double consumption = resourceConsumptions[type];
+                double consumption = resourceConsumptionsForMass[type];
                 double amount = 0d;
                 double total = 0d;
                 if (mode == ResourceFlowMode.ALL_VESSEL_BALANCE ||

@@ -713,8 +713,8 @@ namespace KerbalEngineer.VesselSimulator {
                 vecThrust += ((float)engine.thrust * engine.thrustVec);
                 vecActualThrust += ((float)engine.actualThrust * engine.thrustVec);
 
-                totalStageFlowRate += engine.ResourceConsumptions.Mass;
-                totalStageIspFlowRate += engine.ResourceConsumptions.Mass * engine.isp;
+                totalStageFlowRate += engine.ResourceConsumptionsForIsp.Mass;
+                totalStageIspFlowRate += engine.ResourceConsumptionsForIsp.Mass * engine.isp;
 
                 for (int j = 0; j < engine.appliedForces.Count; ++j) {
                     totalStageThrustForce.AddForce(engine.appliedForces[j]);
@@ -943,8 +943,8 @@ namespace KerbalEngineer.VesselSimulator {
                 // Set the resource drains for this engine
                 if (engine.SetResourceDrains(log, allParts, allFuelLines, drainingParts)) {
                     // If it is active then add the consumed resource types to the set
-                    for (int j = 0; j < engine.ResourceConsumptions.Types.Count; ++j) {
-                        drainingResources.Add(engine.ResourceConsumptions.Types[j]);
+                    for (int j = 0; j < engine.ResourceConsumptionsForMass.Types.Count; ++j) {
+                        drainingResources.Add(engine.ResourceConsumptionsForMass.Types[j]);
                     }
                 }
             }
