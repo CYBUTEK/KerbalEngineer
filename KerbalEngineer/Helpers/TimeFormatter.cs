@@ -23,44 +23,53 @@ namespace KerbalEngineer.Helpers
     {
         public static string ConvertToString(double seconds, string format = "F1")
         {
-            int years = 0;
-            int days = 0;
-            int hours = 0;
-            int minutes = 0;
-
             bool negative = seconds < 0;
 
             seconds = Math.Abs(seconds);
 
-            if (seconds > 0.0)
+            if (!negative)
             {
+
+                int years = 0;
+                int days = 0;
+                int hours = 0;
+                int minutes = 0;
+
                 years = (int)(seconds / KSPUtil.dateTimeFormatter.Year);
                 seconds -= years * KSPUtil.dateTimeFormatter.Year;
 
                 days = (int)(seconds / KSPUtil.dateTimeFormatter.Day);
                 seconds -= days * KSPUtil.dateTimeFormatter.Day;
 
-                hours = (int)(seconds / 3600.0);
+                hours =(int)(seconds / 3600.0);
                 seconds -= hours * 3600.0;
 
                 minutes = (int)(seconds / 60.0);
                 seconds -= minutes * 60.0;
+
+                if (years > 0)
+                {
+                    return string.Format("{0}y {1}d", years, days);
+                }
+                if (days > 0)
+                {
+                    return string.Format("{0}d {1}h", days, hours);
+                }
+                if (hours > 0)
+                {
+                    return string.Format("{0}h {1}m", hours, minutes);
+                }
+                if (minutes > 0)
+                {
+                    return string.Format("{0}m {1}s", minutes, seconds.ToString("F0"));
+                }
+                return string.Format("{0}s", seconds.ToString(format));
+            }
+            else
+            {
+                return  "-"  + string.Format("{0}s", seconds.ToString(format));
             }
 
-            if (years > 0)
-            {
-                return (negative ? "-" : "") + string.Format("{0}y {1}d {2}h {3}m {4}s", years, days, hours, minutes, seconds.ToString(format));
-            }
-            if (days > 0)
-            {
-                return (negative ? "-" : "") + string.Format("{0}d {1}h {2}m {3}s", days, hours, minutes, seconds.ToString(format));
-            }
-            if (hours > 0)
-            {
-                return (negative ? "-" : "") + string.Format("{0}h {1}m {2}s", hours, minutes, seconds.ToString(format));
-            }
-
-            return (negative ? "-" : "") + (minutes > 0 ? string.Format("{0}m {1}s", minutes, seconds.ToString(format)) : string.Format("{0}s", seconds.ToString(format)));
         }
     }
 }

@@ -198,6 +198,10 @@ namespace KerbalEngineer.VesselSimulator
             for (int i = 0; i < propellants.Count; ++i)
             {
                 Propellant propellant = propellants[i];
+                if (propellant.name == "ElectricCharge" || propellant.name == "IntakeAir")
+                {
+                    continue;
+                }
                 flowMass += propellant.ratio * ResourceContainer.GetResourceDensity(propellant.id);
             }
 
