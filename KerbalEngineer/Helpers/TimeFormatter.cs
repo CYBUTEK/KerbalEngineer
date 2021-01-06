@@ -46,24 +46,46 @@ namespace KerbalEngineer.Helpers
 
                 minutes = (int)(seconds / 60.0);
                 seconds -= minutes * 60.0;
-
-                if (years > 0)
-                {
-                    return string.Format("{0}y {1}d", years, days);
+                if (format == "F3")
+                { //Full time
+                    if (years > 0)
+                    {
+                        return string.Format("{0}y {1}d {2}h {3}m {4}s", years, days, hours, minutes, seconds.ToString(format));
+                    }
+                    if (days > 0)
+                    {
+                        return string.Format("{1}d {2}h {3}m {4}s", years, days, hours, minutes, seconds.ToString(format));
+                    }
+                    if (hours > 0)
+                    {
+                        return string.Format("{2}h {3}m {4}s", years, days, hours, minutes, seconds.ToString(format));
+                    }
+                    if (minutes > 0)
+                    {
+                        return string.Format("{3}m {4}s", years, days, hours, minutes, seconds.ToString(format));
+                    }
+                    return string.Format("{4}s", years, days, hours, minutes, seconds.ToString(format));
                 }
-                if (days > 0)
-                {
-                    return string.Format("{0}d {1}h", days, hours);
+                else
+                { //Short Time
+                    if (years > 0)
+                    {
+                        return string.Format("{0}y {1}d", years, days);
+                    }
+                    if (days > 0)
+                    {
+                        return string.Format("{0}d {1}h", days, hours);
+                    }
+                    if (hours > 0)
+                    {
+                        return string.Format("{0}h {1}m", hours, minutes);
+                    }
+                    if (minutes > 0)
+                    {
+                        return string.Format("{0}m {1}s", minutes, seconds.ToString("F0"));
+                    }
+                    return string.Format("{0}s", seconds.ToString(format));
                 }
-                if (hours > 0)
-                {
-                    return string.Format("{0}h {1}m", hours, minutes);
-                }
-                if (minutes > 0)
-                {
-                    return string.Format("{0}m {1}s", minutes, seconds.ToString("F0"));
-                }
-                return string.Format("{0}s", seconds.ToString(format));
             }
             else
             {

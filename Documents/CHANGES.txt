@@ -1,3 +1,6 @@
+1.1.8.3, 2021-1-5, KSP 1.11.0 #3045
+ - Restore time precision for vessel orbital period, target orbital period, and node post-burn period readouts.
+
 1.1.8.2, 2020-12-31, KSP 1.11.0 #3045
  - Fix burn time calcs for engines using Intake Air
  - All 'time" readouts now show a maximum of 2 units. (i.e. years/days or minutes/seconds)
