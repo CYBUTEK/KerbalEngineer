@@ -1,3 +1,6 @@
+1.1.8.4, 2021-6-24, KSP 1.12.0 #3140
+ - Update to KSP 1.12. No changes.
+
 1.1.8.3, 2021-1-5, KSP 1.11.0 #3045
  - Restore time precision for vessel orbital period, target orbital period, and node post-burn period readouts.
 
