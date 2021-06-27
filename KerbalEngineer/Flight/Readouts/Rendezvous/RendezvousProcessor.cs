@@ -378,7 +378,7 @@ namespace KerbalEngineer.Flight.Readouts.Rendezvous {
                     }
 
                     RelativeInclination = targetOrbit.inclination;
-                    PhaseAngle = actualSourceOrbit.GetPhaseAngle(actualTargetOrbit); //this works for some reason.
+                    PhaseAngle = OrbitExtensions.GetPhaseAngle(actualSourceOrbit,actualTargetOrbit); //this works for some reason.
 
                 } else if (overrideANDNRev) { //landing
 
@@ -393,12 +393,12 @@ namespace KerbalEngineer.Flight.Readouts.Rendezvous {
                     RelativeInclination = originOrbit.inclination;
                     Distance = Vector3d.Distance(target.GetVessel().GetWorldPos3D(), vessel.GetWorldPos3D());
                     AltitudeSeaLevel = tgt.altitude;
-                    PhaseAngle = actualSourceOrbit.GetPhaseAngle(actualTargetOrbit); //this works for some reason.
+                    PhaseAngle = OrbitExtensions.GetPhaseAngle(actualSourceOrbit, actualTargetOrbit); //this works for some reason.
 
 
                 } else { //standard 2 orbits
 
-                    RelativeInclination = originOrbit.GetRelativeInclination(targetOrbit);
+                    RelativeInclination = OrbitExtensions.GetRelativeInclination(originOrbit, targetOrbit);
 
 
 
@@ -408,7 +408,7 @@ namespace KerbalEngineer.Flight.Readouts.Rendezvous {
                     } else {
                         var node = FlightGlobals.ActiveVessel.patchedConicSolver.maneuverNodes[0];
                         if (node != null && node.nextPatch != null)
-                            Orbital.ManoeuvreNode.ManoeuvreProcessor.PostBurnRelativeInclination = node.nextPatch.GetRelativeInclination(FlightGlobals.ActiveVessel.targetObject.GetOrbit());
+                            Orbital.ManoeuvreNode.ManoeuvreProcessor.PostBurnRelativeInclination = OrbitExtensions.GetRelativeInclination(node.nextPatch, FlightGlobals.ActiveVessel.targetObject.GetOrbit());
                     }
 
 
@@ -419,7 +419,7 @@ namespace KerbalEngineer.Flight.Readouts.Rendezvous {
                     // FlightGlobals.ship_tgtVelocity = FlightGlobals.ship_obtVelocity - this.VesselTarget.GetObtVelocity();
                     // FlightGlobals.ship_tgtSpeed = FlightGlobals.ship_tgtVelocity.magnitude;
 
-                    PhaseAngle = originOrbit.GetPhaseAngle(targetOrbit);
+                    PhaseAngle = OrbitExtensions.GetPhaseAngle(originOrbit, targetOrbit);
                     InterceptAngle = CalcInterceptAngle(targetOrbit, originOrbit);
 
                     double tspd = 360 / targetOrbit.period;
@@ -438,10 +438,10 @@ namespace KerbalEngineer.Flight.Readouts.Rendezvous {
                     }
 
 
-                    TimeToAscendingNode = originOrbit.GetTimeToVector(GetAscendingNode(targetOrbit, originOrbit));
-                    TimeToDescendingNode = originOrbit.GetTimeToVector(GetDescendingNode(targetOrbit, originOrbit));
-                    AngleToAscendingNode = originOrbit.GetAngleToVector(GetAscendingNode(targetOrbit, originOrbit));
-                    AngleToDescendingNode = originOrbit.GetAngleToVector(GetDescendingNode(targetOrbit, originOrbit));
+                    TimeToAscendingNode = OrbitExtensions.GetTimeToVector(originOrbit, GetAscendingNode(targetOrbit, originOrbit));
+                    TimeToDescendingNode = OrbitExtensions.GetTimeToVector(originOrbit, GetDescendingNode(targetOrbit, originOrbit));
+                    AngleToAscendingNode = OrbitExtensions.GetAngleToVector(originOrbit, GetAscendingNode(targetOrbit, originOrbit));
+                    AngleToDescendingNode = OrbitExtensions.GetAngleToVector(originOrbit, GetDescendingNode(targetOrbit, originOrbit));
 
                     Distance = Vector3d.Distance(targetOrbit.pos, originOrbit.pos);
 

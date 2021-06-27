@@ -348,6 +348,7 @@
     <ProjectReference Include="..\KerbalEngineer.Unity\KerbalEngineer.Unity.csproj">
       <Project>{5387bb1e-32b1-4bac-b03f-100570b9554c}</Project>
       <Name>KerbalEngineer.Unity</Name>
+      <Private>False</Private>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -114,7 +114,7 @@ namespace KerbalEngineer.Flight {
                     if (isTrackingStationLimited && ScenarioUpgradeableFacilities.GetFacilityLevel(SpaceCenterFacility.TrackingStation) == 1.0f) {
                         return true;
                     }
-                    return FlightGlobals.ActiveVessel.parts.Any(p => p.HasModule<FlightEngineerModule>());
+                    return FlightGlobals.ActiveVessel.parts.Any(p => PartExtensions.HasModule<FlightEngineerModule>(p));
                 }
 
                 return true;

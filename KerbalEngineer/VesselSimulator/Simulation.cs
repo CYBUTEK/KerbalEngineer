@@ -211,7 +211,7 @@ namespace KerbalEngineer.VesselSimulator {
                 for (int i = 0; i < allFuelLines.Count; ++i) {
                     PartSim partSim = allFuelLines[i];
 
-                    CModuleFuelLine fuelLine = partSim.part.GetModule<CModuleFuelLine>();
+                    CModuleFuelLine fuelLine = PartExtensions.GetModule<CModuleFuelLine>(partSim.part);
                     if (fuelLine.target != null) {
                         PartSim targetSim;
                         if (partSimLookup.TryGetValue(fuelLine.target, out targetSim)) {

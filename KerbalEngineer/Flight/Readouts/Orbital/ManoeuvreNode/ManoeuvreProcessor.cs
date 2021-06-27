@@ -132,8 +132,8 @@ namespace KerbalEngineer.Flight.Readouts.Orbital.ManoeuvreNode
             PostBurnPeriod = node.nextPatch != null ? node.nextPatch.period : 0;
 
             UniversalTime = FlightGlobals.ActiveVessel.patchedConicSolver.maneuverNodes[0].UT;
-            AngleToPrograde = FlightGlobals.ActiveVessel.patchedConicSolver.maneuverNodes[0].patch.GetAngleToPrograde(UniversalTime);
-            AngleToRetrograde = FlightGlobals.ActiveVessel.patchedConicSolver.maneuverNodes[0].patch.GetAngleToRetrograde(UniversalTime);
+            AngleToPrograde = OrbitExtensions.GetAngleToPrograde(FlightGlobals.ActiveVessel.patchedConicSolver.maneuverNodes[0].patch, UniversalTime);
+            AngleToRetrograde = OrbitExtensions.GetAngleToRetrograde(FlightGlobals.ActiveVessel.patchedConicSolver.maneuverNodes[0].patch, UniversalTime);
 
             var burnTime = 0.0;
             var midPointTime = 0.0;

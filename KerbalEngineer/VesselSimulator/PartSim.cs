@@ -121,16 +121,16 @@ namespace KerbalEngineer.VesselSimulator {
             if (partSim.isEnginePlate)
                 partSim.noCrossFeedNodeKey = "bottom"; //sadly this only works in one direction.
             partSim.decoupledInStage = partSim.DecoupledInStage(p);
-            partSim.isFuelLine = p.HasModule<CModuleFuelLine>();
-            partSim.isRCS = p.HasModule<ModuleRCS>() || p.HasModule<ModuleRCSFX>(); //I don't think it checks inheritance.
-            partSim.isSepratron = p.IsSepratron();
+            partSim.isFuelLine = PartExtensions.HasModule<CModuleFuelLine>(p);
+            partSim.isRCS = PartExtensions.HasModule<ModuleRCS>(p) || PartExtensions.HasModule<ModuleRCSFX>(p); //I don't think it checks inheritance.
+            partSim.isSepratron = PartExtensions.IsSepratron(p);
             partSim.inverseStage = p.inverseStage;
             if (log != null) log.AppendLine("inverseStage = ", partSim.inverseStage);
             partSim.resPriorityOffset = p.resourcePriorityOffset;
             partSim.resPriorityUseParentInverseStage = p.resourcePriorityUseParentInverseStage;
             partSim.resRequestRemainingThreshold = p.resourceRequestRemainingThreshold;
 
-            partSim.baseCost = p.GetCostDry();
+            partSim.baseCost = PartExtensions.GetCostDry(p);
 
             if (log != null) log.AppendLine("Parent part = ", (p.parent == null ? "null" : p.parent.partInfo.name))
                                 .AppendLine("physicalSignificance = ", p.physicalSignificance)
@@ -141,11 +141,11 @@ namespace KerbalEngineer.VesselSimulator {
             partSim.isNoPhysics = p.physicalSignificance == Part.PhysicalSignificance.NONE ||
                                     p.PhysicsSignificance == 1;
 
-            if (p.HasModule<LaunchClamp>()) {
+            if (PartExtensions.HasModule<LaunchClamp>(p)) {
                 partSim.realMass = 0d;
                 if (log != null) log.AppendLine("Ignoring mass of launch clamp");
             } else {
-                partSim.crewMassOffset = p.getCrewAdjustment();
+                partSim.crewMassOffset = PartExtensions.getCrewAdjustment(p);
                 partSim.realMass = p.mass + partSim.crewMassOffset;
 
                 if (log != null) log.AppendLine("Using part.mass of " + partSim.realMass);
@@ -194,8 +194,8 @@ namespace KerbalEngineer.VesselSimulator {
             }
             partSim.initialVesselName = p.initialVesselName;
 
-            partSim.hasMultiModeEngine = p.HasModule<MultiModeEngine>();
-            partSim.hasModuleEngines = p.HasModule<ModuleEngines>();
+            partSim.hasMultiModeEngine = PartExtensions.HasModule<MultiModeEngine>(p);
+            partSim.hasModuleEngines = PartExtensions.HasModule<ModuleEngines>(p);
 
             partSim.isEngine = partSim.hasMultiModeEngine || partSim.hasModuleEngines;
 
@@ -873,9 +873,9 @@ namespace KerbalEngineer.VesselSimulator {
 
                 if (thePart.inverseStage > stage) {
 
-                    ModuleDecouple mdec = thePart.GetModule<ModuleDecouple>();
-                    ModuleDockingNode mdock = thePart.GetModule<ModuleDockingNode>();
-                    ModuleAnchoredDecoupler manch = thePart.GetModule<ModuleAnchoredDecoupler>();
+                    ModuleDecouple mdec = PartExtensions.GetModule<ModuleDecouple>(thePart);
+                    ModuleDockingNode mdock = PartExtensions.GetModule<ModuleDockingNode>(thePart);
+                    ModuleAnchoredDecoupler manch = PartExtensions.GetModule<ModuleAnchoredDecoupler>(thePart);
 
                     if (mdec != null) {
                         AttachNode att = thePart.FindAttachNode(mdec.explosiveNodeID);
@@ -883,7 +883,7 @@ namespace KerbalEngineer.VesselSimulator {
                             stage = thePart.inverseStage;
                         else {
                             if (att != null) {
-                                if ((thePart.parent != null && att.attachedPart == thePart.parent) || att.attachedPart.ContainedPart(chain))
+                                if ((thePart.parent != null && att.attachedPart == thePart.parent) || PartExtensions.ContainedPart(att.attachedPart, chain))
                                     stage = thePart.inverseStage;
                             } else stage = thePart.inverseStage;
                         }
@@ -893,7 +893,7 @@ namespace KerbalEngineer.VesselSimulator {
                     {
                         AttachNode att = thePart.FindAttachNode(manch.explosiveNodeID); // these stupid fuckers don't initialize in the Editor scene.
                         if (att != null) {
-                            if ((thePart.parent != null && att.attachedPart == thePart.parent) || att.attachedPart.ContainedPart(chain))
+                            if ((thePart.parent != null && att.attachedPart == thePart.parent) || PartExtensions.ContainedPart(att.attachedPart, chain))
                                 stage = thePart.inverseStage;
                         } else stage = thePart.inverseStage; //radial decouplers it seems the attach node ('surface') comes back null.
                     }
@@ -914,9 +914,9 @@ namespace KerbalEngineer.VesselSimulator {
         }
 
         private static bool IsEnginePlate(Part thePart) {
-            ModuleDecouple mdec = thePart.GetModule<ModuleDecouple>();
+            ModuleDecouple mdec = PartExtensions.GetModule<ModuleDecouple>(thePart);
             if (mdec != null && mdec.IsStageable()) {
-                ModuleDynamicNodes mdyn = thePart.GetModule<ModuleDynamicNodes>();
+                ModuleDynamicNodes mdyn = PartExtensions.GetModule<ModuleDynamicNodes>(thePart);
                 if (mdyn != null)
                     return true;
             }

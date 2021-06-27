@@ -21,7 +21,7 @@ namespace KerbalEngineer
         /// <summary>
         /// Current version of the Kerbal Engineer assembly.
         /// </summary>
-        public const string ASSEMBLY_VERSION = "1.1.8.4";
+        public const string ASSEMBLY_VERSION = "1.1.9.0";
 
         private static string assemblyFile;
         private static string assemblyName;
