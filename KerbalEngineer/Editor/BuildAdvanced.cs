@@ -44,7 +44,7 @@ namespace KerbalEngineer.Editor
         private float atmosphericMach;
         private GUIStyle bodiesButtonActiveStyle;
         private GUIStyle bodiesButtonStyle;
-        private DropDown bodiesList;
+        private PopOutElement bodiesList;
         private Rect bodiesListPosition;
         private GUIStyle buttonStyle;
         private int compactCheck;
@@ -61,6 +61,7 @@ namespace KerbalEngineer.Editor
         private GUIStyle settingStyle;
         private bool showAllStages;
         private bool showAtmosphericDetails;
+        private bool showRCS;
         private bool showSettings;
         private Stage[] stages;
         private GUIStyle titleStyle;
@@ -152,7 +153,7 @@ namespace KerbalEngineer.Editor
             try
             {
                 Instance = this;
-                bodiesList = gameObject.AddComponent<DropDown>();
+                bodiesList = gameObject.AddComponent<PopOutElement>();
                 bodiesList.DrawCallback = DrawBodiesList;
                 Load();
 
@@ -200,7 +201,7 @@ namespace KerbalEngineer.Editor
         {
             try
             {
-                if (!visible || EditorLogic.fetch == null || EditorLogic.fetch.ship.parts.Count == 0 || EditorLogic.fetch.editorScreen != EditorScreen.Parts)
+                if (!visible || EditorLogic.fetch == null || EditorLogic.fetch.ship.parts.Count == 0 )
                 {
                     return;
                 }
@@ -572,6 +573,22 @@ namespace KerbalEngineer.Editor
             }
             GUILayout.EndHorizontal();
 
+            GUILayout.BeginHorizontal();
+            GUILayout.Label("VAB Overlay X Pos.: " + BuildOverlay.BuildOverlayVessel.WindowX, settingStyle);
+            if (GUILayout.Button("<<", buttonStyle, GUILayout.Width(50 * GuiDisplaySize.Offset))) {
+                BuildOverlay.BuildOverlayVessel.WindowX-=10;
+            }
+            if (GUILayout.Button("<", buttonStyle, GUILayout.Width(50 * GuiDisplaySize.Offset))) {
+                BuildOverlay.BuildOverlayVessel.WindowX--;
+            }
+            if (GUILayout.Button(">", buttonStyle, GUILayout.Width(50 * GuiDisplaySize.Offset))) {
+                BuildOverlay.BuildOverlayVessel.WindowX++;
+            }
+            if (GUILayout.Button(">>", buttonStyle, GUILayout.Width(50 * GuiDisplaySize.Offset))) {
+                BuildOverlay.BuildOverlayVessel.WindowX+=10;
+            }
+            GUILayout.EndHorizontal();
+
             GUILayout.Label("Minimum delay between simulations: " + SimManager.minSimTime.TotalMilliseconds + "ms", settingStyle);
             GUI.skin = HighLogic.Skin;
             SimManager.minSimTime = TimeSpan.FromMilliseconds(GUILayout.HorizontalSlider((float)SimManager.minSimTime.TotalMilliseconds, 0, 2000.0f));
@@ -649,6 +666,63 @@ namespace KerbalEngineer.Editor
                 }
             }
             GUILayout.EndVertical();
+        }
+
+        /// <summary>
+        ///     Drwas the RCS crap ratio column.
+        /// </summary>
+        private void DrawRCS() {
+
+            GUILayout.BeginVertical(GUILayout.Width(85.0f * GuiDisplaySize.Offset));
+            GUILayout.Label("RCS ISP", titleStyle);
+            for (int i = 0; i < stagesLength; ++i) {
+                stage = stages[i];
+                if (showAllStages || stage.deltaV > 0.0) {
+                    GUILayout.Label(stage.RCSIsp.ToString("F2") +"s", infoStyle);
+                }
+            }
+            GUILayout.EndVertical();
+
+            GUILayout.BeginVertical(GUILayout.Width(85.0f * GuiDisplaySize.Offset));
+            GUILayout.Label("RCS THRUST", titleStyle);
+            for (int i = 0; i < stagesLength; ++i) {
+                stage = stages[i];
+                if (showAllStages || stage.deltaV > 0.0) {
+                    GUILayout.Label(Units.ToForce(stage.RCSThrust), infoStyle);
+                }
+            }
+            GUILayout.EndVertical();
+
+            GUILayout.BeginVertical(GUILayout.Width(105.0f * GuiDisplaySize.Offset));
+            GUILayout.Label("RCS TWR (MAX)", titleStyle);
+            for (int i = 0; i < stagesLength; ++i) {
+                stage = stages[i];
+                if (showAllStages || stage.deltaV > 0.0) {
+                    GUILayout.Label(stage.RCSTWRStart.ToString("F2") + " (" + stage.RCSTWREnd.ToString("F2") + ")", infoStyle);
+                }
+            }
+            GUILayout.EndVertical();
+
+            GUILayout.BeginVertical(GUILayout.Width(120.0f * GuiDisplaySize.Offset));
+            GUILayout.Label("RCS DELTA-V (MAX)", titleStyle);
+            for (int i = 0; i < stagesLength; ++i) {
+                stage = stages[i];
+                if (showAllStages || stage.deltaV > 0.0) {
+                    GUILayout.Label(Units.ToSpeed(stage.RCSdeltaVStart,0) + " (" + Units.ToSpeed(stage.RCSdeltaVEnd,0) + ")", infoStyle);
+                }
+            }
+            GUILayout.EndVertical();
+
+            GUILayout.BeginVertical(GUILayout.Width(105.0f * GuiDisplaySize.Offset));
+            GUILayout.Label("RCS BURN TIME", titleStyle);
+            for (int i = 0; i < stagesLength; ++i) {
+                stage = stages[i];
+                if (showAllStages || stage.deltaV > 0.0) {
+                    GUILayout.Label(Units.ToTime(stage.RCSBurnTime), infoStyle);
+                }
+            }
+            GUILayout.EndVertical();
+
         }
 
         private void EditorLock(bool state)
@@ -841,7 +915,12 @@ namespace KerbalEngineer.Editor
 
                     bodiesListPosition = new Rect(position.width - 452.0f * GuiDisplaySize.Offset, 5.0f, 125.0f * GuiDisplaySize.Offset, 20.0f);
                     bodiesList.enabled = GUI.Toggle(bodiesListPosition, bodiesList.enabled, "BODY: " + CelestialBodies.SelectedBody.Name.ToUpper(), buttonStyle);
-                    bodiesList.SetPosition(bodiesListPosition.Translate(position));
+                    bodiesList.SetPosition(bodiesListPosition.Translate(position), bodiesListPosition);
+
+                    if (GUI.Toggle(new Rect(position.width - 485.0f * GuiDisplaySize.Offset, 5.0f, 30.0f * GuiDisplaySize.Offset, 20.0f), showRCS, "RCS", buttonStyle) != showRCS) {
+                        hasChanged = true;
+                        showRCS = !showRCS;
+                    }
                 }
                 else
                 {
@@ -860,12 +939,18 @@ namespace KerbalEngineer.Editor
                     DrawPartCount();
                     DrawCost();
                     DrawMass();
-                    DrawIsp();
-                    DrawThrust();
-                    DrawTorque();
-                    DrawTwr();
-                    DrawDeltaV();
-                    DrawBurnTime();
+
+                    if (showRCS)
+                        DrawRCS();
+                    else {
+                        DrawIsp();
+                        DrawThrust();
+                        DrawTorque();
+                        DrawTwr();
+                        DrawDeltaV();
+                        DrawBurnTime();
+                    }
+
                     GUILayout.EndHorizontal();
 
                     if (showAtmosphericDetails && !compactMode)

@@ -24,14 +24,11 @@ using KerbalEngineer.Flight.Sections;
 
 #endregion
 
-namespace KerbalEngineer.Flight.Readouts.Body
-{
-    public class HighAtmosphereHeight : ReadoutModule
-    {
+namespace KerbalEngineer.Flight.Readouts.Body {
+    public class HighAtmosphereHeight : ReadoutModule {
         #region Constructors
 
-        public HighAtmosphereHeight()
-        {
+        public HighAtmosphereHeight() {
             this.Name = "High Atmosphere Alt.";
             this.Category = ReadoutCategory.GetCategory("Body");
             this.HelpString = "The altitude where the upper atmosphere begins.";
@@ -42,12 +39,12 @@ namespace KerbalEngineer.Flight.Readouts.Body
 
         #region Methods: public
 
-        public override void Draw(SectionModule section)
-        {
-            if (FlightGlobals.ActiveVessel.mainBody.atmosphere)
-            {
+        public override void Draw(Unity.Flight.ISectionModule section) {
+            if (FlightGlobals.ActiveVessel.mainBody.atmosphere) {
                 this.DrawLine(FlightGlobals.ActiveVessel.mainBody.scienceValues.flyingAltitudeThreshold.ToDistance(), section.IsHud);
-            }
+            } else
+                this.DrawLine("N/A", section.IsHud);
+
         }
 
         #endregion

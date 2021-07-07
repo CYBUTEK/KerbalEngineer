@@ -137,7 +137,7 @@ namespace KerbalEngineer.Flight.Readouts.Surface
                 }
                 else
                 {
-                    var m = FlightGlobals.ActiveVessel.parts.Sum(part => part.GetWetMass()) * 1000.0;
+                    var m = FlightGlobals.ActiveVessel.parts.Sum(part => PartExtensions.GetWetMass(part)) * 1000.0;
                     var g = FlightGlobals.getGeeForceAtPosition(FlightGlobals.ship_position).magnitude;
                     var a = FlightGlobals.ActiveVessel.parts.Sum(part => part.DragCubes.AreaDrag) * PhysicsGlobals.DragCubeMultiplier;
                     var p = FlightGlobals.ActiveVessel.atmDensity;

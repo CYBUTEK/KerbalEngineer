@@ -34,7 +34,7 @@ namespace KerbalEngineer.Flight.Readouts.Vessel
             IsDefault = true;
         }
 
-        public override void Draw(SectionModule section)
+        public override void Draw(Unity.Flight.ISectionModule section)
         {
             if (SimulationProcessor.ShowDetails == false || StageManager.Instance == null)
             {

@@ -28,10 +28,8 @@ using UnityEngine;
 
 #endregion
 
-namespace KerbalEngineer.Flight
-{
-    public class ActionMenuGui : MonoBehaviour
-    {
+namespace KerbalEngineer.Flight {
+    public class ActionMenuGui : MonoBehaviour {
         #region Fields
 
         private int numberOfSections;
@@ -51,27 +49,19 @@ namespace KerbalEngineer.Flight
 
         #region Initialisation
 
-        private void Awake()
-        {
-            try
-            {
+        private void Awake() {
+            try {
                 this.enabled = false;
                 MyLogger.Log("ActionMenuGui was created.");
-            }
-            catch (Exception ex)
-            {
+            } catch (Exception ex) {
                 MyLogger.Exception(ex);
             }
         }
 
-        private void Start()
-        {
-            try
-            {
+        private void Start() {
+            try {
                 this.InitialiseStyles();
-            }
-            catch (Exception ex)
-            {
+            } catch (Exception ex) {
                 MyLogger.Exception(ex);
             }
         }
@@ -86,12 +76,9 @@ namespace KerbalEngineer.Flight
         /// <summary>
         ///     Initialises all the styles required for this object.
         /// </summary>
-        private void InitialiseStyles()
-        {
-            try
-            {
-                this.windowStyle = new GUIStyle
-                {
+        private void InitialiseStyles() {
+            try {
+                this.windowStyle = new GUIStyle {
                     border = new RectOffset(10, 0, 20, 10),
                     margin = new RectOffset(0, 0, 3, 0),
                     padding = new RectOffset(5, 5, 26, 5),
@@ -101,8 +88,7 @@ namespace KerbalEngineer.Flight
                     }
                 };
 
-                this.buttonStyle = new GUIStyle(HighLogic.Skin.button)
-                {
+                this.buttonStyle = new GUIStyle(HighLogic.Skin.button) {
                     normal =
                     {
                         textColor = Color.white,
@@ -114,9 +100,7 @@ namespace KerbalEngineer.Flight
                     fontStyle = FontStyle.Bold,
                     fixedHeight = 20.0f,
                 };
-            }
-            catch (Exception ex)
-            {
+            } catch (Exception ex) {
                 MyLogger.Exception(ex, "ActionMenu->InitialiseStyles");
             }
         }
@@ -128,27 +112,20 @@ namespace KerbalEngineer.Flight
         /// <summary>
         ///     Called to draw the menu when the UI is enabled.
         /// </summary>
-        private void OnGUI()
-        {
-            try
-            {
-                if (this.Hidden || !FlightEngineerCore.IsDisplayable)
-                {
+        private void OnGUI() {
+            try {
+                if (this.Hidden || !FlightEngineerCore.IsDisplayable) {
                     return;
                 }
 
-                if (!this.position.Contains(Event.current.mousePosition) && !this.StayOpen && !this.Hovering)
-                {
+                if (!this.position.Contains(Event.current.mousePosition) && !this.StayOpen && !this.Hovering) {
                     this.enabled = false;
                     return;
                 }
 
-                if (this.numberOfSections < SectionLibrary.NumberOfSections)
-                {
+                if (this.numberOfSections < SectionLibrary.NumberOfSections) {
                     this.numberOfSections = SectionLibrary.NumberOfSections;
-                }
-                else if (this.numberOfSections > SectionLibrary.NumberOfSections)
-                {
+                } else if (this.numberOfSections > SectionLibrary.NumberOfSections) {
                     this.numberOfSections = SectionLibrary.NumberOfSections;
                     this.position.height = 0;
                 }
@@ -156,9 +133,7 @@ namespace KerbalEngineer.Flight
                 GUI.skin = null;
                 this.position.x = Mathf.Clamp(Screen.width * 0.5f + this.transform.parent.position.x - 19.0f, Screen.width * 0.5f, Screen.width - this.position.width);
                 this.position = GUILayout.Window(this.GetInstanceID(), this.position, this.Window, string.Empty, this.windowStyle);
-            }
-            catch (Exception ex)
-            {
+            } catch (Exception ex) {
                 MyLogger.Exception(ex);
             }
         }
@@ -166,10 +141,8 @@ namespace KerbalEngineer.Flight
         /// <summary>
         ///     Draws the menu window.
         /// </summary>
-        private void Window(int windowId)
-        {
-            try
-            {
+        private void Window(int windowId) {
+            try {
                 GUILayout.BeginVertical();
 
                 this.DrawControlBarButton();
@@ -177,12 +150,10 @@ namespace KerbalEngineer.Flight
                 this.DrawSections(SectionLibrary.StockSections);
                 this.DrawSections(SectionLibrary.CustomSections);
                 GUILayout.Space(5.0f);
-                this.DrawNewButton();
+                if (HighLogic.LoadedSceneIsFlight) this.DrawNewButton();
 
                 GUILayout.EndVertical();
-            }
-            catch (Exception ex)
-            {
+            } catch (Exception ex) {
                 MyLogger.Exception(ex);
             }
         }
@@ -190,21 +161,16 @@ namespace KerbalEngineer.Flight
         /// <summary>
         ///     Draws and performs the control bar button action.
         /// </summary>
-        private void DrawControlBarButton()
-        {
-            try
-            {
+        private void DrawControlBarButton() {
+            try {
                 GUILayout.BeginHorizontal();
                 DisplayStack.Instance.Hidden = !GUILayout.Toggle(!DisplayStack.Instance.Hidden, "SHOW ENGINEER", this.buttonStyle);
-                if (GUILayout.Toggle(DisplayStack.Instance.ShowControlBar, "CONTROL BAR", this.buttonStyle) != DisplayStack.Instance.ShowControlBar)
-                {
+                if (GUILayout.Toggle(DisplayStack.Instance.ShowControlBar, "CONTROL BAR", this.buttonStyle) != DisplayStack.Instance.ShowControlBar) {
                     DisplayStack.Instance.ShowControlBar = !DisplayStack.Instance.ShowControlBar;
                     DisplayStack.Instance.RequestResize();
                 }
                 GUILayout.EndHorizontal();
-            }
-            catch (Exception ex)
-            {
+            } catch (Exception ex) {
                 MyLogger.Exception(ex);
             }
         }
@@ -212,20 +178,15 @@ namespace KerbalEngineer.Flight
         /// <summary>
         ///     Draws an action list for the supplied sections.
         /// </summary>
-        private void DrawSections(IEnumerable<SectionModule> sections)
-        {
-            try
-            {
-                foreach (var section in sections)
-                {
+        private void DrawSections(IEnumerable<SectionModule> sections) {
+            try {
+                foreach (var section in sections) {
                     GUILayout.BeginHorizontal();
                     section.IsVisible = GUILayout.Toggle(section.IsVisible, section.Name.ToUpper(), this.buttonStyle);
                     section.IsEditorVisible = GUILayout.Toggle(section.IsEditorVisible, "EDIT", this.buttonStyle, GUILayout.Width(50.0f));
                     GUILayout.EndHorizontal();
                 }
-            }
-            catch (Exception ex)
-            {
+            } catch (Exception ex) {
                 MyLogger.Exception(ex);
             }
         }
@@ -233,27 +194,20 @@ namespace KerbalEngineer.Flight
         /// <summary>
         ///     Draws and performs the new section button action.
         /// </summary>
-        private void DrawNewButton()
-        {
-            try
-            {
+        private void DrawNewButton() {
+            try {
                 GUILayout.BeginHorizontal();
 
-                if (GUILayout.Button("NEW CUSTOM SECTION", this.buttonStyle))
-                {
-                    SectionLibrary.CustomSections.Add(new SectionModule
-                    {
+                if (GUILayout.Button("NEW CUSTOM SECTION", this.buttonStyle)) {
+                    SectionLibrary.CustomSections.Add(new SectionModule {
                         Name = "Custom " + (SectionLibrary.CustomSections.Count + 1),
                         Abbreviation = "CUST " + (SectionLibrary.CustomSections.Count + 1),
                         IsVisible = true,
-                        IsCustom = true,
                         IsEditorVisible = true
                     });
                 }
                 GUILayout.EndHorizontal();
-            }
-            catch (Exception ex)
-            {
+            } catch (Exception ex) {
                 MyLogger.Exception(ex);
             }
         }
@@ -262,14 +216,10 @@ namespace KerbalEngineer.Flight
 
         #region Destruction
 
-        private void OnDestroy()
-        {
-            try
-            {
+        private void OnDestroy() {
+            try {
                 MyLogger.Log("ActionMenuGui was destroyed.");
-            }
-            catch (Exception ex)
-            {
+            } catch (Exception ex) {
                 MyLogger.Exception(ex);
             }
         }

@@ -21,75 +21,114 @@
 
 #endregion
 
-namespace KerbalEngineer.Flight.Sections
-{
+namespace KerbalEngineer.Flight.Sections {
     using System.Collections.Generic;
     using System.Linq;
     using Readouts;
     using Settings;
     using UnityEngine;
+    using TrackingStation;
 
-    public static class SectionLibrary
-    {
+    public static class SectionLibrary {
         #region Constructors
         /// <summary>
         ///     Sets up and populates the library with the stock sections on creation.
         /// </summary>
-        static SectionLibrary()
-        {
+        static SectionLibrary() {
+
             StockSections = new List<SectionModule>();
             CustomSections = new List<SectionModule>();
 
-            StockSections.Add(new SectionModule
-            {
+            SectionModule obt = new SectionModule {
                 Name = "ORBITAL",
                 Abbreviation = "ORBT",
                 ReadoutModules = ReadoutLibrary.GetCategory(ReadoutCategory.GetCategory("Orbital")).Where(r => r.IsDefault).ToList()
-            });
+            };
 
-            StockSections.Add(new SectionModule
-            {
+            obt.ApplyPreset(Presets.PresetLibrary.GetPreset(obt.Abbreviation));
+            StockSections.Add(obt);
+
+            SectionModule srf = new SectionModule {
                 Name = "SURFACE",
                 Abbreviation = "SURF",
                 ReadoutModules = ReadoutLibrary.GetCategory(ReadoutCategory.GetCategory("Surface")).Where(r => r.IsDefault).ToList()
-            });
+            };
 
-            StockSections.Add(new SectionModule
-            {
+            srf.ApplyPreset(Presets.PresetLibrary.GetPreset(srf.Abbreviation));
+            StockSections.Add(srf);
+
+            SectionModule vsl = new SectionModule {
                 Name = "VESSEL",
                 Abbreviation = "VESL",
                 ReadoutModules = ReadoutLibrary.GetCategory(ReadoutCategory.GetCategory("Vessel")).Where(r => r.IsDefault).ToList()
-            });
+            };
 
-            StockSections.Add(new SectionModule
-            {
+            vsl.ApplyPreset(Presets.PresetLibrary.GetPreset(vsl.Abbreviation));
+            StockSections.Add(vsl);
+
+            SectionModule rdz = new SectionModule {
                 Name = "RENDEZVOUS",
                 Abbreviation = "RDZV",
                 ReadoutModules = ReadoutLibrary.GetCategory(ReadoutCategory.GetCategory("Rendezvous")).Where(r => r.IsDefault).ToList()
-            });
+            };
 
-            CustomSections.Add(new SectionModule
-            {
+            rdz.ApplyPreset(Presets.PresetLibrary.GetPreset(rdz.Abbreviation));
+            StockSections.Add(rdz);
+
+            SectionModuleTS ts = new SectionModuleTS {
+                Name = "TRACKING",
+                Abbreviation = "TRCK",
+                ReadoutModules = ReadoutLibrary.GetCategory(ReadoutCategory.GetCategory("Rendezvous")).Where(r => r.IsDefault).ToList(),
+                IsVisible = true,
+                showFloatButton = false
+            };
+
+            ts.ApplyPreset(Presets.PresetLibrary.GetPreset(ts.Abbreviation));
+            TrackingStationSection = ts;
+
+            var thr = new SectionModule {
                 Name = "THERMAL",
                 Abbreviation = "HEAT",
                 ReadoutModules = ReadoutLibrary.GetCategory(ReadoutCategory.GetCategory("Thermal")).Where(r => r.IsDefault).ToList(),
-                IsCustom = true
-            });
+            };
 
-            CustomSections.Add(new SectionModule
-            {
+            thr.ApplyPreset(Presets.PresetLibrary.GetPreset(thr.Abbreviation));
+            StockSections.Add(thr);
+
+            var body = new SectionModule {
                 Name = "BODY",
                 Abbreviation = "BODY",
                 ReadoutModules = ReadoutLibrary.GetCategory(ReadoutCategory.GetCategory("Body")).Where(r => r.IsDefault).ToList(),
-                IsCustom = true
-            });
+            };
 
-            SectionModule hud1 = new SectionModule
-            {
+            body.ApplyPreset(Presets.PresetLibrary.GetPreset(body.Abbreviation));
+            StockSections.Add(body);
+
+            var burn = new SectionModule {
+                Name = "MANEUVER",
+                Abbreviation = "BURN",
+                ReadoutModules = ReadoutLibrary.GetCategory(ReadoutCategory.GetCategory("Orbital")).Where(r => r.Name.StartsWith("Node")).ToList()
+            };
+
+            burn.ApplyPreset(Presets.PresetLibrary.GetPreset(burn.Abbreviation));
+            StockSections.Add(burn);
+
+
+            var land = new SectionModule {
+                Name = "LANDING",
+                Abbreviation = "LAND",
+                ReadoutModules = ReadoutLibrary.GetCategory(ReadoutCategory.GetCategory("Surface")).Where(r => r.Name.StartsWith("Impact")).ToList()
+            };
+            land.ReadoutModules.AddRange(ReadoutLibrary.GetCategory(ReadoutCategory.GetCategory("Vessel")).Where(r => r.Name.StartsWith("Suicide")).ToList());
+            land.ApplyPreset(Presets.PresetLibrary.GetPreset(land.Abbreviation));
+            StockSections.Add(land);
+
+
+            SectionModule hud1 = new SectionModule {
                 Name = "HUD 1",
                 Abbreviation = "HUD 1",
-                IsCustom = true,
                 IsVisible = true,
+                showButton = false,
                 ReadoutModules = new List<ReadoutModule>
                 {
                     ReadoutLibrary.GetReadout("ApoapsisHeight"),
@@ -98,17 +137,18 @@ namespace KerbalEngineer.Flight.Sections
                     ReadoutLibrary.GetReadout("TimeToPeriapsis")
                 },
             };
-            hud1.FloatingPositionX = Screen.width * 0.25f - (hud1.ReadoutModules.First().ContentWidth * 0.5f);
+            hud1.FloatingPositionX = Screen.width * 0.33f - (hud1.ReadoutModules.First().ContentWidth * 0.5f);
             hud1.FloatingPositionY = 0.0f;
             hud1.IsHud = true;
-            CustomSections.Add(hud1);
 
-            SectionModule hud2 = new SectionModule
-            {
+            hud1.ApplyPreset(Presets.PresetLibrary.GetPreset(hud1.Abbreviation));
+            StockSections.Add(hud1);
+
+            SectionModule hud2 = new SectionModule {
                 Name = "HUD 2",
                 Abbreviation = "HUD 2",
-                IsCustom = true,
                 IsVisible = true,
+                showButton = false,
                 ReadoutModules = new List<ReadoutModule>
                 {
                     ReadoutLibrary.GetReadout("AltitudeTerrain"),
@@ -118,11 +158,16 @@ namespace KerbalEngineer.Flight.Sections
                     ReadoutLibrary.GetReadout("MachNumber")
                 },
             };
-            hud2.FloatingPositionX = Screen.width * 0.75f - (hud2.ReadoutModules.First().ContentWidth * 0.5f);
+            hud2.FloatingPositionX = Screen.width * 0.7f - (hud2.ReadoutModules.First().ContentWidth * 0.5f);
             hud2.FloatingPositionY = 0.0f;
             hud2.IsHud = true;
-            CustomSections.Add(hud2);
+
+            hud2.ApplyPreset(Presets.PresetLibrary.GetPreset(hud2.Abbreviation));
+            StockSections.Add(hud2);
         }
+
+        public static SectionModuleTS TrackingStationSection { get; set; }
+
         #endregion
 
         #region Properties
@@ -153,8 +198,7 @@ namespace KerbalEngineer.Flight.Sections
         /// <summary>
         ///     Fixed update all of the sections.
         /// </summary>
-        public static void FixedUpdate()
-        {
+        public static void FixedUpdate() {
             FixedUpdateSections(StockSections);
             FixedUpdateSections(CustomSections);
         }
@@ -162,8 +206,7 @@ namespace KerbalEngineer.Flight.Sections
         /// <summary>
         ///     Update all of the sections and process section counts.
         /// </summary>
-        public static void Update()
-        {
+        public static void Update() {
             NumberOfStackSections = 0;
             NumberOfSections = 0;
 
@@ -176,12 +219,9 @@ namespace KerbalEngineer.Flight.Sections
         /// <summary>
         ///     Fixed updates a list of sections.
         /// </summary>
-        private static void FixedUpdateSections(IEnumerable<SectionModule> sections)
-        {
-            foreach (SectionModule section in sections)
-            {
-                if (section.IsVisible)
-                {
+        private static void FixedUpdateSections(IEnumerable<SectionModule> sections) {
+            foreach (SectionModule section in sections) {
+                if (section.IsVisible) {
                     section.FixedUpdate();
                 }
             }
@@ -190,31 +230,21 @@ namespace KerbalEngineer.Flight.Sections
         /// <summary>
         ///     Updates a list of sections and increments the section counts.
         /// </summary>
-        private static void UpdateSections(IEnumerable<SectionModule> sections)
-        {
-            foreach (SectionModule section in sections)
-            {
-                if (section.IsVisible)
-                {
-                    if (!section.IsFloating)
-                    {
-                        foreach (ReadoutModule readout in section.ReadoutModules)
-                        {
-                            if (readout.ResizeRequested)
-                            {
+        private static void UpdateSections(IEnumerable<SectionModule> sections) {
+            foreach (SectionModule section in sections) {
+                if (section.IsVisible) {
+                    if (!section.IsFloating) {
+                        foreach (ReadoutModule readout in section.ReadoutModules) {
+                            if (readout.ResizeRequested) {
                                 DisplayStack.Instance.RequestResize();
                                 readout.ResizeRequested = false;
                             }
                         }
 
                         NumberOfStackSections++;
-                    }
-                    else
-                    {
-                        foreach (ReadoutModule readout in section.ReadoutModules)
-                        {
-                            if (readout.ResizeRequested)
-                            {
+                    } else {
+                        foreach (ReadoutModule readout in section.ReadoutModules) {
+                            if (readout.ResizeRequested) {
                                 section.Window.RequestResize();
                                 readout.ResizeRequested = false;
                             }
@@ -234,40 +264,66 @@ namespace KerbalEngineer.Flight.Sections
         /// <summary>
         ///     Loads the state of all stored sections.
         /// </summary>
-        public static void Load()
-        {
-            if (!SettingHandler.Exists("SectionLibrary.xml"))
-            {
+        public static void Load() {
+            if (!SettingHandler.Exists("SectionLibrary.xml")) {
                 return;
             }
 
-            GetAllSections().ForEach(s =>
-            {
-                if (s.Window != null)
-                {
+            GetAllSections().ForEach(s => {
+                if (s.Window != null) {
                     Object.Destroy(s.Window);
                 }
             });
 
-            SettingHandler handler = SettingHandler.Load("SectionLibrary.xml", new[] { typeof(List<SectionModule>) });
+            SettingHandler handler = SettingHandler.Load("SectionLibrary.xml", new[] { typeof(List<SectionModule>), typeof(SectionModuleTS) });
             StockSections = handler.Get("StockSections", StockSections);
             CustomSections = handler.Get("CustomSections", CustomSections);
 
-            foreach (SectionModule section in GetAllSections())
-            {
+            foreach (SectionModule section in GetAllSections()) {
                 section.ClearNullReadouts();
             }
         }
 
         /// <summary>
+        ///     Loads the state of all stored sections.
+        /// </summary>
+        public static void LoadTS() {
+            if (!SettingHandler.Exists("SectionLibraryTS.xml")) {
+                return;
+            }
+
+            GetAllSections().ForEach(s => {
+                if (s.Window != null) {
+                    Object.Destroy(s.Window);
+                }
+            });
+
+            SettingHandler handler = SettingHandler.Load("SectionLibraryTS.xml", new[] { typeof(List<SectionModule>), typeof(SectionModuleTS) });
+            TrackingStationSection = handler.Get("TrackingStation", TrackingStationSection);
+
+            foreach (SectionModule section in GetAllSections()) {
+                section.ClearNullReadouts();
+            }
+        }
+
+
+        /// <summary>
         ///     Saves the state of all the stored sections.
         /// </summary>
-        public static void Save()
-        {
+        public static void Save() {
             SettingHandler handler = new SettingHandler();
             handler.Set("StockSections", StockSections);
             handler.Set("CustomSections", CustomSections);
             handler.Save("SectionLibrary.xml");
+        }
+
+        /// <summary>
+        ///     Saves the state of all the stored sections.
+        /// </summary>
+        public static void SaveTS() {
+            SettingHandler handler = new SettingHandler();
+            handler.Set("TrackingStation", TrackingStationSection);
+            handler.Save("SectionLibraryTS.xml");
         }
         #endregion
 
@@ -275,8 +331,7 @@ namespace KerbalEngineer.Flight.Sections
         /// <summary>
         ///     Gets a list containing all section modules.
         /// </summary>
-        public static List<SectionModule> GetAllSections()
-        {
+        public static List<SectionModule> GetAllSections() {
             List<SectionModule> sections = new List<SectionModule>();
             sections.AddRange(StockSections);
             sections.AddRange(CustomSections);
@@ -286,48 +341,42 @@ namespace KerbalEngineer.Flight.Sections
         /// <summary>
         ///     Gets a custom section that has the specified name.
         /// </summary>
-        public static SectionModule GetCustomSection(string name)
-        {
+        public static SectionModule GetCustomSection(string name) {
             return CustomSections.FirstOrDefault(s => s.Name == name);
         }
 
         /// <summary>
         ///     Gets a section that has the specified name.
         /// </summary>
-        public static SectionModule GetSection(string name)
-        {
+        public static SectionModule GetSection(string name) {
             return GetStockSection(name) ?? GetCustomSection(name);
         }
 
         /// <summary>
         ///     Gets a stock section that has the specified name.
         /// </summary>
-        public static SectionModule GetStockSection(string name)
-        {
+        public static SectionModule GetStockSection(string name) {
             return StockSections.FirstOrDefault(s => s.Name == name);
         }
 
         /// <summary>
         ///     Removes a custom section witht he specified name.
         /// </summary>
-        public static bool RemoveCustomSection(string name)
-        {
+        public static bool RemoveCustomSection(string name) {
             return CustomSections.Remove(GetCustomSection(name));
         }
 
         /// <summary>
         ///     Removes a section with the specified name.
         /// </summary>
-        public static bool RemoveSection(string name)
-        {
+        public static bool RemoveSection(string name) {
             return RemoveStockSection(name) || RemoveCustomSection(name);
         }
 
         /// <summary>
         ///     Removes a stock section with the specified name.
         /// </summary>
-        public static bool RemoveStockSection(string name)
-        {
+        public static bool RemoveStockSection(string name) {
             return StockSections.Remove(GetStockSection(name));
         }
         #endregion

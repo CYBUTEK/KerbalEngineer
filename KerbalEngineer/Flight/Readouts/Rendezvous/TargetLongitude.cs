@@ -20,6 +20,7 @@
 namespace KerbalEngineer.Flight.Readouts.Surface
 {
     using Helpers;
+    using Rendezvous;
     using Sections;
 
     public class TargetLongitude : ReadoutModule
@@ -32,15 +33,27 @@ namespace KerbalEngineer.Flight.Readouts.Surface
             IsDefault = false;
         }
 
-        public override void Draw(SectionModule section)
+        public override void Draw(Unity.Flight.ISectionModule section)
         {
-            var target = FlightGlobals.fetch.VesselTarget;
+            if (!RendezvousProcessor.ShowDetails) return;
+
+            var target = Rendezvous.RendezvousProcessor.targetVessel;
             if (target != null)
             {
                 var vessel = target.GetVessel();
-                double longitude = AngleHelper.Clamp180(vessel.longitude);
-                DrawLine(Units.ToAngleDMS(longitude) + (longitude < 0.0 ? " W" : " E"), section.IsHud);
+                if(vessel == null)
+                {
+                    DrawLine("N/A", section.IsHud);
+                } else
+                {
+                    double longitude = AngleHelper.Clamp180(vessel.longitude);
+                    DrawLine(Units.ToAngleDMS(longitude) + (longitude < 0.0 ? " W" : " E"), section.IsHud);
+                }
             }
+        }
+
+        public override void Update() {
+            RendezvousProcessor.RequestUpdate();
         }
     }
 }

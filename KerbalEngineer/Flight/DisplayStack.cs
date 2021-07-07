@@ -221,9 +221,10 @@ namespace KerbalEngineer.Flight
         private void DrawControlBar()
         {
             GUILayout.Label("FLIGHT ENGINEER " + EngineerGlobals.ASSEMBLY_VERSION, this.titleStyle);
-
-            this.DrawControlBarButtons(SectionLibrary.StockSections);
-            this.DrawControlBarButtons(SectionLibrary.CustomSections);
+            var list = new List<SectionModule>();
+            list.AddRange(SectionLibrary.StockSections);
+            list.AddRange(SectionLibrary.CustomSections);
+            this.DrawControlBarButtons(list);
         }
 
         /// <summary>
@@ -232,7 +233,7 @@ namespace KerbalEngineer.Flight
         private void DrawControlBarButtons(IEnumerable<SectionModule> sections)
         {
             var index = 0;
-            foreach (var section in sections.Where(s => !string.IsNullOrEmpty(s.Abbreviation) || !s.IsCustom))
+            foreach (var section in sections.Where(s => s.showButton))
             {
                 if (index % 4 == 0)
                 {

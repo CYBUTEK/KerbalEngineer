@@ -11,8 +11,7 @@
 // You should have received a copy of the GNU General Public License along with this program. If not,
 // see <http://www.gnu.org/licenses/>.
 
-namespace KerbalEngineer.Flight.Readouts
-{
+namespace KerbalEngineer.Flight.Readouts {
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -33,18 +32,16 @@ namespace KerbalEngineer.Flight.Readouts
     using SemiMinorAxis = Orbital.SemiMinorAxis;
     using TimeToApoapsis = Orbital.TimeToApoapsis;
     using TimeToPeriapsis = Orbital.TimeToPeriapsis;
+    using Sections;
 
-    public static class ReadoutLibrary
-    {
+    public static class ReadoutLibrary {
         private static List<ReadoutModule> readouts = new List<ReadoutModule>();
 
         /// <summary>
         /// Sets up and populates the readout library with the stock readouts.
         /// </summary>
-        static ReadoutLibrary()
-        {
-            try
-            {
+        static ReadoutLibrary() {
+            try {
                 ReadoutCategory.SetCategory("Orbital", "Readout for orbital manovoeures.");
                 ReadoutCategory.SetCategory("Surface", "Surface and atmospheric readouts.");
                 ReadoutCategory.SetCategory("Vessel", "Vessel performance statistics.");
@@ -67,7 +64,6 @@ namespace KerbalEngineer.Flight.Readouts
                 readouts.Add(new Eccentricity());
                 readouts.Add(new OrbitalSpeed());
                 readouts.Add(new OrbitalPeriod());
-                readouts.Add(new CurrentSoi());
                 readouts.Add(new LongitudeOfAscendingNode());
                 readouts.Add(new LongitudeOfPeriapsis());
                 readouts.Add(new ArgumentOfPeriapsis());
@@ -92,7 +88,9 @@ namespace KerbalEngineer.Flight.Readouts
                 readouts.Add(new PostBurnApoapsis());
                 readouts.Add(new PostBurnPeriapsis());
                 readouts.Add(new PostBurnInclination());
+                readouts.Add(new PostBurnRealtiveInclination());
                 readouts.Add(new PostBurnPeriod());
+                readouts.Add(new PostBurnEccentricity());
                 readouts.Add(new SpeedAtApoapsis());
                 readouts.Add(new SpeedAtPeriapsis());
                 readouts.Add(new TimeToAtmosphere());
@@ -116,8 +114,9 @@ namespace KerbalEngineer.Flight.Readouts
                 readouts.Add(new Situation());
                 readouts.Add(new Slope());
                 readouts.Add(new ImpactTime());
-                readouts.Add(new ImpactLongitude());
                 readouts.Add(new ImpactLatitude());
+                readouts.Add(new ImpactLongitude());
+                readouts.Add(new ImpactMarker());
                 readouts.Add(new ImpactAltitude());
                 readouts.Add(new ImpactBiome());
 
@@ -134,26 +133,35 @@ namespace KerbalEngineer.Flight.Readouts
                 readouts.Add(new ThrustOffsetAngle());
                 readouts.Add(new ThrustTorque());
                 readouts.Add(new SurfaceThrustToWeight());
+                readouts.Add(new Gravity());
                 readouts.Add(new Acceleration());
                 readouts.Add(new SuicideBurnAltitude());
                 readouts.Add(new SuicideBurnDistance());
                 readouts.Add(new SuicideBurnDeltaV());
+                readouts.Add(new SuicideBurnCountdown());
+                readouts.Add(new SuicideBurnLength());
                 readouts.Add(new IntakeAirUsage());
                 readouts.Add(new IntakeAirDemand());
                 readouts.Add(new IntakeAirSupply());
                 readouts.Add(new IntakeAirDemandSupply());
                 readouts.Add(new PartCount());
+                readouts.Add(new Throttle());
                 readouts.Add(new Heading());
                 readouts.Add(new Pitch());
                 readouts.Add(new Roll());
                 readouts.Add(new HeadingRate());
                 readouts.Add(new PitchRate());
                 readouts.Add(new RollRate());
+                readouts.Add(new RCSDeltaV());
+                readouts.Add(new RCSIsp());
+                readouts.Add(new RCSThrust());
+                readouts.Add(new RCSTWR());
 
                 // Rendezvous
                 readouts.Add(new TargetSelector());
                 readouts.Add(new PhaseAngle());
                 readouts.Add(new InterceptAngle());
+                readouts.Add(new TimeToTransferAngleTime());
                 readouts.Add(new RelativeVelocity());
                 readouts.Add(new RelativeSpeed());
                 readouts.Add(new RelativeInclination());
@@ -170,8 +178,9 @@ namespace KerbalEngineer.Flight.Readouts
                 readouts.Add(new Rendezvous.OrbitalPeriod());
                 readouts.Add(new Rendezvous.SemiMajorAxis());
                 readouts.Add(new Rendezvous.SemiMinorAxis());
-                readouts.Add(new Rendezvous.RelativeRadialVelocity());
-                readouts.Add(new Rendezvous.TimeToRendezvous());
+                readouts.Add(new Rendezvous.TimeTilClosestApproach());
+                readouts.Add(new Rendezvous.SeparationAtClosestApproach());
+                readouts.Add(new Rendezvous.SpeedAtClosestApproach());
                 readouts.Add(new TargetLatitude());
                 readouts.Add(new TargetLongitude());
 
@@ -194,12 +203,23 @@ namespace KerbalEngineer.Flight.Readouts
                 readouts.Add(new BodyName());
                 readouts.Add(new HasAtmosphere());
                 readouts.Add(new HasOxygen());
+                readouts.Add(new MinOrbitHeight());
                 readouts.Add(new HighAtmosphereHeight());
                 readouts.Add(new LowSpaceHeight());
                 readouts.Add(new HighSpaceHeight());
+                readouts.Add(new GeostationaryHeight());
+                readouts.Add(new CurrentSoi());
+                readouts.Add(new BodyRotationPeriod());
+                readouts.Add(new BodyOrbitalPeriod());
+                readouts.Add(new EscapeVelocity());
+                readouts.Add(new BodyMass());
+                readouts.Add(new BodyRadius());
+                readouts.Add(new BodyGravity());
 
                 // Misc
                 readouts.Add(new Separator());
+                readouts.Add(new ClearSeparator());
+                readouts.Add(new Crosshair());
                 readouts.Add(new GuiSizeAdjustor());
                 readouts.Add(new SimulationDelay());
                 readouts.Add(new VectoredThrustToggle());
@@ -209,9 +229,8 @@ namespace KerbalEngineer.Flight.Readouts
                 readouts.Add(new LogSimToggle());
 
                 LoadHelpStrings();
-            }
-            catch (Exception ex)
-            {
+                LoadReadoutConfig();
+            } catch (Exception ex) {
                 MyLogger.Exception(ex);
             }
         }
@@ -219,14 +238,11 @@ namespace KerbalEngineer.Flight.Readouts
         /// <summary>
         /// Gets and sets the available readout modules.
         /// </summary>
-        public static List<ReadoutModule> Readouts
-        {
-            get
-            {
+        public static List<ReadoutModule> Readouts {
+            get {
                 return readouts;
             }
-            set
-            {
+            set {
                 readouts = value;
             }
         }
@@ -234,26 +250,22 @@ namespace KerbalEngineer.Flight.Readouts
         /// <summary>
         /// Gets a list of readout modules which are associated with the specified category.
         /// </summary>
-        public static List<ReadoutModule> GetCategory(ReadoutCategory category)
-        {
+        public static List<ReadoutModule> GetCategory(ReadoutCategory category) {
             return readouts.Where(r => r.Category == category).ToList();
         }
 
         /// <summary>
         /// Gets a readout module with the specified name or class name. (Returns null if not found.)
         /// </summary>
-        public static ReadoutModule GetReadout(string name)
-        {
+        public static ReadoutModule GetReadout(string name) {
             return readouts.FirstOrDefault(r => r.Name == name || r.GetType().Name == name || r.Category + "." + r.GetType().Name == name);
         }
 
         /// <summary>
         /// Resets all the readout modules.
         /// </summary>
-        public static void Reset()
-        {
-            foreach (ReadoutModule readout in readouts)
-            {
+        public static void Reset() {
+            foreach (ReadoutModule readout in readouts) {
                 readout.Reset();
             }
         }
@@ -261,21 +273,72 @@ namespace KerbalEngineer.Flight.Readouts
         /// <summary>
         /// Loads the help strings from file.
         /// </summary>
-        private static void LoadHelpStrings()
-        {
-            try
-            {
+        private static void LoadHelpStrings() {
+            try {
                 SettingHandler handler = SettingHandler.Load("HelpStrings.xml");
-                foreach (ReadoutModule readout in readouts)
-                {
+                foreach (ReadoutModule readout in readouts) {
                     readout.HelpString = handler.GetSet(readout.Category + "." + readout.GetType().Name, readout.HelpString);
                 }
                 handler.Save("HelpStrings.xml");
-            }
-            catch (Exception ex)
-            {
+            } catch (Exception ex) {
                 MyLogger.Exception(ex);
             }
         }
+
+        /// <summary>
+        /// Loads config
+        /// </summary>
+        private static void LoadReadoutConfig() {
+            try {
+                SettingHandler handler = SettingHandler.Load("ReadoutsConfig.xml", new Type[] { typeof(ReadoutModuleConfigNode)});
+                foreach (ReadoutModule readout in readouts) {
+                    ReadoutModuleConfigNode r = handler.Get<ReadoutModuleConfigNode>(readout.Name, null);
+                    if (r != null) {
+                        readout.ValueStyle.normal.textColor = r.Color;
+                    }
+                }
+                handler.Save("ReadoutsConfig.xml");
+            } catch (Exception ex) {
+                MyLogger.Exception(ex);
+            }
+        }
+
+        public static void RemoveReadoutConfig(ReadoutModule readout) {
+            try {
+                SettingHandler handler = SettingHandler.Load("ReadoutsConfig.xml", new Type[] { typeof(ReadoutModuleConfigNode)});
+                var r = handler.Get<ReadoutModuleConfigNode>(readout.Name, null);
+
+                if (r == null) {
+                    return;
+                }
+
+                handler.Items.Remove(handler.Items.Find(i => i.Name == readout.Name));
+
+                handler.Save("ReadoutsConfig.xml");
+            } catch (Exception ex) {
+                MyLogger.Exception(ex);
+            }
+        }
+
+
+        public static void SaveReadoutConfig(ReadoutModule readout) {
+            try {
+                SettingHandler handler = SettingHandler.Load("ReadoutsConfig.xml", new Type[] { typeof(ReadoutModuleConfigNode)});
+                var r = handler.Get<ReadoutModuleConfigNode>(readout.Name, null);
+
+                if (r == null) {
+                    r = new ReadoutModuleConfigNode();
+                }
+
+                r.Name = readout.Name;
+                r.Color = readout.ValueStyle.normal.textColor;
+
+                handler.Set(r.Name, r);
+                handler.Save("ReadoutsConfig.xml");
+            } catch (Exception ex) {
+                MyLogger.Exception(ex);
+            }
+        }
+
     }
 }

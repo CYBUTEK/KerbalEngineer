@@ -25,10 +25,8 @@ using UnityEngine;
 
 #endregion
 
-namespace KerbalEngineer.Flight.Readouts.Surface
-{
-    public class GeeForce : ReadoutModule
-    {
+namespace KerbalEngineer.Flight.Readouts.Surface {
+    public class GeeForce : ReadoutModule {
         #region Fields
 
         private double maxGeeForce;
@@ -37,8 +35,7 @@ namespace KerbalEngineer.Flight.Readouts.Surface
 
         #region Constructors
 
-        public GeeForce()
-        {
+        public GeeForce() {
             this.Name = "G-Force";
             this.Category = ReadoutCategory.GetCategory("Surface");
             this.HelpString = "Shows the current g-force and maximum g-force experienced.";
@@ -49,24 +46,26 @@ namespace KerbalEngineer.Flight.Readouts.Surface
 
         #region Methods: public
 
-        public override void Draw(SectionModule section)
-        {
-            if (FlightGlobals.ship_geeForce > this.maxGeeForce)
-            {
+        public override void Draw(Unity.Flight.ISectionModule section) {
+
+            if (FlightGlobals.ship_geeForce > this.maxGeeForce) {
                 this.maxGeeForce = FlightGlobals.ship_geeForce;
             }
-            this.DrawLine(() =>
-            {
-                GUILayout.Label(FlightGlobals.ship_geeForce.ToString("F3") + " / " + this.maxGeeForce.ToString("F3"), this.ValueStyle);
-                if (GUILayout.Button("R", this.ButtonStyle, GUILayout.Width(this.ButtonStyle.fixedHeight)))
-                {
+
+            this.DrawLine(() => {
+                if(!section.IsHud)
+                    GUILayout.Label(FlightGlobals.ship_geeForce.ToString("F3") + " / " + this.maxGeeForce.ToString("F3"), this.ValueStyle);
+                else
+                    GUILayout.Label(FlightGlobals.ship_geeForce.ToString("F3") + " / " + this.maxGeeForce.ToString("F3"), this.ValueStyle, GUILayout.Height(ValueStyle.fontSize*1.2f));
+                if (GUILayout.Button("R", section.IsHud ? this.CompactButtonStyle : this.ButtonStyle,
+                    GUILayout.Width(ButtonStyle.fixedHeight))) {
                     this.maxGeeForce = 0.0;
                 }
-            });
+            }, true, section.IsHud);
+
         }
 
-        public override void Reset()
-        {
+        public override void Reset() {
             this.maxGeeForce = 0;
         }
 

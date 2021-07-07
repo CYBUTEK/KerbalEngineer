@@ -34,14 +34,14 @@ namespace KerbalEngineer.Flight.Readouts.Surface
             this.Name = "Impact Biome";
             this.Category = ReadoutCategory.GetCategory("Surface");
             this.HelpString = "Biome the Vessel will impact in.";
-            this.IsDefault = true;
+            this.IsDefault = false;
         }
 
         #endregion
 
         #region Methods: public
 
-        public override void Draw(SectionModule section)
+        public override void Draw(Unity.Flight.ISectionModule section)
         {
             if (ImpactProcessor.ShowDetails)
             {

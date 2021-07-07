@@ -32,9 +32,11 @@ namespace KerbalEngineer.Flight.Readouts.Surface
             IsDefault = true;
         }
 
-        public override void Draw(SectionModule section)
+        public override void Draw(Unity.Flight.ISectionModule section)
         {
-            if (FlightGlobals.ActiveVessel.terrainAltitude > 0.0 || FlightGlobals.ActiveVessel.situation == Vessel.Situations.SPLASHED)
+            if (FlightGlobals.ActiveVessel.terrainAltitude > 0.0 
+            || FlightGlobals.ActiveVessel.situation == Vessel.Situations.SPLASHED
+            || FlightGlobals.ActiveVessel.situation == Vessel.Situations.LANDED)
             {
                 DrawLine((FlightGlobals.ship_altitude - FlightGlobals.ActiveVessel.terrainAltitude).ToDistance(), section.IsHud);
             }

@@ -32,8 +32,9 @@ namespace KerbalEngineer.Flight.Readouts.Rendezvous
 
         public InterceptAngle()
         {
-            this.Name = "Intercept Angle";
+            this.Name = "Transfer Angle";
             this.Category = ReadoutCategory.GetCategory("Rendezvous");
+            this.HelpString = "The phase angle for starting a Hohmann transfer.";
             this.HelpString = string.Empty;
             this.IsDefault = true;
         }
@@ -42,7 +43,7 @@ namespace KerbalEngineer.Flight.Readouts.Rendezvous
 
         #region Methods: public
 
-        public override void Draw(SectionModule section)
+        public override void Draw(Unity.Flight.ISectionModule section)
         {
             if (RendezvousProcessor.ShowDetails)
             {

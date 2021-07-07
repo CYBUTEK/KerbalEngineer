@@ -34,34 +34,33 @@ namespace KerbalEngineer.Flight.Readouts.Vessel
 
         public SuicideBurnDeltaV()
         {
-            this.Name = "Suicide Burn (dV)";
+            this.Name = "Suicide Burn dV";
             this.Category = ReadoutCategory.GetCategory("Vessel");
             this.HelpString = "Shows the DeltaV of a suicide burn.";
-            this.IsDefault = true;
+            this.IsDefault = false;
         }
 
         #endregion
 
         #region Methods: public
 
-        public override void Draw(SectionModule section)
+        public override void Draw(Unity.Flight.ISectionModule section)
         {
-            if (!SuicideBurnProcessor.ShowDetails)
-            {
+            if (!SimulationProcessor.ShowDetails || !Surface.ImpactProcessor.ShowDetails) {
                 return;
             }
 
-            this.DrawLine(SuicideBurnProcessor.DeltaV.ToString("N1") + "m/s", section.IsHud);
+            this.DrawLine(Surface.ImpactProcessor.SuicideDeltaV.ToString("N1") + "m/s", section.IsHud);
         }
 
         public override void Reset()
         {
-            SuicideBurnProcessor.Reset();
+           // Surface.ImpactProcessor.Reset();
         }
 
         public override void Update()
         {
-            SuicideBurnProcessor.RequestUpdate();
+            Surface.ImpactProcessor.RequestUpdate();
         }
 
         #endregion

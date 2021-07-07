@@ -104,7 +104,7 @@ namespace KerbalEngineer.Editor
         {
             try
             {
-                if (!Visible || Hidden || EditorLogic.RootPart == null || EditorLogic.fetch.editorScreen != EditorScreen.Parts || (EditorPanels.Instance.IsMouseOver() && IsPointerOverStaging() == false))
+                if (!Visible || Hidden || EditorLogic.RootPart == null || (EditorPanels.Instance.IsMouseOver() && IsPointerOverStaging() == false))
                 {
                     return;
                 }
@@ -216,7 +216,7 @@ namespace KerbalEngineer.Editor
 
         private void SetAlternatorInfo()
         {
-            ModuleAlternator moduleAlternator = selectedPart.GetModule<ModuleAlternator>();
+            ModuleAlternator moduleAlternator = PartExtensions.GetModule<ModuleAlternator>(selectedPart);
             if (moduleAlternator != null)
             {
                 infoItems.Add(PartInfoItem.Create("Alternator"));
@@ -230,12 +230,12 @@ namespace KerbalEngineer.Editor
 
         private void SetCostInfo()
         {
-            infoItems.Add(PartInfoItem.Create("Cost", Units.ConcatF(selectedPart.GetCostDry(), selectedPart.GetCostWet())));
+            infoItems.Add(PartInfoItem.Create("Cost", Units.ConcatF(PartExtensions.GetCostDry(selectedPart), PartExtensions.GetCostWet(selectedPart))));
         }
 
         private void SetDecouplerInfo()
         {
-            var protoModuleDecoupler = selectedPart.GetProtoModuleDecoupler();
+            var protoModuleDecoupler = PartExtensions.GetProtoModuleDecoupler(selectedPart);
             if (protoModuleDecoupler != null)
             {
                 infoItems.Add(PartInfoItem.Create("Ejection Force", protoModuleDecoupler.EjectionForce.ToForce()));
@@ -248,7 +248,7 @@ namespace KerbalEngineer.Editor
 
         private void SetEngineInfo()
         {
-            var protoModuleEngine = selectedPart.GetProtoModuleEngine();
+            var protoModuleEngine = PartExtensions.GetProtoModuleEngine(selectedPart);
             if (protoModuleEngine != null)
             {
                 infoItems.Add(PartInfoItem.Create("Thrust", Units.ToForce(protoModuleEngine.MinimumThrust, protoModuleEngine.MaximumThrust)));
@@ -274,7 +274,7 @@ namespace KerbalEngineer.Editor
 
         private void SetGeneratorInfo()
         {
-            var moduleGenerator = selectedPart.GetModule<ModuleGenerator>();
+            var moduleGenerator = PartExtensions.GetModule<ModuleGenerator>(selectedPart);
             if (moduleGenerator != null)
             {
                 if (moduleGenerator.resHandler.inputResources.Count > 0)
@@ -306,7 +306,7 @@ namespace KerbalEngineer.Editor
 
         private void SetGimbalInfo()
         {
-            var moduleGimbal = selectedPart.GetModule<ModuleGimbal>();
+            var moduleGimbal = PartExtensions.GetModule<ModuleGimbal>(selectedPart);
             if (moduleGimbal != null)
             {
                 infoItems.Add(PartInfoItem.Create("Thrust Vectoring", moduleGimbal.gimbalRange.ToString("F2")));
@@ -317,13 +317,13 @@ namespace KerbalEngineer.Editor
         {
             if (selectedPart.physicalSignificance == Part.PhysicalSignificance.FULL)
             {
-                infoItems.Add(PartInfoItem.Create("Mass", Units.ToMass(selectedPart.GetDryMass(), selectedPart.GetWetMass())));
+                infoItems.Add(PartInfoItem.Create("Mass", Units.ToMass(PartExtensions.GetDryMass(selectedPart), PartExtensions.GetWetMass(selectedPart))));
             }
         }
 
         private void SetParachuteInfo()
         {
-            var moduleParachute = selectedPart.GetModule<ModuleParachute>();
+            var moduleParachute = PartExtensions.GetModule<ModuleParachute>(selectedPart);
             if (moduleParachute != null)
             {
                 infoItems.Add(PartInfoItem.Create("Deployed Drag", Units.ConcatF(moduleParachute.semiDeployedDrag, moduleParachute.fullyDeployedDrag)));
@@ -334,7 +334,7 @@ namespace KerbalEngineer.Editor
 
         private void SetRcsInfo()
         {
-            var moduleRcs = selectedPart.GetModule<ModuleRCS>();
+            var moduleRcs = PartExtensions.GetModule<ModuleRCS>(selectedPart);
             if (moduleRcs != null)
             {
                 infoItems.Add(PartInfoItem.Create("Thruster Power", moduleRcs.thrusterPower.ToForce()));
@@ -344,7 +344,7 @@ namespace KerbalEngineer.Editor
 
         private void SetReactionWheelInfo()
         {
-            var moduleReactionWheel = selectedPart.GetModule<ModuleReactionWheel>();
+            var moduleReactionWheel = PartExtensions.GetModule<ModuleReactionWheel>(selectedPart);
             if (moduleReactionWheel != null)
             {
                 infoItems.Add(PartInfoItem.Create("Reaction Wheel Torque"));
@@ -380,8 +380,8 @@ namespace KerbalEngineer.Editor
 
                     if (partResource.hideFlow == false)
                     {
-                        infoItems.Add(partResource.GetDensity() > 0
-                                          ? PartInfoItem.Create("\t" + partResource.info.name, "(" + partResource.GetMass().ToMass() + ") " + partResource.amount.ToString("F1"))
+                        infoItems.Add(PartResourceExtensions.GetDensity(partResource) > 0
+                                          ? PartInfoItem.Create("\t" + partResource.info.name, "(" + PartResourceExtensions.GetMass(partResource).ToMass() + ") " + partResource.amount.ToString("F1"))
                                           : PartInfoItem.Create("\t" + partResource.info.name, partResource.amount.ToString("F1")));
                     }
                 }
@@ -390,7 +390,7 @@ namespace KerbalEngineer.Editor
 
         private void SetSasInfo()
         {
-            if (selectedPart.HasModule<ModuleSAS>())
+            if (PartExtensions.HasModule<ModuleSAS>(selectedPart))
             {
                 infoItems.Add(PartInfoItem.Create("SAS Equiped"));
             }
@@ -398,7 +398,7 @@ namespace KerbalEngineer.Editor
 
         private void SetScienceContainerInfo()
         {
-            if (selectedPart.HasModule<ModuleScienceContainer>())
+            if (PartExtensions.HasModule<ModuleScienceContainer>(selectedPart))
             {
                 infoItems.Add(PartInfoItem.Create("Science Container"));
             }
@@ -406,7 +406,7 @@ namespace KerbalEngineer.Editor
 
         private void SetScienceExperimentInfo()
         {
-            var moduleScienceExperiment = selectedPart.GetModule<ModuleScienceExperiment>();
+            var moduleScienceExperiment = PartExtensions.GetModule<ModuleScienceExperiment>(selectedPart);
             if (moduleScienceExperiment != null)
             {
                 infoItems.Add(PartInfoItem.Create("Science Experiment", moduleScienceExperiment.experimentActionName));
@@ -420,7 +420,7 @@ namespace KerbalEngineer.Editor
 
         private void SetSingleActivationInfo()
         {
-            if (selectedPart.HasModule<ModuleAnimateGeneric>(m => m.isOneShot))
+            if (PartExtensions.HasModule<ModuleAnimateGeneric>(selectedPart, m => m.isOneShot))
             {
                 infoItems.Add(PartInfoItem.Create("Single Activation"));
             }
@@ -428,7 +428,7 @@ namespace KerbalEngineer.Editor
 
         private void SetSolarPanelInfo()
         {
-            var moduleDeployableSolarPanel = selectedPart.GetModule<ModuleDeployableSolarPanel>();
+            var moduleDeployableSolarPanel = PartExtensions.GetModule<ModuleDeployableSolarPanel>(selectedPart);
             if (moduleDeployableSolarPanel != null)
             {
                 infoItems.Add(PartInfoItem.Create("Charge Rate", moduleDeployableSolarPanel.chargeRate.ToRate()));
@@ -446,7 +446,7 @@ namespace KerbalEngineer.Editor
 
         private void SetTransmitterInfo()
         {
-            var moduleDataTransmitter = selectedPart.GetModule<ModuleDataTransmitter>();
+            var moduleDataTransmitter = PartExtensions.GetModule<ModuleDataTransmitter>(selectedPart);
             if (moduleDataTransmitter != null)
             {
                 infoItems.Add(PartInfoItem.Create("Packet Size", moduleDataTransmitter.packetSize.ToString("F2") + " Mits"));

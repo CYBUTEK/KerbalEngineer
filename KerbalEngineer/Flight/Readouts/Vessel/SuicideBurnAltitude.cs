@@ -34,9 +34,9 @@ namespace KerbalEngineer.Flight.Readouts.Vessel
 
         public SuicideBurnAltitude()
         {
-            this.Name = "Suicide Burn (Alt.)";
+            this.Name = "Suicide Burn Alt.";
             this.Category = ReadoutCategory.GetCategory("Vessel");
-            this.HelpString = "Shows the altitude when to start a suicide burn.";
+            this.HelpString = "Shows the sea level altitude when to start a suicide burn.";
             this.IsDefault = false;
         }
 
@@ -44,24 +44,24 @@ namespace KerbalEngineer.Flight.Readouts.Vessel
 
         #region Methods: public
 
-        public override void Draw(SectionModule section)
+        public override void Draw(Unity.Flight.ISectionModule section)
         {
-            if (!SimulationProcessor.ShowDetails)
+            if (!SimulationProcessor.ShowDetails || !Surface.ImpactProcessor.ShowDetails)
             {
                 return;
             }
 
-            this.DrawLine(SuicideBurnProcessor.Altitude.ToDistance(), section.IsHud);
+            this.DrawLine(Surface.ImpactProcessor.SuicideAltitude.ToDistance(), section.IsHud);
         }
 
         public override void Reset()
         {
-            SuicideBurnProcessor.Reset();
+           
         }
 
         public override void Update()
         {
-            SuicideBurnProcessor.RequestUpdate();
+            Surface.ImpactProcessor.RequestUpdate();
         }
 
         #endregion

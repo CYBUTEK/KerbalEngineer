@@ -1,0 +1,20 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ArrayOfSettingItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <SettingItem>
+    <Name>preset</Name>
+    <Value xsi:type="Preset">
+      <Abbreviation>HUD 1</Abbreviation>
+      <IsHud>true</IsHud>
+      <IsHudBackground>false</IsHudBackground>
+      <Name>HUD 1</Name>
+      <ReadoutNames>
+        <string>Orbital.ApoapsisHeight</string>
+        <string>Orbital.TimeToApoapsis</string>
+        <string>Orbital.PeriapsisHeight</string>
+        <string>Orbital.TimeToPeriapsis</string>
+        <string>Miscellaneous.Separator</string>
+        <string>Vessel.DeltaVCurrentTotal</string>
+      </ReadoutNames>
+    </Value>
+  </SettingItem>
+</ArrayOfSettingItem>

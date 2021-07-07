@@ -1,10 +1,12 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <ArrayOfSettingItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
   <SettingItem>
     <Name>preset</Name>
     <Value xsi:type="Preset">
-      <Name>SURFACE</Name>
       <Abbreviation>SURF</Abbreviation>
+      <IsHud>false</IsHud>
+      <IsHudBackground>false</IsHudBackground>
+      <Name>SURFACE</Name>
       <ReadoutNames>
         <string>Surface.AltitudeSeaLevel</string>
         <string>Surface.AltitudeTerrain</string>
@@ -14,8 +16,6 @@
         <string>Surface.HorizontalSpeed</string>
         <string>Miscellaneous.Separator</string>
         <string>Surface.Slope</string>
-        <string>Surface.ImpactTime</string>
-        <string>Surface.ImpactBiome</string>
       </ReadoutNames>
     </Value>
   </SettingItem>

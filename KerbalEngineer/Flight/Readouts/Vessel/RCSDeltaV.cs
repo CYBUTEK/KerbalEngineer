@@ -19,24 +19,22 @@
 
 #region Using Directives
 
-using System;
-
-using KerbalEngineer.Extensions;
 using KerbalEngineer.Flight.Sections;
+using KerbalEngineer.Helpers;
 
 #endregion
 
-namespace KerbalEngineer.Flight.Readouts.Orbital
+namespace KerbalEngineer.Flight.Readouts.Vessel
 {
-    public class CurrentSoi : ReadoutModule
+    public class RCSDeltaV : ReadoutModule
     {
         #region Constructors
-        
-        public CurrentSoi()
+
+        public RCSDeltaV()
         {
-            this.Name = "Current SOI";
-            this.Category = ReadoutCategory.GetCategory("Orbital");
-            this.HelpString = "Shows the SOI of the current body the vessel is orbiting.";
+            this.Name = "RCS DeltaV";
+            this.Category = ReadoutCategory.GetCategory("Vessel");
+            this.HelpString = "Shows the current possible DeltaV from RCS";
             this.IsDefault = false;
         }
 
@@ -44,12 +42,23 @@ namespace KerbalEngineer.Flight.Readouts.Orbital
 
         #region Methods: public
 
-        public override void Draw(SectionModule section)
+        public override void Draw(Unity.Flight.ISectionModule section)
         {
-            if (!Double.IsInfinity(FlightGlobals.currentMainBody.sphereOfInfluence))
+            if (SimulationProcessor.ShowDetails)
             {
-                this.DrawLine(FlightGlobals.currentMainBody.sphereOfInfluence.ToDistance(), section.IsHud);
+                this.DrawLine(SimulationProcessor.LastStage.RCSdeltaVStart.ToString("N0") + "m/s (" + TimeFormatter.ConvertToString(SimulationProcessor.LastStage.RCSBurnTime) + ")", section.IsHud);
+
             }
+        }
+
+        public override void Reset()
+        {
+            FlightEngineerCore.Instance.AddUpdatable(SimulationProcessor.Instance);
+        }
+
+        public override void Update()
+        {
+            SimulationProcessor.RequestUpdate();
         }
 
         #endregion

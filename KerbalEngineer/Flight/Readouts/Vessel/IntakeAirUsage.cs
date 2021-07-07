@@ -50,7 +50,7 @@ namespace KerbalEngineer.Flight.Readouts.Vessel
 
         #region Methods: public
 
-        public override void Draw(SectionModule section)
+        public override void Draw(Unity.Flight.ISectionModule section)
         {
             this.DrawLine(Units.ToPercent(this.percentage), section.IsHud);
         }

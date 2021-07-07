@@ -45,7 +45,7 @@ namespace KerbalEngineer.Flight.Readouts.Miscellaneous
         {
             this.Name = "Separator";
             this.Category = ReadoutCategory.GetCategory("Miscellaneous");
-            this.HelpString = "Creats a line to help seperate subsections in a module.";
+            this.HelpString = "Creates a line to help seperate subsections in a module.";
             this.IsDefault = false;
             this.Cloneable = true;
 
@@ -58,14 +58,16 @@ namespace KerbalEngineer.Flight.Readouts.Miscellaneous
 
         #region Methods: public
 
-        public override void Draw(SectionModule section)
+        public override void Draw(Unity.Flight.ISectionModule section)
         {
-            GUILayout.Box(String.Empty, section.IsHud ? this.boxStyleHud : this.boxStyle);
+            GUILayout.Box("", section.IsHud ? this.boxStyleHud : this.boxStyle);
         }
 
         #endregion
 
         #region Methods: private
+
+        private static readonly Texture2D tex = TextureHelper.CreateTextureFromColour(new Color(1.0f, 1.0f, 1.0f, 0.5f));
 
         private void InitialiseStyles()
         {
@@ -73,10 +75,17 @@ namespace KerbalEngineer.Flight.Readouts.Miscellaneous
             {
                 normal =
                 {
-                    background = TextureHelper.CreateTextureFromColour(new Color(1.0f, 1.0f, 1.0f, 0.5f))
+                  background  = tex,
+                  textColor = new Color(1,1,1,0.5f)
                 },
-                fixedHeight = 1.0f,
-                stretchWidth = true
+                active =
+                {
+                    background  = tex
+                },
+                border = new RectOffset(0,0,0,1),
+                fixedHeight = 0.0f,
+                stretchWidth = true,
+                imagePosition = ImagePosition.ImageOnly
             };
 
             this.boxStyleHud = new GUIStyle(this.boxStyle)

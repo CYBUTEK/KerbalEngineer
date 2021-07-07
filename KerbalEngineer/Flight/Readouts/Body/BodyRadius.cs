@@ -24,17 +24,14 @@ using KerbalEngineer.Flight.Sections;
 
 #endregion
 
-namespace KerbalEngineer.Flight.Readouts.Rendezvous
-{
-    public class RelativeRadialVelocity : ReadoutModule
-    {
+namespace KerbalEngineer.Flight.Readouts.Body {
+    public class BodyRadius : ReadoutModule {
         #region Constructors
 
-        public RelativeRadialVelocity()
-        {
-            this.Name = "Relative Radial Velocity";
-            this.Category = ReadoutCategory.GetCategory("Rendezvous");
-            this.HelpString = "Relative radial velocity between your vessel and the target object";
+        public BodyRadius() {
+            this.Name = "Body Radius";
+            this.Category = ReadoutCategory.GetCategory("Body");
+            this.HelpString = "The radius of the body at sea level.";
             this.IsDefault = false;
         }
 
@@ -42,22 +39,11 @@ namespace KerbalEngineer.Flight.Readouts.Rendezvous
 
         #region Methods: public
 
-        public override void Draw(SectionModule section)
-        {
-            if (RendezvousProcessor.ShowDetails)
-            {
-               this.DrawLine(RendezvousProcessor.RelativeRadialVelocity.ToSpeed(), section.IsHud);
-            }
-        }
-
-        public override void Reset()
-        {
-            FlightEngineerCore.Instance.AddUpdatable(RendezvousProcessor.Instance);
-        }
-
-        public override void Update()
-        {
-            RendezvousProcessor.RequestUpdate();
+        public override void Draw(Unity.Flight.ISectionModule section) {
+            if (FlightGlobals.ActiveVessel.mainBody == null)
+                DrawLine("N/A", section.IsHud);
+            else
+                this.DrawLine(Helpers.Units.ToDistance(FlightGlobals.ActiveVessel.mainBody.Radius), section.IsHud);
         }
 
         #endregion

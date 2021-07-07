@@ -42,11 +42,20 @@ namespace KerbalEngineer.Flight.Readouts.Rendezvous
 
         #region Methods: public
 
-        public override void Draw(SectionModule section)
+        public override void Draw(Unity.Flight.ISectionModule section)
         {
             if (RendezvousProcessor.ShowDetails)
             {
-                this.DrawLine(TimeFormatter.ConvertToString(RendezvousProcessor.TimeToDescendingNode), section.IsHud);
+                if (RendezvousProcessor.overrideANDN || RendezvousProcessor.overrideANDNRev)
+                {
+                    double time = RendezvousProcessor.TimeToPlane[1];
+
+                    this.DrawLine("(L) " + TimeFormatter.ConvertToString(time), section.IsHud);
+                }
+                else
+                {
+                    this.DrawLine(TimeFormatter.ConvertToString(RendezvousProcessor.TimeToDescendingNode), section.IsHud);
+                }
             }
         }
 

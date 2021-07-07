@@ -26,10 +26,8 @@ using UnityEngine;
 
 #endregion
 
-namespace KerbalEngineer.Flight.Sections
-{
-    public class SectionWindow : MonoBehaviour
-    {
+namespace KerbalEngineer.Flight.Sections {
+    public class SectionWindow : MonoBehaviour {
         #region Fields
 
         private bool resizeRequested;
@@ -48,8 +46,7 @@ namespace KerbalEngineer.Flight.Sections
         /// <summary>
         ///     Gets and sets the window position.
         /// </summary>
-        public Rect WindowPosition
-        {
+        public Rect WindowPosition {
             get { return this.windowPosition; }
             set { this.windowPosition = value; }
         }
@@ -69,16 +66,13 @@ namespace KerbalEngineer.Flight.Sections
         /// <summary>
         ///     Initialises all the styles required for this object.
         /// </summary>
-        private void InitialiseStyles()
-        {
-            this.windowStyle = new GUIStyle(HighLogic.Skin.window)
-            {
+        private void InitialiseStyles() {
+            this.windowStyle = new GUIStyle(HighLogic.Skin.window) {
                 margin = new RectOffset(),
                 padding = new RectOffset(5, 5, 0, 5),
             };
 
-            this.hudWindowStyle = new GUIStyle(this.windowStyle)
-            {
+            this.hudWindowStyle = new GUIStyle(this.windowStyle) {
                 normal =
                 {
                     background = null
@@ -90,8 +84,7 @@ namespace KerbalEngineer.Flight.Sections
                 padding = new RectOffset(5, 5, 0, 8),
             };
 
-            this.hudWindowBgStyle = new GUIStyle(this.hudWindowStyle)
-            {
+            this.hudWindowBgStyle = new GUIStyle(this.hudWindowStyle) {
                 normal =
                 {
                     background = TextureHelper.CreateTextureFromColour(new Color(0.0f, 0.0f, 0.0f, 0.5f))
@@ -103,8 +96,7 @@ namespace KerbalEngineer.Flight.Sections
             };
         }
 
-        private void OnSizeChanged()
-        {
+        private void OnSizeChanged() {
             this.InitialiseStyles();
             this.RequestResize();
         }
@@ -116,15 +108,12 @@ namespace KerbalEngineer.Flight.Sections
         /// <summary>
         ///     Called to draw the floating section window when the UI is enabled.
         /// </summary>
-        private void OnGUI()
-        {
-            if (this.ParentSection == null || !this.ParentSection.IsVisible || (DisplayStack.Instance.Hidden && !this.ParentSection.IsHud) || !FlightEngineerCore.IsDisplayable)
-            {
+        private void OnGUI() {
+            if (!HighLogic.LoadedSceneIsFlight || this.ParentSection == null || !this.ParentSection.IsVisible || DisplayStack.Instance == null || this.ParentSection == null || (DisplayStack.Instance.Hidden && !this.ParentSection.IsHud) || !FlightEngineerCore.IsDisplayable) {
                 return;
             }
 
-            if (this.resizeRequested)
-            {
+            if (this.resizeRequested) {
                 this.windowPosition.width = 0;
                 this.windowPosition.height = 0;
                 this.resizeRequested = false;
@@ -146,12 +135,10 @@ namespace KerbalEngineer.Flight.Sections
         /// <summary>
         ///     Draws the floating section window.
         /// </summary>
-        private void Window(int windowId)
-        {
+        private void Window(int windowId) {
             this.ParentSection.Draw();
 
-            if (!this.ParentSection.IsHud || this.ParentSection.IsEditorVisible)
-            {
+            if (!this.ParentSection.IsHud || this.ParentSection.IsEditorVisible) {
                 GUI.DragWindow();
             }
         }
@@ -163,8 +150,7 @@ namespace KerbalEngineer.Flight.Sections
         /// <summary>
         ///     Runs when the object is destroyed.
         /// </summary>
-        private void OnDestroy()
-        {
+        private void OnDestroy() {
             GuiDisplaySize.OnSizeChanged -= this.OnSizeChanged;
         }
 
@@ -175,8 +161,7 @@ namespace KerbalEngineer.Flight.Sections
         /// <summary>
         ///     Request that the floating section window's size is reset in the next draw call.
         /// </summary>
-        public void RequestResize()
-        {
+        public void RequestResize() {
             this.resizeRequested = true;
         }
 
@@ -187,8 +172,7 @@ namespace KerbalEngineer.Flight.Sections
         /// <summary>
         ///     Initialises the object's state on creation.
         /// </summary>
-        private void Start()
-        {
+        private void Start() {
             this.windowId = this.GetHashCode();
             this.InitialiseStyles();
 

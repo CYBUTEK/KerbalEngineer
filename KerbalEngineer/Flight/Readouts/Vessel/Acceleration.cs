@@ -1,4 +1,4 @@
-﻿// 
+﻿// Draw(Unity.Flight.ISectionModule section)
 //     Kerbal Engineer Redux
 // 
 //     Copyright (C) 2014 CYBUTEK
@@ -42,11 +42,13 @@ namespace KerbalEngineer.Flight.Readouts.Vessel
 
         #region Methods: public
 
-        public override void Draw(SectionModule section)
+        public override void Draw(Unity.Flight.ISectionModule section)
         {
             if (SimulationProcessor.ShowDetails)
             {
-                this.DrawLine(Units.ToAcceleration(SimulationProcessor.LastStage.actualThrust / SimulationProcessor.LastStage.totalMass, SimulationProcessor.LastStage.thrust / SimulationProcessor.LastStage.totalMass), section.IsHud);
+                double a_Acceleration = Vessel.SimulationProcessor.LastStage.totalMass > 0 ? Vessel.SimulationProcessor.LastStage.actualThrust / Vessel.SimulationProcessor.LastStage.totalMass : 0;
+                double m_Acceleration = Vessel.SimulationProcessor.LastStage.totalMass > 0 ? Vessel.SimulationProcessor.LastStage.thrust / Vessel.SimulationProcessor.LastStage.totalMass : 0;
+                this.DrawLine(Units.ToAcceleration(a_Acceleration, m_Acceleration), section.IsHud);
             }
         }
 

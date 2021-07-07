@@ -19,19 +19,17 @@
 
 #region Using Directives
 
+using KerbalEngineer.Flight.Readouts.Rendezvous;
 using KerbalEngineer.Flight.Sections;
 using KerbalEngineer.Helpers;
 
 #endregion
 
-namespace KerbalEngineer.Flight.Readouts.Surface
-{
-    public class TargetLatitude : ReadoutModule
-    {
+namespace KerbalEngineer.Flight.Readouts.Surface {
+    public class TargetLatitude : ReadoutModule {
         #region Constructors
 
-        public TargetLatitude()
-        {
+        public TargetLatitude() {
             Name = "Target Latitude";
             Category = ReadoutCategory.GetCategory("Rendezvous");
             HelpString = "Shows the target vessel's latitude position around the celestial body. Latitude is the angle from the equator to poles.";
@@ -42,15 +40,24 @@ namespace KerbalEngineer.Flight.Readouts.Surface
 
         #region Methods: public
 
-        public override void Draw(SectionModule section)
-        {
-            var target = FlightGlobals.fetch.VesselTarget;
-            if (target != null)
-            {
+        public override void Draw(Unity.Flight.ISectionModule section) {
+            if (!RendezvousProcessor.ShowDetails) return;
+
+            var target = Rendezvous.RendezvousProcessor.targetVessel;
+
+            if (target != null) {
                 var vessel = target.GetVessel();
-                double latitude = AngleHelper.Clamp180(vessel.latitude);
-                DrawLine(Units.ToAngleDMS(latitude) + (latitude < 0 ? " S" : " N"), section.IsHud);
+                if (vessel == null) {
+                    DrawLine("N/A", section.IsHud);
+                } else {
+                    double latitude = AngleHelper.Clamp180(vessel.latitude);
+                    DrawLine(Units.ToAngleDMS(latitude) + (latitude < 0 ? " S" : " N"), section.IsHud);
+                }
             }
+        }
+
+        public override void Update() {
+            RendezvousProcessor.RequestUpdate();
         }
 
         #endregion

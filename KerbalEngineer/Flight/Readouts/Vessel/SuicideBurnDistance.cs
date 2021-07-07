@@ -32,34 +32,33 @@ namespace KerbalEngineer.Flight.Readouts.Vessel
 
         public SuicideBurnDistance()
         {
-            this.Name = "Suicide Burn (Dist.)";
+            this.Name = "Suicide Burn Dist.";
             this.Category = ReadoutCategory.GetCategory("Vessel");
             this.HelpString = "Shows the distance to the point at which to start a suicide burn.";
-            this.IsDefault = true;
+            this.IsDefault = false;
         }
 
         #endregion
 
         #region Methods: public
 
-        public override void Draw(SectionModule section)
+        public override void Draw(Unity.Flight.ISectionModule section)
         {
-            if (!SuicideBurnProcessor.ShowDetails)
-            {
+            if (!SimulationProcessor.ShowDetails || !Surface.ImpactProcessor.ShowDetails) {
                 return;
             }
 
-            this.DrawLine(SuicideBurnProcessor.Distance.ToDistance(), section.IsHud);
+            this.DrawLine(Surface.ImpactProcessor.SuicideDistance.ToDistance(), section.IsHud);
         }
 
         public override void Reset()
         {
-            SuicideBurnProcessor.Reset();
+           // Surface.ImpactProcessor.Reset();
         }
 
         public override void Update()
         {
-            SuicideBurnProcessor.RequestUpdate();
+            Surface.ImpactProcessor.RequestUpdate();
         }
 
         #endregion

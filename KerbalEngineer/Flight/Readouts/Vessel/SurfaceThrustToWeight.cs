@@ -16,46 +16,42 @@
 //     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //  
 
-namespace KerbalEngineer.Flight.Readouts.Vessel
-{
+namespace KerbalEngineer.Flight.Readouts.Vessel {
     using System;
     using Sections;
 
-    public class SurfaceThrustToWeight : ReadoutModule
-    {
+    public class SurfaceThrustToWeight : ReadoutModule {
         private string m_Actual = string.Empty;
         private double m_Gravity;
         private string m_Total = string.Empty;
 
-        public SurfaceThrustToWeight()
-        {
+        public SurfaceThrustToWeight() {
             Name = "Surface Thrust to Weight Ratio";
             Category = ReadoutCategory.GetCategory("Vessel");
             HelpString = "Shows the vessel's surface thrust to weight ratio.";
             IsDefault = true;
         }
 
-        public override void Draw(SectionModule section)
-        {
+        public override void Draw(Unity.Flight.ISectionModule section) {
             if (FlightGlobals.currentMainBody == null || SimulationProcessor.LastStage == null ||
-                !SimulationProcessor.ShowDetails)
-            {
+                !SimulationProcessor.ShowDetails) {
                 return;
             }
-
-            m_Gravity = FlightGlobals.currentMainBody.gravParameter / Math.Pow(FlightGlobals.currentMainBody.Radius, 2);
-            m_Actual = (SimulationProcessor.LastStage.actualThrust / (SimulationProcessor.LastStage.totalMass * m_Gravity)).ToString("F2");
-            m_Total = (SimulationProcessor.LastStage.thrust / (SimulationProcessor.LastStage.totalMass * m_Gravity)).ToString("F2");
+            m_Actual = "N/A";
+            m_Total = "N/A";
+            if (SimulationProcessor.LastStage.totalMass > 0) {
+                m_Gravity = FlightGlobals.currentMainBody.gravParameter / Math.Pow(FlightGlobals.currentMainBody.Radius, 2);
+                m_Actual = (SimulationProcessor.LastStage.actualThrust / (SimulationProcessor.LastStage.totalMass * m_Gravity)).ToString("F2");
+                m_Total = (SimulationProcessor.LastStage.thrust / (SimulationProcessor.LastStage.totalMass * m_Gravity)).ToString("F2");
+            }
             DrawLine("TWR (Surface)", m_Actual + " / " + m_Total, section.IsHud);
         }
 
-        public override void Reset()
-        {
+        public override void Reset() {
             FlightEngineerCore.Instance.AddUpdatable(SimulationProcessor.Instance);
         }
 
-        public override void Update()
-        {
+        public override void Update() {
             SimulationProcessor.RequestUpdate();
         }
     }

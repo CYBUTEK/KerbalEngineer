@@ -35,14 +35,14 @@ namespace KerbalEngineer.Flight.Readouts.Surface
             this.Name = "Impact Time";
             this.Category = ReadoutCategory.GetCategory("Surface");
             this.HelpString = "Shows time until the vessel impacts the central object.";
-            this.IsDefault = true;
+            this.IsDefault = false;
         }
 
         #endregion
 
         #region Methods: public
 
-        public override void Draw(SectionModule section)
+        public override void Draw(Unity.Flight.ISectionModule section)
         {
             if (ImpactProcessor.ShowDetails)
             {

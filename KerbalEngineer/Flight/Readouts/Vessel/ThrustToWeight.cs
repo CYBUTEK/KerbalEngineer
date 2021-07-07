@@ -49,16 +49,21 @@ namespace KerbalEngineer.Flight.Readouts.Vessel
 
         #region Methods: public
 
-        public override void Draw(SectionModule section)
+        public override void Draw(Unity.Flight.ISectionModule section)
         {
             if (!SimulationProcessor.ShowDetails)
             {
                 return;
             }
 
-            this.gravity = FlightGlobals.getGeeForceAtPosition(FlightGlobals.ship_position).magnitude;
-            this.actual = (SimulationProcessor.LastStage.actualThrust / (SimulationProcessor.LastStage.totalMass * this.gravity)).ToString("F2");
-            this.total = (SimulationProcessor.LastStage.thrust / (SimulationProcessor.LastStage.totalMass * this.gravity)).ToString("F2");
+            actual = "N/A";
+            total = "N/A";
+
+            if (SimulationProcessor.LastStage.totalMass > 0) {
+                this.gravity = FlightGlobals.getGeeForceAtPosition(FlightGlobals.ship_position).magnitude;
+                this.actual = (SimulationProcessor.LastStage.actualThrust / (SimulationProcessor.LastStage.totalMass * this.gravity)).ToString("F2");
+                this.total = (SimulationProcessor.LastStage.thrust / (SimulationProcessor.LastStage.totalMass * this.gravity)).ToString("F2");
+            }
             this.DrawLine("TWR", this.actual + " / " + this.total, section.IsHud);
         }
 

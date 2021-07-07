@@ -43,7 +43,7 @@ namespace KerbalEngineer.Flight.Readouts.Miscellaneous
 
         #region Methods
 
-        public override void Draw(SectionModule section)
+        public override void Draw(Unity.Flight.ISectionModule section)
         {
             GUILayout.BeginHorizontal();
             GUILayout.Label("Vectored Thrust: ", this.NameStyle);

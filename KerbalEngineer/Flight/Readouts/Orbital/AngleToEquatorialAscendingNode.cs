@@ -42,9 +42,9 @@ namespace KerbalEngineer.Flight.Readouts.Orbital
 
         #region Methods: public
 
-        public override void Draw(SectionModule section)
+        public override void Draw(Unity.Flight.ISectionModule section)
         {
-            this.DrawLine(FlightGlobals.ActiveVessel.orbit.GetAngleToAscendingNode().ToAngle(), section.IsHud);
+            this.DrawLine(OrbitExtensions.GetAngleToAscendingNode(FlightGlobals.ActiveVessel.orbit).ToAngle(), section.IsHud);
         }
 
         #endregion

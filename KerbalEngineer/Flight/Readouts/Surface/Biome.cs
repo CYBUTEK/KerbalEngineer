@@ -41,9 +41,11 @@ namespace KerbalEngineer.Flight.Readouts.Surface
 
         #region Methods: public
 
-        public override void Draw(SectionModule section)
+        public override void Draw(Unity.Flight.ISectionModule section)
         {
-            this.DrawLine(ScienceUtil.GetExperimentBiome(FlightGlobals.ActiveVessel.mainBody, FlightGlobals.ActiveVessel.latitude, FlightGlobals.ActiveVessel.longitude), section.IsHud);
+            var biome = ScienceUtil.GetExperimentBiome(FlightGlobals.ActiveVessel.mainBody, FlightGlobals.ActiveVessel.latitude, FlightGlobals.ActiveVessel.longitude);
+            biome = ScienceUtil.GetBiomedisplayName(FlightGlobals.ActiveVessel.mainBody, biome);
+            this.DrawLine(biome, section.IsHud);
         }
 
         #endregion
