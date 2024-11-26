@@ -22,6 +22,7 @@ namespace KerbalEngineer
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using Helpers;
 
     /*
      * 
@@ -37,7 +38,7 @@ namespace KerbalEngineer
             try
             {
                 SystemBody = new BodyInfo(PSystemManager.Instance.localBodies.Find(b => b.referenceBody == null || b.referenceBody == b));
-                String homeCBName = Planetarium.fetch.Home.bodyName;
+                String homeCBName = Planetarium.fetch.Home.bodyDisplayName.LocalizeRemoveGender();
                 if (!SetSelectedBody(homeCBName))
                 {
                     SelectedBody = SystemBody;
@@ -103,7 +104,7 @@ namespace KerbalEngineer
                 {
                     // Set the body information.
                     CelestialBody = body;
-                    Name = body.bodyName;
+                    Name = body.bodyDisplayName.LocalizeRemoveGender();
                     Gravity = 9.81 * body.GeeASL;
                     Parent = parent;
 
@@ -176,7 +177,7 @@ namespace KerbalEngineer
 
             public double GetAtmospheres(double altitude)
             {
-                return GetPressure(altitude) * PhysicsGlobals.KpaToAtmospheres;
+                return GetPressure(altitude) * Units.KpaToAtmospheres;
             }
 
             public void SetSelected(bool state, int depth = 0)

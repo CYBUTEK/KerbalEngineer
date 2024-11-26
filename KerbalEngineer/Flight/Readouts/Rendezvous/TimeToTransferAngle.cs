@@ -21,32 +21,33 @@
 
 using KerbalEngineer.Extensions;
 using KerbalEngineer.Flight.Sections;
+using KerbalEngineer.Helpers;
 
 #endregion
 
 namespace KerbalEngineer.Flight.Readouts.Rendezvous
 {
-    public class RelativeRadialVelocity : ReadoutModule
+    public class TimeToTransferAngleTime : ReadoutModule
     {
         #region Constructors
 
-        public RelativeRadialVelocity()
+        public TimeToTransferAngleTime()
         {
-            this.Name = "Relative Radial Velocity";
+            this.Name = "Time til Transfer";
             this.Category = ReadoutCategory.GetCategory("Rendezvous");
-            this.HelpString = "Relative radial velocity between your vessel and the target object";
-            this.IsDefault = false;
+            this.HelpString = "The time until the phase angle equals the transfer angle.";
+            this.IsDefault = true;
         }
 
         #endregion
 
         #region Methods: public
 
-        public override void Draw(SectionModule section)
+        public override void Draw(Unity.Flight.ISectionModule section)
         {
             if (RendezvousProcessor.ShowDetails)
             {
-               this.DrawLine(RendezvousProcessor.RelativeRadialVelocity.ToSpeed(), section.IsHud);
+                this.DrawLine(TimeFormatter.ConvertToString(RendezvousProcessor.TimeToTransferAngle), section);
             }
         }
 

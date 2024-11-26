@@ -45,7 +45,7 @@ namespace KerbalEngineer.Flight.Readouts.Orbital
 
         #region Methods: public
 
-        public override void Draw(SectionModule section)
+        public override void Draw(Unity.Flight.ISectionModule section)
         {
             String str;
             Orbit orbit = FlightGlobals.ship_orbit;
@@ -91,7 +91,7 @@ namespace KerbalEngineer.Flight.Readouts.Orbital
             }
 
             //log.Flush();
-            this.DrawLine(str, section.IsHud);
+            this.DrawLine(str, section);
         }
 
         #endregion

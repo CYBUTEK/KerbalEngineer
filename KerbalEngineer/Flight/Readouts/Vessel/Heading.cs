@@ -33,6 +33,7 @@ namespace KerbalEngineer.Flight.Readouts.Vessel
         public Heading()
         {
             this.Name = "Heading";
+            this.ShortName = "Hdg";
             this.Category = ReadoutCategory.GetCategory("Vessel");
             this.HelpString = "Shows the current Heading.";
             this.IsDefault = false;
@@ -42,9 +43,9 @@ namespace KerbalEngineer.Flight.Readouts.Vessel
 
         #region Methods
 
-        public override void Draw(SectionModule section)
+        public override void Draw(Unity.Flight.ISectionModule section)
         {
-            this.DrawLine(Units.ToAngle(AttitudeProcessor.Heading), section.IsHud);
+            this.DrawLine(Units.ToAngle(AttitudeProcessor.Heading, section.IsHud ? HudDecimalPlaces : DecimalPlaces), section);
         }
 
         public override void Reset()

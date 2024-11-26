@@ -21,8 +21,7 @@
 
 #endregion
 
-namespace KerbalEngineer
-{
+namespace KerbalEngineer {
     using System;
     using System.Collections;
     using System.Collections.Generic;
@@ -31,8 +30,7 @@ namespace KerbalEngineer
     using UnityEngine;
 
     [KSPAddon(KSPAddon.Startup.Instantly, false)]
-    public class MyLogger : MonoBehaviour
-    {
+    public class MyLogger : MonoBehaviour {
         #region Fields
 
         private static readonly List<string[]> messages = new List<string[]>();
@@ -48,22 +46,19 @@ namespace KerbalEngineer
 
         #region Initialisation
 
-        static MyLogger()
-        {
+        static MyLogger() {
             assemblyName = Assembly.GetExecutingAssembly().GetName();
             fileName = Path.ChangeExtension(Assembly.GetExecutingAssembly().Location, "log");
             File.Delete(fileName);
 
-            lock (messages)
-            {
+            lock (messages) {
                 messages.Add(new[] { "Executing: " + assemblyName.Name + " - " + assemblyName.Version });
                 messages.Add(new[] { "Assembly: " + Assembly.GetExecutingAssembly().Location });
             }
             Blank();
         }
 
-        private void Awake()
-        {
+        private void Awake() {
             DontDestroyOnLoad(this);
         }
 
@@ -71,114 +66,87 @@ namespace KerbalEngineer
 
         #region Printing
 
-        public static void Blank()
-        {
-            lock (messages)
-            {
+        public static void Blank() {
+            lock (messages) {
                 messages.Add(new string[] { });
             }
         }
 
-        public static void Log(object obj)
-        {
-            lock (messages)
-            {
-                try
-                {
+        public static void Log(object obj) {
+            lock (messages) {
+                try {
                     messages.Add(new[] { "Log " + DateTime.Now.TimeOfDay, GetObjString(obj) });
-                }
-                catch (Exception ex)
-                {
+                } catch (Exception ex) {
                     Exception(ex);
                 }
             }
         }
 
-        public static void Log(string name, object obj)
-        {
-            lock (messages)
-            {
-                try
-                {
+        public static void Log(string name, object obj) {
+            lock (messages) {
+                try {
                     messages.Add(new[] { "Log " + DateTime.Now.TimeOfDay, name + "\n" + GetObjString(obj) });
-                }
-                catch (Exception ex)
-                {
+                } catch (Exception ex) {
                     Exception(ex);
                 }
             }
         }
 
-        private static string GetObjString(object obj, int tabs = 0)
-        {
+        private static string GetObjString(object obj, int tabs = 0) {
             string objString;
             string tabString = string.Empty;
-            for (int i = 0; i < tabs; i++)
-            {
+            for (int i = 0; i < tabs; i++) {
                 tabString += " ";
             }
 
-            if (obj != null)
-            {
+            if (obj != null) {
                 objString = tabString + obj;
 
                 IEnumerable items = obj as IEnumerable;
-                if (items != null)
-                {
-                    foreach (object item in items)
-                    {
+                if (items != null) {
+                    foreach (object item in items) {
                         objString += "\n" + GetObjString(item, tabs + 1);
                     }
                 }
-            }
-            else
-            {
+            } else {
                 objString = "Null";
             }
 
             return objString;
         }
 
-        public static void Log(string message)
-        {
-            lock (messages)
-            {
+        public static void Log(string message) {
+            lock (messages) {
                 messages.Add(new[] { "Log " + DateTime.Now.TimeOfDay, message });
             }
         }
 
-        public static void Warning(string message)
-        {
-            lock (messages)
-            {
+        public static void Warning(string message) {
+            lock (messages) {
                 messages.Add(new[] { "Warning " + DateTime.Now.TimeOfDay, message });
             }
         }
 
-        public static void Error(string message)
-        {
-            lock (messages)
-            {
+        public static void Error(string message) {
+            lock (messages) {
                 messages.Add(new[] { "Error " + DateTime.Now.TimeOfDay, message });
             }
         }
 
-        public static void Exception(Exception ex)
-        {
-            lock (messages)
-            {
-                messages.Add(new[] { "Exception " + DateTime.Now.TimeOfDay, ex.Message });
-                messages.Add(new[] { string.Empty, ex.StackTrace });
-                Blank();
-            }
+        public static void Exception(Exception ex) {
+            Exception(ex, "");
         }
 
-        public static void Exception(Exception ex, string location)
-        {
-            lock (messages)
-            {
-                messages.Add(new[] { "Exception " + DateTime.Now.TimeOfDay, location + " // " + ex.Message });
+        public static void Exception(Exception ex, string location) {
+            lock (messages) {
+                messages.Add(new[] { DateTime.Now.TimeOfDay.ToString(), "Exception " + location + " // " + ex.ToString() });
                 messages.Add(new[] { string.Empty, ex.StackTrace });
+                ex = ex.InnerException;
+                while (ex != null) {
+                    messages.Add(new[] {DateTime.Now.TimeOfDay.ToString(), "Inner Exception " + location + " // " + ex.ToString() });
+                    messages.Add(new[] { string.Empty, ex.StackTrace });
+                    ex = ex.InnerException;
+                }
                 Blank();
             }
         }
@@ -187,19 +155,13 @@ namespace KerbalEngineer
 
         #region Flushing
 
-        public static void Flush()
-        {
-            lock (messages)
-            {
-                if (messages.Count > 0)
-                {
-                    using (StreamWriter file = File.AppendText(fileName))
-                    {
-                        foreach (string[] message in messages)
-                        {
+        public static void Flush() {
+            lock (messages) {
+                if (messages.Count > 0) {
+                    using (StreamWriter file = File.AppendText(fileName)) {
+                        foreach (string[] message in messages) {
                             file.WriteLine(message.Length > 0 ? message.Length > 1 ? "[" + message[0] + "]: " + message[1] : message[0] : string.Empty);
-                            if (message.Length > 0)
-                            {
+                            if (message.Length > 0) {
                                 print(message.Length > 1 ? assemblyName.Name + " -> " + message[1] : assemblyName.Name + " -> " + message[0]);
                             }
                         }
@@ -209,8 +171,7 @@ namespace KerbalEngineer
             }
         }
 
-        private void LateUpdate()
-        {
+        private void LateUpdate() {
             Flush();
         }
 
@@ -218,13 +179,11 @@ namespace KerbalEngineer
 
         #region Destruction
 
-        private void OnDestroy()
-        {
+        private void OnDestroy() {
             Flush();
         }
 
-        ~MyLogger()
-        {
+        ~MyLogger() {
             Flush();
         }
 

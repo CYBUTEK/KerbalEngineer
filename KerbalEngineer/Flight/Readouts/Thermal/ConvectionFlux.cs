@@ -32,11 +32,11 @@ namespace KerbalEngineer.Flight.Readouts.Thermal
             IsDefault = true;
         }
 
-        public override void Draw(SectionModule section)
+        public override void Draw(Unity.Flight.ISectionModule section)
         {
             if (ThermalProcessor.ShowDetails && FlightGlobals.ActiveVessel.atmDensity > 0.0)
             {
-                DrawLine(ThermalProcessor.ConvectionFlux.ToFlux(), section.IsHud);
+                DrawLine(ThermalProcessor.ConvectionFlux.ToFlux(section.IsHud ? HudDecimalPlaces : DecimalPlaces), section);
             }
         }
 

@@ -53,6 +53,15 @@ namespace KerbalEngineer.VesselSimulator
         public double thrustOffsetAngle = 0.0;
         public float maxMach = 0.0f;
 
+        //RCS
+        public double RCSIsp = 0.0;
+        public double RCSThrust = 0.0;
+        public double RCSdeltaVStart = 0.0;
+        public double RCSTWRStart= 0.0;
+        public double RCSdeltaVEnd = 0.0;
+        public double RCSTWREnd = 0.0;
+        public double RCSBurnTime = 0.0;
+
         public void Dump(LogMsg log)
         {
             log.buf.AppendFormat("number        : {0:d}\n", this.number);
@@ -73,7 +82,12 @@ namespace KerbalEngineer.VesselSimulator
             log.buf.AppendFormat("deltaV        : {0:g6}\n", this.deltaV);
             log.buf.AppendFormat("totalDeltaV   : {0:g6}\n", this.totalDeltaV);
             log.buf.AppendFormat("invTotDeltaV  : {0:g6}\n", this.inverseTotalDeltaV);
-
+            log.buf.AppendFormat("RCSdeltaVStart        : {0:g6}\n", this.RCSdeltaVStart);
+            log.buf.AppendFormat("RCSIsp   : {0:g6}\n", this.RCSIsp);
+            log.buf.AppendFormat("RCSThrust  : {0:g6}\n", this.RCSThrust);
+            log.buf.AppendFormat("RCSTWRStart        : {0:g6}\n", this.RCSTWRStart);
+            log.buf.AppendFormat("RCSdeltaVEnd   : {0:g6}\n", this.RCSdeltaVEnd);
+            log.buf.AppendFormat("RCSTWREnd  : {0:g6}\n", this.RCSTWREnd);
             log.Flush();
         }
     }

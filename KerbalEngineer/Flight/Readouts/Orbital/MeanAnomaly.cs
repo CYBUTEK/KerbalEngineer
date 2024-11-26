@@ -33,9 +33,9 @@ namespace KerbalEngineer.Flight.Readouts.Orbital
             IsDefault = false;
         }
 
-        public override void Draw(SectionModule section)
+        public override void Draw(Unity.Flight.ISectionModule section)
         {
-            DrawLine((FlightGlobals.ship_orbit.meanAnomaly * Units.RAD_TO_DEG).ToAngle(), section.IsHud);
+            DrawLine((FlightGlobals.ship_orbit.meanAnomaly * Units.RAD_TO_DEG).ToAngle(section.IsHud ? HudDecimalPlaces : DecimalPlaces), section);
         }
     }
 }

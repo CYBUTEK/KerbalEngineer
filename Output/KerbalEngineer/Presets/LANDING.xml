@@ -1,0 +1,25 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ArrayOfSettingItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <SettingItem>
+    <Name>preset</Name>
+    <Value xsi:type="Preset">
+      <Abbreviation>LAND</Abbreviation>
+      <IsHud>false</IsHud>
+      <IsHudBackground>false</IsHudBackground>
+      <Name>LANDING</Name>
+      <ReadoutNames>
+        <string>Surface.ImpactAltitude</string>
+        <string>Surface.ImpactTime</string>
+        <string>Surface.ImpactLatitude</string>
+        <string>Surface.ImpactLongitude</string>
+        <string>Surface.ImpactBiome</string>
+        <string>Surface.ImpactMarker</string>
+        <string>Miscellaneous.Separator</string>
+        <string>Vessel.SuicideBurnAltitude</string>
+        <string>Vessel.SuicideBurnDeltaV</string>
+        <string>Vessel.SuicideBurnLength</string>
+        <string>Vessel.SuicideBurnCountdown</string>
+      </ReadoutNames>
+    </Value>
+  </SettingItem>
+</ArrayOfSettingItem>

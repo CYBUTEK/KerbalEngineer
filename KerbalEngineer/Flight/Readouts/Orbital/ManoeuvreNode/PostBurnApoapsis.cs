@@ -44,14 +44,14 @@ namespace KerbalEngineer.Flight.Readouts.Orbital.ManoeuvreNode
 
         #region Methods: public
 
-        public override void Draw(SectionModule section)
+        public override void Draw(Unity.Flight.ISectionModule section)
         {
             if (!ManoeuvreProcessor.ShowDetails)
             {
                 return;
             }
 
-            this.DrawLine("Post-burn Apoapsis", ManoeuvreProcessor.PostBurnAp.ToDistance(), section.IsHud);
+            this.DrawLine("Post-burn Apoapsis", ManoeuvreProcessor.PostBurnAp.ToDistance(), section);
         }
 
         public override void Reset()

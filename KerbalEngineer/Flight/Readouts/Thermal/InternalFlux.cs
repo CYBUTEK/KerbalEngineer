@@ -32,11 +32,11 @@ namespace KerbalEngineer.Flight.Readouts.Thermal
             IsDefault = true;
         }
 
-        public override void Draw(SectionModule section)
+        public override void Draw(Unity.Flight.ISectionModule section)
         {
             if (ThermalProcessor.ShowDetails)
             {
-                DrawLine(ThermalProcessor.InternalFlux.ToFlux(), section.IsHud);
+                DrawLine(ThermalProcessor.InternalFlux.ToFlux(section.IsHud ? HudDecimalPlaces : DecimalPlaces), section);
             }
         }
 

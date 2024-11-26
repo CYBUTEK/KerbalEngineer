@@ -32,7 +32,7 @@ namespace KerbalEngineer.Flight.Readouts.Rendezvous
 
         public RelativeSpeed()
         {
-            this.Name = "Relative Speed";
+            this.Name = "Relative Orbital Speed";
             this.Category = ReadoutCategory.GetCategory("Rendezvous");
             this.HelpString = "Shows the difference in orbital speed between your vessel and the target object.";
             this.IsDefault = false;
@@ -42,11 +42,11 @@ namespace KerbalEngineer.Flight.Readouts.Rendezvous
 
         #region Methods: public
 
-        public override void Draw(SectionModule section)
+        public override void Draw(Unity.Flight.ISectionModule section)
         {
             if (RendezvousProcessor.ShowDetails)
             {
-                this.DrawLine(RendezvousProcessor.RelativeSpeed.ToSpeed(), section.IsHud);
+                this.DrawLine(RendezvousProcessor.RelativeSpeed.ToSpeed(section.IsHud ? HudDecimalPlaces : DecimalPlaces), section);
             }
         }
 

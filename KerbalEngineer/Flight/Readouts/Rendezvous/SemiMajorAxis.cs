@@ -44,11 +44,12 @@ namespace KerbalEngineer.Flight.Readouts.Rendezvous
 
         #region Methods: public
 
-        public override void Draw(SectionModule section)
+        public override void Draw(Unity.Flight.ISectionModule section)
         {
             if (RendezvousProcessor.ShowDetails)
             {
-                this.DrawLine(Units.ToDistance(RendezvousProcessor.SemiMajorAxis, 3), section.IsHud);
+                int dec = section.IsHud ? HudDecimalPlaces : DecimalPlaces;
+                this.DrawLine(Units.ToDistance(RendezvousProcessor.SemiMajorAxis, dec < 0 ? 3 : dec), section);
             }
         }
 

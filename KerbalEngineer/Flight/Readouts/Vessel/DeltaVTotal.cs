@@ -42,11 +42,11 @@ namespace KerbalEngineer.Flight.Readouts.Vessel
 
         #region Methods: public
 
-        public override void Draw(SectionModule section)
+        public override void Draw(Unity.Flight.ISectionModule section)
         {
             if (SimulationProcessor.ShowDetails)
             {
-                this.DrawLine(SimulationProcessor.LastStage.totalDeltaV.ToString("N0") + "m/s (" + TimeFormatter.ConvertToString(SimulationProcessor.LastStage.totalTime) + ")", section.IsHud);
+                this.DrawLine(SimulationProcessor.LastStage.totalDeltaV.ToString("N0") + "m/s (" + TimeFormatter.ConvertToString(SimulationProcessor.LastStage.totalTime) + ")", section);
             }
         }
 

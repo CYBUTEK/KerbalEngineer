@@ -62,6 +62,14 @@ namespace KerbalEngineer.Flight.Presets
             Presets.Add(preset);
         }
 
+        public static Preset GetPreset(string abbrev) {
+            foreach (var item in presets) {
+                if (item.Abbreviation == abbrev)
+                    return item;
+            }
+            return null;
+        }
+
         public static void Load()
         {
             if (!Directory.Exists(rootPath))

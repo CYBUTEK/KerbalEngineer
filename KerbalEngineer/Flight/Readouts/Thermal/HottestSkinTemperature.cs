@@ -32,11 +32,11 @@ namespace KerbalEngineer.Flight.Readouts.Thermal
             IsDefault = true;
         }
 
-        public override void Draw(SectionModule section)
+        public override void Draw(Unity.Flight.ISectionModule section)
         {
             if (ThermalProcessor.ShowDetails)
             {
-                DrawLine(Units.ToTemperature(ThermalProcessor.HottestSkinTemperature, ThermalProcessor.HottestSkinTemperatureMax), section.IsHud);
+                DrawLine(Units.ToTemperature(ThermalProcessor.HottestSkinTemperature, ThermalProcessor.HottestSkinTemperatureMax), section);
             }
         }
 

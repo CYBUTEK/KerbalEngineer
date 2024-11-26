@@ -42,9 +42,9 @@ namespace KerbalEngineer.Flight.Readouts.Orbital
 
         #region Methods: public
 
-        public override void Draw(SectionModule section)
+        public override void Draw(Unity.Flight.ISectionModule section)
         {
-            this.DrawLine(FlightGlobals.ship_obtSpeed.ToSpeed(), section.IsHud);
+            this.DrawLine(FlightGlobals.ship_obtSpeed.ToSpeed(section.IsHud ? HudDecimalPlaces : DecimalPlaces), section);
         }
 
         #endregion

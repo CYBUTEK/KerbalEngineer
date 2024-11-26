@@ -42,11 +42,11 @@ namespace KerbalEngineer.Flight.Readouts.Surface
 
         #region Methods: public
 
-        public override void Draw(SectionModule section)
+        public override void Draw(Unity.Flight.ISectionModule section)
         {
             if (ImpactProcessor.ShowDetails)
             {
-                this.DrawLine(ImpactProcessor.Altitude.ToDistance(), section.IsHud);
+                this.DrawLine(ImpactProcessor.Altitude.ToDistance(section.IsHud ? HudDecimalPlaces : DecimalPlaces), section);
             }
         }
 

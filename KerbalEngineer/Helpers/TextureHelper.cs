@@ -36,7 +36,29 @@ namespace KerbalEngineer.Helpers
             texture.Apply();
             return texture;
         }
+        public static Texture2D createCrosshair(Color colour)
+        {
+            var texture = new Texture2D(17, 17, TextureFormat.ARGB32, false);
+       
+            for (int i = 0; i < 17; i++)
+            {
+                for (int j = 0; j < 17; j++)
+                {
+                    texture.SetPixel(i, j, new Color(0,0,0,0));
+                }
+            }
 
+            for (int i = 0; i < 17; i++)
+            {
+                texture.SetPixel(8, i, colour);
+            }
+            for (int i = 0; i < 17; i++)
+            {
+                texture.SetPixel(i, 8, colour);
+            }
+            texture.Apply();
+            return texture;
+        }
         #endregion
     }
 }

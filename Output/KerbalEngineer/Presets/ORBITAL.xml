@@ -1,9 +1,11 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <ArrayOfSettingItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
   <SettingItem>
     <Name>preset</Name>
     <Value xsi:type="Preset">
       <Abbreviation>ORBT</Abbreviation>
+      <IsHud>false</IsHud>
+      <IsHudBackground>false</IsHudBackground>
       <Name>ORBITAL</Name>
       <ReadoutNames>
         <string>Orbital.ApoapsisHeight</string>
@@ -12,9 +14,8 @@
         <string>Orbital.PeriapsisHeight</string>
         <string>Orbital.TimeToPeriapsis</string>
         <string>Miscellaneous.Separator</string>
-        <string>Surface.VerticalSpeed</string>
+        <string>Orbital.Eccentricity</string>
         <string>Orbital.Inclination</string>
-        <string>Miscellaneous.Separator</string>
         <string>Orbital.OrbitalPeriod</string>
         <string>Orbital.SemiMajorAxis</string>
       </ReadoutNames>

@@ -1,0 +1,19 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ArrayOfSettingItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <SettingItem>
+    <Name>preset</Name>
+    <Value xsi:type="Preset">
+      <Abbreviation>HUD 2</Abbreviation>
+      <IsHud>true</IsHud>
+      <IsHudBackground>false</IsHudBackground>
+      <Name>HUD 2</Name>
+      <ReadoutNames>
+        <string>Surface.AltitudeTerrain</string>
+        <string>Surface.VerticalSpeed</string>
+        <string>Surface.HorizontalSpeed</string>
+        <string>Surface.Biome</string>
+        <string>Surface.Situation</string>
+      </ReadoutNames>
+    </Value>
+  </SettingItem>
+</ArrayOfSettingItem>

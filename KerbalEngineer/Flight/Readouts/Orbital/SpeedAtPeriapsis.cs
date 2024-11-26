@@ -44,7 +44,7 @@ namespace KerbalEngineer.Flight.Readouts.Orbital
 
         #region Methods: public
 
-        public override void Draw(SectionModule section)
+        public override void Draw(Unity.Flight.ISectionModule section)
         {
             // Vis-viva: v^2 = GM(2/r - 1/a)
             // All this is easily got from the ships orbit (and reference body)
@@ -56,7 +56,7 @@ namespace KerbalEngineer.Flight.Readouts.Orbital
                 str = "---m/s";
             else
                 str = Math.Sqrt(speedsqr).ToSpeed();
-            this.DrawLine(str, section.IsHud);
+            this.DrawLine(str, section);
         }
 
         #endregion

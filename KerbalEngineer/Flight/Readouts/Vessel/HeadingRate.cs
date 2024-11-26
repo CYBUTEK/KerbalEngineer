@@ -42,9 +42,9 @@ namespace KerbalEngineer.Flight.Readouts.Vessel
 
         #region Methods
 
-        public override void Draw(SectionModule section)
+        public override void Draw(Unity.Flight.ISectionModule section)
         {
-            this.DrawLine(Units.ToAngle(AttitudeProcessor.HeadingRate) + "/sec", section.IsHud);
+            this.DrawLine(Units.ToAngle(AttitudeProcessor.HeadingRate, section.IsHud ? HudDecimalPlaces : DecimalPlaces) + "/sec", section);
         }
 
         public override void Reset()

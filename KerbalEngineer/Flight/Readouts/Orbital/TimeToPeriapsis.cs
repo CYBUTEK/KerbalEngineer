@@ -33,6 +33,7 @@ namespace KerbalEngineer.Flight.Readouts.Orbital
         public TimeToPeriapsis()
         {
             this.Name = "Time to Periapsis";
+            this.ShortName = "TtPe";
             this.Category = ReadoutCategory.GetCategory("Orbital");
             this.HelpString = "Shows the time until the vessel reaches periapsis, the lowest point of the orbit.";
             this.IsDefault = true;
@@ -42,9 +43,9 @@ namespace KerbalEngineer.Flight.Readouts.Orbital
 
         #region Methods: public
 
-        public override void Draw(SectionModule section)
+        public override void Draw(Unity.Flight.ISectionModule section)
         {
-            this.DrawLine(TimeFormatter.ConvertToString(FlightGlobals.ship_orbit.timeToPe), section.IsHud);
+            this.DrawLine(TimeFormatter.ConvertToString(FlightGlobals.ship_orbit.timeToPe), section);
         }
 
         #endregion

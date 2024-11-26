@@ -19,45 +19,31 @@
 
 #region Using Directives
 
+using KerbalEngineer.Extensions;
 using KerbalEngineer.Flight.Sections;
-using KerbalEngineer.Helpers;
+using System;
 
 #endregion
 
-namespace KerbalEngineer.Flight.Readouts.Rendezvous
-{
-    public class TimeToRendezvous : ReadoutModule
-    {
+namespace KerbalEngineer.Flight.Readouts.Body {
+    public class GeostationaryHeight : ReadoutModule {
         #region Constructors
 
-        public TimeToRendezvous()
-        {
-            this.Name = "Time to Rendezvous";
-            this.Category = ReadoutCategory.GetCategory("Rendezvous");
-            this.HelpString = "Approximate (linearly) time to the minimum distance between objects.";
-            this.IsDefault = false;
+        public GeostationaryHeight() {
+            this.Name = "Synchronous Alt.";
+            this.Category = ReadoutCategory.GetCategory("Body");
+            this.HelpString = "The altitude where the orbital period equals the body's rotation period.";
+            this.IsDefault = true;
         }
 
         #endregion
 
         #region Methods: public
 
-        public override void Draw(SectionModule section)
-        {
-            if (RendezvousProcessor.ShowDetails)
-            {
-               this.DrawLine(TimeFormatter.ConvertToString(RendezvousProcessor.TimeToRendezvous), section.IsHud);
-            }
-        }
-
-        public override void Reset()
-        {
-            FlightEngineerCore.Instance.AddUpdatable(RendezvousProcessor.Instance);
-        }
-
-        public override void Update()
-        {
-            RendezvousProcessor.RequestUpdate();
+        public override void Draw(Unity.Flight.ISectionModule section) {
+            var T = FlightGlobals.currentMainBody.rotationPeriod;
+            var geo = System.Math.Pow(T * T * FlightGlobals.currentMainBody.gravParameter / (4 * Math.PI * Math.PI), 1.0 / 3.0);
+            this.DrawLine((geo - FlightGlobals.currentMainBody.Radius).ToDistance(section.IsHud ? HudDecimalPlaces : DecimalPlaces), section);
         }
 
         #endregion

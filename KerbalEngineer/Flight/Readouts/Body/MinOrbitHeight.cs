@@ -19,37 +19,30 @@
 
 #region Using Directives
 
-using System;
-
 using KerbalEngineer.Extensions;
 using KerbalEngineer.Flight.Sections;
 
 #endregion
 
-namespace KerbalEngineer.Flight.Readouts.Orbital
-{
-    public class CurrentSoi : ReadoutModule
-    {
+namespace KerbalEngineer.Flight.Readouts.Body {
+    public class MinOrbitHeight : ReadoutModule {
         #region Constructors
-        
-        public CurrentSoi()
-        {
-            this.Name = "Current SOI";
-            this.Category = ReadoutCategory.GetCategory("Orbital");
-            this.HelpString = "Shows the SOI of the current body the vessel is orbiting.";
-            this.IsDefault = false;
+
+        public MinOrbitHeight() {
+            this.Name = "Min. Safe Alt.";
+            this.Category = ReadoutCategory.GetCategory("Body");
+            this.HelpString = "The minimum safe altitude for orbiting.";
+            this.IsDefault = true;
         }
 
         #endregion
 
         #region Methods: public
 
-        public override void Draw(SectionModule section)
-        {
-            if (!Double.IsInfinity(FlightGlobals.currentMainBody.sphereOfInfluence))
-            {
-                this.DrawLine(FlightGlobals.currentMainBody.sphereOfInfluence.ToDistance(), section.IsHud);
-            }
+        public override void Draw(Unity.Flight.ISectionModule section) {
+                CelestialBody b = FlightGlobals.ActiveVessel.mainBody;
+                double h = b.minOrbitalDistance - FlightGlobals.ActiveVessel.mainBody.Radius;
+                this.DrawLine(h.ToDistance(section.IsHud ? HudDecimalPlaces : DecimalPlaces), section);
         }
 
         #endregion

@@ -27,6 +27,7 @@ namespace KerbalEngineer.VesselSimulator
     using System.Reflection;
     using System.Threading;
     using UnityEngine;
+    using Helpers;
 
     #endregion
 
@@ -56,7 +57,7 @@ namespace KerbalEngineer.VesselSimulator
         // Support for RealFuels using reflection to check localCorrectThrust without dependency
 
         private static bool hasCheckedForMods;
-        private static bool hasInstalledRealFuels;
+        public static bool hasInstalledRealFuels;
         private static FieldInfo RF_ModuleEngineConfigs_localCorrectThrust;
         private static FieldInfo RF_ModuleHybridEngine_localCorrectThrust;
         private static FieldInfo RF_ModuleHybridEngines_localCorrectThrust;
@@ -93,6 +94,22 @@ namespace KerbalEngineer.VesselSimulator
         public static Stage[] Stages { get; private set; }
 
         public static double Mach { get; set; }
+
+        private static bool useRFResiduals = false;
+        public static bool RFResiduals
+        {
+            get
+            {
+                return useRFResiduals;
+            }
+            set
+            {
+                if (hasInstalledRealFuels)
+                    useRFResiduals = value;
+                else
+                    useRFResiduals = false;
+            }
+        }
 
         public static String failMessage { get; private set; }
 
@@ -149,6 +166,8 @@ namespace KerbalEngineer.VesselSimulator
                     hasInstalledKIDS = true;
                 }
             }
+
+            useRFResiduals = hasInstalledRealFuels;
             log.Flush();
         }
 
@@ -367,7 +386,7 @@ namespace KerbalEngineer.VesselSimulator
                 else
                 {
                     parts = FlightGlobals.ActiveVessel.Parts;
-                    Atmosphere = FlightGlobals.ActiveVessel.staticPressurekPa * PhysicsGlobals.KpaToAtmospheres;
+                    Atmosphere = FlightGlobals.ActiveVessel.staticPressurekPa * Units.KpaToAtmospheres;
                 }
 
                 // This call doesn't ever fail at the moment but we'll check and return a sensible error for display

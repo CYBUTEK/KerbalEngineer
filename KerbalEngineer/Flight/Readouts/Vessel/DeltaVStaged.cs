@@ -34,7 +34,7 @@ namespace KerbalEngineer.Flight.Readouts.Vessel
             IsDefault = true;
         }
 
-        public override void Draw(SectionModule section)
+        public override void Draw(Unity.Flight.ISectionModule section)
         {
             if (SimulationProcessor.ShowDetails == false || StageManager.Instance == null)
             {
@@ -43,7 +43,7 @@ namespace KerbalEngineer.Flight.Readouts.Vessel
 
             foreach (Stage stage in SimulationProcessor.Stages.Where(stage => stage.deltaV > 0 || stage.number == StageManager.CurrentStage))
             {
-                DrawLine("DeltaV (S" + stage.number + ")", stage.deltaV.ToString("N0") + "m/s (" + TimeFormatter.ConvertToString(stage.time) + ")", section.IsHud);
+                DrawLine("DeltaV (S" + stage.number + ")", stage.deltaV.ToString("N0") + "m/s (" + TimeFormatter.ConvertToString(stage.time) + ")", section);
             }
         }
 

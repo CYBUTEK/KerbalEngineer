@@ -32,6 +32,7 @@ namespace KerbalEngineer.Flight.Readouts.Surface
         public Situation()
         {
             this.Name = "Situation";
+            this.ShortName = "Sit";
             this.Category = ReadoutCategory.GetCategory("Surface");
             this.HelpString = "Shows the vessel's current scientific situation. (Landed, Splashed, Flying Low/High, In Space Low/High)";
             this.IsDefault = true;
@@ -41,32 +42,32 @@ namespace KerbalEngineer.Flight.Readouts.Surface
 
         #region Methods: public
 
-        public override void Draw(SectionModule section)
+        public override void Draw(Unity.Flight.ISectionModule section)
         {
             switch (ScienceUtil.GetExperimentSituation(FlightGlobals.ActiveVessel))
             {
                 case ExperimentSituations.SrfLanded:
-                    this.DrawLine("Landed");
+                    this.DrawLine("Landed", section);
                     break;
 
                 case ExperimentSituations.SrfSplashed:
-                    this.DrawLine("Splashed");
+                    this.DrawLine("Splashed", section);
                     break;
 
                 case ExperimentSituations.FlyingLow:
-                    this.DrawLine("Flying Low");
+                    this.DrawLine("Flying Low", section);
                     break;
 
                 case ExperimentSituations.FlyingHigh:
-                    this.DrawLine("Flying High");
+                    this.DrawLine("Flying High", section);
                     break;
 
                 case ExperimentSituations.InSpaceLow:
-                    this.DrawLine("In Space Low");
+                    this.DrawLine("In Space Low", section);
                     break;
 
                 case ExperimentSituations.InSpaceHigh:
-                    this.DrawLine("In Space High");
+                    this.DrawLine("In Space High", section);
                     break;
             }
         }
@@ -77,12 +78,12 @@ namespace KerbalEngineer.Flight.Readouts.Surface
 
         private static string GetBiome()
         {
-            return ScienceUtil.GetExperimentBiome(FlightGlobals.ActiveVessel.mainBody, FlightGlobals.ActiveVessel.latitude, FlightGlobals.ActiveVessel.longitude);
+            return ScienceUtil.GetExperimentBiomeLocalized(FlightGlobals.ActiveVessel.mainBody, FlightGlobals.ActiveVessel.latitude, FlightGlobals.ActiveVessel.longitude);
         }
 
         private static string GetBodyPlural()
         {
-            return FlightGlobals.currentMainBody.bodyName.EndsWith("s") ? FlightGlobals.currentMainBody.bodyName + "\'" : FlightGlobals.currentMainBody.bodyName + "\'s";
+            return FlightGlobals.currentMainBody.bodyDisplayName.LocalizeRemoveGender().EndsWith("s") ? FlightGlobals.currentMainBody.bodyDisplayName.LocalizeRemoveGender() + "\'" : FlightGlobals.currentMainBody.bodyDisplayName.LocalizeRemoveGender() + "\'s";
         }
 
         #endregion

@@ -31,7 +31,7 @@ namespace KerbalEngineer.Editor
 
         public ResourceInfoItem(PartResource resource)
         {
-            this.Definition = resource.GetDefinition();
+            this.Definition = PartResourceExtensions.GetDefinition(resource);
             this.Name = this.Definition.name;
             this.Amount = resource.amount;
         }

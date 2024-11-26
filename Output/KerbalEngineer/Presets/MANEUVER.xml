@@ -1,0 +1,28 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ArrayOfSettingItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <SettingItem>
+    <Name>preset</Name>
+    <Value xsi:type="Preset">
+      <Abbreviation>BURN</Abbreviation>
+      <IsHud>false</IsHud>
+      <IsHudBackground>false</IsHudBackground>
+      <Name>MANEUVER</Name>
+      <ReadoutNames>
+        <string>Orbital.NodeProgradeDeltaV</string>
+        <string>Orbital.NodeNormalDeltaV</string>
+        <string>Orbital.NodeRadialDeltaV</string>
+        <string>Orbital.NodeTotalDeltaV</string>
+        <string>Miscellaneous.Separator</string>
+        <string>Orbital.NodeBurnTime</string>
+        <string>Orbital.NodeTimeToHalfBurn</string>
+        <string>Miscellaneous.Separator</string>
+        <string>Orbital.PostBurnApoapsis</string>
+        <string>Orbital.PostBurnPeriapsis</string>
+        <string>Orbital.PostBurnInclination</string>
+        <string>Orbital.PostBurnRealtiveInclination</string>
+        <string>Orbital.PostBurnPeriod</string>
+        <string>Orbital.PostBurnEccentricity</string>
+      </ReadoutNames>
+    </Value>
+  </SettingItem>
+</ArrayOfSettingItem>
